@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:paddingHorizontal="20dp"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/etChannelName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="ChannelName"/>
+
+    <Spinner
+        android:id="@+id/spBeautyType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingVertical="8dp"
+        android:entries="@array/beauty_type"
+        android:layout_gravity="end" />
+
+    <Button
+        android:id="@+id/btnJoin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="加入频道" />
+
+
+</LinearLayout>
