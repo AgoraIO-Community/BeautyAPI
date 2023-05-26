@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <SurfaceView
+        android:id="@+id/localVideoView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <SurfaceView
+        android:id="@+id/remoteVideoView"
+        android:layout_width="120dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="30dp"
+        app:layout_constraintDimensionRatio="9:16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/ivCamera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#88000000"
+        android:padding="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/cardview_compat_inset_shadow"
+        android:src="@drawable/ic_camera"/>
+
+    <Switch
+        android:id="@+id/swBeautyEnable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="美颜"
+        app:layout_constraintBottom_toTopOf="@id/llBeautyOptions"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/llBeautyOptions"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#88000000"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <CheckedTextView
+            android:id="@+id/ctvFaceBeauty"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="美颜"
+            android:textAlignment="center"
+            android:textColor="@color/beauty_option_text_color" />
+
+        <CheckedTextView
+            android:id="@+id/ctvMarkup"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="美妆"
+            android:textAlignment="center"
+            android:textColor="@color/beauty_option_text_color" />
+
+        <CheckedTextView
+            android:id="@+id/ctvSticker"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="贴纸"
+            android:textAlignment="center"
+            android:textColor="@color/beauty_option_text_color" />
+
+        <CheckedTextView
+            android:id="@+id/ctvFilter"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="滤镜"
+            android:textAlignment="center"
+            android:textColor="@color/beauty_option_text_color" />
+
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
