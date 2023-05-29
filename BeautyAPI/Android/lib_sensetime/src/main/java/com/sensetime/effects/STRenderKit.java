@@ -318,9 +318,9 @@ public class STRenderKit {
                 bytesType,
                 null,
                 0,
+                0,
                 width,
                 height,
-                0,
                 rotation == 270,
                 rotation,
                 System.currentTimeMillis()

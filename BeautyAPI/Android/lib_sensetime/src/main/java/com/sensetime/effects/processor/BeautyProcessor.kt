@@ -4,11 +4,13 @@ import android.annotation.TargetApi
 import android.content.Context
 import android.hardware.Camera
 import android.opengl.GLES20
+import android.os.Build
 import android.util.Log
 import android.util.Size
 import androidx.core.util.component1
 import androidx.core.util.component2
-import com.sensetime.effects.egl.EGLContextHelp
+import com.sensetime.effects.egl.EGLContextHelper
+import com.sensetime.effects.egl.GLCopyHelper
 import com.sensetime.effects.egl.GLFrameBuffer
 import com.sensetime.effects.utils.Accelerometer
 import com.sensetime.effects.utils.Accelerometer.CLOCKWISE_ANGLE
@@ -17,6 +19,7 @@ import com.sensetime.effects.utils.GlUtil
 import com.sensetime.effects.utils.LogUtils
 import com.sensetime.effects.utils.QueueBlockThreadExecutor
 import com.sensetime.hardwarebuffer.STMobileHardwareBufferNative
+import com.sensetime.stmobile.STCommonNative
 import com.sensetime.stmobile.STEffectInImage
 import com.sensetime.stmobile.STMobileAnimalNative
 import com.sensetime.stmobile.STMobileColorConvertNative
@@ -42,10 +45,13 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
     private val cacheExecutor = QueueBlockThreadExecutor<Int>(cacheCount, 1)
     private val glExecutor = QueueBlockThreadExecutor<OutputInfo>(0, 1)
 
-    private var eglContextHelp: EGLContextHelp? = null
+    private var eglContextHelper: EGLContextHelper? = null
+    private var glCopyHelper = GLCopyHelper(cacheCount)
     private val cacheFrameBuffer = arrayOfNulls<GLFrameBuffer>(max(cacheCount, 1))
     private var mAnimalFaceInfo = arrayOfNulls<STAnimalFaceInfo>(max(cacheCount, 1))
     private val inputTextures = arrayOfNulls<Int>(max(cacheCount, 1))
+    private val inputByteArrays = arrayOfNulls<ByteArray>(max(cacheCount, 1))
+    private var inputGLFrameBuffer: GLFrameBuffer? = null
     private var outTextureIds = arrayOfNulls<Int>(max(cacheCount, 1))
     private var outFrameBuffer: GLFrameBuffer? = null
 
@@ -57,6 +63,8 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
 
     private var mAccelerometer: Accelerometer? = null
     private var mCustomEvent = 0
+    private var mInputWidth = 0
+    private var mInputHeight = 0
 
     @Volatile
     private var isReleased = false
@@ -86,9 +94,14 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
                 mSTMobileColorConvertNative?.destroyInstance()
                 mSTMobileColorConvertNative = null
             }
-            eglContextHelp?.let {
+            eglContextHelper?.let {
                 it.release()
-                eglContextHelp = null
+                eglContextHelper = null
+            }
+            glCopyHelper.release()
+            inputGLFrameBuffer?.let {
+                it.release()
+                inputGLFrameBuffer = null
             }
             return@Callable null
         })
@@ -126,11 +139,15 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
         if (isReleased) {
             return null
         }
-        if (eglContextHelp == null) {
+        if (eglContextHelper == null) {
             val glContext = GlUtil.getCurrGLContext()
             glExecutor.execute(Callable {
-                if (eglContextHelp == null) {
-                    eglContextHelp = EGLContextHelp().apply {
+                if (isReleased) {
+                    return@Callable null
+                }
+                if (eglContextHelper == null) {
+                    eglContextHelper = EGLContextHelper()
+                        .apply {
                         initEGL(glContext)
                         eglMakeCurrent()
                     }
@@ -143,7 +160,7 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
             processDoubleInput(input)
         } else if (input.bytes != null) {
             processSingleBytesInput(input)
-        } else if (input.textureId != null) {
+        } else if (input.textureId != null && Build.VERSION.SDK_INT >= 26) {
             processSingleTextureInput(input)
         } else {
             null
@@ -151,24 +168,112 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
     }
 
     @TargetApi(26)
-    private fun processSingleTextureInput(input: InputInfo): OutputInfo?{
+    private fun processSingleTextureInput(input: InputInfo): OutputInfo? {
+        if(isReleased){
+            return null
+        }
         if (input.textureId == null) {
             return null
         }
+        val current = cacheExecutor.current()
+        glExecutor.execute(Callable {
+            if(isReleased){
+                return@Callable null
+            }
+            if (mSTMobileHardwareBufferNative == null) {
+                mInputWidth = input.width
+                mInputHeight = input.height
+                mSTMobileHardwareBufferNative = STMobileHardwareBufferNative().apply {
+                    init(
+                        mInputWidth,
+                        mInputHeight,
+                        STMobileHardwareBufferNative.HARDWARE_BUFFER_FORMAT_RGBA,
+                        STMobileHardwareBufferNative.HARDWARE_BUFFER_USAGE_DOWNLOAD
+                    )
+                }
+                inputByteArrays.forEachIndexed { index, _ ->
+                    inputByteArrays[index] = ByteArray(mInputWidth * mInputHeight * 4)
+                }
+            } else if (mInputWidth != input.width || mInputHeight != input.height) {
+                mInputWidth = input.width
+                mInputHeight = input.height
+                mSTMobileHardwareBufferNative?.release()
+                mSTMobileHardwareBufferNative = STMobileHardwareBufferNative().apply {
+                    init(
+                        mInputWidth,
+                        mInputHeight,
+                        STMobileHardwareBufferNative.HARDWARE_BUFFER_FORMAT_RGBA,
+                        STMobileHardwareBufferNative.HARDWARE_BUFFER_USAGE_DOWNLOAD
+                    )
+                }
+                inputByteArrays.forEachIndexed { index, _ ->
+                    inputByteArrays[index] = ByteArray(mInputWidth * mInputHeight * 4)
+                }
+            }
+            if(inputGLFrameBuffer == null){
+                inputGLFrameBuffer = GLFrameBuffer(input.textureType)
+            }
+            inputGLFrameBuffer?.setSize(mInputWidth, mInputHeight)
+            inputGLFrameBuffer?.process(input.textureId)
 
-        return null
+            glCopyHelper.copy2DTextureToOesTexture(
+                inputGLFrameBuffer?.textureId ?: return@Callable null,
+                mSTMobileHardwareBufferNative?.textureId ?: return@Callable null,
+                mInputWidth,
+                mInputHeight,
+                current
+            )
+
+            mSTMobileHardwareBufferNative?.downloadRgbaImage(
+                mInputWidth,
+                mInputHeight,
+                inputByteArrays[current]
+            )
+            return@Callable null
+        })
+
+        return processDoubleInput(
+            InputInfo(
+                inputByteArrays[current],
+                STCommonNative.ST_PIX_FMT_RGBA8888,
+                input.textureId,
+                input.textureType,
+                1,
+                input.width,
+                input.height,
+                input.isFrontCamera,
+                input.cameraOrientation,
+                input.timestamp,
+            )
+        )
     }
 
     private fun processSingleBytesInput(input: InputInfo): OutputInfo? {
+        if(isReleased){
+            return null
+        }
         if (input.bytes == null) {
             return null
         }
         val current = cacheExecutor.current()
         glExecutor.execute(Callable {
+            if(isReleased){
+                return@Callable null
+            }
             if (mSTMobileColorConvertNative == null) {
+                mInputWidth = input.width
+                mInputHeight = input.height
                 mSTMobileColorConvertNative = STMobileColorConvertNative().apply {
                     createInstance()
-                    setTextureSize(input.width, input.height)
+                    setTextureSize(mInputWidth, mInputHeight)
+                }
+            } else if (mInputWidth != input.width || mInputHeight != input.height) {
+                mInputWidth = input.width
+                mInputHeight = input.height
+                mSTMobileColorConvertNative?.destroyInstance()
+                mSTMobileColorConvertNative = STMobileColorConvertNative().apply {
+                    createInstance()
+                    setTextureSize(mInputWidth, mInputHeight)
                 }
             }
             var textureId = inputTextures[current]
@@ -217,188 +322,195 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
         }
         val renderOrientation = getCurrentOrientation()
         var execute: OutputInfo? = null
-
-        LogUtils.i("processDoubleInput index=$current nativeHumanActionPtrCopy")
-        cacheExecutor.execute(Callable {
-            if (isReleased) {
-                return@Callable -1
-            }
-            LogUtils.i("processDoubleInput index=$current nativeHumanActionDetect start")
-            val orientation: Int =
-                getHumanActionOrientation(input.isFrontCamera, input.cameraOrientation)
-            val deviceOrientation: Int = mAccelerometer?.direction ?: CLOCKWISE_ANGLE.Deg90.value
-            val startHumanAction = System.currentTimeMillis()
-            //Log.e(TAG, "config: "+Long.toHexString(mDetectConfig) );
-            val ret: Int = mSTHumanActionNative.nativeHumanActionDetectPtr(
-                input.bytes,
-                input.bytesType,
-                mSTMobileEffectNative.humanActionDetectConfig,
-                orientation,
-                input.width,
-                input.height
-            )
-
-            LogUtils.i(
-                TAG,
-                "human action cost time: %d, ret: %d",
-                System.currentTimeMillis() - startHumanAction, ret
-            )
-            //nv21数据为横向，相对于预览方向需要旋转处理，前置摄像头还需要镜像
-            STHumanAction.nativeHumanActionRotateAndMirror(
-                mSTHumanActionNative,
-                mSTHumanActionNative.nativeHumanActionResultPtr,
-                outWidth,
-                outHeight,
-                if (input.isFrontCamera) Camera.CameraInfo.CAMERA_FACING_FRONT else Camera.CameraInfo.CAMERA_FACING_BACK,
-                input.cameraOrientation,
-                deviceOrientation
-            )
-            if (mStAnimalNative != null) {
-                animalDetect(
+        LogUtils.i("processDoubleInput index=$current")
+        cacheExecutor.execute(
+            task = Callable {
+                if (isReleased) {
+                    return@Callable -1
+                }
+                LogUtils.i("processDoubleInput index=$current nativeHumanActionDetect start")
+                val orientation: Int =
+                    getHumanActionOrientation(input.isFrontCamera, input.cameraOrientation)
+                val deviceOrientation: Int =
+                    mAccelerometer?.direction ?: CLOCKWISE_ANGLE.Deg90.value
+                val startHumanAction = System.currentTimeMillis()
+                //Log.e(TAG, "config: "+Long.toHexString(mDetectConfig) );
+                val ret: Int = mSTHumanActionNative.nativeHumanActionDetectPtr(
                     input.bytes,
                     input.bytesType,
-                    getHumanActionOrientation(input.isFrontCamera, input.cameraOrientation),
-                    input.height,
+                    mSTMobileEffectNative.humanActionDetectConfig,
+                    orientation,
                     input.width,
-                    current,
-                    input.isFrontCamera,
-                    input.cameraOrientation
+                    input.height
                 )
-            } else {
-                mAnimalFaceInfo[current] = STAnimalFaceInfo(null, 0)
-            }
-            LogUtils.i("processDoubleInput index=$current nativeHumanActionDetect end")
-            mSTHumanActionNative.updateNativeHumanActionCache((current + input.diffBetweenBytesAndTexture) % cacheCount)
-            if (isReleased) {
-                return@Callable -1
-            }
-            return@Callable current
-        }, beforeSubmit = { executedIndex ->
-            if (executedIndex != null && executedIndex >= 0) {
-                execute = glExecutor.execute(Callable {
-                    if (isReleased) {
-                        return@Callable null
-                    }
-                    val glFrameBuffer = cacheFrameBuffer[executedIndex] ?: return@Callable null
-                    var outTextureId = outTextureIds[executedIndex]
-                    if (outTextureId == null) {
-                        val texId = IntArray(1)
-                        GlUtil.initEffectTexture(outWidth, outHeight, texId, GLES20.GL_TEXTURE_2D)
-                        outTextureId = texId[0]
-                        outTextureIds[executedIndex] = outTextureId
-                    }
-                    //输入纹理
-                    val stEffectTexture =
-                        STEffectTexture(glFrameBuffer.textureId, outWidth, outHeight, 0)
-                    //输出纹理，需要在上层初始化
-                    val stEffectTextureOut =
-                        STEffectTexture(outTextureId, outWidth, outHeight, 0)
 
-                    //用户自定义参数设置
-                    val event: Int = mCustomEvent
-                    val customParam: STEffectCustomParam
-                    val sensorEvent = mAccelerometer?.sensorEvent
-                    customParam =
-                        if (sensorEvent?.values != null && sensorEvent.values.isNotEmpty()) {
-                            STEffectCustomParam(
-                                STQuaternion(sensorEvent.values),
-                                input.isFrontCamera,
-                                event
+                LogUtils.i(
+                    TAG,
+                    "human action cost time: %d, ret: %d",
+                    System.currentTimeMillis() - startHumanAction, ret
+                )
+                //nv21数据为横向，相对于预览方向需要旋转处理，前置摄像头还需要镜像
+                STHumanAction.nativeHumanActionRotateAndMirror(
+                    mSTHumanActionNative,
+                    mSTHumanActionNative.nativeHumanActionResultPtr,
+                    outWidth,
+                    outHeight,
+                    if (input.isFrontCamera) Camera.CameraInfo.CAMERA_FACING_FRONT else Camera.CameraInfo.CAMERA_FACING_BACK,
+                    input.cameraOrientation,
+                    deviceOrientation
+                )
+                if (mStAnimalNative != null) {
+                    animalDetect(
+                        input.bytes,
+                        input.bytesType,
+                        getHumanActionOrientation(input.isFrontCamera, input.cameraOrientation),
+                        input.height,
+                        input.width,
+                        current,
+                        input.isFrontCamera,
+                        input.cameraOrientation
+                    )
+                } else {
+                    mAnimalFaceInfo[current] = STAnimalFaceInfo(null, 0)
+                }
+                LogUtils.i("processDoubleInput index=$current nativeHumanActionDetect end")
+                mSTHumanActionNative.updateNativeHumanActionCache((current + input.diffBetweenBytesAndTexture) % cacheCount)
+                if (isReleased) {
+                    return@Callable -1
+                }
+                return@Callable current
+            },
+            beforeSubmit = { executedIndex ->
+                if (executedIndex != null && executedIndex >= 0) {
+                    execute = glExecutor.execute(Callable {
+                        if (isReleased) {
+                            return@Callable null
+                        }
+                        val glFrameBuffer = cacheFrameBuffer[executedIndex] ?: return@Callable null
+                        var outTextureId = outTextureIds[executedIndex]
+                        if (outTextureId == null) {
+                            val texId = IntArray(1)
+                            GlUtil.initEffectTexture(
+                                outWidth,
+                                outHeight,
+                                texId,
+                                GLES20.GL_TEXTURE_2D
                             )
-                        } else {
-                            STEffectCustomParam(
-                                STQuaternion(0f, 0f, 0f, 1f),
-                                input.isFrontCamera,
-                                event
+                            outTextureId = texId[0]
+                            outTextureIds[executedIndex] = outTextureId
+                        }
+                        //输入纹理
+                        val stEffectTexture =
+                            STEffectTexture(glFrameBuffer.textureId, outWidth, outHeight, 0)
+                        //输出纹理，需要在上层初始化
+                        val stEffectTextureOut =
+                            STEffectTexture(outTextureId, outWidth, outHeight, 0)
+
+                        //用户自定义参数设置
+                        val event: Int = mCustomEvent
+                        val customParam: STEffectCustomParam
+                        val sensorEvent = mAccelerometer?.sensorEvent
+                        customParam =
+                            if (sensorEvent?.values != null && sensorEvent.values.isNotEmpty()) {
+                                STEffectCustomParam(
+                                    STQuaternion(sensorEvent.values),
+                                    input.isFrontCamera,
+                                    event
+                                )
+                            } else {
+                                STEffectCustomParam(
+                                    STQuaternion(0f, 0f, 0f, 1f),
+                                    input.isFrontCamera,
+                                    event
+                                )
+                            }
+
+                        //渲染接口输入参数
+                        val sTEffectRenderInParam = STEffectRenderInParam(
+                            mSTHumanActionNative.getNativeHumanActionResultCache(executedIndex),
+                            mAnimalFaceInfo[executedIndex],
+                            renderOrientation,
+                            renderOrientation,
+                            false,
+                            customParam,
+                            stEffectTexture,
+                            STEffectInImage(
+                                STImage(
+                                    input.bytes,
+                                    input.bytesType,
+                                    input.width,
+                                    input.height
+                                ),
+                                input.cameraOrientation,
+                                input.isFrontCamera
                             )
+                        )
+                        //渲染接口输出参数
+                        val stEffectRenderOutParam = STEffectRenderOutParam(
+                            stEffectTextureOut,
+                            null,
+                            null
+                        )
+                        LogUtils.i("processDoubleInput index=$executedIndex render start")
+                        val mStartRenderTime = System.currentTimeMillis()
+                        mSTMobileEffectNative.setParam(
+                            STEffectParam.EFFECT_PARAM_USE_INPUT_TIMESTAMP,
+                            1.0f
+                        )
+                        mSTMobileEffectNative.render(
+                            sTEffectRenderInParam,
+                            stEffectRenderOutParam,
+                            false
+                        )
+                        LogUtils.i(
+                            TAG,
+                            "render cost time total: %d",
+                            System.currentTimeMillis() - mStartRenderTime
+                        )
+                        CostTimeUtils.printAverage(
+                            "CostTimeUtils",
+                            System.currentTimeMillis() - mStartRenderTime
+                        )
+
+                        if (event == mCustomEvent) {
+                            mCustomEvent = 0
                         }
 
-                    //渲染接口输入参数
-                    val sTEffectRenderInParam = STEffectRenderInParam(
-                        mSTHumanActionNative.getNativeHumanActionResultCache(executedIndex),
-                        mAnimalFaceInfo[executedIndex],
-                        renderOrientation,
-                        renderOrientation,
-                        false,
-                        customParam,
-                        stEffectTexture,
-                        STEffectInImage(
-                            STImage(
-                                input.bytes,
-                                input.bytesType,
-                                input.width,
-                                input.height
-                            ),
-                            input.cameraOrientation,
-                            input.isFrontCamera
+                        if (outFrameBuffer == null) {
+                            outFrameBuffer = GLFrameBuffer(GLES20.GL_TEXTURE_2D)
+                        }
+                        outFrameBuffer?.setSize(outWidth, outHeight)
+                        outFrameBuffer?.setFlipV(true)
+                        outFrameBuffer?.process(stEffectRenderOutParam.texture?.id ?: 0)
+
+
+                        LogUtils.i("processDoubleInput index=$executedIndex render end")
+                        return@Callable OutputInfo(
+                            textureId = outFrameBuffer?.textureId ?: 0,
+                            width = outWidth,
+                            height = outHeight,
+                            timestamp = input.timestamp
                         )
-                    )
-                    //渲染接口输出参数
-                    val stEffectRenderOutParam = STEffectRenderOutParam(
-                        stEffectTextureOut,
-                        null,
-                        null
-                    )
-                    LogUtils.i("processDoubleInput index=$executedIndex render start")
-                    val mStartRenderTime = System.currentTimeMillis()
-                    mSTMobileEffectNative.setParam(
-                        STEffectParam.EFFECT_PARAM_USE_INPUT_TIMESTAMP,
-                        1.0f
-                    )
-                    mSTMobileEffectNative.render(
-                        sTEffectRenderInParam,
-                        stEffectRenderOutParam,
-                        false
-                    )
-                    LogUtils.i(
-                        TAG,
-                        "render cost time total: %d",
-                        System.currentTimeMillis() - mStartRenderTime
-                    )
-                    CostTimeUtils.printAverage(
-                        "CostTimeUtils",
-                        System.currentTimeMillis() - mStartRenderTime
-                    )
-
-                    if (event == mCustomEvent) {
-                        mCustomEvent = 0
-                    }
-
-                    if (outFrameBuffer == null) {
-                        outFrameBuffer = GLFrameBuffer(GLES20.GL_TEXTURE_2D)
-                    }
-                    outFrameBuffer?.setSize(outWidth, outHeight)
-                    outFrameBuffer?.setFlipV(true)
-                    outFrameBuffer?.process(stEffectRenderOutParam.texture?.id ?: 0)
-
-
-                    LogUtils.i("processDoubleInput index=$executedIndex render end")
-                    return@Callable OutputInfo(
-                        textureId = outFrameBuffer?.textureId ?: 0,
-                        width = outWidth,
-                        height = outHeight,
-                        timestamp = input.timestamp
-                    )
-                })
-            }
-            glExecutor.execute(Callable {
-                var glFrameBuffer = cacheFrameBuffer[current]
-                if (glFrameBuffer == null) {
-                    glFrameBuffer = GLFrameBuffer(input.textureType)
-                    cacheFrameBuffer[current] = glFrameBuffer
-                } else if (glFrameBuffer.textureType != input.textureType) {
-                    glFrameBuffer.release()
-                    glFrameBuffer = GLFrameBuffer(input.textureType)
-                    cacheFrameBuffer[current] = glFrameBuffer
+                    })
                 }
-                glFrameBuffer.setSize(outWidth, outHeight)
-                glFrameBuffer.setRotation(input.cameraOrientation)
-                glFrameBuffer.setFlipH(input.isFrontCamera)
-                glFrameBuffer.process(input.textureId)
-                LogUtils.i("processDoubleInput index=$current cache frame buffer")
-                return@Callable null
+                glExecutor.execute(Callable {
+                    var glFrameBuffer = cacheFrameBuffer[current]
+                    if (glFrameBuffer == null) {
+                        glFrameBuffer = GLFrameBuffer(input.textureType)
+                        cacheFrameBuffer[current] = glFrameBuffer
+                    } else if (glFrameBuffer.textureType != input.textureType) {
+                        glFrameBuffer.release()
+                        glFrameBuffer = GLFrameBuffer(input.textureType)
+                        cacheFrameBuffer[current] = glFrameBuffer
+                    }
+                    glFrameBuffer.setSize(outWidth, outHeight)
+                    glFrameBuffer.setRotation(input.cameraOrientation)
+                    glFrameBuffer.setFlipH(input.isFrontCamera)
+                    glFrameBuffer.process(input.textureId)
+                    LogUtils.i("processDoubleInput index=$current cache frame buffer")
+                    return@Callable null
+                })
             })
-        })
         return execute
     }
 

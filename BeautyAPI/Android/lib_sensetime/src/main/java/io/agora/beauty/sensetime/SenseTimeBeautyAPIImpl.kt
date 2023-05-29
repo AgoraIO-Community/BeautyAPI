@@ -1,8 +1,6 @@
 package io.agora.beauty.sensetime
 
 import android.graphics.Matrix
-import android.opengl.GLES11Ext
-import android.opengl.GLES20
 import com.sensetime.stmobile.STCommonNative
 import com.sensetime.stmobile.params.STEffectBeautyType
 import io.agora.base.TextureBufferHelper
@@ -20,9 +18,10 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
     private var config: Config? = null
     private var enable: Boolean = false
     private var isReleased: Boolean = false
+    private var shouldMirror = false
 
     override fun initialize(config: Config): Int {
-        if(this.config != null){
+        if (this.config != null) {
             return ErrorCode.ERROR_HAS_INITIALIZED.value
         }
         this.config = config
@@ -33,24 +32,24 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
     }
 
     override fun enable(enable: Boolean): Int {
-        if(config == null){
+        if (config == null) {
             return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
         }
-        if(isReleased){
+        if (isReleased) {
             return ErrorCode.ERROR_HAS_RELEASED.value
         }
         this.enable = enable
         return ErrorCode.ERROR_OK.value
     }
 
-    override fun onFrame(videoFrame: VideoFrame):Int {
-        if(config == null){
+    override fun onFrame(videoFrame: VideoFrame): Int {
+        if (config == null) {
             return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
         }
-        if(isReleased){
+        if (isReleased) {
             return ErrorCode.ERROR_HAS_RELEASED.value
         }
-        if(config?.useCustom != true){
+        if (config?.useCustom != true) {
             return ErrorCode.ERROR_PROCESS_NOT_CUSTOM.value
         }
         if (!enable) {
@@ -60,11 +59,11 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         return ErrorCode.ERROR_OK.value
     }
 
-    override fun setOptimizedDefault():Int {
-        if(config == null){
+    override fun setOptimizedDefault(): Int {
+        if (config == null) {
             return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
         }
-        if(isReleased){
+        if (isReleased) {
             return ErrorCode.ERROR_HAS_RELEASED.value
         }
         val stRenderer = config?.stRenderKit ?: return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
@@ -174,11 +173,11 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         return ErrorCode.ERROR_OK.value
     }
 
-    override fun release():Int {
-        if(config == null){
+    override fun release(): Int {
+        if (config == null) {
             return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
         }
-        if(isReleased){
+        if (isReleased) {
             return ErrorCode.ERROR_HAS_RELEASED.value
         }
         isReleased = true
@@ -195,7 +194,16 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
 
     private fun processBeauty(videoFrame: VideoFrame): Boolean {
         if (!enable || isReleased) {
+            val isFront = videoFrame.sourceType == VideoFrame.SourceType.kFrontCamera
+            if(shouldMirror != isFront){
+                shouldMirror = isFront
+                return false
+            }
             return true
+        }
+        if(shouldMirror){
+            shouldMirror = false
+            return false
         }
         val buffer = videoFrame.buffer
 
@@ -229,32 +237,22 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
             )
         }
 
-        val processTexId: Int
-        if (buffer is VideoFrame.TextureBuffer) {
-            val textureFormat =
-                if (buffer.type == VideoFrame.TextureBuffer.Type.OES) GLES11Ext.GL_TEXTURE_EXTERNAL_OES else GLES20.GL_TEXTURE_2D
-            processTexId = textureBufferHelper?.invoke(Callable {
-                return@Callable config?.stRenderKit?.preProcess(
-                    width, height, videoFrame.rotation,
-                    nv21ByteArray, STCommonNative.ST_PIX_FMT_NV21,
-                    buffer.textureId,
-                    textureFormat
-                ) ?: -1
-            }) ?: -1
-        } else {
-            processTexId = textureBufferHelper?.invoke(Callable {
-                return@Callable config?.stRenderKit?.preProcess(
-                    width, height, videoFrame.rotation,
-                    nv21ByteArray, STCommonNative.ST_PIX_FMT_NV21,
-                ) ?: -1
-            }) ?: -1
-        }
+        val processTexId = textureBufferHelper?.invoke(Callable {
+            return@Callable config?.stRenderKit?.preProcess(
+                width, height, videoFrame.rotation,
+                nv21ByteArray, STCommonNative.ST_PIX_FMT_NV21,
+            ) ?: -1
+        }) ?: -1
         if (processTexId < 0) {
             return false
         }
 
         val processBuffer: VideoFrame.TextureBuffer = textureBufferHelper?.wrapTextureBuffer(
-            videoFrame.rotatedWidth, videoFrame.rotatedHeight, VideoFrame.TextureBuffer.Type.RGB, processTexId, Matrix()
+            videoFrame.rotatedWidth,
+            videoFrame.rotatedHeight,
+            VideoFrame.TextureBuffer.Type.RGB,
+            processTexId,
+            Matrix()
         ) ?: return false
         videoFrame.replaceBuffer(processBuffer, 0, videoFrame.timestampNs)
         return true
@@ -283,7 +281,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
 
     override fun getRotationApplied() = false
 
-    override fun getMirrorApplied() = false
+    override fun getMirrorApplied() = shouldMirror
 
     override fun getObservedFramePosition() = IVideoFrameObserver.POSITION_POST_CAPTURER
 
