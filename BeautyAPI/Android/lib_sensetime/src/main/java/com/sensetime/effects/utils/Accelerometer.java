@@ -48,7 +48,9 @@ public class Accelerometer {
 
     private boolean hasStarted = false;
 
-    private static CLOCKWISE_ANGLE rotation;
+    private CLOCKWISE_ANGLE rotation;
+
+    private SensorEvent sensorEvent;
 
     /**
      *
@@ -87,8 +89,12 @@ public class Accelerometer {
      * @return
      * 返回当前手机转向
      */
-    static public int getDirection() {
+    public int getDirection() {
         return rotation.getValue();
+    }
+
+    public SensorEvent getSensorEvent() {
+        return sensorEvent;
     }
 
     /**

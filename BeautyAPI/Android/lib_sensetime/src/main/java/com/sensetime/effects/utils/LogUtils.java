@@ -6,7 +6,7 @@ import android.util.Log;
 import java.util.regex.Pattern;
 
 public class LogUtils {
-    public static final String TAG = "stSticker";
+    public static final String TAG = "SenseTimeLog";
     // "GMT" + "+" or "-" + 4 digits
     private static final Pattern DATE_CLEANUP_PATTERN_WRONG_TIMEZONE =
             Pattern.compile("GMT([-+]\\d{4})$");

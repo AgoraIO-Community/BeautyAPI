@@ -7,7 +7,6 @@ import com.sensetime.stmobile.STCommonNative
 import com.sensetime.stmobile.params.STEffectBeautyType
 import io.agora.base.TextureBufferHelper
 import io.agora.base.VideoFrame
-import io.agora.base.internal.video.RendererCommon
 import io.agora.base.internal.video.YuvHelper
 import io.agora.rtc2.gl.EglBaseProvider
 import io.agora.rtc2.video.IVideoFrameObserver
@@ -18,7 +17,6 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
 
     private var textureBufferHelper: TextureBufferHelper? = null
     private var nv21ByteBuffer: ByteBuffer? = null
-    private var nv21ByteArray: ByteArray = ByteArray(0)
     private var config: Config? = null
     private var enable: Boolean = false
     private var isReleased: Boolean = false
@@ -69,7 +67,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         if(isReleased){
             return ErrorCode.ERROR_HAS_RELEASED.value
         }
-        val stRenderer = config?.stRenderer ?: return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
+        val stRenderer = config?.stRenderKit ?: return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
         // 锐化
         stRenderer.setBeautyStrength(
             STEffectBeautyType.EFFECT_BEAUTY_TONE_SHARPEN,
@@ -187,7 +185,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         textureBufferHelper?.let {
             textureBufferHelper = null
             it.invoke {
-                config?.stRenderer?.unInitGLRender()
+                config?.stRenderKit?.resetProcessor()
                 null
             }
             it.dispose()
@@ -210,9 +208,9 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         if (nv21ByteBuffer == null || nv21ByteBuffer?.capacity() != nv21Size) {
             nv21ByteBuffer?.clear()
             nv21ByteBuffer = ByteBuffer.allocateDirect(nv21Size)
-            nv21ByteArray = ByteArray(nv21Size)
             return false
         }
+        val nv21ByteArray = ByteArray(nv21Size)
         val i420Buffer = buffer.toI420()
         YuvHelper.I420ToNV12(
             i420Buffer.dataY, i420Buffer.strideY,
@@ -229,43 +227,36 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
                 "STRender",
                 EglBaseProvider.instance().rootEglBase.eglBaseContext
             )
-            textureBufferHelper?.invoke<Any> {
-                config?.stRenderer?.initGLRender()
-                null
-            }
         }
 
         val processTexId: Int
-//        if (buffer is VideoFrame.TextureBuffer) {
-//            val textureFormat =
-//                if (buffer.type == VideoFrame.TextureBuffer.Type.OES) GLES11Ext.GL_TEXTURE_EXTERNAL_OES else GLES20.GL_TEXTURE_2D
-//            val transformMatrix =
-//                RendererCommon.convertMatrixFromAndroidGraphicsMatrix(buffer.transformMatrix)
-//            processTexId = textureBufferHelper?.invoke(Callable {
-//                return@Callable config?.stRenderer?.preProcess(
-//                    width, height, videoFrame.rotation,
-//                    nv21ByteArray, STCommonNative.ST_PIX_FMT_NV21,
-//                    buffer.textureId,
-//                    textureFormat,
-//                    transformMatrix
-//                ) ?: -1
-//            }) ?: -1
-//        } else {
+        if (buffer is VideoFrame.TextureBuffer) {
+            val textureFormat =
+                if (buffer.type == VideoFrame.TextureBuffer.Type.OES) GLES11Ext.GL_TEXTURE_EXTERNAL_OES else GLES20.GL_TEXTURE_2D
             processTexId = textureBufferHelper?.invoke(Callable {
-                return@Callable config?.stRenderer?.preProcess(
+                return@Callable config?.stRenderKit?.preProcess(
+                    width, height, videoFrame.rotation,
+                    nv21ByteArray, STCommonNative.ST_PIX_FMT_NV21,
+                    buffer.textureId,
+                    textureFormat
+                ) ?: -1
+            }) ?: -1
+        } else {
+            processTexId = textureBufferHelper?.invoke(Callable {
+                return@Callable config?.stRenderKit?.preProcess(
                     width, height, videoFrame.rotation,
                     nv21ByteArray, STCommonNative.ST_PIX_FMT_NV21,
                 ) ?: -1
             }) ?: -1
-//        }
+        }
         if (processTexId < 0) {
             return false
         }
 
         val processBuffer: VideoFrame.TextureBuffer = textureBufferHelper?.wrapTextureBuffer(
-            width, height, VideoFrame.TextureBuffer.Type.RGB, processTexId, Matrix()
+            videoFrame.rotatedWidth, videoFrame.rotatedHeight, VideoFrame.TextureBuffer.Type.RGB, processTexId, Matrix()
         ) ?: return false
-        videoFrame.replaceBuffer(processBuffer, videoFrame.rotation, videoFrame.timestampNs)
+        videoFrame.replaceBuffer(processBuffer, 0, videoFrame.timestampNs)
         return true
     }
 

@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import androidx.activity.ComponentActivity
-import com.sensetime.effects.STRenderer
+import com.sensetime.effects.STRenderKit
 import com.sensetime.effects.utils.FileUtils
 import com.sensetime.stmobile.model.STMobileMakeupType
 import com.sensetime.stmobile.params.STEffectBeautyType
@@ -79,8 +79,8 @@ class SenseTimeActivity : ComponentActivity() {
             mEventHandler = object: IRtcEngineEventHandler(){}
         })
     }
-    private val mSTRenderer by lazy {
-        STRenderer(this)
+    private val mSTRenderKit by lazy {
+        STRenderKit(this)
     }
     private val mSenseTimeApi by lazy {
         createSenseTimeBeautyAPI()
@@ -90,7 +90,7 @@ class SenseTimeActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(mBinding.root)
 
-        mSenseTimeApi.initialize(Config(mRtcEngine, mSTRenderer))
+        mSenseTimeApi.initialize(Config(mRtcEngine, mSTRenderKit))
 
         // Config RtcEngine
         mRtcEngine.addHandler(mRtcHandler)
@@ -131,22 +131,22 @@ class SenseTimeActivity : ComponentActivity() {
             val enable = !mBinding.ctvFaceBeauty.isChecked
             mBinding.ctvFaceBeauty.isChecked = enable
             if (enable) {
-                mSTRenderer.setBeautyMode(
+                mSTRenderKit.setBeautyMode(
                     STEffectBeautyType.EFFECT_BEAUTY_BASE_WHITTEN,
                     STEffectBeautyType.WHITENING1_MODE
                 )
-                mSTRenderer.setBeautyStrength(STEffectBeautyType.EFFECT_BEAUTY_BASE_WHITTEN, 100f)
-                mSTRenderer.setBeautyStrength(
+                mSTRenderKit.setBeautyStrength(STEffectBeautyType.EFFECT_BEAUTY_BASE_WHITTEN, 100f)
+                mSTRenderKit.setBeautyStrength(
                     STEffectBeautyType.EFFECT_BEAUTY_RESHAPE_ENLARGE_EYE,
                     1.0f
                 )
             } else {
-                mSTRenderer.setBeautyMode(
+                mSTRenderKit.setBeautyMode(
                     STEffectBeautyType.EFFECT_BEAUTY_BASE_WHITTEN,
                     STEffectBeautyType.WHITENING1_MODE
                 )
-                mSTRenderer.setBeautyStrength(STEffectBeautyType.EFFECT_BEAUTY_BASE_WHITTEN, 0f)
-                mSTRenderer.setBeautyStrength(
+                mSTRenderKit.setBeautyStrength(STEffectBeautyType.EFFECT_BEAUTY_BASE_WHITTEN, 0f)
+                mSTRenderKit.setBeautyStrength(
                     STEffectBeautyType.EFFECT_BEAUTY_RESHAPE_ENLARGE_EYE,
                     0f
                 )
@@ -187,11 +187,21 @@ class SenseTimeActivity : ComponentActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        mSTRenderKit.enableSensor(true)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mSTRenderKit.enableSensor(false)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         mSenseTimeApi.release()
         mRtcEngine.leaveChannel()
-        mSTRenderer.release()
+        mSTRenderKit.release()
         RtcEngine.destroy()
     }
 
@@ -203,10 +213,10 @@ class SenseTimeActivity : ComponentActivity() {
             val fileName = split[1]
             val _path = FileUtils.getFilePath(this, className + File.separator + fileName)
             FileUtils.copyFileIfNeed(this, fileName, className)
-            mSTRenderer.setMakeupForType(type, _path)
-            mSTRenderer.setMakeupStrength(type, strength)
+            mSTRenderKit.setMakeupForType(type, _path)
+            mSTRenderKit.setMakeupStrength(type, strength)
         } else {
-            mSTRenderer.removeMakeupByType(type)
+            mSTRenderKit.removeMakeupByType(type)
         }
     }
 
@@ -218,9 +228,9 @@ class SenseTimeActivity : ComponentActivity() {
         val _path = FileUtils.getFilePath(this, className + File.separator + fileName)
         FileUtils.copyFileIfNeed(this, fileName, className)
         if (!attach) {
-            mSTRenderer.removeSticker(_path)
+            mSTRenderKit.removeSticker(_path)
         } else {
-            mSTRenderer.changeSticker(_path)
+            mSTRenderKit.changeSticker(_path)
         }
     }
 
@@ -234,8 +244,8 @@ class SenseTimeActivity : ComponentActivity() {
             .toTypedArray()[0]
         val path = FileUtils.getFilePath(this, className + File.separator + fileName)
         FileUtils.copyFileIfNeed(this, fileName, className)
-        mSTRenderer.setFilterStyle(className, filterName, path)
-        mSTRenderer.setFilterStrength(strength)
+        mSTRenderKit.setFilterStyle(className, filterName, path)
+        mSTRenderKit.setFilterStrength(strength)
     }
 
 

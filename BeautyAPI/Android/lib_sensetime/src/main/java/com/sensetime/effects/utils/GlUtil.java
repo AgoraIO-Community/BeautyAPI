@@ -1,9 +1,10 @@
-package com.sensetime.effects.glutils;
+package com.sensetime.effects.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
+import android.opengl.Matrix;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -16,6 +17,10 @@ import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.util.Objects;
+
+import javax.microedition.khronos.egl.EGL10;
+import javax.microedition.khronos.egl.EGLContext;
 
 public class GlUtil {
     private static final String TAG = "GlUtil";
@@ -24,6 +29,11 @@ public class GlUtil {
     public static final int NO_TEXTURE = -1;
 
     private static final int SIZEOF_FLOAT = 4;
+
+    public static final float[] IDENTITY_MATRIX = new float[16];
+    static {
+        Matrix.setIdentityM(IDENTITY_MATRIX, 0);
+    }
 
     private GlUtil() { // do not instantiate
     }
@@ -177,5 +187,45 @@ public class GlUtil {
         }
 
         return body.toString();
+    }
+
+    public static float[] createTransformMatrix(int rotation, boolean flipH, boolean flipV){
+        float[] renderMVPMatrix = new float[16];
+        float[] tmp = new float[16];
+        Matrix.setIdentityM(tmp, 0);
+
+        boolean _flipH = flipH;
+        boolean _flipV = flipV;
+        if(rotation % 180 != 0){
+            _flipH = flipV;
+            _flipV = flipH;
+        }
+
+        if (_flipH) {
+            Matrix.rotateM(tmp, 0, tmp, 0, 180, 0, 1f, 0);
+        }
+        if (_flipV) {
+            Matrix.rotateM(tmp, 0, tmp, 0, 180, 1f, 0f, 0);
+        }
+
+        float _rotation = rotation;
+        if (_rotation != 0) {
+            if(_flipH != _flipV){
+                _rotation *= -1;
+            }
+            Matrix.rotateM(tmp, 0, tmp, 0, _rotation, 0, 0, 1);
+        }
+
+        Matrix.setIdentityM(renderMVPMatrix, 0);
+        Matrix.multiplyMM(renderMVPMatrix, 0, tmp, 0, renderMVPMatrix, 0);
+        return renderMVPMatrix;
+    }
+
+    public static EGLContext getCurrGLContext(){
+        EGL10 egl = (EGL10)javax.microedition.khronos.egl.EGLContext.getEGL();
+        if (egl != null && !Objects.equals(egl.eglGetCurrentContext(), EGL10.EGL_NO_CONTEXT)) {
+            return egl.eglGetCurrentContext();
+        }
+        return null;
     }
 }

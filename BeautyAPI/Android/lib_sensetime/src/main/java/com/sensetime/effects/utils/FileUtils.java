@@ -14,7 +14,6 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
-import com.sensetime.effects.glutils.STUtils;
 import com.sensetime.sensearsourcemanager.SenseArMaterial;
 
 import org.json.JSONArray;
