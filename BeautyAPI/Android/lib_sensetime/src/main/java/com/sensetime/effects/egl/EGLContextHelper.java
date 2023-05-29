@@ -11,7 +11,7 @@ import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
 
-public class EGLContextHelp {
+public class EGLContextHelper {
     private static final String DEBUG_TAG = "EGLContextManager";
     private final int mRedSize = 8;
     private final int mGreenSize = 8;
@@ -20,7 +20,7 @@ public class EGLContextHelp {
     private final int mDepthSize = 16;
     private final int mStencilSize = 0;
     private final int mRenderType = 4;
-    public EGLContextHelp(){}
+    public EGLContextHelper(){}
 
     public void initEGL(EGLContext shareContext) throws Exception {
         mEGL = (EGL10) GLDebugHelper.wrap(javax.microedition.khronos.egl.EGLContext.getEGL(),
