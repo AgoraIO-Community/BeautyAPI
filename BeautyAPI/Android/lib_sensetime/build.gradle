@@ -41,5 +41,6 @@ dependencies {
 
     api project(':lib_sensetime:libs:SenseArSourceManager')
     api project(':lib_sensetime:libs:STMobileJNI')
+    api project(':lib_sensetime:libs:HardwareBuffer')
     api "io.agora.rtc:full-sdk:4.2.0"
 }

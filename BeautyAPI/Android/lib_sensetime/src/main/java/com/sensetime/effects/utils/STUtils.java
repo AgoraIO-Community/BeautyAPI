@@ -1,4 +1,4 @@
-package com.sensetime.effects.glutils;
+package com.sensetime.effects.utils;
 
 import static com.sensetime.stmobile.params.STEffectBeautyType.EFFECT_BEAUTY_HAIR_DYE;
 import static com.sensetime.stmobile.params.STEffectBeautyType.EFFECT_BEAUTY_MAKEUP_ALL;

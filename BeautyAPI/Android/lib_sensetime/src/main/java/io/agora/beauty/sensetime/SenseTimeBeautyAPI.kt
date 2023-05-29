@@ -1,13 +1,13 @@
 package io.agora.beauty.sensetime
 
-import com.sensetime.effects.STRenderer
+import com.sensetime.effects.STRenderKit
 import io.agora.base.VideoFrame
 import io.agora.rtc2.RtcEngine
 
 
 data class Config(
     val rtcEngine: RtcEngine,
-    val stRenderer: STRenderer,
+    val stRenderKit: STRenderKit,
     val useCustom: Boolean = false
 )
 
