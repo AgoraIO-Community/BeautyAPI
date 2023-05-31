@@ -84,11 +84,17 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
         mAccelerometer?.stop()
         mAccelerometer = null
         glExecutor.execute(Callable {
-            cacheFrameBuffer.forEachIndexed { _, buffer ->
+            cacheFrameBuffer.forEachIndexed { index, buffer ->
                 buffer?.release()
+                cacheFrameBuffer[index] = null
             }
-            outTextureIds.forEachIndexed { _, textureId ->
+            outTextureIds.forEachIndexed { index, textureId ->
                 textureId?.let { GLES20.glDeleteTextures(1, intArrayOf(it), 0) }
+                outTextureIds[index] = null
+            }
+            inputTextures.forEachIndexed{ index, textureId ->
+                textureId?.let { GLES20.glDeleteTextures(1, intArrayOf(it), 0) }
+                inputTextures[index] = null
             }
             if (mSTMobileColorConvertNative != null) {
                 mSTMobileColorConvertNative?.destroyInstance()
@@ -195,20 +201,14 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
                     inputByteArrays[index] = ByteArray(mInputWidth * mInputHeight * 4)
                 }
             } else if (mInputWidth != input.width || mInputHeight != input.height) {
-                mInputWidth = input.width
-                mInputHeight = input.height
                 mSTMobileHardwareBufferNative?.release()
-                mSTMobileHardwareBufferNative = STMobileHardwareBufferNative().apply {
-                    init(
-                        mInputWidth,
-                        mInputHeight,
-                        STMobileHardwareBufferNative.HARDWARE_BUFFER_FORMAT_RGBA,
-                        STMobileHardwareBufferNative.HARDWARE_BUFFER_USAGE_DOWNLOAD
-                    )
+                mSTMobileHardwareBufferNative = null
+                cacheExecutor.cleanAllTasks()
+                outTextureIds.forEachIndexed { index, textureId ->
+                    textureId?.let { GLES20.glDeleteTextures(1, intArrayOf(it), 0) }
+                    outTextureIds[index] = null
                 }
-                inputByteArrays.forEachIndexed { index, _ ->
-                    inputByteArrays[index] = ByteArray(mInputWidth * mInputHeight * 4)
-                }
+                return@Callable null
             }
             if(inputGLFrameBuffer == null){
                 inputGLFrameBuffer = GLFrameBuffer(input.textureType)
@@ -268,13 +268,18 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
                     setTextureSize(mInputWidth, mInputHeight)
                 }
             } else if (mInputWidth != input.width || mInputHeight != input.height) {
-                mInputWidth = input.width
-                mInputHeight = input.height
                 mSTMobileColorConvertNative?.destroyInstance()
-                mSTMobileColorConvertNative = STMobileColorConvertNative().apply {
-                    createInstance()
-                    setTextureSize(mInputWidth, mInputHeight)
+                mSTMobileColorConvertNative = null
+                inputTextures.forEachIndexed{ index, textureId ->
+                    textureId?.let { GLES20.glDeleteTextures(1, intArrayOf(it), 0) }
+                    inputTextures[index] = null
                 }
+                cacheExecutor.cleanAllTasks()
+                outTextureIds.forEachIndexed { index, textureId ->
+                    textureId?.let { GLES20.glDeleteTextures(1, intArrayOf(it), 0) }
+                    outTextureIds[index] = null
+                }
+                return@Callable null
             }
             var textureId = inputTextures[current]
             if (textureId == null) {
@@ -315,6 +320,20 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
             return null
         }
         val current = cacheExecutor.current()
+
+        if (mInputWidth != input.width || mInputHeight != input.height) {
+            mInputWidth = input.width
+            mInputHeight = input.height
+            cacheExecutor.cleanAllTasks()
+            return glExecutor.execute(Callable {
+                cacheExecutor
+                outTextureIds.forEachIndexed { index, textureId ->
+                    textureId?.let { GLES20.glDeleteTextures(1, intArrayOf(it), 0) }
+                    outTextureIds[index] = null
+                }
+                return@Callable null
+            })
+        }
 
         val (outWidth, outHeight) = when (input.cameraOrientation) {
             90, 270 -> Size(input.height, input.width)
