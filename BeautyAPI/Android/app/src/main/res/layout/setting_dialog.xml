@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:paddingHorizontal="20dp">
+    android:layout_height="wrap_content"
+    android:padding="12dp"
+    android:layout_gravity="bottom"
+    android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/etChannelName"
+    <Switch
+        android:id="@+id/swBeauty"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="ChannelName" />
+        android:layout_height="45dp"
+        android:text="美颜开关"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#eeeeee"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="45dp"
         android:gravity="center">
 
         <TextView
@@ -36,9 +40,14 @@
 
     </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#eeeeee"/>
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="45dp"
         android:gravity="center">
 
         <TextView
@@ -58,37 +67,5 @@
             android:paddingVertical="8dp" />
 
     </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center">
-
-        <TextView
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:text="美颜"/>
-
-        <Spinner
-            android:id="@+id/spBeautyType"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_weight="1"
-            android:gravity="end"
-            android:textAlignment="viewEnd"
-            android:entries="@array/beauty_type"
-            android:paddingVertical="8dp" />
-
-    </LinearLayout>
-
-
-    <Button
-        android:id="@+id/btnJoin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="加入频道" />
-
 
 </LinearLayout>

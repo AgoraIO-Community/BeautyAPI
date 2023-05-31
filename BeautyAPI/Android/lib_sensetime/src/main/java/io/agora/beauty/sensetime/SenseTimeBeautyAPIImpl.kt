@@ -210,7 +210,6 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         val width = buffer.width
         val height = buffer.height
 
-
         // Obtain nv21 pixel data
         val nv21Size = (width * height * 3.0f / 2.0f + 0.5f).toInt()
         if (nv21ByteBuffer == null || nv21ByteBuffer?.capacity() != nv21Size) {

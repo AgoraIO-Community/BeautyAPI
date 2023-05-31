@@ -5,12 +5,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.SurfaceView
 import androidx.activity.ComponentActivity
 import com.sensetime.effects.STRenderKit
 import com.sensetime.effects.utils.FileUtils
 import com.sensetime.stmobile.model.STMobileMakeupType
 import com.sensetime.stmobile.params.STEffectBeautyType
 import io.agora.beauty.demo.databinding.SensetimeActivityBinding
+import io.agora.beauty.demo.utils.ReflectUtils
 import io.agora.beauty.sensetime.Config
 import io.agora.beauty.sensetime.createSenseTimeBeautyAPI
 import io.agora.rtc2.ChannelMediaOptions
@@ -18,8 +20,10 @@ import io.agora.rtc2.Constants
 import io.agora.rtc2.IRtcEngineEventHandler
 import io.agora.rtc2.RtcEngine
 import io.agora.rtc2.RtcEngineConfig
+import io.agora.rtc2.video.CameraCapturerConfiguration
 import io.agora.rtc2.video.VideoCanvas
 import io.agora.rtc2.video.VideoEncoderConfiguration
+import io.agora.rtc2.video.VideoEncoderConfiguration.FRAME_RATE
 import java.io.File
 
 class SenseTimeActivity : ComponentActivity() {
@@ -27,10 +31,14 @@ class SenseTimeActivity : ComponentActivity() {
 
     companion object {
         private const val EXTRA_CHANNEL_NAME = "ChannelName"
+        private const val EXTRA_RESOLUTION = "Resolution"
+        private const val EXTRA_FRAME_RATE = "FrameRate"
 
-        fun launch(context: Context, channelName: String) {
+        fun launch(context: Context, channelName: String, resolution: String, frameRate: String) {
             Intent(context, SenseTimeActivity::class.java).apply {
                 putExtra(EXTRA_CHANNEL_NAME, channelName)
+                putExtra(EXTRA_RESOLUTION, resolution)
+                putExtra(EXTRA_FRAME_RATE, frameRate)
                 context.startActivity(this)
             }
         }
@@ -50,25 +58,32 @@ class SenseTimeActivity : ComponentActivity() {
 
         override fun onUserJoined(uid: Int, elapsed: Int) {
             super.onUserJoined(uid, elapsed)
-            if (mBinding.remoteVideoView.tag == null) {
-                mBinding.remoteVideoView.tag = uid
-                mRtcEngine.setupRemoteVideo(
-                    VideoCanvas(
-                        mBinding.remoteVideoView,
-                        Constants.RENDER_MODE_HIDDEN,
-                        uid
+            runOnUiThread {
+                if (mBinding.remoteVideoView.tag == null) {
+                    mBinding.remoteVideoView.tag = uid
+                    val renderView = SurfaceView(this@SenseTimeActivity)
+                    mBinding.remoteVideoView.addView(renderView)
+                    mRtcEngine.setupRemoteVideo(
+                        VideoCanvas(
+                            renderView,
+                            Constants.RENDER_MODE_HIDDEN,
+                            uid
+                        )
                     )
-                )
+                }
             }
         }
 
         override fun onUserOffline(uid: Int, reason: Int) {
             super.onUserOffline(uid, reason)
-            if (mBinding.remoteVideoView.tag == uid) {
-                mBinding.remoteVideoView.tag = null
-                mRtcEngine.setupRemoteVideo(
-                    VideoCanvas(null, Constants.RENDER_MODE_HIDDEN, uid)
-                )
+            runOnUiThread {
+                if (mBinding.remoteVideoView.tag == uid) {
+                    mBinding.remoteVideoView.tag = null
+                    mBinding.remoteVideoView.removeAllViews()
+                    mRtcEngine.setupRemoteVideo(
+                        VideoCanvas(null, Constants.RENDER_MODE_HIDDEN, uid)
+                    )
+                }
             }
         }
     }
@@ -76,7 +91,7 @@ class SenseTimeActivity : ComponentActivity() {
         RtcEngine.create(RtcEngineConfig().apply {
             mContext = applicationContext
             mAppId = BuildConfig.AGORA_APP_ID
-            mEventHandler = object: IRtcEngineEventHandler(){}
+            mEventHandler = object : IRtcEngineEventHandler() {}
         })
     }
     private val mSTRenderKit by lazy {
@@ -85,19 +100,75 @@ class SenseTimeActivity : ComponentActivity() {
     private val mSenseTimeApi by lazy {
         createSenseTimeBeautyAPI()
     }
+    private val mVideoCaptureConfig by lazy {
+        val resolution =
+            ReflectUtils.getStaticFiledValue<VideoEncoderConfiguration.VideoDimensions>(
+                VideoEncoderConfiguration::class.java,
+                intent.getStringExtra(EXTRA_RESOLUTION)
+            )
+        val fps = ReflectUtils.getStaticFiledValue<FRAME_RATE>(
+            FRAME_RATE::class.java,
+            intent.getStringExtra(EXTRA_FRAME_RATE)
+        )
+        CameraCapturerConfiguration(
+            CameraCapturerConfiguration.CaptureFormat(
+                resolution?.width ?: 0, resolution?.height ?: 0, fps?.value ?: 0
+            )
+        )
+    }
+    private val beautyEnable = true
+    private val mSettingDialog by lazy {
+        SettingsDialog(this).apply {
+            setBeautyEnable(beautyEnable)
+            setOnBeautyChangeListener { enable ->
+                mSenseTimeApi.enable(enable)
+                mSenseTimeApi.setOptimizedDefault()
+            }
+            setFrameRateSelect(intent.getStringExtra(EXTRA_FRAME_RATE).toString())
+            setOnFrameRateChangeListener { frameRate ->
+                mVideoCaptureConfig.captureFormat.fps =
+                    ReflectUtils.getStaticFiledValue<FRAME_RATE>(
+                        FRAME_RATE::class.java,
+                        frameRate
+                    )?.value ?: 0
+                mRtcEngine.setCameraCapturerConfiguration(mVideoCaptureConfig)
+            }
+            setResolutionSelect(intent.getStringExtra(EXTRA_RESOLUTION).toString())
+            setOnResolutionChangeListener { resolution ->
+                val res =
+                    ReflectUtils.getStaticFiledValue<VideoEncoderConfiguration.VideoDimensions>(
+                        VideoEncoderConfiguration::class.java,
+                        resolution
+                    )
+                mVideoCaptureConfig.captureFormat.width = res?.width ?: 0
+                mVideoCaptureConfig.captureFormat.height = res?.height ?: 0
+                mRtcEngine.setCameraCapturerConfiguration(mVideoCaptureConfig)
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(mBinding.root)
 
         mSenseTimeApi.initialize(Config(mRtcEngine, mSTRenderKit))
+        if (beautyEnable) {
+            mSenseTimeApi.enable(true)
+            mSenseTimeApi.setOptimizedDefault()
+        }
 
         // Config RtcEngine
         mRtcEngine.addHandler(mRtcHandler)
         mRtcEngine.setVideoEncoderConfiguration(
             VideoEncoderConfiguration(
-                VideoEncoderConfiguration.VD_1280x720,
-                VideoEncoderConfiguration.FRAME_RATE.FRAME_RATE_FPS_15,
+                ReflectUtils.getStaticFiledValue(
+                    VideoEncoderConfiguration::class.java,
+                    intent.getStringExtra(EXTRA_RESOLUTION)
+                ),
+                ReflectUtils.getStaticFiledValue(
+                    FRAME_RATE::class.java,
+                    intent.getStringExtra(EXTRA_FRAME_RATE)
+                ),
                 0,
                 VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_ADAPTIVE
             )
@@ -123,9 +194,8 @@ class SenseTimeActivity : ComponentActivity() {
         mBinding.ivCamera.setOnClickListener {
             mRtcEngine.switchCamera()
         }
-        mBinding.swBeautyEnable.setOnCheckedChangeListener { buttonView, isChecked ->
-            mSenseTimeApi.enable(isChecked)
-            mSenseTimeApi.setOptimizedDefault()
+        mBinding.ivSetting.setOnClickListener {
+            mSettingDialog.show()
         }
         mBinding.ctvFaceBeauty.setOnClickListener {
             val enable = !mBinding.ctvFaceBeauty.isChecked

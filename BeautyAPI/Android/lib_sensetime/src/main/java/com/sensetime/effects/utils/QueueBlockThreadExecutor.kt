@@ -19,12 +19,12 @@ class QueueBlockThreadExecutor<T>(
 
     fun current() = index
 
-    fun execute(task: Callable<T>, beforeSubmit: ((T?)->Unit)? = null): T? {
+    fun execute(task: Callable<T>, beforeSubmit: ((T?) -> Unit)? = null): T? {
         val ret: T?
-        if(nQueues <= 0){
+        if (nQueues <= 0) {
             val future = executor.submit(task)
             ret = future.get()
-        }else{
+        } else {
             val future = futureArray[index]
 
             if (future == null) {
@@ -40,6 +40,14 @@ class QueueBlockThreadExecutor<T>(
             index = (index + 1) % nQueues
         }
         return ret
+    }
+
+    fun cleanAllTasks() {
+        futureArray.forEachIndexed { index, future ->
+            future?.cancel(true)
+            futureArray[index] = null
+        }
+        index = 0
     }
 
     fun shutdown() {

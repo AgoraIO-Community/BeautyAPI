@@ -1,6 +1,5 @@
 package io.agora.beauty.demo
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -19,8 +18,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(mBinding.root)
 
+        mBinding.spResolution.setSelection(1)
         mBinding.btnJoin.setOnClickListener {
-            if(TextUtils.isEmpty(mBinding.etChannelName.text)){
+            if (TextUtils.isEmpty(mBinding.etChannelName.text)) {
                 Toast.makeText(this, "频道名不能为空", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -38,7 +38,12 @@ class MainActivity : ComponentActivity() {
 
     private fun gotoBeautyActivity() {
         if (mBinding.spBeautyType.selectedItem as String == getString(R.string.beauty_sensetime)) {
-            SenseTimeActivity.launch(this, mBinding.etChannelName.text.toString())
+            SenseTimeActivity.launch(
+                this,
+                mBinding.etChannelName.text.toString(),
+                mBinding.spResolution.selectedItem.toString(),
+                mBinding.spFrameRate.selectedItem.toString()
+            )
         }
     }
 
