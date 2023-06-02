@@ -1,0 +1,601 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 55;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		C5DC38DA660712418398BB5E /* Pods_BeautyAPi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A74E98AAF37F5AC2599EC0B /* Pods_BeautyAPi.framework */; };
+		E72D78162A25963500C9134C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72D78152A25963500C9134C /* AppDelegate.swift */; };
+		E72D78182A25963500C9134C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72D78172A25963500C9134C /* SceneDelegate.swift */; };
+		E72D781D2A25963500C9134C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E72D781B2A25963500C9134C /* Main.storyboard */; };
+		E72D781F2A25963600C9134C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E72D781E2A25963600C9134C /* Assets.xcassets */; };
+		E72D78222A25963600C9134C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E72D78202A25963600C9134C /* LaunchScreen.storyboard */; };
+		E72D783E2A25976500C9134C /* EffectsAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = E72D782B2A25976500C9134C /* EffectsAttribute.m */; };
+		E72D783F2A25976500C9134C /* Effects.m in Sources */ = {isa = PBXBuildFile; fileRef = E72D782D2A25976500C9134C /* Effects.m */; };
+		E72D78402A25976500C9134C /* EffectsDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = E72D782E2A25976500C9134C /* EffectsDetector.m */; };
+		E72D78412A25976500C9134C /* EffectsAnimal.m in Sources */ = {isa = PBXBuildFile; fileRef = E72D78302A25976500C9134C /* EffectsAnimal.m */; };
+		E72D78422A25976500C9134C /* EffectsProcess.m in Sources */ = {isa = PBXBuildFile; fileRef = E72D78312A25976500C9134C /* EffectsProcess.m */; };
+		E72D78432A25976500C9134C /* VideoProcessingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E72D78322A25976500C9134C /* VideoProcessingManager.m */; };
+		E72D78442A25976500C9134C /* EffectsLicense.m in Sources */ = {isa = PBXBuildFile; fileRef = E72D78342A25976500C9134C /* EffectsLicense.m */; };
+		E72D78462A25976500C9134C /* EFMotionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E72D78392A25976500C9134C /* EFMotionManager.m */; };
+		E72D78472A25976500C9134C /* EffectsCommonObject.m in Sources */ = {isa = PBXBuildFile; fileRef = E72D783B2A25976500C9134C /* EffectsCommonObject.m */; };
+		E72D78532A259AE500C9134C /* BundleUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = E72D78522A259AE500C9134C /* BundleUtil.m */; };
+		E72D78572A259E9C00C9134C /* KeyCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72D78562A259E9C00C9134C /* KeyCenter.swift */; };
+		E72D78682A27297700C9134C /* BeautyAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = E72D78642A27297700C9134C /* BeautyAPI.m */; };
+		E72D78692A27297700C9134C /* BeautyRender.m in Sources */ = {isa = PBXBuildFile; fileRef = E72D78672A27297700C9134C /* BeautyRender.m */; };
+		E72D786B2A27313F00C9134C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72D78192A25963500C9134C /* ViewController.swift */; };
+		E72D786E2A27320400C9134C /* BeautyConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = E72D786D2A27320400C9134C /* BeautyConfig.m */; };
+		E72D787C2A284A1C00C9134C /* BeautyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72D787B2A284A1C00C9134C /* BeautyViewController.swift */; };
+		E72D787E2A284BBA00C9134C /* BeautyViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E72D787D2A284BBA00C9134C /* BeautyViewController.storyboard */; };
+		E72D78812A286F1600C9134C /* PickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72D78802A286F1600C9134C /* PickerView.swift */; };
+		E72D78832A286F2900C9134C /* AlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72D78822A286F2900C9134C /* AlertManager.swift */; };
+		E72D78872A2893F300C9134C /* CLSettingCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72D78862A2893F300C9134C /* CLSettingCellView.swift */; };
+		E72D78892A2897E200C9134C /* Configs.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72D78882A2897E200C9134C /* Configs.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0D6108959E288EB21E103A36 /* Pods-BeautyAPi.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BeautyAPi.debug.xcconfig"; path = "Target Support Files/Pods-BeautyAPi/Pods-BeautyAPi.debug.xcconfig"; sourceTree = "<group>"; };
+		9A74E98AAF37F5AC2599EC0B /* Pods_BeautyAPi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BeautyAPi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A646339435DAD37A2AE0A5BC /* Pods-BeautyAPi.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BeautyAPi.release.xcconfig"; path = "Target Support Files/Pods-BeautyAPi/Pods-BeautyAPi.release.xcconfig"; sourceTree = "<group>"; };
+		E72D78122A25963500C9134C /* BeautyAPi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BeautyAPi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E72D78152A25963500C9134C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		E72D78172A25963500C9134C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		E72D78192A25963500C9134C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		E72D781C2A25963500C9134C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		E72D781E2A25963600C9134C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		E72D78212A25963600C9134C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		E72D78232A25963600C9134C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E72D782A2A25976500C9134C /* EffectsLicense.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EffectsLicense.h; sourceTree = "<group>"; };
+		E72D782B2A25976500C9134C /* EffectsAttribute.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EffectsAttribute.m; sourceTree = "<group>"; };
+		E72D782C2A25976500C9134C /* EFMotionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EFMotionManager.h; sourceTree = "<group>"; };
+		E72D782D2A25976500C9134C /* Effects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Effects.m; sourceTree = "<group>"; };
+		E72D782E2A25976500C9134C /* EffectsDetector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EffectsDetector.m; sourceTree = "<group>"; };
+		E72D782F2A25976500C9134C /* EffectsCommonObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EffectsCommonObject.h; sourceTree = "<group>"; };
+		E72D78302A25976500C9134C /* EffectsAnimal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EffectsAnimal.m; sourceTree = "<group>"; };
+		E72D78312A25976500C9134C /* EffectsProcess.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EffectsProcess.m; sourceTree = "<group>"; };
+		E72D78322A25976500C9134C /* VideoProcessingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoProcessingManager.m; sourceTree = "<group>"; };
+		E72D78332A25976500C9134C /* EffectsAttribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EffectsAttribute.h; sourceTree = "<group>"; };
+		E72D78342A25976500C9134C /* EffectsLicense.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EffectsLicense.m; sourceTree = "<group>"; };
+		E72D78362A25976500C9134C /* EffectsDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EffectsDetector.h; sourceTree = "<group>"; };
+		E72D78372A25976500C9134C /* Effects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Effects.h; sourceTree = "<group>"; };
+		E72D78382A25976500C9134C /* EffectMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EffectMacro.h; sourceTree = "<group>"; };
+		E72D78392A25976500C9134C /* EFMotionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EFMotionManager.m; sourceTree = "<group>"; };
+		E72D783A2A25976500C9134C /* EffectsAnimal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EffectsAnimal.h; sourceTree = "<group>"; };
+		E72D783B2A25976500C9134C /* EffectsCommonObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EffectsCommonObject.m; sourceTree = "<group>"; };
+		E72D783C2A25976500C9134C /* VideoProcessingManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoProcessingManager.h; sourceTree = "<group>"; };
+		E72D783D2A25976500C9134C /* EffectsProcess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EffectsProcess.h; sourceTree = "<group>"; };
+		E72D784E2A2598B900C9134C /* BeautyAPI-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BeautyAPI-Bridging-Header.h"; sourceTree = "<group>"; };
+		E72D78512A259AE500C9134C /* BundleUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BundleUtil.h; sourceTree = "<group>"; };
+		E72D78522A259AE500C9134C /* BundleUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BundleUtil.m; sourceTree = "<group>"; };
+		E72D78562A259E9C00C9134C /* KeyCenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyCenter.swift; sourceTree = "<group>"; };
+		E72D78642A27297700C9134C /* BeautyAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeautyAPI.m; sourceTree = "<group>"; };
+		E72D78652A27297700C9134C /* BeautyRender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeautyRender.h; sourceTree = "<group>"; };
+		E72D78662A27297700C9134C /* BeautyAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeautyAPI.h; sourceTree = "<group>"; };
+		E72D78672A27297700C9134C /* BeautyRender.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeautyRender.m; sourceTree = "<group>"; };
+		E72D786C2A27320400C9134C /* BeautyConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BeautyConfig.h; sourceTree = "<group>"; };
+		E72D786D2A27320400C9134C /* BeautyConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BeautyConfig.m; sourceTree = "<group>"; };
+		E72D787B2A284A1C00C9134C /* BeautyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeautyViewController.swift; sourceTree = "<group>"; };
+		E72D787D2A284BBA00C9134C /* BeautyViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = BeautyViewController.storyboard; sourceTree = "<group>"; };
+		E72D78802A286F1600C9134C /* PickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PickerView.swift; sourceTree = "<group>"; };
+		E72D78822A286F2900C9134C /* AlertManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlertManager.swift; sourceTree = "<group>"; };
+		E72D78862A2893F300C9134C /* CLSettingCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CLSettingCellView.swift; sourceTree = "<group>"; };
+		E72D78882A2897E200C9134C /* Configs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configs.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E72D780F2A25963500C9134C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C5DC38DA660712418398BB5E /* Pods_BeautyAPi.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		405A2F7BE14A28D459FC085D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9A74E98AAF37F5AC2599EC0B /* Pods_BeautyAPi.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		BBA2700A8AA84EDE8950173C /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				0D6108959E288EB21E103A36 /* Pods-BeautyAPi.debug.xcconfig */,
+				A646339435DAD37A2AE0A5BC /* Pods-BeautyAPi.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		E72D78092A25963500C9134C = {
+			isa = PBXGroup;
+			children = (
+				E72D78142A25963500C9134C /* BeautyAPi */,
+				E72D78132A25963500C9134C /* Products */,
+				BBA2700A8AA84EDE8950173C /* Pods */,
+				405A2F7BE14A28D459FC085D /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		E72D78132A25963500C9134C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E72D78122A25963500C9134C /* BeautyAPi.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E72D78142A25963500C9134C /* BeautyAPi */ = {
+			isa = PBXGroup;
+			children = (
+				E72D787F2A286F0900C9134C /* PickerView */,
+				E72D78562A259E9C00C9134C /* KeyCenter.swift */,
+				E72D78592A25D36000C9134C /* Util */,
+				E72D78582A25D34B00C9134C /* BeautyAPI */,
+				E72D78292A25976500C9134C /* SenseBeaufy */,
+				E72D78152A25963500C9134C /* AppDelegate.swift */,
+				E72D78172A25963500C9134C /* SceneDelegate.swift */,
+				E72D78192A25963500C9134C /* ViewController.swift */,
+				E72D787B2A284A1C00C9134C /* BeautyViewController.swift */,
+				E72D787D2A284BBA00C9134C /* BeautyViewController.storyboard */,
+				E72D781B2A25963500C9134C /* Main.storyboard */,
+				E72D781E2A25963600C9134C /* Assets.xcassets */,
+				E72D78202A25963600C9134C /* LaunchScreen.storyboard */,
+				E72D78232A25963600C9134C /* Info.plist */,
+				E72D784E2A2598B900C9134C /* BeautyAPI-Bridging-Header.h */,
+			);
+			path = BeautyAPi;
+			sourceTree = "<group>";
+		};
+		E72D78292A25976500C9134C /* SenseBeaufy */ = {
+			isa = PBXGroup;
+			children = (
+				E72D782A2A25976500C9134C /* EffectsLicense.h */,
+				E72D782B2A25976500C9134C /* EffectsAttribute.m */,
+				E72D782C2A25976500C9134C /* EFMotionManager.h */,
+				E72D782D2A25976500C9134C /* Effects.m */,
+				E72D782E2A25976500C9134C /* EffectsDetector.m */,
+				E72D782F2A25976500C9134C /* EffectsCommonObject.h */,
+				E72D78302A25976500C9134C /* EffectsAnimal.m */,
+				E72D78312A25976500C9134C /* EffectsProcess.m */,
+				E72D78322A25976500C9134C /* VideoProcessingManager.m */,
+				E72D78332A25976500C9134C /* EffectsAttribute.h */,
+				E72D78342A25976500C9134C /* EffectsLicense.m */,
+				E72D78362A25976500C9134C /* EffectsDetector.h */,
+				E72D78372A25976500C9134C /* Effects.h */,
+				E72D78382A25976500C9134C /* EffectMacro.h */,
+				E72D78392A25976500C9134C /* EFMotionManager.m */,
+				E72D783A2A25976500C9134C /* EffectsAnimal.h */,
+				E72D783B2A25976500C9134C /* EffectsCommonObject.m */,
+				E72D783C2A25976500C9134C /* VideoProcessingManager.h */,
+				E72D783D2A25976500C9134C /* EffectsProcess.h */,
+			);
+			path = SenseBeaufy;
+			sourceTree = "<group>";
+		};
+		E72D78582A25D34B00C9134C /* BeautyAPI */ = {
+			isa = PBXGroup;
+			children = (
+				E72D786C2A27320400C9134C /* BeautyConfig.h */,
+				E72D786D2A27320400C9134C /* BeautyConfig.m */,
+				E72D78662A27297700C9134C /* BeautyAPI.h */,
+				E72D78642A27297700C9134C /* BeautyAPI.m */,
+				E72D78652A27297700C9134C /* BeautyRender.h */,
+				E72D78672A27297700C9134C /* BeautyRender.m */,
+			);
+			path = BeautyAPI;
+			sourceTree = "<group>";
+		};
+		E72D78592A25D36000C9134C /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				E72D78512A259AE500C9134C /* BundleUtil.h */,
+				E72D78522A259AE500C9134C /* BundleUtil.m */,
+				E72D78882A2897E200C9134C /* Configs.swift */,
+			);
+			path = Util;
+			sourceTree = "<group>";
+		};
+		E72D787F2A286F0900C9134C /* PickerView */ = {
+			isa = PBXGroup;
+			children = (
+				E72D78802A286F1600C9134C /* PickerView.swift */,
+				E72D78822A286F2900C9134C /* AlertManager.swift */,
+				E72D78862A2893F300C9134C /* CLSettingCellView.swift */,
+			);
+			path = PickerView;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E72D78112A25963500C9134C /* BeautyAPi */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E72D78262A25963600C9134C /* Build configuration list for PBXNativeTarget "BeautyAPi" */;
+			buildPhases = (
+				0E044CBA6BCD9001EE9FA9A0 /* [CP] Check Pods Manifest.lock */,
+				E72D780E2A25963500C9134C /* Sources */,
+				E72D780F2A25963500C9134C /* Frameworks */,
+				E72D78102A25963500C9134C /* Resources */,
+				D60B9479D4D66FC396F0E2EF /* [CP] Embed Pods Frameworks */,
+				10AEF9F5430DC34DEAF9194B /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BeautyAPi;
+			productName = BeautyAPi;
+			productReference = E72D78122A25963500C9134C /* BeautyAPi.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E72D780A2A25963500C9134C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1430;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					E72D78112A25963500C9134C = {
+						CreatedOnToolsVersion = 14.3;
+					};
+				};
+			};
+			buildConfigurationList = E72D780D2A25963500C9134C /* Build configuration list for PBXProject "BeautyAPi" */;
+			compatibilityVersion = "Xcode 13.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = E72D78092A25963500C9134C;
+			productRefGroup = E72D78132A25963500C9134C /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E72D78112A25963500C9134C /* BeautyAPi */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E72D78102A25963500C9134C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E72D78222A25963600C9134C /* LaunchScreen.storyboard in Resources */,
+				E72D781F2A25963600C9134C /* Assets.xcassets in Resources */,
+				E72D781D2A25963500C9134C /* Main.storyboard in Resources */,
+				E72D787E2A284BBA00C9134C /* BeautyViewController.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		0E044CBA6BCD9001EE9FA9A0 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-BeautyAPi-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		10AEF9F5430DC34DEAF9194B /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BeautyAPi/Pods-BeautyAPi-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BeautyAPi/Pods-BeautyAPi-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BeautyAPi/Pods-BeautyAPi-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D60B9479D4D66FC396F0E2EF /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BeautyAPi/Pods-BeautyAPi-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BeautyAPi/Pods-BeautyAPi-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BeautyAPi/Pods-BeautyAPi-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E72D780E2A25963500C9134C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E72D786B2A27313F00C9134C /* ViewController.swift in Sources */,
+				E72D78892A2897E200C9134C /* Configs.swift in Sources */,
+				E72D78402A25976500C9134C /* EffectsDetector.m in Sources */,
+				E72D787C2A284A1C00C9134C /* BeautyViewController.swift in Sources */,
+				E72D78442A25976500C9134C /* EffectsLicense.m in Sources */,
+				E72D78692A27297700C9134C /* BeautyRender.m in Sources */,
+				E72D78422A25976500C9134C /* EffectsProcess.m in Sources */,
+				E72D783E2A25976500C9134C /* EffectsAttribute.m in Sources */,
+				E72D78682A27297700C9134C /* BeautyAPI.m in Sources */,
+				E72D786E2A27320400C9134C /* BeautyConfig.m in Sources */,
+				E72D78162A25963500C9134C /* AppDelegate.swift in Sources */,
+				E72D78472A25976500C9134C /* EffectsCommonObject.m in Sources */,
+				E72D78812A286F1600C9134C /* PickerView.swift in Sources */,
+				E72D78832A286F2900C9134C /* AlertManager.swift in Sources */,
+				E72D78432A25976500C9134C /* VideoProcessingManager.m in Sources */,
+				E72D78532A259AE500C9134C /* BundleUtil.m in Sources */,
+				E72D78462A25976500C9134C /* EFMotionManager.m in Sources */,
+				E72D78412A25976500C9134C /* EffectsAnimal.m in Sources */,
+				E72D783F2A25976500C9134C /* Effects.m in Sources */,
+				E72D78182A25963500C9134C /* SceneDelegate.swift in Sources */,
+				E72D78872A2893F300C9134C /* CLSettingCellView.swift in Sources */,
+				E72D78572A259E9C00C9134C /* KeyCenter.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		E72D781B2A25963500C9134C /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E72D781C2A25963500C9134C /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		E72D78202A25963600C9134C /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E72D78212A25963600C9134C /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		E72D78242A25963600C9134C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		E72D78252A25963600C9134C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		E72D78272A25963600C9134C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0D6108959E288EB21E103A36 /* Pods-BeautyAPi.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = YS397FG5PA;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BeautyAPi/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Request Camera Access";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Request Mic Access";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.agora.entfull;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "BeautyAPi/BeautyAPI-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		E72D78282A25963600C9134C /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A646339435DAD37A2AE0A5BC /* Pods-BeautyAPi.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = YS397FG5PA;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BeautyAPi/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Request Camera Access";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Request Mic Access";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.agora.entfull;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "BeautyAPi/BeautyAPI-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E72D780D2A25963500C9134C /* Build configuration list for PBXProject "BeautyAPi" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E72D78242A25963600C9134C /* Debug */,
+				E72D78252A25963600C9134C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E72D78262A25963600C9134C /* Build configuration list for PBXNativeTarget "BeautyAPi" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E72D78272A25963600C9134C /* Debug */,
+				E72D78282A25963600C9134C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E72D780A2A25963500C9134C /* Project object */;
+}
