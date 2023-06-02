@@ -1,0 +1,76 @@
+//
+//  BeautyAPI.h
+//  BeautyAPi
+//
+//  Created by zhaoyongqiang on 2023/5/31.
+//
+
+#import <Foundation/Foundation.h>
+#import "BeautyConfig.h"
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface BeautyAPI : NSObject
+
+/**
+ * 是否是前置摄像头
+ * 切换摄像头要给此属性赋值,  解决镜像问题
+ **/
+@property (nonatomic, assign) BOOL isFrontCamera;
+
+/**
+ * 创建并初始化美颜场景化API，如果外部调用过registerVideoFrameObserver，那create必须在此之后调用
+ *
+ * @param config 配置
+ *
+ * @return 0: 成功, 非0: 见错误码
+ **/
+- (int)initialize: (BeautyConfig *)config;
+
+/**
+ * 美颜开关
+ *
+ * @param enable 是否打开美颜
+ *
+ * @return 0: 成功, 非0: 见错误码
+ **/
+- (int)enable: (BOOL)enable;
+
+/**
+ * 读取美颜开关状态
+ **/
+@property (nonatomic, readonly, assign) BOOL isEnable;
+
+/**
+ * 美颜处理方法，当useCustom为true时才需要调用，否则会报错
+ *
+ *
+ * @return 0: 成功；非0：见错误码
+ **/
+- (int)onFrame: (CVPixelBufferRef)pixelBuffer callback: (void (^)(CVPixelBufferRef))callback;
+
+/**
+ * 设置美颜最佳默认参数
+ *
+ *
+ * @return 0: 成功；非0：见错误码
+ **/
+- (int)setOptimizedDefault;
+
+
+/**
+ * 重置美颜最佳默认参数
+ **/
+- (void)resetOptimizedDefault;
+
+/**
+ * 销毁美颜场景化API。
+ * 当创建useCustome=true时，会调用rtcEngine.registerVideoFrameObserver(null)将祼数据回调解绑。
+ *
+ * @return 0: 成功；非0: 见错误码表
+ **/
+- (int)destory;
+
+@end
+
+NS_ASSUME_NONNULL_END
