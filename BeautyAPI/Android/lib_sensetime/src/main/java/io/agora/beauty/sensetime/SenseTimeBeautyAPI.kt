@@ -4,11 +4,23 @@ import com.sensetime.effects.STRenderKit
 import io.agora.base.VideoFrame
 import io.agora.rtc2.RtcEngine
 
+enum class ProcessMode{
+    Agora, Custom
+}
+
+interface IEventCallback{
+    fun onBeautyStatus(stats: BeautyStats)
+}
+
+data class BeautyStats(
+    val totalCostTimeMs : Long
+)
 
 data class Config(
     val rtcEngine: RtcEngine,
     val stRenderKit: STRenderKit,
-    val useCustom: Boolean = false
+    val eventCallback: IEventCallback? = null,
+    val processMode: ProcessMode = ProcessMode.Agora
 )
 
 enum class ErrorCode(val value: Int) {
@@ -30,7 +42,7 @@ interface SenseTimeBeautyAPI {
 
     fun onFrame(videoFrame: VideoFrame): Int
 
-    fun setOptimizedDefault(): Int
+    fun setOptimizedDefault(enable: Boolean = true): Int
 
     fun release(): Int
 

@@ -1,5 +1,6 @@
 package com.sensetime.effects;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -344,6 +345,35 @@ public class STRenderKit {
         OutputInfo process = mProcessor.process(new InputInfo(
                 bytes,
                 bytesType,
+                textureId,
+                textureType,
+                1,
+                width,
+                height,
+                rotation == 270,
+                rotation,
+                System.currentTimeMillis()
+        ));
+        if (process == null) {
+            return -1;
+        }
+        return process.getTextureId();
+    }
+
+    @TargetApi(26)
+    public int preProcess(int width, int height, int rotation, int textureId, int textureType) {
+        if (!mAuthorized) {
+            return -2;
+        }
+        if (mProcessor == null) {
+            mProcessor = IBeautyProcessorKt.createBeautyProcessor();
+            mProcessor.initialize(mSTMobileEffectNative,
+                    mSTHumanActionNative, mStAnimalNative);
+            mProcessor.enableSensor(mContext, isSensorEnable);
+        }
+        OutputInfo process = mProcessor.process(new InputInfo(
+                null,
+                STCommonNative.ST_PIX_FMT_NV21,
                 textureId,
                 textureType,
                 1,
