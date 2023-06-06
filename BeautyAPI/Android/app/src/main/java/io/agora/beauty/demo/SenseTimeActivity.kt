@@ -10,10 +10,11 @@ import androidx.activity.ComponentActivity
 import com.sensetime.effects.STRenderKit
 import com.sensetime.effects.utils.FileUtils
 import com.sensetime.stmobile.model.STMobileMakeupType
-import com.sensetime.stmobile.params.STEffectBeautyType
 import io.agora.beauty.demo.databinding.SensetimeActivityBinding
 import io.agora.beauty.demo.utils.ReflectUtils
+import io.agora.beauty.sensetime.BeautyStats
 import io.agora.beauty.sensetime.Config
+import io.agora.beauty.sensetime.IEventCallback
 import io.agora.beauty.sensetime.createSenseTimeBeautyAPI
 import io.agora.rtc2.ChannelMediaOptions
 import io.agora.rtc2.Constants
@@ -116,13 +117,12 @@ class SenseTimeActivity : ComponentActivity() {
             )
         )
     }
-    private val beautyEnable = true
+    private val beautyEnableDefault = false
     private val mSettingDialog by lazy {
         SettingsDialog(this).apply {
-            setBeautyEnable(beautyEnable)
+            setBeautyEnable(beautyEnableDefault)
             setOnBeautyChangeListener { enable ->
                 mSenseTimeApi.enable(enable)
-                mSenseTimeApi.setOptimizedDefault()
             }
             setFrameRateSelect(intent.getStringExtra(EXTRA_FRAME_RATE).toString())
             setOnFrameRateChangeListener { frameRate ->
@@ -151,10 +151,17 @@ class SenseTimeActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(mBinding.root)
 
-        mSenseTimeApi.initialize(Config(mRtcEngine, mSTRenderKit))
-        if (beautyEnable) {
+        mSenseTimeApi.initialize(Config(
+            mRtcEngine,
+            mSTRenderKit,
+            eventCallback = object: IEventCallback{
+                override fun onBeautyStatus(stats: BeautyStats) {
+                    Log.d("SenseTime", "onBeautyStatus totalCostTime = ${stats.totalCostTimeMs}")
+                }
+            }
+        ))
+        if (beautyEnableDefault) {
             mSenseTimeApi.enable(true)
-            mSenseTimeApi.setOptimizedDefault()
         }
 
         // Config RtcEngine
@@ -200,27 +207,7 @@ class SenseTimeActivity : ComponentActivity() {
         mBinding.ctvFaceBeauty.setOnClickListener {
             val enable = !mBinding.ctvFaceBeauty.isChecked
             mBinding.ctvFaceBeauty.isChecked = enable
-            if (enable) {
-                mSTRenderKit.setBeautyMode(
-                    STEffectBeautyType.EFFECT_BEAUTY_BASE_WHITTEN,
-                    STEffectBeautyType.WHITENING1_MODE
-                )
-                mSTRenderKit.setBeautyStrength(STEffectBeautyType.EFFECT_BEAUTY_BASE_WHITTEN, 100f)
-                mSTRenderKit.setBeautyStrength(
-                    STEffectBeautyType.EFFECT_BEAUTY_RESHAPE_ENLARGE_EYE,
-                    1.0f
-                )
-            } else {
-                mSTRenderKit.setBeautyMode(
-                    STEffectBeautyType.EFFECT_BEAUTY_BASE_WHITTEN,
-                    STEffectBeautyType.WHITENING1_MODE
-                )
-                mSTRenderKit.setBeautyStrength(STEffectBeautyType.EFFECT_BEAUTY_BASE_WHITTEN, 0f)
-                mSTRenderKit.setBeautyStrength(
-                    STEffectBeautyType.EFFECT_BEAUTY_RESHAPE_ENLARGE_EYE,
-                    0f
-                )
-            }
+            mSenseTimeApi.setOptimizedDefault(enable)
         }
         mBinding.ctvMarkup.setOnClickListener {
             val enable = !mBinding.ctvMarkup.isChecked
