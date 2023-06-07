@@ -26,7 +26,7 @@
     if (config.beautyRender == nil) {
         return -1;
     }
-    if (config.useCustome == false) {
+    if (config.processMode == processModeAgora) {
         [config.rtcEngine setVideoFrameDelegate:self];
     }
     return 0;
@@ -42,7 +42,7 @@
 }
 
 - (int)onFrame:(CVPixelBufferRef)pixelBuffer callback:(void (^)(CVPixelBufferRef _Nonnull))callback {
-    if (self.config.useCustome == NO) {
+    if (self.config.processMode == processModeAgora) {
         return -1;
     }
     if (pixelBuffer == nil) {
@@ -58,16 +58,16 @@
     return 0;
 }
 
-- (int)setOptimizedDefault {
+- (int)setOptimizedDefault:(BOOL)enable {
     if (self.config.beautyRender == nil) {
         return -1;
     }
-    [self.config.beautyRender setOptimizedDefault];
+    if (enable) {
+        [self.config.beautyRender setOptimizedDefault];
+    } else {
+        [self.config.beautyRender reset];
+    }
     return 0;
-}
-
-- (void)resetOptimizedDefault {
-    [self.config.beautyRender reset];
 }
 
 - (int)destory {
