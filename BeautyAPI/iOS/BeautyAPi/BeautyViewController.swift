@@ -35,9 +35,9 @@ class BeautyViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        setupRTC()
         setupBeautyAPI()
         setupUI()
+        setupRTC()
         title = channleName
     }
     
@@ -84,11 +84,7 @@ class BeautyViewController: UIViewController {
     @IBAction func onClickBeautyButton(_ sender: UIButton) {
         sender.isSelected = !sender.isSelected
         sender.setTitleColor(sender.isSelected ? .orange : .systemPink, for: sender.isSelected ? .selected : .normal)
-        if sender.isSelected {
-            beautyAPI.setOptimizedDefault()
-        } else {
-            beautyAPI.resetOptimizedDefault()
-        }
+        beautyAPI.setOptimizedDefault(sender.isSelected)
     }
     @IBAction func onClickStyleButton(_ sender: UIButton) {
         sender.isSelected = !sender.isSelected
@@ -109,7 +105,7 @@ class BeautyViewController: UIViewController {
     private func setupBeautyAPI() {
         let config = BeautyConfig()
         config.rtcEngine = rtcEngine
-        config.useCustome = false
+        config.processMode = .processModeAgora
         config.beautyRender = render
         let result = beautyAPI.initialize(config)
         if result != 0 {
@@ -168,6 +164,7 @@ class BeautyViewController: UIViewController {
     }
     
     deinit {
+        AgoraRtcEngineKit.destroy()
         beautyAPI.destory()
     }
 }
@@ -240,6 +237,7 @@ extension BeautyViewController: AgoraRtcEngineDelegate {
         videoCanvas.view = remoteView
         videoCanvas.renderMode = .hidden
         rtcEngine.setupRemoteVideo(videoCanvas)
+        remoteView.isHidden = false
     }
     
     /// callback when a remote user is leaving the channel, note audience in live broadcast mode will NOT trigger this event
@@ -255,6 +253,7 @@ extension BeautyViewController: AgoraRtcEngineDelegate {
         videoCanvas.view = nil
         videoCanvas.renderMode = .hidden
         rtcEngine.setupRemoteVideo(videoCanvas)
+        remoteView.isHidden = true
     }
     
     /// Reports the statistics of the current call. The SDK triggers this callback once every two seconds after the user joins the channel.

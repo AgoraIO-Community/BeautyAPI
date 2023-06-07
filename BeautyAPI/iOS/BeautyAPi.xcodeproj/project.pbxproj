@@ -532,7 +532,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = io.agora.entfull;
+				PRODUCT_BUNDLE_IDENTIFIER = io.agora.rte.extension.sensetime;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "BeautyAPi/BeautyAPI-Bridging-Header.h";
@@ -565,7 +565,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = io.agora.entfull;
+				PRODUCT_BUNDLE_IDENTIFIER = io.agora.rte.extension.sensetime;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "BeautyAPi/BeautyAPI-Bridging-Header.h";

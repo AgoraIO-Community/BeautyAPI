@@ -52,16 +52,11 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * 设置美颜最佳默认参数
  *
+ * @param enable 是否开启美颜默认参数
  *
  * @return 0: 成功；非0：见错误码
  **/
-- (int)setOptimizedDefault;
-
-
-/**
- * 重置美颜最佳默认参数
- **/
-- (void)resetOptimizedDefault;
+- (int)setOptimizedDefault: (BOOL)enable;
 
 /**
  * 销毁美颜场景化API。
