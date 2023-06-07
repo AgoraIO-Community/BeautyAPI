@@ -81,16 +81,6 @@
             android:textAlignment="center"
             android:textColor="@color/beauty_option_text_color" />
 
-        <CheckedTextView
-            android:id="@+id/ctvFilter"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="滤镜"
-            android:textAlignment="center"
-            android:textColor="@color/beauty_option_text_color" />
-
 
     </LinearLayout>
 

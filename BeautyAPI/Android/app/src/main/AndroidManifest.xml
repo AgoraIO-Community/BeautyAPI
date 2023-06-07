@@ -39,6 +39,10 @@
         <activity
             android:name=".SenseTimeActivity"
             android:launchMode="singleTop" />
+
+        <activity
+            android:name=".AudienceActivity"
+            android:launchMode="singleTop" />
     </application>
 
 </manifest>

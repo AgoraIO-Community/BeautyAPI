@@ -1,9 +1,36 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2023 Agora Community
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package io.agora.beauty.sensetime
 
 import android.graphics.Matrix
 import android.opengl.GLES11Ext
 import android.opengl.GLES20
 import android.os.Build
+import android.view.SurfaceView
+import android.view.TextureView
+import android.view.View
 import com.sensetime.stmobile.STCommonNative
 import com.sensetime.stmobile.params.STEffectBeautyType
 import io.agora.base.TextureBufferHelper
@@ -11,13 +38,15 @@ import io.agora.base.VideoFrame
 import io.agora.base.VideoFrame.I420Buffer
 import io.agora.base.VideoFrame.TextureBuffer
 import io.agora.base.internal.video.YuvHelper
+import io.agora.rtc2.Constants
 import io.agora.rtc2.gl.EglBaseProvider
 import io.agora.rtc2.video.IVideoFrameObserver
+import io.agora.rtc2.video.VideoCanvas
 import java.nio.ByteBuffer
 import java.util.concurrent.Callable
 
 class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
-    private val beautyMode = 0 // 0: 自动根据buffer类型切换，1：固定使用OES纹理，2：固定使用i420
+    private val beautyMode = 2 // 0: 自动根据buffer类型切换，1：固定使用OES纹理，2：固定使用i420
 
     private var textureBufferHelper: TextureBufferHelper? = null
     private var nv21ByteBuffer: ByteBuffer? = null
@@ -48,14 +77,23 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         return ErrorCode.ERROR_OK.value
     }
 
-    override fun onFrame(videoFrame: VideoFrame): Int {
-        if (config == null) {
-            return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
+    override fun setupLocalVideo(view: View, renderMode: Int): Int {
+        val rtcEngine = config?.rtcEngine ?: return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
+        if(view is TextureView || view is SurfaceView){
+            val canvas = VideoCanvas(view, renderMode, 0)
+            canvas.mirrorMode = Constants.VIDEO_MIRROR_MODE_DISABLED
+            rtcEngine.setupLocalVideo(canvas)
+            return ErrorCode.ERROR_OK.value
         }
+        return ErrorCode.ERROR_VIEW_TYPE.value
+    }
+
+    override fun onFrame(videoFrame: VideoFrame): Int {
+        val conf = config ?: return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
         if (isReleased) {
             return ErrorCode.ERROR_HAS_RELEASED.value
         }
-        if (config?.processMode != ProcessMode.Custom) {
+        if (conf.processMode != ProcessMode.Custom) {
             return ErrorCode.ERROR_PROCESS_NOT_CUSTOM.value
         }
         if (!enable) {
@@ -65,14 +103,13 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         return ErrorCode.ERROR_OK.value
     }
 
-    override fun setOptimizedDefault(enable: Boolean): Int {
-        if (config == null) {
-            return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
-        }
+    override fun setBeautyPreset(preset: BeautyPreset): Int {
         if (isReleased) {
             return ErrorCode.ERROR_HAS_RELEASED.value
         }
         val stRenderer = config?.stRenderKit ?: return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
+        val enable = preset == BeautyPreset.DEFAULT
+
         // 锐化
         stRenderer.setBeautyStrength(
             STEffectBeautyType.EFFECT_BEAUTY_TONE_SHARPEN,
@@ -180,17 +217,16 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
     }
 
     override fun release(): Int {
-        if (config == null) {
-            return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
-        }
         if (isReleased) {
             return ErrorCode.ERROR_HAS_RELEASED.value
         }
+        val stRenderer = config?.stRenderKit ?: return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
+
         isReleased = true
         textureBufferHelper?.let {
             textureBufferHelper = null
             it.invoke {
-                config?.stRenderKit?.resetProcessor()
+                stRenderer.resetProcessor()
                 null
             }
             it.dispose()
@@ -225,7 +261,6 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
             else -> processBeautyAuto(videoFrame)
         }
         val costTime = System.currentTimeMillis() - startTime
-        config?.eventCallback?.onBeautyStatus(BeautyStats(costTime))
 
         if (processTexId < 0) {
             return false

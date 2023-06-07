@@ -3,8 +3,12 @@ package io.agora.beauty.demo
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.core.view.isInvisible
 import io.agora.beauty.demo.databinding.MainActivityBinding
 
 class MainActivity : ComponentActivity() {
@@ -19,6 +23,24 @@ class MainActivity : ComponentActivity() {
         setContentView(mBinding.root)
 
         mBinding.spResolution.setSelection(1)
+        mBinding.spRoleType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                val isAudience =
+                    mBinding.spRoleType.selectedItem.toString() == getString(R.string.audience)
+                (mBinding.spResolution.parent as ViewGroup).isInvisible = isAudience
+                (mBinding.spBeautyType.parent as ViewGroup).isInvisible = isAudience
+                (mBinding.spFrameRate.parent as ViewGroup).isInvisible = isAudience
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+        }
         mBinding.btnJoin.setOnClickListener {
             if (TextUtils.isEmpty(mBinding.etChannelName.text)) {
                 Toast.makeText(this, "频道名不能为空", Toast.LENGTH_SHORT).show()
@@ -37,14 +59,19 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun gotoBeautyActivity() {
-        if (mBinding.spBeautyType.selectedItem as String == getString(R.string.beauty_sensetime)) {
-            SenseTimeActivity.launch(
-                this,
-                mBinding.etChannelName.text.toString(),
-                mBinding.spResolution.selectedItem.toString(),
-                mBinding.spFrameRate.selectedItem.toString()
-            )
+        if (mBinding.spRoleType.selectedItem.toString() == getString(R.string.broadcast)) {
+            if (mBinding.spBeautyType.selectedItem as String == getString(R.string.beauty_sensetime)) {
+                SenseTimeActivity.launch(
+                    this,
+                    mBinding.etChannelName.text.toString(),
+                    mBinding.spResolution.selectedItem.toString(),
+                    mBinding.spFrameRate.selectedItem.toString()
+                )
+            }
+        } else {
+            AudienceActivity.launch(this, mBinding.etChannelName.text.toString())
         }
+
     }
 
 

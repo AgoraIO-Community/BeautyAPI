@@ -99,7 +99,7 @@ public class GLTestUtils {
         return null;
     }
 
-    private static Bitmap nv21ToBitmap(byte[] nv21, int width, int height) {
+    public static Bitmap nv21ToBitmap(byte[] nv21, int width, int height) {
         Bitmap bitmap = null;
         try {
             YuvImage image = new YuvImage(nv21, ImageFormat.NV21, width, height, null);
