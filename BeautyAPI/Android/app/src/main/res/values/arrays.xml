@@ -19,4 +19,9 @@
         <item>FRAME_RATE_FPS_30</item>
         <item>FRAME_RATE_FPS_60</item>
     </array>
+
+    <array name="role_type">
+        <item>@string/broadcast</item>
+        <item>@string/audience</item>
+    </array>
 </resources>
