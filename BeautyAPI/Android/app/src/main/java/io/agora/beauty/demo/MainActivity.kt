@@ -60,8 +60,15 @@ class MainActivity : ComponentActivity() {
 
     private fun gotoBeautyActivity() {
         if (mBinding.spRoleType.selectedItem.toString() == getString(R.string.broadcast)) {
-            if (mBinding.spBeautyType.selectedItem as String == getString(R.string.beauty_sensetime)) {
-                SenseTimeActivity.launch(
+            when (mBinding.spBeautyType.selectedItem as String) {
+                getString(R.string.beauty_sensetime) -> SenseTimeActivity.launch(
+                    this,
+                    mBinding.etChannelName.text.toString(),
+                    mBinding.spResolution.selectedItem.toString(),
+                    mBinding.spFrameRate.selectedItem.toString()
+                )
+
+                getString(R.string.beauty_faceunity) -> FaceUnityActivity.launch(
                     this,
                     mBinding.etChannelName.text.toString(),
                     mBinding.spResolution.selectedItem.toString(),

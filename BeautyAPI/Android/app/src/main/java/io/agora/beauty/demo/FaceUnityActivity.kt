@@ -7,16 +7,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.SurfaceView
 import androidx.activity.ComponentActivity
-import com.sensetime.effects.STRenderKit
-import com.sensetime.effects.utils.FileUtils
-import com.sensetime.stmobile.model.STMobileMakeupType
+import com.faceunity.core.entity.FUBundleData
+import com.faceunity.core.faceunity.FURenderKit
+import com.faceunity.core.model.makeup.SimpleMakeup
+import com.faceunity.core.model.prop.Prop
+import com.faceunity.core.model.prop.sticker.Sticker
+import com.faceunity.nama.FURenderer
 import io.agora.beauty.demo.databinding.BeautyActivityBinding
 import io.agora.beauty.demo.utils.ReflectUtils
-import io.agora.beauty.sensetime.BeautyPreset
-import io.agora.beauty.sensetime.BeautyStats
-import io.agora.beauty.sensetime.Config
-import io.agora.beauty.sensetime.IEventCallback
-import io.agora.beauty.sensetime.createSenseTimeBeautyAPI
+import io.agora.beauty.faceunity.BeautyPreset
+import io.agora.beauty.faceunity.BeautyStats
+import io.agora.beauty.faceunity.Config
+import io.agora.beauty.faceunity.IEventCallback
+import io.agora.beauty.faceunity.createFaceUnityBeautyAPI
 import io.agora.rtc2.ChannelMediaOptions
 import io.agora.rtc2.Constants
 import io.agora.rtc2.IRtcEngineEventHandler
@@ -27,7 +30,7 @@ import io.agora.rtc2.video.VideoEncoderConfiguration
 import io.agora.rtc2.video.VideoEncoderConfiguration.FRAME_RATE
 import java.io.File
 
-class SenseTimeActivity : ComponentActivity() {
+class FaceUnityActivity : ComponentActivity() {
     private val TAG = this.javaClass.simpleName
 
     companion object {
@@ -41,7 +44,7 @@ class SenseTimeActivity : ComponentActivity() {
             resolution: String,
             frameRate: String
         ) {
-            Intent(context, SenseTimeActivity::class.java).apply {
+            Intent(context, FaceUnityActivity::class.java).apply {
                 putExtra(EXTRA_CHANNEL_NAME, channelName)
                 putExtra(EXTRA_RESOLUTION, resolution)
                 putExtra(EXTRA_FRAME_RATE, frameRate)
@@ -67,7 +70,7 @@ class SenseTimeActivity : ComponentActivity() {
             runOnUiThread {
                 if (mBinding.remoteVideoView.tag == null) {
                     mBinding.remoteVideoView.tag = uid
-                    val renderView = SurfaceView(this@SenseTimeActivity)
+                    val renderView = SurfaceView(this@FaceUnityActivity)
                     mBinding.remoteVideoView.addView(renderView)
                     mRtcEngine.setupRemoteVideo(
                         VideoCanvas(
@@ -100,11 +103,8 @@ class SenseTimeActivity : ComponentActivity() {
             mEventHandler = object : IRtcEngineEventHandler() {}
         })
     }
-    private val mSTRenderKit by lazy {
-        STRenderKit(this)
-    }
-    private val mSenseTimeApi by lazy {
-        createSenseTimeBeautyAPI()
+    private val mFaceUnityApi by lazy {
+        createFaceUnityBeautyAPI()
     }
     private val mVideoEncoderConfiguration by lazy {
         VideoEncoderConfiguration(
@@ -125,9 +125,13 @@ class SenseTimeActivity : ComponentActivity() {
         SettingsDialog(this).apply {
             setBeautyEnable(beautyEnableDefault)
             setOnBeautyChangeListener { enable ->
-                mSenseTimeApi.enable(enable)
+                mFaceUnityApi.enable(enable)
             }
         }
+    }
+    private val fuRenderKit by lazy {
+        FURenderer.getInstance().setup(this)
+        FURenderKit.getInstance()
     }
 
 
@@ -135,9 +139,9 @@ class SenseTimeActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(mBinding.root)
 
-        mSenseTimeApi.initialize(Config(
+        mFaceUnityApi.initialize(Config(
             mRtcEngine,
-            mSTRenderKit,
+            fuRenderKit,
             eventCallback = object : IEventCallback {
                 override fun onBeautyStats(stats: BeautyStats) {
 //                    Log.d(
@@ -148,7 +152,7 @@ class SenseTimeActivity : ComponentActivity() {
             }
         ))
         if (beautyEnableDefault) {
-            mSenseTimeApi.enable(true)
+            mFaceUnityApi.enable(true)
         }
 
         // Config RtcEngine
@@ -158,7 +162,7 @@ class SenseTimeActivity : ComponentActivity() {
 
 
         // render local video
-        mSenseTimeApi.setupLocalVideo(mBinding.localVideoView, Constants.RENDER_MODE_FIT)
+        mFaceUnityApi.setupLocalVideo(mBinding.localVideoView, Constants.RENDER_MODE_FIT)
 
 
         // join channel
@@ -182,88 +186,41 @@ class SenseTimeActivity : ComponentActivity() {
         mBinding.ctvFaceBeauty.setOnClickListener {
             val enable = !mBinding.ctvFaceBeauty.isChecked
             mBinding.ctvFaceBeauty.isChecked = enable
-            mSenseTimeApi.setBeautyPreset(if (enable) BeautyPreset.CUSTOM else BeautyPreset.DEFAULT)
+            mFaceUnityApi.setBeautyPreset(if (enable) BeautyPreset.DEFAULT else BeautyPreset.CUSTOM)
         }
         mBinding.ctvMarkup.setOnClickListener {
             val enable = !mBinding.ctvMarkup.isChecked
             mBinding.ctvMarkup.isChecked = enable
             if (enable) {
-                setMakeUpItem(
-                    STMobileMakeupType.ST_MAKEUP_TYPE_LIP,
-                    "makeup_lip" + File.separator + "12自然.zip",
-                    1f
-                )
+                val makeup =
+                    SimpleMakeup(FUBundleData("graphics" + File.separator + "face_makeup.bundle"))
+                makeup.setCombinedConfig(FUBundleData("makeup/naicha.bundle"))
+                makeup.makeupIntensity = 1.0
+                fuRenderKit.makeup = makeup
             } else {
-                setMakeUpItem(STMobileMakeupType.ST_MAKEUP_TYPE_LIP, null, 0f)
+                fuRenderKit.makeup = null
             }
         }
         mBinding.ctvSticker.setOnClickListener {
             val enable = !mBinding.ctvSticker.isChecked
             mBinding.ctvSticker.isChecked = enable
-            setStickerItem("sticker_face_shape" + File.separator + "ShangBanLe.zip", enable)
+            if (enable) {
+                val prop: Prop = Sticker(FUBundleData("sticker/fashi.bundle"))
+                fuRenderKit.propContainer.replaceProp(null, prop)
+            } else {
+                fuRenderKit.propContainer.removeAllProp()
+            }
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        mSTRenderKit.enableSensor(true)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        mSTRenderKit.enableSensor(false)
-    }
 
     override fun onDestroy() {
         super.onDestroy()
-        mSenseTimeApi.release()
+        mFaceUnityApi.release()
         mRtcEngine.leaveChannel()
-        mSTRenderKit.release()
         RtcEngine.destroy()
     }
 
-    private fun setMakeUpItem(type: Int, typePath: String?, strength: Float) {
-        if (typePath != null) {
-            val split = typePath.split(File.separator.toRegex()).dropLastWhile { it.isEmpty() }
-                .toTypedArray()
-            val className = split[0]
-            val fileName = split[1]
-            val _path = FileUtils.getFilePath(this, className + File.separator + fileName)
-            FileUtils.copyFileIfNeed(this, fileName, className)
-            mSTRenderKit.setMakeupForType(type, _path)
-            mSTRenderKit.setMakeupStrength(type, strength)
-        } else {
-            mSTRenderKit.removeMakeupByType(type)
-        }
-    }
-
-    private fun setStickerItem(path: String, attach: Boolean) {
-        val split = path.split(File.separator.toRegex()).dropLastWhile { it.isEmpty() }
-            .toTypedArray()
-        val className = split[0]
-        val fileName = split[1]
-        val _path = FileUtils.getFilePath(this, className + File.separator + fileName)
-        FileUtils.copyFileIfNeed(this, fileName, className)
-        if (!attach) {
-            mSTRenderKit.removeSticker(_path)
-        } else {
-            mSTRenderKit.changeSticker(_path)
-        }
-    }
-
-    private fun setFilterItem(filterPath: String, strength: Float) {
-        val split = filterPath.split(File.separator.toRegex()).dropLastWhile { it.isEmpty() }
-            .toTypedArray()
-        val className = split[0]
-        val fileName = split[1]
-        val filterName = split[1].split("_".toRegex()).dropLastWhile { it.isEmpty() }
-            .toTypedArray()[2].split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
-            .toTypedArray()[0]
-        val path = FileUtils.getFilePath(this, className + File.separator + fileName)
-        FileUtils.copyFileIfNeed(this, fileName, className)
-        mSTRenderKit.setFilterStyle(className, filterName, path)
-        mSTRenderKit.setFilterStrength(strength)
-    }
 
 
 }
