@@ -10,6 +10,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef NS_ENUM(NSInteger, BeautyPresetMode) {
+    /// 默认美颜参数
+    BeautyPresetModeDefault = 0,
+    /// 外部自定义美颜参数, 外部自行设置
+    BeautyPresetModeCustom = 1
+};
+
 @interface BeautyAPI : NSObject
 
 /**
@@ -42,6 +49,16 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, assign) BOOL isEnable;
 
 /**
+    * 本地视图渲染，由内部来处理镜像问题
+    *
+    * @param view 渲染视图
+    * @param renderMode 渲染缩放模式
+    * @return 0: 成功, 非0: 见错误码
+    **/
+
+- (int)setupLocalVideo: (UIView *)view renderMode: (AgoraVideoRenderMode)renderMode;
+
+/**
  * 美颜处理方法，当useCustom为true时才需要调用，否则会报错
  *
  *
@@ -52,11 +69,11 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * 设置美颜最佳默认参数
  *
- * @param enable 是否开启美颜默认参数
+ * @param mode 美颜参数模式
  *
  * @return 0: 成功；非0：见错误码
  **/
-- (int)setOptimizedDefault: (BOOL)enable;
+- (int)setBeautyPreset: (BeautyPresetMode)mode;
 
 /**
  * 销毁美颜场景化API。

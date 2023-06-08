@@ -7,6 +7,11 @@
 
 #import "BeautyConfig.h"
 
+@implementation BeautyStats
+
+@end
+
+
 @implementation BeautyConfig
 
 @end
