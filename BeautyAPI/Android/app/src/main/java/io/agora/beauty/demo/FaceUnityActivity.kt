@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.SurfaceView
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
 import com.faceunity.core.entity.FUBundleData
 import com.faceunity.core.faceunity.FURenderKit
 import com.faceunity.core.model.makeup.SimpleMakeup
@@ -17,8 +17,10 @@ import io.agora.base.VideoFrame
 import io.agora.beauty.demo.databinding.BeautyActivityBinding
 import io.agora.beauty.demo.utils.ReflectUtils
 import io.agora.beauty.faceunity.BeautyPreset
+import io.agora.beauty.faceunity.BeautyStats
 import io.agora.beauty.faceunity.CaptureMode
 import io.agora.beauty.faceunity.Config
+import io.agora.beauty.faceunity.IEventCallback
 import io.agora.beauty.faceunity.createFaceUnityBeautyAPI
 import io.agora.beauty.sensetime.ErrorCode
 import io.agora.rtc2.ChannelMediaOptions
@@ -32,7 +34,7 @@ import io.agora.rtc2.video.VideoEncoderConfiguration
 import io.agora.rtc2.video.VideoEncoderConfiguration.FRAME_RATE
 import java.io.File
 
-class FaceUnityActivity : AppCompatActivity() {
+class FaceUnityActivity : ComponentActivity() {
     private val TAG = this.javaClass.simpleName
 
     companion object {
@@ -154,7 +156,13 @@ class FaceUnityActivity : AppCompatActivity() {
             Config(
                 mRtcEngine,
                 fuRenderKit,
-                captureMode = if(isCustomCaptureMode) CaptureMode.Custom else CaptureMode.Agora
+                captureMode = if(isCustomCaptureMode) CaptureMode.Custom else CaptureMode.Agora,
+                statsEnable = true,
+                eventCallback = object: IEventCallback{
+                    override fun onBeautyStats(stats: BeautyStats) {
+                        Log.d(TAG, "BeautyStats stats = $stats")
+                    }
+                }
             )
         )
         when (intent.getStringExtra(EXTRA_PROCESS_MODE)) {
