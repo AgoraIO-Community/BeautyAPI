@@ -49,49 +49,6 @@
     return self;
 }
 
-- (void)setMakeup: (BOOL)isSelected {
-#if __has_include("st_mobile_common.h")
-    if (isSelected) {
-        NSString *path = [[NSBundle mainBundle] pathForResource:@"qise.zip" ofType:nil];
-        __weak VideoProcessingManager *weakself = self;
-        [self.effectsProcess addStickerWithPath:path callBack:^(st_result_t state, int sticker, uint64_t action) {
-            [weakself.effectsProcess setPackageId:sticker groupType:EFFECT_BEAUTY_GROUP_MAKEUP strength:0.5];
-            weakself.stickerId = sticker;
-        }];
-    } else {
-        [self.effectsProcess removeSticker:self.stickerId];
-        self.stickerId = 0;
-    }
-#endif
-}
-- (void)setSticker: (BOOL)isSelected {
-#if __has_include("st_mobile_common.h")
-    if (isSelected) {
-        NSString *path = [[NSBundle mainBundle] pathForResource:@"lianxingface.zip" ofType:nil];
-        [self.effectsProcess setStickerWithPath:path callBack:^(st_result_t state, int stickerId, uint64_t action) {
-                 
-        }];
-    } else {
-        [self.effectsProcess cleareStickers];
-    }
-#endif
-}
-- (void)setFilter: (BOOL)isSelected {
-#if __has_include("st_mobile_common.h")
-    if (isSelected) {
-        NSString *path =  [[NSBundle mainBundle] pathForResource:@"qise.zip" ofType:nil];
-        __weak VideoProcessingManager *weakself = self;
-        [self.effectsProcess addStickerWithPath:path callBack:^(st_result_t state, int sticker, uint64_t action) {
-            [weakself.effectsProcess setPackageId:sticker groupType:EFFECT_BEAUTY_GROUP_FILTER strength:0.5];
-            weakself.filterId = sticker;
-        }];
-    } else {
-        [self.effectsProcess removeSticker:self.filterId];
-        self.filterId = 0;
-    }
-#endif
-}
-
 - (void)setEffectType: (uint32_t)type value:(float)value {
 #if __has_include("st_mobile_common.h")
     [self.effectsProcess setEffectType:type value:value];

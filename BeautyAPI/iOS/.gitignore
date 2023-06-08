@@ -6,6 +6,7 @@
 *.xcworkspacedata
 xcshareddata
 SenseLib/*
+FULib/*
 
 *.zip
 agora_sdk
