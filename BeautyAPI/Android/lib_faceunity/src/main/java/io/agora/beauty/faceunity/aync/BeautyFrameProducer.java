@@ -9,7 +9,6 @@ import io.agora.base.TextureBufferHelper;
 import io.agora.base.internal.video.EglBase;
 import io.agora.base.internal.video.GlRectDrawer;
 import io.agora.base.internal.video.GlTextureFrameBuffer;
-import io.agora.base.internal.video.GlUtil;
 
 public class BeautyFrameProducer {
     private final String TAG = this.getClass().getSimpleName();
@@ -31,7 +30,7 @@ public class BeautyFrameProducer {
         this.callback = callback;
     }
 
-    public void pushFrameSync(int textureId, int texType, int width, int height, boolean isFront) {
+    public void pushFrameSync(int textureId, int texType, float[] texMatrix, int width, int height, boolean isFront) {
         if (isReleased) {
             return;
         }
@@ -66,9 +65,9 @@ public class BeautyFrameProducer {
             frameBuffer.setSize(width, height);
             GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.getFrameBufferId());
             if (texType == GLES20.GL_TEXTURE_2D) {
-                mDrawer.drawRgb(textureId, GlUtil.IDENTITY_MATRIX, width, height, 0, 0, width, height);
+                mDrawer.drawRgb(textureId, texMatrix, width, height, 0, 0, width, height);
             } else {
-                mDrawer.drawOes(textureId, GlUtil.IDENTITY_MATRIX, width, height, 0, 0, width, height);
+                mDrawer.drawOes(textureId, texMatrix, width, height, 0, 0, width, height);
             }
             GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
 

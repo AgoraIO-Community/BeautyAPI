@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.SurfaceView
-import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.faceunity.core.entity.FUBundleData
 import com.faceunity.core.faceunity.FURenderKit
 import com.faceunity.core.model.makeup.SimpleMakeup
@@ -32,7 +32,7 @@ import io.agora.rtc2.video.VideoEncoderConfiguration
 import io.agora.rtc2.video.VideoEncoderConfiguration.FRAME_RATE
 import java.io.File
 
-class FaceUnityActivity : ComponentActivity() {
+class FaceUnityActivity : AppCompatActivity() {
     private val TAG = this.javaClass.simpleName
 
     companion object {
@@ -262,6 +262,7 @@ class FaceUnityActivity : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         mFaceUnityApi.release()
+        FURenderer.getInstance().release()
         mRtcEngine.leaveChannel()
         RtcEngine.destroy()
     }

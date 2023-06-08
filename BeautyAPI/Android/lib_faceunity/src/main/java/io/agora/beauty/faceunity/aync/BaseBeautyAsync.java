@@ -9,6 +9,7 @@ import io.agora.base.VideoFrame;
 import io.agora.base.internal.video.GlRectDrawer;
 import io.agora.base.internal.video.GlTextureFrameBuffer;
 import io.agora.base.internal.video.GlUtil;
+import io.agora.base.internal.video.RendererCommon;
 
 public abstract class BaseBeautyAsync {
     protected final String TAG = this.getClass().getSimpleName();
@@ -46,9 +47,11 @@ public abstract class BaseBeautyAsync {
         if (buffer instanceof VideoFrame.TextureBuffer) {
             VideoFrame.TextureBuffer textureBuffer = (VideoFrame.TextureBuffer) buffer;
             long startTime = System.currentTimeMillis();
+            float[] matrix = RendererCommon.convertMatrixFromAndroidGraphicsMatrix(textureBuffer.getTransformMatrix());
             producer.pushFrameSync(
                     textureBuffer.getTextureId(),
                     textureBuffer.getType() == VideoFrame.TextureBuffer.Type.OES ? GLES11Ext.GL_TEXTURE_EXTERNAL_OES : GLES20.GL_TEXTURE_2D,
+                    matrix,
                     width,
                     height,
                     isFront
@@ -92,8 +95,7 @@ public abstract class BaseBeautyAsync {
         }
         int width = videoFrame.width;
         int height = videoFrame.height;
-        int originTexId = videoFrame.textureId;
-        int retTextId = process(videoFrame, width, height, originTexId);
+        int retTextId = process(videoFrame);
         // copy to fbo textureId
         if (outFrameBuffer == null) {
             outFrameBuffer = new GlTextureFrameBuffer(GLES20.GL_RGBA);
@@ -104,7 +106,7 @@ public abstract class BaseBeautyAsync {
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
     }
 
-    protected abstract int process(AsyncVideoFrame videoFrame, int width, int height, int originTexId);
+    protected abstract int process(AsyncVideoFrame videoFrame);
 
     private void onFrameProduced(int index) {
         if (isRelease) {

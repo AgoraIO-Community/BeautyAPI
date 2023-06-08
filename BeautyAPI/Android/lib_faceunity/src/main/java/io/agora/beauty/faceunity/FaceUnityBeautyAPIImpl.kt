@@ -246,54 +246,31 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         }
     }
 
-    private fun processBeautySingleTexture(videoFrame: VideoFrame): Int {
-        val texBufferHelper = textureBufferHelper ?: return -1
-        val buffer = videoFrame.buffer as? TextureBuffer ?: return -1
-        val width = buffer.width
-        val height = buffer.height
-        val isFront = videoFrame.sourceType == VideoFrame.SourceType.kFrontCamera
-
-        return texBufferHelper.invoke(Callable {
-            val fuRenderKit = config?.fuRenderKit ?: return@Callable -1
-            val input = FURenderInputData(width, height)
-            input.texture = FURenderInputData.FUTexture(
-                when (buffer.type) {
-                    TextureBuffer.Type.OES -> FUInputTextureEnum.FU_ADM_FLAG_EXTERNAL_OES_TEXTURE
-                    else -> FUInputTextureEnum.FU_ADM_FLAG_COMMON_TEXTURE
-                },
-                buffer.textureId
-            )
-            configMirror(input, isFront)
-            return@Callable fuRenderKit.renderWithInput(input).texture?.texId ?: -1
-        })
-    }
-
     private fun processBeautySingleTextureAsync(videoFrame: VideoFrame): Int {
         val texBufferHelper = textureBufferHelper ?: return -1
         if (mBeautyAsync == null) {
             mBeautyAsync = object : BaseBeautyAsync(texBufferHelper) {
                 override fun process(
-                    videoFrame: AsyncVideoFrame?,
-                    width: Int,
-                    height: Int,
-                    originTexId: Int
+                    videoFrame: AsyncVideoFrame?
                 ): Int {
+                    val frame = videoFrame ?: return -1
                     val fuRenderKit = config?.fuRenderKit ?: return -1
-                    val input = FURenderInputData(width, height)
+
+                    val input = FURenderInputData(frame.width, frame.height)
                     input.texture = FURenderInputData.FUTexture(
                         FUInputTextureEnum.FU_ADM_FLAG_COMMON_TEXTURE,
-                        originTexId
+                        frame.textureId
                     )
-                    val isFront = videoFrame?.isFront ?: true
+                    val isFront = frame.isFront
                     input.renderConfig.let {
                         if (isFront) {
-                            it.inputBufferMatrix = FUTransformMatrixEnum.CCROT90
-                            it.inputTextureMatrix = FUTransformMatrixEnum.CCROT90
+                            it.inputBufferMatrix = FUTransformMatrixEnum.CCROT90_FLIPHORIZONTAL
+                            it.inputTextureMatrix = FUTransformMatrixEnum.CCROT90_FLIPHORIZONTAL
                             it.outputMatrix = FUTransformMatrixEnum.CCROT0_FLIPHORIZONTAL
                         } else {
-                            it.inputBufferMatrix = FUTransformMatrixEnum.CCROT90_FLIPVERTICAL
-                            it.inputTextureMatrix = FUTransformMatrixEnum.CCROT90_FLIPVERTICAL
-                            it.outputMatrix = FUTransformMatrixEnum.CCROT0_FLIPHORIZONTAL
+                            it.inputBufferMatrix = FUTransformMatrixEnum.CCROT90
+                            it.inputTextureMatrix = FUTransformMatrixEnum.CCROT90
+                            it.outputMatrix = FUTransformMatrixEnum.CCROT0_FLIPVERTICAL
                         }
                     }
                     return fuRenderKit.renderWithInput(input).texture?.texId ?: -1
@@ -319,23 +296,19 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
                 FUInputBufferEnum.FU_FORMAT_NV21_BUFFER,
                 bufferArray
             )
-            configMirror(input, isFront)
+            input.renderConfig.let {
+                if (isFront) {
+                    it.inputBufferMatrix = FUTransformMatrixEnum.CCROT90
+                    it.inputTextureMatrix = FUTransformMatrixEnum.CCROT90
+                    it.outputMatrix = FUTransformMatrixEnum.CCROT0_FLIPHORIZONTAL
+                } else {
+                    it.inputBufferMatrix = FUTransformMatrixEnum.CCROT90_FLIPVERTICAL
+                    it.inputTextureMatrix = FUTransformMatrixEnum.CCROT90_FLIPVERTICAL
+                    it.outputMatrix = FUTransformMatrixEnum.CCROT0_FLIPHORIZONTAL
+                }
+            }
             return@Callable fuRenderKit.renderWithInput(input).texture?.texId ?: -1
         })
-    }
-
-    private fun configMirror(input: FURenderInputData, isFront: Boolean) {
-        input.renderConfig.let {
-            if (isFront) {
-                it.inputBufferMatrix = FUTransformMatrixEnum.CCROT90
-                it.inputTextureMatrix = FUTransformMatrixEnum.CCROT90
-                it.outputMatrix = FUTransformMatrixEnum.CCROT0_FLIPHORIZONTAL
-            } else {
-                it.inputBufferMatrix = FUTransformMatrixEnum.CCROT90_FLIPVERTICAL
-                it.inputTextureMatrix = FUTransformMatrixEnum.CCROT90_FLIPVERTICAL
-                it.outputMatrix = FUTransformMatrixEnum.CCROT0_FLIPHORIZONTAL
-            }
-        }
     }
 
     private fun processBeautyDoubleInput(videoFrame: VideoFrame): Int {
@@ -361,7 +334,49 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
                 FUInputBufferEnum.FU_FORMAT_NV21_BUFFER,
                 bufferArray
             )
-            configMirror(input, isFront)
+            input.renderConfig.let {
+                if (isFront) {
+                    it.inputBufferMatrix = FUTransformMatrixEnum.CCROT90
+                    it.inputTextureMatrix = FUTransformMatrixEnum.CCROT90
+                    it.outputMatrix = FUTransformMatrixEnum.CCROT0_FLIPHORIZONTAL
+                } else {
+                    it.inputBufferMatrix = FUTransformMatrixEnum.CCROT90_FLIPVERTICAL
+                    it.inputTextureMatrix = FUTransformMatrixEnum.CCROT90_FLIPVERTICAL
+                    it.outputMatrix = FUTransformMatrixEnum.CCROT0_FLIPHORIZONTAL
+                }
+            }
+            return@Callable fuRenderKit.renderWithInput(input).texture?.texId ?: -1
+        })
+    }
+
+    private fun processBeautySingleTexture(videoFrame: VideoFrame): Int {
+        val texBufferHelper = textureBufferHelper ?: return -1
+        val buffer = videoFrame.buffer as? TextureBuffer ?: return -1
+        val width = buffer.width
+        val height = buffer.height
+        val isFront = videoFrame.sourceType == VideoFrame.SourceType.kFrontCamera
+
+        return texBufferHelper.invoke(Callable {
+            val fuRenderKit = config?.fuRenderKit ?: return@Callable -1
+            val input = FURenderInputData(width, height)
+            input.texture = FURenderInputData.FUTexture(
+                when (buffer.type) {
+                    TextureBuffer.Type.OES -> FUInputTextureEnum.FU_ADM_FLAG_EXTERNAL_OES_TEXTURE
+                    else -> FUInputTextureEnum.FU_ADM_FLAG_COMMON_TEXTURE
+                },
+                buffer.textureId
+            )
+            input.renderConfig.let {
+                if (isFront) {
+                    it.inputBufferMatrix = FUTransformMatrixEnum.CCROT90
+                    it.inputTextureMatrix = FUTransformMatrixEnum.CCROT90
+                    it.outputMatrix = FUTransformMatrixEnum.CCROT0_FLIPHORIZONTAL
+                } else {
+                    it.inputBufferMatrix = FUTransformMatrixEnum.CCROT90_FLIPVERTICAL
+                    it.inputTextureMatrix = FUTransformMatrixEnum.CCROT90_FLIPVERTICAL
+                    it.outputMatrix = FUTransformMatrixEnum.CCROT0_FLIPHORIZONTAL
+                }
+            }
             return@Callable fuRenderKit.renderWithInput(input).texture?.texId ?: -1
         })
     }
