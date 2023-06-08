@@ -15,10 +15,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) EffectsProcess *effectsProcess;
 
-- (void)setMakeup: (BOOL)isSelected;
-- (void)setSticker: (BOOL)isSelected;
-- (void)setFilter: (BOOL)isSelected;
-
 - (void)setEffectType: (uint32_t)type value:(float)value;
 
 - (CVPixelBufferRef)videoProcessHandler:(CVPixelBufferRef)pixelBuffer;

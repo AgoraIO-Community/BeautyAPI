@@ -89,17 +89,17 @@ class BeautyViewController: UIViewController {
     @IBAction func onClickStyleButton(_ sender: UIButton) {
         sender.isSelected = !sender.isSelected
         sender.setTitleColor(sender.isSelected ? .orange : .systemPink, for: sender.isSelected ? .selected : .normal)
-        render.videoProcessing.setMakeup(sender.isSelected)
+        render.setMakeup(sender.isSelected)
     }
     @IBAction func onClickStickerButton(_ sender: UIButton) {
         sender.isSelected = !sender.isSelected
         sender.setTitleColor(sender.isSelected ? .orange : .systemPink, for: sender.isSelected ? .selected : .normal)
-        render.videoProcessing.setSticker(sender.isSelected)
+        render.setSticker(sender.isSelected)
     }
     @IBAction func onClickFilterButton(_ sender: UIButton) {
         sender.isSelected = !sender.isSelected
         sender.setTitleColor(sender.isSelected ? .orange : .systemPink, for: sender.isSelected ? .selected : .normal)
-        render.videoProcessing.setFilter(sender.isSelected)
+        render.setFilter(sender.isSelected)
     }
     
     private func setupBeautyAPI() {

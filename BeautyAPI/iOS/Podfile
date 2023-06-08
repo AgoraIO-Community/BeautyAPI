@@ -10,5 +10,6 @@ target 'BeautyAPi' do
 
   pod 'AgoraRtcEngine_iOS', '~> 4.2.0'
   pod 'SenseLib', :path => 'sense.podspec'
+#  pod 'fuLib', :path => 'fu.podspec'
 
 end

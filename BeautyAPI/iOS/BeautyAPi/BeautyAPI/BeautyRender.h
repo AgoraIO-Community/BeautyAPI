@@ -5,12 +5,12 @@
 //  Created by zhaoyongqiang on 2023/5/31.
 //
 
-#define Sensetime "VideoProcessingManager.h"
+#define Sensetime "st_mobile_common.h"
 
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
-#if __has_include(Sensetime)
-#import Sensetime
+#if __has_include("VideoProcessingManager.h")
+#import "VideoProcessingManager.h"
 #endif
 
 NS_ASSUME_NONNULL_BEGIN
@@ -24,6 +24,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setOptimizedDefault;
 
 - (CVPixelBufferRef)onCapture: (CVPixelBufferRef)pixelBuffer;
+
+- (void)setMakeup: (BOOL)isSelected;
+- (void)setSticker: (BOOL)isSelected;
+- (void)setFilter: (BOOL)isSelected;
 
 - (void)reset;
 

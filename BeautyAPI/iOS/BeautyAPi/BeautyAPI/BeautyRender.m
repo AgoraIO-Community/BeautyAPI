@@ -11,6 +11,9 @@
 #if __has_include(Sensetime)
 @property (nonatomic, assign) BOOL isSuccessLicense;
 @property (nonatomic, strong) NSTimer *timer;
+///贴纸id
+@property (nonatomic, assign) int stickerId;
+@property (nonatomic, assign) int filterId;
 #endif
 
 @end
@@ -50,6 +53,49 @@
         @"317": @(0),
     };
     return params;
+}
+
+- (void)setMakeup: (BOOL)isSelected {
+#if __has_include(Sensetime)
+    if (isSelected) {
+        NSString *path = [[NSBundle mainBundle] pathForResource:@"qise.zip" ofType:nil];
+        __weak BeautyRender *weakself = self;
+        [self.videoProcessing.effectsProcess addStickerWithPath:path callBack:^(st_result_t state, int sticker, uint64_t action) {
+            [weakself.videoProcessing.effectsProcess setPackageId:sticker groupType:EFFECT_BEAUTY_GROUP_MAKEUP strength:0.5];
+            weakself.stickerId = sticker;
+        }];
+    } else {
+        [self.videoProcessing.effectsProcess removeSticker:self.stickerId];
+        self.stickerId = 0;
+    }
+#endif
+}
+- (void)setSticker: (BOOL)isSelected {
+#if __has_include(Sensetime)
+    if (isSelected) {
+        NSString *path = [[NSBundle mainBundle] pathForResource:@"lianxingface.zip" ofType:nil];
+        [self.videoProcessing.effectsProcess setStickerWithPath:path callBack:^(st_result_t state, int stickerId, uint64_t action) {
+                 
+        }];
+    } else {
+        [self.videoProcessing cleareStickers];
+    }
+#endif
+}
+- (void)setFilter: (BOOL)isSelected {
+#if __has_include(Sensetime)
+    if (isSelected) {
+        NSString *path =  [[NSBundle mainBundle] pathForResource:@"qise.zip" ofType:nil];
+        __weak BeautyRender *weakself = self;
+        [self.videoProcessing.effectsProcess addStickerWithPath:path callBack:^(st_result_t state, int sticker, uint64_t action) {
+            [weakself.videoProcessing.effectsProcess setPackageId:sticker groupType:EFFECT_BEAUTY_GROUP_FILTER strength:0.5];
+            weakself.filterId = sticker;
+        }];
+    } else {
+        [self.videoProcessing.effectsProcess removeSticker:self.filterId];
+        self.filterId = 0;
+    }
+#endif
 }
 
 #if __has_include(Sensetime)
