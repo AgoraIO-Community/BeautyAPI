@@ -10,6 +10,10 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url 'http://maven.faceunity.com/repository/maven-public/'
+            allowInsecureProtocol = true
+        }
     }
 }
 rootProject.name = "BeautyAPI"
@@ -18,3 +22,4 @@ include ':lib_sensetime'
 include ':lib_sensetime:libs:SenseArSourceManager'
 include ':lib_sensetime:libs:STMobileJNI'
 include ':lib_sensetime:libs:HardwareBuffer'
+include ':lib_faceunity'

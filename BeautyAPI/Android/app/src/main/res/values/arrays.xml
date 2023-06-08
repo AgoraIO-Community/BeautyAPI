@@ -3,6 +3,7 @@
 
     <array name="beauty_type">
         <item>@string/beauty_sensetime</item>
+        <item>@string/beauty_faceunity</item>
     </array>
 
     <array name="resolution">
