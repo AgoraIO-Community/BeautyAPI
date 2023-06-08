@@ -224,8 +224,8 @@
 				E72D780E2A25963500C9134C /* Sources */,
 				E72D780F2A25963500C9134C /* Frameworks */,
 				E72D78102A25963500C9134C /* Resources */,
-				D60B9479D4D66FC396F0E2EF /* [CP] Embed Pods Frameworks */,
-				10AEF9F5430DC34DEAF9194B /* [CP] Copy Pods Resources */,
+				4A7E14FC6F165CEF1D9D182A /* [CP] Embed Pods Frameworks */,
+				0717BC8432324D86D0641E60 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -284,6 +284,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		0717BC8432324D86D0641E60 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BeautyAPi/Pods-BeautyAPi-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BeautyAPi/Pods-BeautyAPi-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BeautyAPi/Pods-BeautyAPi-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		0E044CBA6BCD9001EE9FA9A0 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -306,24 +323,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		10AEF9F5430DC34DEAF9194B /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-BeautyAPi/Pods-BeautyAPi-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-BeautyAPi/Pods-BeautyAPi-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BeautyAPi/Pods-BeautyAPi-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		D60B9479D4D66FC396F0E2EF /* [CP] Embed Pods Frameworks */ = {
+		4A7E14FC6F165CEF1D9D182A /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (

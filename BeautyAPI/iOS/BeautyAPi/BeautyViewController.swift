@@ -84,7 +84,7 @@ class BeautyViewController: UIViewController {
     @IBAction func onClickBeautyButton(_ sender: UIButton) {
         sender.isSelected = !sender.isSelected
         sender.setTitleColor(sender.isSelected ? .orange : .systemPink, for: sender.isSelected ? .selected : .normal)
-        beautyAPI.setOptimizedDefault(sender.isSelected)
+        beautyAPI.setBeautyPreset(sender.isSelected ? .default : .custom)
     }
     @IBAction func onClickStyleButton(_ sender: UIButton) {
         sender.isSelected = !sender.isSelected
@@ -105,8 +105,15 @@ class BeautyViewController: UIViewController {
     private func setupBeautyAPI() {
         let config = BeautyConfig()
         config.rtcEngine = rtcEngine
-        config.processMode = .processModeAgora
+        config.captureMode = .agora
         config.beautyRender = render
+        config.statsEnable = false
+        config.statsDuration = 5
+        config.eventCallback = { stats in
+            print("min == \(stats.minCostMs)")
+            print("max == \(stats.maxCostMs)")
+            print("averageCostMs == \(stats.averageCostMs)")
+        }
         let result = beautyAPI.initialize(config)
         if result != 0 {
             print("initialize error == \(result)")
@@ -115,15 +122,10 @@ class BeautyViewController: UIViewController {
     }
     
     private func setupRTC() {
-        let videoCanvas = AgoraRtcVideoCanvas()
-        videoCanvas.uid = 0
-        videoCanvas.view = localView
-        videoCanvas.renderMode = .hidden
-        videoCanvas.mirrorMode = .disabled
-        rtcEngine.setupLocalVideo(videoCanvas)
+        beautyAPI.setupLocalVideo(localView, renderMode: .hidden)
         rtcEngine.startPreview()
         
-        // useCostome为true时需要注册delegate
+        // captureMode为custom时需要注册delegate
 //        rtcEngine.setVideoFrameDelegate(self)
         
         updateVideoEncodeConfig()
