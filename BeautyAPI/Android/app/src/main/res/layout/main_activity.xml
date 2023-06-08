@@ -106,6 +106,52 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="美颜采集方式" />
+
+        <Spinner
+            android:id="@+id/spBeautyCaptureMode"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_weight="1"
+            android:entries="@array/beauty_capture_mode"
+            android:gravity="end"
+            android:paddingVertical="8dp"
+            android:textAlignment="viewEnd" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="美颜处理方式" />
+
+        <Spinner
+            android:id="@+id/spBeautyProcessMode"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_weight="1"
+            android:entries="@array/beauty_process_mode"
+            android:gravity="end"
+            android:paddingVertical="8dp"
+            android:textAlignment="viewEnd" />
+
+    </LinearLayout>
+
 
     <Button
         android:id="@+id/btnJoin"

@@ -30,7 +30,7 @@ import io.agora.base.VideoFrame
 import io.agora.rtc2.Constants
 import io.agora.rtc2.RtcEngine
 
-enum class ProcessMode{
+enum class CaptureMode{
     Agora, // 使用声网内部的祼数据接口进行处理
     Custom // 自定义模式，需要自己调用onFrame接口将原始视频帧传给BeautyAPI做处理
 }
@@ -55,7 +55,7 @@ data class Config(
     val rtcEngine: RtcEngine, // 声网Rtc引擎
     val stRenderKit: STRenderKit, // 美颜SDK处理句柄
     val eventCallback: IEventCallback? = null, // 事件回调
-    val processMode: ProcessMode = ProcessMode.Agora, // 处理模式
+    val captureMode: CaptureMode = CaptureMode.Agora, // 处理模式
     val statsDuration: Long = 1000, // 统计区间
     val statsEnable: Boolean = false // 是否开启统计
 )
@@ -118,6 +118,11 @@ interface SenseTimeBeautyAPI {
      * @return 见ErrorCode
      */
     fun setBeautyPreset(preset: BeautyPreset = BeautyPreset.DEFAULT): Int
+
+    /**
+     * 私参配置，用于不对外api的调用，多用于测试
+     */
+    fun setParameters(key: String, value: String)
 
     /**
      * 释放资源，一旦释放后这个实例将无法使用

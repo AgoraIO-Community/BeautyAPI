@@ -37,6 +37,7 @@ import io.agora.base.TextureBufferHelper
 import io.agora.base.VideoFrame
 import io.agora.base.VideoFrame.I420Buffer
 import io.agora.base.VideoFrame.TextureBuffer
+import io.agora.base.internal.video.RendererCommon
 import io.agora.base.internal.video.YuvHelper
 import io.agora.rtc2.Constants
 import io.agora.rtc2.gl.EglBaseProvider
@@ -46,7 +47,7 @@ import java.nio.ByteBuffer
 import java.util.concurrent.Callable
 
 class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
-    private val beautyMode = 2 // 0: 自动根据buffer类型切换，1：固定使用OES纹理，2：固定使用i420
+    private var beautyMode = 0 // 0: 自动根据buffer类型切换，1：固定使用OES纹理，2：固定使用i420
 
     private var textureBufferHelper: TextureBufferHelper? = null
     private var nv21ByteBuffer: ByteBuffer? = null
@@ -60,7 +61,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
             return ErrorCode.ERROR_HAS_INITIALIZED.value
         }
         this.config = config
-        if (config.processMode == ProcessMode.Agora) {
+        if (config.captureMode == CaptureMode.Agora) {
             config.rtcEngine.registerVideoFrameObserver(this)
         }
         return ErrorCode.ERROR_OK.value
@@ -93,7 +94,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         if (isReleased) {
             return ErrorCode.ERROR_HAS_RELEASED.value
         }
-        if (conf.processMode != ProcessMode.Custom) {
+        if (conf.captureMode != CaptureMode.Custom) {
             return ErrorCode.ERROR_PROCESS_NOT_CUSTOM.value
         }
         if (!enable) {
@@ -216,6 +217,12 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         return ErrorCode.ERROR_OK.value
     }
 
+    override fun setParameters(key: String, value: String) {
+        when(key){
+            "beauty_mode" -> beautyMode = value.toInt()
+        }
+    }
+
     override fun release(): Int {
         if (isReleased) {
             return ErrorCode.ERROR_HAS_RELEASED.value
@@ -255,6 +262,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
             )
         }
         val startTime = System.currentTimeMillis()
+
         val processTexId = when(beautyMode){
             1 -> processBeautySingleTexture(videoFrame)
             2 -> processBeautySingleBuffer(videoFrame)
@@ -265,7 +273,6 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         if (processTexId < 0) {
             return false
         }
-
         val processBuffer: TextureBuffer = textureBufferHelper?.wrapTextureBuffer(
             videoFrame.rotatedWidth,
             videoFrame.rotatedHeight,
@@ -295,6 +302,8 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         val width = buffer.width
         val height = buffer.height
 
+        val matrix = RendererCommon.convertMatrixFromAndroidGraphicsMatrix(buffer.transformMatrix)
+
         return texBufferHelper.invoke(Callable {
             val stRenderKit = config?.stRenderKit?: return@Callable -1
             return@Callable stRenderKit.preProcess(
@@ -303,7 +312,8 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
                 when (buffer.type) {
                     TextureBuffer.Type.OES -> GLES11Ext.GL_TEXTURE_EXTERNAL_OES
                     else -> GLES20.GL_TEXTURE_2D
-                }
+                },
+                matrix
             )
         })
     }
@@ -328,9 +338,11 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         val texBufferHelper = textureBufferHelper ?: return -1
         val buffer = videoFrame.buffer as? TextureBuffer ?: return -1
         val nv21ByteArray = getNV21Buffer(videoFrame) ?: return -1
-
         val width = buffer.width
         val height = buffer.height
+
+        val matrix =
+            RendererCommon.convertMatrixFromAndroidGraphicsMatrix(buffer.transformMatrix)
         return texBufferHelper.invoke(Callable {
             val stRenderKit = config?.stRenderKit?: return@Callable -1
             return@Callable stRenderKit.preProcess(
@@ -340,15 +352,17 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
                 when (buffer.type) {
                     TextureBuffer.Type.OES -> GLES11Ext.GL_TEXTURE_EXTERNAL_OES
                     else -> GLES20.GL_TEXTURE_2D
-                }
+                },
+                matrix
             )
         })
     }
 
     private fun getNV21Buffer(videoFrame: VideoFrame) : ByteArray? {
         val buffer = videoFrame.buffer
-        val width = buffer.width
-        val height = buffer.height
+        val i420Buffer = buffer as? I420Buffer ?: buffer.toI420()
+        val width = i420Buffer.width
+        val height = i420Buffer.height
         val nv21Size = (width * height * 3.0f / 2.0f + 0.5f).toInt()
         if (nv21ByteBuffer == null || nv21ByteBuffer?.capacity() != nv21Size) {
             nv21ByteBuffer?.clear()
@@ -356,7 +370,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
             return null
         }
         val nv21ByteArray = ByteArray(nv21Size)
-        val i420Buffer = buffer as? I420Buffer ?: buffer.toI420()
+
         YuvHelper.I420ToNV12(
             i420Buffer.dataY, i420Buffer.strideY,
             i420Buffer.dataV, i420Buffer.strideV,
