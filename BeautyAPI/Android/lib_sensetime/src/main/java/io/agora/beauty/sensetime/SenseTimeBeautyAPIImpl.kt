@@ -55,6 +55,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
     private var enable: Boolean = false
     private var isReleased: Boolean = false
     private var shouldMirror = false
+    private var statsHelper: StatsHelper? = null
 
     override fun initialize(config: Config): Int {
         if (this.config != null) {
@@ -63,6 +64,9 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         this.config = config
         if (config.captureMode == CaptureMode.Agora) {
             config.rtcEngine.registerVideoFrameObserver(this)
+        }
+        statsHelper = StatsHelper(config.statsDuration) {
+            this.config?.eventCallback?.onBeautyStats(it)
         }
         return ErrorCode.ERROR_OK.value
     }
@@ -238,6 +242,8 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
             }
             it.dispose()
         }
+        statsHelper?.reset()
+        statsHelper = null
         return ErrorCode.ERROR_OK.value
     }
 
@@ -268,7 +274,11 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
             2 -> processBeautySingleBuffer(videoFrame)
             else -> processBeautyAuto(videoFrame)
         }
-        val costTime = System.currentTimeMillis() - startTime
+        if(config?.statsEnable == true){
+            val costTime = System.currentTimeMillis() - startTime
+            statsHelper?.once(costTime)
+        }
+
 
         if (processTexId < 0) {
             return false

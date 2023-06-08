@@ -65,6 +65,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
     private val identityMatrix =  Matrix()
     private var mCameraIsFront = true
     private var mBeautyAsync: BaseBeautyAsync? = null
+    private var statsHelper: StatsHelper? = null
 
     override fun initialize(config: Config): Int {
         if (this.config != null) {
@@ -73,6 +74,9 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         this.config = config
         if (config.captureMode == CaptureMode.Agora) {
             config.rtcEngine.registerVideoFrameObserver(this)
+        }
+        statsHelper = StatsHelper(config.statsDuration){
+            this.config?.eventCallback?.onBeautyStats(it)
         }
         return ErrorCode.ERROR_OK.value
     }
@@ -183,6 +187,8 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             }
             it.dispose()
         }
+        statsHelper?.reset()
+        statsHelper = null
         return ErrorCode.ERROR_OK.value
     }
 
@@ -214,7 +220,10 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             3 -> processBeautySingleTextureAsync(videoFrame)
             else -> processBeautyAuto(videoFrame)
         }
-        val costTime = System.currentTimeMillis() - startTime
+        if(config?.statsEnable == true){
+            val costTime = System.currentTimeMillis() - startTime
+            statsHelper?.once(costTime)
+        }
 
         val isFront = videoFrame.sourceType == VideoFrame.SourceType.kFrontCamera
         if(mCameraIsFront != isFront){

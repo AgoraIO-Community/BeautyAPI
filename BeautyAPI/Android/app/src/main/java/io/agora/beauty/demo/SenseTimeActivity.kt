@@ -14,9 +14,11 @@ import io.agora.base.VideoFrame
 import io.agora.beauty.demo.databinding.BeautyActivityBinding
 import io.agora.beauty.demo.utils.ReflectUtils
 import io.agora.beauty.sensetime.BeautyPreset
+import io.agora.beauty.sensetime.BeautyStats
 import io.agora.beauty.sensetime.CaptureMode
 import io.agora.beauty.sensetime.Config
 import io.agora.beauty.sensetime.ErrorCode
+import io.agora.beauty.sensetime.IEventCallback
 import io.agora.beauty.sensetime.createSenseTimeBeautyAPI
 import io.agora.rtc2.ChannelMediaOptions
 import io.agora.rtc2.Constants
@@ -143,7 +145,13 @@ class SenseTimeActivity : ComponentActivity() {
             Config(
                 mRtcEngine,
                 mSTRenderKit,
-                captureMode = if (isCustomCaptureMode) CaptureMode.Custom else CaptureMode.Agora
+                captureMode = if (isCustomCaptureMode) CaptureMode.Custom else CaptureMode.Agora,
+                statsEnable = true,
+                eventCallback = object: IEventCallback{
+                    override fun onBeautyStats(stats: BeautyStats) {
+                        Log.d(TAG, "BeautyStats stats = $stats")
+                    }
+                }
             )
         )
 
