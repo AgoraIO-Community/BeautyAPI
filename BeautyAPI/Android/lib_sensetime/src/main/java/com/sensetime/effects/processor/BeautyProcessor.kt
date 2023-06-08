@@ -109,6 +109,8 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
                 it.release()
                 inputGLFrameBuffer = null
             }
+            mSTMobileHardwareBufferNative?.release()
+            mSTMobileHardwareBufferNative = null
             return@Callable null
         })
         glExecutor.shutdown()
@@ -214,6 +216,10 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
                 inputGLFrameBuffer = GLFrameBuffer(input.textureType)
             }
             inputGLFrameBuffer?.setSize(mInputWidth, mInputHeight)
+            if(input.textureMatrix != null){
+                inputGLFrameBuffer?.setTexMatrix(input.textureMatrix)
+                inputGLFrameBuffer?.setFlipV(true)
+            }
             inputGLFrameBuffer?.process(input.textureId)
 
             glCopyHelper.copy2DTextureToOesTexture(
@@ -238,6 +244,7 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
                 STCommonNative.ST_PIX_FMT_RGBA8888,
                 input.textureId,
                 input.textureType,
+                input.textureMatrix,
                 1,
                 input.width,
                 input.height,
@@ -305,6 +312,7 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
                 input.bytesType,
                 inputTextures[current] ?: return null,
                 GLES20.GL_TEXTURE_2D,
+                input.textureMatrix,
                 0,
                 input.width,
                 input.height,
@@ -343,62 +351,6 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
         var execute: OutputInfo? = null
         LogUtils.i("processDoubleInput index=$current")
         cacheExecutor.execute(
-            task = Callable {
-                if (isReleased) {
-                    return@Callable -1
-                }
-                LogUtils.i("processDoubleInput index=$current nativeHumanActionDetect start")
-                val orientation: Int =
-                    getHumanActionOrientation(input.isFrontCamera, input.cameraOrientation)
-                val deviceOrientation: Int =
-                    mAccelerometer?.direction ?: CLOCKWISE_ANGLE.Deg90.value
-                val startHumanAction = System.currentTimeMillis()
-                //Log.e(TAG, "config: "+Long.toHexString(mDetectConfig) );
-                val ret: Int = mSTHumanActionNative.nativeHumanActionDetectPtr(
-                    input.bytes,
-                    input.bytesType,
-                    mSTMobileEffectNative.humanActionDetectConfig,
-                    orientation,
-                    input.width,
-                    input.height
-                )
-
-                LogUtils.i(
-                    TAG,
-                    "human action cost time: %d, ret: %d",
-                    System.currentTimeMillis() - startHumanAction, ret
-                )
-                //nv21数据为横向，相对于预览方向需要旋转处理，前置摄像头还需要镜像
-                STHumanAction.nativeHumanActionRotateAndMirror(
-                    mSTHumanActionNative,
-                    mSTHumanActionNative.nativeHumanActionResultPtr,
-                    outWidth,
-                    outHeight,
-                    if (input.isFrontCamera) Camera.CameraInfo.CAMERA_FACING_FRONT else Camera.CameraInfo.CAMERA_FACING_BACK,
-                    input.cameraOrientation,
-                    deviceOrientation
-                )
-                if (mStAnimalNative != null) {
-                    animalDetect(
-                        input.bytes,
-                        input.bytesType,
-                        getHumanActionOrientation(input.isFrontCamera, input.cameraOrientation),
-                        input.height,
-                        input.width,
-                        current,
-                        input.isFrontCamera,
-                        input.cameraOrientation
-                    )
-                } else {
-                    mAnimalFaceInfo[current] = STAnimalFaceInfo(null, 0)
-                }
-                LogUtils.i("processDoubleInput index=$current nativeHumanActionDetect end")
-                mSTHumanActionNative.updateNativeHumanActionCache((current + input.diffBetweenBytesAndTexture) % cacheCount)
-                if (isReleased) {
-                    return@Callable -1
-                }
-                return@Callable current
-            },
             beforeSubmit = { executedIndex ->
                 if (executedIndex != null && executedIndex >= 0) {
                     execute = glExecutor.execute(Callable {
@@ -524,12 +476,76 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
                     }
                     glFrameBuffer.setSize(outWidth, outHeight)
                     glFrameBuffer.setRotation(input.cameraOrientation)
-                    glFrameBuffer.setFlipH(input.isFrontCamera)
+                    if(input.textureMatrix != null){
+                        glFrameBuffer.setTexMatrix(input.textureMatrix)
+                        glFrameBuffer.setFlipH(!input.isFrontCamera)
+                    }else{
+                        glFrameBuffer.setFlipH(input.isFrontCamera)
+                    }
+
+
                     glFrameBuffer.process(input.textureId)
                     LogUtils.i("processDoubleInput index=$current cache frame buffer")
                     return@Callable null
                 })
-            })
+            },
+            task = Callable {
+                if (isReleased) {
+                    return@Callable -1
+                }
+                LogUtils.i("processDoubleInput index=$current nativeHumanActionDetect start")
+                val orientation: Int =
+                    getHumanActionOrientation(input.isFrontCamera, input.cameraOrientation)
+                val deviceOrientation: Int =
+                    mAccelerometer?.direction ?: CLOCKWISE_ANGLE.Deg90.value
+                val startHumanAction = System.currentTimeMillis()
+                //Log.e(TAG, "config: "+Long.toHexString(mDetectConfig) );
+                val ret: Int = mSTHumanActionNative.nativeHumanActionDetectPtr(
+                    input.bytes,
+                    input.bytesType,
+                    mSTMobileEffectNative.humanActionDetectConfig,
+                    orientation,
+                    input.width,
+                    input.height
+                )
+
+                LogUtils.i(
+                    TAG,
+                    "human action cost time: %d, ret: %d",
+                    System.currentTimeMillis() - startHumanAction, ret
+                )
+                //nv21数据为横向，相对于预览方向需要旋转处理，前置摄像头还需要镜像
+                STHumanAction.nativeHumanActionRotateAndMirror(
+                    mSTHumanActionNative,
+                    mSTHumanActionNative.nativeHumanActionResultPtr,
+                    outWidth,
+                    outHeight,
+                    if (input.isFrontCamera) Camera.CameraInfo.CAMERA_FACING_FRONT else Camera.CameraInfo.CAMERA_FACING_BACK,
+                    input.cameraOrientation,
+                    deviceOrientation
+                )
+                if (mStAnimalNative != null) {
+                    animalDetect(
+                        input.bytes,
+                        input.bytesType,
+                        getHumanActionOrientation(input.isFrontCamera, input.cameraOrientation),
+                        input.height,
+                        input.width,
+                        current,
+                        input.isFrontCamera,
+                        input.cameraOrientation
+                    )
+                } else {
+                    mAnimalFaceInfo[current] = STAnimalFaceInfo(null, 0)
+                }
+                LogUtils.i("processDoubleInput index=$current nativeHumanActionDetect end")
+                mSTHumanActionNative.updateNativeHumanActionCache((current + input.diffBetweenBytesAndTexture) % cacheCount)
+                if (isReleased) {
+                    return@Callable -1
+                }
+                return@Callable current
+            },
+        )
         return execute
     }
 

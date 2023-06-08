@@ -20,7 +20,7 @@ public class GLFrameBuffer {
     private final BaseProgram mProgram;
 
     private float[] mMVPMatrix = new float[16];
-    private final float[] mTexMatrix = GlUtil.IDENTITY_MATRIX;
+    private float[] mTexMatrix = GlUtil.IDENTITY_MATRIX;
 
     public GLFrameBuffer(int textureType) {
         this.textureType = textureType;
@@ -66,6 +66,15 @@ public class GLFrameBuffer {
 
     public int getTextureType(){
         return textureType;
+    }
+
+
+    public void setTexMatrix(float[] matrix) {
+        if (matrix != null) {
+            mTexMatrix = matrix;
+        } else {
+            mTexMatrix = GlUtil.IDENTITY_MATRIX;
+        }
     }
 
 

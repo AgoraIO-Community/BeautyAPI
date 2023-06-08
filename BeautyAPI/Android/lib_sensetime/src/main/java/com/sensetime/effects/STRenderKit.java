@@ -319,6 +319,7 @@ public class STRenderKit {
                 bytesType,
                 null,
                 0,
+                null,
                 0,
                 width,
                 height,
@@ -332,7 +333,7 @@ public class STRenderKit {
         return process.getTextureId();
     }
 
-    public int preProcess(int width, int height, int rotation, @NotNull byte[] bytes, int bytesType, int textureId, int textureType) {
+    public int preProcess(int width, int height, int rotation, @NotNull byte[] bytes, int bytesType, int textureId, int textureType, float[] textureMatrix) {
         if (!mAuthorized) {
             return -2;
         }
@@ -347,6 +348,7 @@ public class STRenderKit {
                 bytesType,
                 textureId,
                 textureType,
+                textureMatrix,
                 1,
                 width,
                 height,
@@ -361,7 +363,7 @@ public class STRenderKit {
     }
 
     @TargetApi(26)
-    public int preProcess(int width, int height, int rotation, int textureId, int textureType) {
+    public int preProcess(int width, int height, int rotation, int textureId, int textureType, float[] textureMatrix) {
         if (!mAuthorized) {
             return -2;
         }
@@ -376,6 +378,7 @@ public class STRenderKit {
                 STCommonNative.ST_PIX_FMT_NV21,
                 textureId,
                 textureType,
+                textureMatrix,
                 1,
                 width,
                 height,

@@ -6,6 +6,17 @@
         <item>@string/beauty_faceunity</item>
     </array>
 
+    <array name="beauty_process_mode">
+        <item>@string/beauty_process_auto</item>
+        <item>@string/beauty_process_i420</item>
+        <item>@string/beauty_process_texture</item>
+    </array>
+
+    <array name="beauty_capture_mode">
+        <item>@string/beauty_capture_agora</item>
+        <item>@string/beauty_capture_custom</item>
+    </array>
+
     <array name="resolution">
         <item>VD_1920x1080</item>
         <item>VD_1280x720</item>

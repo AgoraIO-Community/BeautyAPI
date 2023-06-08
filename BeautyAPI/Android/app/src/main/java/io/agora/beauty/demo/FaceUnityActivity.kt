@@ -13,18 +13,20 @@ import com.faceunity.core.model.makeup.SimpleMakeup
 import com.faceunity.core.model.prop.Prop
 import com.faceunity.core.model.prop.sticker.Sticker
 import com.faceunity.nama.FURenderer
+import io.agora.base.VideoFrame
 import io.agora.beauty.demo.databinding.BeautyActivityBinding
 import io.agora.beauty.demo.utils.ReflectUtils
 import io.agora.beauty.faceunity.BeautyPreset
-import io.agora.beauty.faceunity.BeautyStats
+import io.agora.beauty.faceunity.CaptureMode
 import io.agora.beauty.faceunity.Config
-import io.agora.beauty.faceunity.IEventCallback
 import io.agora.beauty.faceunity.createFaceUnityBeautyAPI
+import io.agora.beauty.sensetime.ErrorCode
 import io.agora.rtc2.ChannelMediaOptions
 import io.agora.rtc2.Constants
 import io.agora.rtc2.IRtcEngineEventHandler
 import io.agora.rtc2.RtcEngine
 import io.agora.rtc2.RtcEngineConfig
+import io.agora.rtc2.video.IVideoFrameObserver
 import io.agora.rtc2.video.VideoCanvas
 import io.agora.rtc2.video.VideoEncoderConfiguration
 import io.agora.rtc2.video.VideoEncoderConfiguration.FRAME_RATE
@@ -37,17 +39,23 @@ class FaceUnityActivity : ComponentActivity() {
         private const val EXTRA_CHANNEL_NAME = "ChannelName"
         private const val EXTRA_RESOLUTION = "Resolution"
         private const val EXTRA_FRAME_RATE = "FrameRate"
+        private const val EXTRA_CAPTURE_MODE = "CaptureMode"
+        private const val EXTRA_PROCESS_MODE = "ProcessMode"
 
         fun launch(
             context: Context,
             channelName: String,
             resolution: String,
-            frameRate: String
+            frameRate: String,
+            captureMode: String,
+            processMode: String
         ) {
             Intent(context, FaceUnityActivity::class.java).apply {
                 putExtra(EXTRA_CHANNEL_NAME, channelName)
                 putExtra(EXTRA_RESOLUTION, resolution)
                 putExtra(EXTRA_FRAME_RATE, frameRate)
+                putExtra(EXTRA_CAPTURE_MODE, captureMode)
+                putExtra(EXTRA_PROCESS_MODE, processMode)
                 context.startActivity(this)
             }
         }
@@ -139,18 +147,55 @@ class FaceUnityActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(mBinding.root)
 
-        mFaceUnityApi.initialize(Config(
-            mRtcEngine,
-            fuRenderKit,
-            eventCallback = object : IEventCallback {
-                override fun onBeautyStats(stats: BeautyStats) {
-//                    Log.d(
-//                        "SenseTime",
-//                        "onBeautyStatus totalCostTime = ${stats.totalCostTimeMs}"
-//                    )
-                }
-            }
-        ))
+        val isCustomCaptureMode =
+            intent.getStringExtra(EXTRA_CAPTURE_MODE) == getString(R.string.beauty_capture_custom)
+
+        mFaceUnityApi.initialize(
+            Config(
+                mRtcEngine,
+                fuRenderKit,
+                captureMode = if(isCustomCaptureMode) CaptureMode.Custom else CaptureMode.Agora
+            )
+        )
+        when (intent.getStringExtra(EXTRA_PROCESS_MODE)) {
+            getString(R.string.beauty_process_auto) -> mFaceUnityApi.setParameters("beauty_mode", "0")
+            getString(R.string.beauty_process_texture) -> mFaceUnityApi.setParameters("beauty_mode", "3")
+            getString(R.string.beauty_process_i420) -> mFaceUnityApi.setParameters("beauty_mode", "2")
+        }
+        if(isCustomCaptureMode){
+            mRtcEngine.registerVideoFrameObserver(object : IVideoFrameObserver {
+                override fun onCaptureVideoFrame(
+                    sourceType: Int,
+                    videoFrame: VideoFrame?
+                ) = mFaceUnityApi.onFrame(videoFrame!!) == ErrorCode.ERROR_OK.value
+
+                override fun onPreEncodeVideoFrame(
+                    sourceType: Int,
+                    videoFrame: VideoFrame?
+                ) = true
+
+                override fun onMediaPlayerVideoFrame(
+                    videoFrame: VideoFrame?,
+                    mediaPlayerId: Int
+                ) = true
+
+                override fun onRenderVideoFrame(
+                    channelId: String?,
+                    uid: Int,
+                    videoFrame: VideoFrame?
+                ) = true
+
+                override fun getVideoFrameProcessMode() = IVideoFrameObserver.PROCESS_MODE_READ_WRITE
+
+                override fun getVideoFormatPreference() = IVideoFrameObserver.VIDEO_PIXEL_DEFAULT
+
+                override fun getRotationApplied() = false
+
+                override fun getMirrorApplied() = false
+
+                override fun getObservedFramePosition() = IVideoFrameObserver.POSITION_POST_CAPTURER
+            })
+        }
         if (beautyEnableDefault) {
             mFaceUnityApi.enable(true)
         }
@@ -220,7 +265,6 @@ class FaceUnityActivity : ComponentActivity() {
         mRtcEngine.leaveChannel()
         RtcEngine.destroy()
     }
-
 
 
 }

@@ -22,7 +22,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(mBinding.root)
 
-        mBinding.spResolution.setSelection(1)
+        mBinding.etChannelName.setText((java.util.Random().nextInt(100) + 1000).toString())
+        mBinding.spResolution.setSelection(2)
         mBinding.spRoleType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
@@ -35,6 +36,8 @@ class MainActivity : ComponentActivity() {
                 (mBinding.spResolution.parent as ViewGroup).isInvisible = isAudience
                 (mBinding.spBeautyType.parent as ViewGroup).isInvisible = isAudience
                 (mBinding.spFrameRate.parent as ViewGroup).isInvisible = isAudience
+                (mBinding.spBeautyCaptureMode.parent as ViewGroup).isInvisible = isAudience
+                (mBinding.spBeautyProcessMode.parent as ViewGroup).isInvisible = isAudience
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -65,14 +68,18 @@ class MainActivity : ComponentActivity() {
                     this,
                     mBinding.etChannelName.text.toString(),
                     mBinding.spResolution.selectedItem.toString(),
-                    mBinding.spFrameRate.selectedItem.toString()
+                    mBinding.spFrameRate.selectedItem.toString(),
+                    mBinding.spBeautyCaptureMode.selectedItem.toString(),
+                    mBinding.spBeautyProcessMode.selectedItem.toString(),
                 )
 
                 getString(R.string.beauty_faceunity) -> FaceUnityActivity.launch(
                     this,
                     mBinding.etChannelName.text.toString(),
                     mBinding.spResolution.selectedItem.toString(),
-                    mBinding.spFrameRate.selectedItem.toString()
+                    mBinding.spFrameRate.selectedItem.toString(),
+                    mBinding.spBeautyCaptureMode.selectedItem.toString(),
+                    mBinding.spBeautyProcessMode.selectedItem.toString()
                 )
             }
         } else {

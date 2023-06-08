@@ -10,18 +10,20 @@ import androidx.activity.ComponentActivity
 import com.sensetime.effects.STRenderKit
 import com.sensetime.effects.utils.FileUtils
 import com.sensetime.stmobile.model.STMobileMakeupType
+import io.agora.base.VideoFrame
 import io.agora.beauty.demo.databinding.BeautyActivityBinding
 import io.agora.beauty.demo.utils.ReflectUtils
 import io.agora.beauty.sensetime.BeautyPreset
-import io.agora.beauty.sensetime.BeautyStats
+import io.agora.beauty.sensetime.CaptureMode
 import io.agora.beauty.sensetime.Config
-import io.agora.beauty.sensetime.IEventCallback
+import io.agora.beauty.sensetime.ErrorCode
 import io.agora.beauty.sensetime.createSenseTimeBeautyAPI
 import io.agora.rtc2.ChannelMediaOptions
 import io.agora.rtc2.Constants
 import io.agora.rtc2.IRtcEngineEventHandler
 import io.agora.rtc2.RtcEngine
 import io.agora.rtc2.RtcEngineConfig
+import io.agora.rtc2.video.IVideoFrameObserver
 import io.agora.rtc2.video.VideoCanvas
 import io.agora.rtc2.video.VideoEncoderConfiguration
 import io.agora.rtc2.video.VideoEncoderConfiguration.FRAME_RATE
@@ -34,17 +36,23 @@ class SenseTimeActivity : ComponentActivity() {
         private const val EXTRA_CHANNEL_NAME = "ChannelName"
         private const val EXTRA_RESOLUTION = "Resolution"
         private const val EXTRA_FRAME_RATE = "FrameRate"
+        private const val EXTRA_CAPTURE_MODE = "CaptureMode"
+        private const val EXTRA_PROCESS_MODE = "ProcessMode"
 
         fun launch(
             context: Context,
             channelName: String,
             resolution: String,
-            frameRate: String
+            frameRate: String,
+            captureMode: String,
+            processMode: String
         ) {
             Intent(context, SenseTimeActivity::class.java).apply {
                 putExtra(EXTRA_CHANNEL_NAME, channelName)
                 putExtra(EXTRA_RESOLUTION, resolution)
                 putExtra(EXTRA_FRAME_RATE, frameRate)
+                putExtra(EXTRA_CAPTURE_MODE, captureMode)
+                putExtra(EXTRA_PROCESS_MODE, processMode)
                 context.startActivity(this)
             }
         }
@@ -71,9 +79,7 @@ class SenseTimeActivity : ComponentActivity() {
                     mBinding.remoteVideoView.addView(renderView)
                     mRtcEngine.setupRemoteVideo(
                         VideoCanvas(
-                            renderView,
-                            Constants.RENDER_MODE_HIDDEN,
-                            uid
+                            renderView, Constants.RENDER_MODE_HIDDEN, uid
                         )
                     )
                 }
@@ -109,15 +115,10 @@ class SenseTimeActivity : ComponentActivity() {
     private val mVideoEncoderConfiguration by lazy {
         VideoEncoderConfiguration(
             ReflectUtils.getStaticFiledValue(
-                VideoEncoderConfiguration::class.java,
-                intent.getStringExtra(EXTRA_RESOLUTION)
-            ),
-            ReflectUtils.getStaticFiledValue(
-                FRAME_RATE::class.java,
-                intent.getStringExtra(EXTRA_FRAME_RATE)
-            ),
-            0,
-            VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_FIXED_PORTRAIT
+                VideoEncoderConfiguration::class.java, intent.getStringExtra(EXTRA_RESOLUTION)
+            ), ReflectUtils.getStaticFiledValue(
+                FRAME_RATE::class.java, intent.getStringExtra(EXTRA_FRAME_RATE)
+            ), 0, VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_FIXED_PORTRAIT
         )
     }
     private val beautyEnableDefault = false
@@ -135,18 +136,68 @@ class SenseTimeActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(mBinding.root)
 
-        mSenseTimeApi.initialize(Config(
-            mRtcEngine,
-            mSTRenderKit,
-            eventCallback = object : IEventCallback {
-                override fun onBeautyStats(stats: BeautyStats) {
-//                    Log.d(
-//                        "SenseTime",
-//                        "onBeautyStatus totalCostTime = ${stats.totalCostTimeMs}"
-//                    )
-                }
-            }
-        ))
+        val isCustomCaptureMode =
+            intent.getStringExtra(EXTRA_CAPTURE_MODE) == getString(R.string.beauty_capture_custom)
+
+        mSenseTimeApi.initialize(
+            Config(
+                mRtcEngine,
+                mSTRenderKit,
+                captureMode = if (isCustomCaptureMode) CaptureMode.Custom else CaptureMode.Agora
+            )
+        )
+
+        when (intent.getStringExtra(EXTRA_PROCESS_MODE)) {
+            getString(R.string.beauty_process_auto) -> mSenseTimeApi.setParameters(
+                "beauty_mode",
+                "0"
+            )
+
+            getString(R.string.beauty_process_texture) -> mSenseTimeApi.setParameters(
+                "beauty_mode",
+                "1"
+            )
+
+            getString(R.string.beauty_process_i420) -> mSenseTimeApi.setParameters(
+                "beauty_mode",
+                "2"
+            )
+        }
+
+        if (isCustomCaptureMode) {
+            mRtcEngine.registerVideoFrameObserver(object : IVideoFrameObserver {
+                override fun onCaptureVideoFrame(
+                    sourceType: Int,
+                    videoFrame: VideoFrame?
+                ) = mSenseTimeApi.onFrame(videoFrame!!) == ErrorCode.ERROR_OK.value
+
+                override fun onPreEncodeVideoFrame(
+                    sourceType: Int,
+                    videoFrame: VideoFrame?
+                ) = true
+
+                override fun onMediaPlayerVideoFrame(
+                    videoFrame: VideoFrame?,
+                    mediaPlayerId: Int
+                ) = true
+
+                override fun onRenderVideoFrame(
+                    channelId: String?,
+                    uid: Int,
+                    videoFrame: VideoFrame?
+                ) = true
+
+                override fun getVideoFrameProcessMode() = IVideoFrameObserver.PROCESS_MODE_READ_WRITE
+
+                override fun getVideoFormatPreference() = IVideoFrameObserver.VIDEO_PIXEL_DEFAULT
+
+                override fun getRotationApplied() = false
+
+                override fun getMirrorApplied() = false
+
+                override fun getObservedFramePosition() = IVideoFrameObserver.POSITION_POST_CAPTURER
+            })
+        }
         if (beautyEnableDefault) {
             mSenseTimeApi.enable(true)
         }
@@ -182,7 +233,7 @@ class SenseTimeActivity : ComponentActivity() {
         mBinding.ctvFaceBeauty.setOnClickListener {
             val enable = !mBinding.ctvFaceBeauty.isChecked
             mBinding.ctvFaceBeauty.isChecked = enable
-            mSenseTimeApi.setBeautyPreset(if (enable) BeautyPreset.CUSTOM else BeautyPreset.DEFAULT)
+            mSenseTimeApi.setBeautyPreset(if (enable) BeautyPreset.DEFAULT else BeautyPreset.CUSTOM)
         }
         mBinding.ctvMarkup.setOnClickListener {
             val enable = !mBinding.ctvMarkup.isChecked
@@ -238,8 +289,8 @@ class SenseTimeActivity : ComponentActivity() {
     }
 
     private fun setStickerItem(path: String, attach: Boolean) {
-        val split = path.split(File.separator.toRegex()).dropLastWhile { it.isEmpty() }
-            .toTypedArray()
+        val split =
+            path.split(File.separator.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         val className = split[0]
         val fileName = split[1]
         val _path = FileUtils.getFilePath(this, className + File.separator + fileName)
@@ -252,8 +303,8 @@ class SenseTimeActivity : ComponentActivity() {
     }
 
     private fun setFilterItem(filterPath: String, strength: Float) {
-        val split = filterPath.split(File.separator.toRegex()).dropLastWhile { it.isEmpty() }
-            .toTypedArray()
+        val split =
+            filterPath.split(File.separator.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         val className = split[0]
         val fileName = split[1]
         val filterName = split[1].split("_".toRegex()).dropLastWhile { it.isEmpty() }

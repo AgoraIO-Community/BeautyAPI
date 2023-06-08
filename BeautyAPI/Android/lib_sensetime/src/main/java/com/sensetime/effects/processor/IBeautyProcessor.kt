@@ -12,12 +12,14 @@ data class InputInfo(
     val bytesType: Int = STCommonNative.ST_PIX_FMT_NV21,
     val textureId: Int? = null,
     val textureType: Int = GLES20.GL_TEXTURE_2D,
+    val textureMatrix: FloatArray? = null,
     val diffBetweenBytesAndTexture: Int = 0,
     val width: Int,
     val height: Int,
     val isFrontCamera: Boolean,
     val cameraOrientation: Int,
     val timestamp: Long,
+
 )
 
 class OutputInfo(

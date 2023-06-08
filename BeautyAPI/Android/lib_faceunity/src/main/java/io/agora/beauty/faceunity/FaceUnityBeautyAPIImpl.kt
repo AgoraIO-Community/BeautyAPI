@@ -53,7 +53,7 @@ import java.nio.ByteBuffer
 import java.util.concurrent.Callable
 
 class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
-    private val beautyMode = 0 // 0: 自动根据buffer类型切换，1：固定使用OES纹理，2：固定使用i420，3: 单纹理异步模式(自创)
+    private var beautyMode = 0 // 0: 自动根据buffer类型切换，1：固定使用OES纹理，2：固定使用i420，3: 单纹理异步模式(自创)
 
     private var textureBufferHelper: TextureBufferHelper? = null
     private var byteBuffer: ByteBuffer? = null
@@ -71,7 +71,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             return ErrorCode.ERROR_HAS_INITIALIZED.value
         }
         this.config = config
-        if (config.processMode == ProcessMode.Agora) {
+        if (config.captureMode == CaptureMode.Agora) {
             config.rtcEngine.registerVideoFrameObserver(this)
         }
         return ErrorCode.ERROR_OK.value
@@ -104,7 +104,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         if (isReleased) {
             return ErrorCode.ERROR_HAS_RELEASED.value
         }
-        if (conf.processMode != ProcessMode.Custom) {
+        if (conf.captureMode != CaptureMode.Custom) {
             return ErrorCode.ERROR_PROCESS_NOT_CUSTOM.value
         }
         if (!enable) {
@@ -112,6 +112,12 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         }
         processBeauty(videoFrame)
         return ErrorCode.ERROR_OK.value
+    }
+
+    override fun setParameters(key: String, value: String) {
+        when(key){
+            "beauty_mode" -> beautyMode = value.toInt()
+        }
     }
 
     override fun setBeautyPreset(preset: BeautyPreset): Int {
