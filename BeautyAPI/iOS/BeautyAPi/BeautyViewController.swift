@@ -30,8 +30,9 @@ class BeautyViewController: UIViewController {
     public var channleName: String?
     public var resolution: CGSize = .zero
     public var fps: String?
-    public var beautyType: String?
-    
+    public var role: String?
+    public var capture: String?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -49,36 +50,11 @@ class BeautyViewController: UIViewController {
         let settingView = CLSettingCellView()
         settingView.title(title: "设置")
             .switchCell(title: "美颜开关", isOn: beautyAPI.isEnable)
-            .textCell(title: "编码分辨率", desc: "VD_\(resolution.height)X\(resolution.width)")
-            .textCell(title: "编码帧率", desc: "FPS_\(fps ?? "")")
             .config()
         settingView.show()
         settingView.didSwitchValueChangeClosure = { [weak self] _, isOn in
             guard let self = self else { return }
             self.beautyAPI.enable(isOn)
-        }
-        settingView.didCellItemClosure = { [weak self] indexPath in
-            guard let self = self else { return }
-            if indexPath.row == 1 {
-                let pickerView = PickerView()
-                pickerView.dataArray = Configs.resolution.map({ $0.key })
-                pickerView.pickerViewSelectedValueClosure = { value in
-                    self.resolution = Configs.resolution[value] ?? .zero
-                    settingView.updateTextCellDesc(indexPath: indexPath, desc: value)
-                    self.updateVideoEncodeConfig()
-                }
-                pickerView.show()
-                
-            } else if indexPath.row == 2 {
-                let pickerView = PickerView()
-                pickerView.dataArray = Configs.fps
-                pickerView.pickerViewSelectedValueClosure = { value in
-                    self.fps = value.replacingOccurrences(of: "FPS_", with: "")
-                    settingView.updateTextCellDesc(indexPath: indexPath, desc: value)
-                    self.updateVideoEncodeConfig()
-                }
-                pickerView.show()
-            }
         }
     }
     @IBAction func onClickBeautyButton(_ sender: UIButton) {
@@ -96,16 +72,11 @@ class BeautyViewController: UIViewController {
         sender.setTitleColor(sender.isSelected ? .orange : .systemPink, for: sender.isSelected ? .selected : .normal)
         render.setSticker(sender.isSelected)
     }
-    @IBAction func onClickFilterButton(_ sender: UIButton) {
-        sender.isSelected = !sender.isSelected
-        sender.setTitleColor(sender.isSelected ? .orange : .systemPink, for: sender.isSelected ? .selected : .normal)
-        render.setFilter(sender.isSelected)
-    }
     
     private func setupBeautyAPI() {
         let config = BeautyConfig()
         config.rtcEngine = rtcEngine
-        config.captureMode = .agora
+        config.captureMode = capture == "Custom" ? .custom : .agora
         config.beautyRender = render
         config.statsEnable = false
         config.statsDuration = 5
@@ -126,15 +97,18 @@ class BeautyViewController: UIViewController {
         rtcEngine.startPreview()
         
         // captureMode为custom时需要注册delegate
-//        rtcEngine.setVideoFrameDelegate(self)
+        if capture == "Custom" {
+            rtcEngine.setVideoFrameDelegate(self)
+        }
         
         updateVideoEncodeConfig()
         
         let mediaOption = AgoraRtcChannelMediaOptions()
+        mediaOption.clientRoleType = role == "Broascast" ? .broadcaster : .audience
         mediaOption.autoSubscribeAudio = true
         mediaOption.autoSubscribeVideo = true
-        mediaOption.publishCameraTrack = true
-        mediaOption.publishMicrophoneTrack = true
+        mediaOption.publishCameraTrack = mediaOption.clientRoleType == .broadcaster
+        mediaOption.publishMicrophoneTrack = mediaOption.clientRoleType == .broadcaster
         let result = rtcEngine.joinChannel(byToken: nil, channelId: channleName ?? "", uid: 0, mediaOptions: mediaOption)
         if result != 0 {
             print("join failed")

@@ -84,7 +84,7 @@
         return -1;
     }
     if (mode == BeautyPresetModeDefault) {
-        [self.config.beautyRender setOptimizedDefault];
+        [self.config.beautyRender setBeautyPreset];
     } else {
         [self.config.beautyRender reset];
     }
