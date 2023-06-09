@@ -6,6 +6,7 @@
 //
 
 #import "BeautyRender.h"
+#import "BundleUtil.h"
 
 @interface BeautyRender ()
 #if __has_include(Sensetime)
@@ -15,19 +16,14 @@
 @property (nonatomic, assign) int stickerId;
 @property (nonatomic, assign) int filterId;
 #endif
+#if __has_include(FURenderMoudle)
+/// 当前的贴纸
+@property (nonatomic, strong) FUSticker *currentSticker;
+#endif
 
 @end
 
 @implementation BeautyRender
-
-- (instancetype)init {
-    if (self == [super init]) {
-#if __has_include(Sensetime)
-        [self checkSensetimeLicense];
-#endif
-    }
-    return self;
-}
 
 #if __has_include(Sensetime)
 - (VideoProcessingManager *)videoProcessing {
@@ -37,6 +33,24 @@
     return _videoProcessing;
 }
 #endif
+
+#if __has_include(FURenderMoudle)
+- (FUManager *)videoProcessing {
+    if (_videoProcessing == nil) {
+        _videoProcessing = [[FUManager alloc] init];
+    }
+    return _videoProcessing;
+}
+#endif
+
+- (instancetype)init {
+    if (self == [super init]) {
+#if __has_include(Sensetime)
+        [self checkSensetimeLicense];
+#endif
+    }
+    return self;
+}
 
 - (NSDictionary *)sensetimeDefault {
     NSDictionary *params = @{
@@ -68,6 +82,22 @@
         [self.videoProcessing.effectsProcess removeSticker:self.stickerId];
         self.stickerId = 0;
     }
+#elif __has_include(FURenderMoudle)
+    if (isSelected) {
+        NSBundle *bundle = [BundleUtil bundleWithBundleName:@"FURenderKit" podName:@"fuLib"];
+        NSString *makeupPath = [bundle pathForResource:@"graphics/face_makeup" ofType:@"bundle"];
+        FUMakeup *makeup = [[FUMakeup alloc] initWithPath:makeupPath name:@"face_makeup"];
+        NSString *path = [bundle pathForResource:@"美妆/ziyun" ofType:@"bundle"];
+        FUItem *makupItem = [[FUItem alloc] initWithPath:path name:@"ziyun"];
+        makeup.isMakeupOn = YES;
+        [FURenderKit shareRenderKit].makeup = makeup;
+        [FURenderKit shareRenderKit].makeup.enable = YES;
+        [makeup updateMakeupPackage:makupItem needCleanSubItem:NO];
+        makeup.intensity = 0.7;
+    } else {
+        [FURenderKit shareRenderKit].makeup.enable = NO;
+        [FURenderKit shareRenderKit].makeup = nil;
+    }
 #endif
 }
 - (void)setSticker: (BOOL)isSelected {
@@ -80,20 +110,19 @@
     } else {
         [self.videoProcessing cleareStickers];
     }
-#endif
-}
-- (void)setFilter: (BOOL)isSelected {
-#if __has_include(Sensetime)
+#elif __has_include(FURenderMoudle)
     if (isSelected) {
-        NSString *path =  [[NSBundle mainBundle] pathForResource:@"qise.zip" ofType:nil];
-        __weak BeautyRender *weakself = self;
-        [self.videoProcessing.effectsProcess addStickerWithPath:path callBack:^(st_result_t state, int sticker, uint64_t action) {
-            [weakself.videoProcessing.effectsProcess setPackageId:sticker groupType:EFFECT_BEAUTY_GROUP_FILTER strength:0.5];
-            weakself.filterId = sticker;
-        }];
+        NSBundle *bundle = [BundleUtil bundleWithBundleName:@"FURenderKit" podName:@"fuLib"];
+        NSString *path = [bundle pathForResource:[NSString stringWithFormat:@"贴纸/%@", @"DaisyPig"] ofType:@"bundle"];
+        FUSticker *sticker = [[FUSticker alloc] initWithPath:path name:@"sticker"];
+        if (self.currentSticker) {
+            [[FURenderKit shareRenderKit].stickerContainer replaceSticker:self.currentSticker withSticker:sticker completion:nil];
+        } else {
+            [[FURenderKit shareRenderKit].stickerContainer addSticker:sticker completion:nil];
+        }
+        self.currentSticker = sticker;
     } else {
-        [self.videoProcessing.effectsProcess removeSticker:self.filterId];
-        self.filterId = 0;
+        [[FURenderKit shareRenderKit].stickerContainer removeAllSticks];
     }
 #endif
 }
@@ -114,13 +143,18 @@
 }
 #endif
 
-- (void)setOptimizedDefault {
+- (void)setBeautyPreset {
 #if __has_include(Sensetime)
     for (NSString *key in [self sensetimeDefault].allKeys) {
         int type = key.intValue;
         float value = [[self sensetimeDefault][key]floatValue];
         [self.videoProcessing setEffectType:type value: value];
     }
+#elif __has_include(FURenderMoudle)
+    NSBundle *bundle = [BundleUtil bundleWithBundleName:@"FURenderKit" podName:@"fuLib"];
+    NSString *faceAIPath = [bundle pathForResource:@"graphics/face_beautification" ofType:@"bundle"];
+    FUBeauty *beauty = [[FUBeauty alloc] initWithPath:faceAIPath name:@"FUBeauty"];
+    [FURenderKit shareRenderKit].beauty = beauty;
 #endif
 }
 
@@ -130,6 +164,8 @@
         return [self.videoProcessing videoProcessHandler:pixelBuffer];
     }
     return nil;
+#elif __has_include(FURenderMoudle)
+    return [self.videoProcessing processFrame:pixelBuffer];
 #endif
     return nil;
 }
@@ -140,12 +176,20 @@
         int type = key.intValue;
         [self.videoProcessing setEffectType:type value: 0];
     }
+#elif __has_include(FURenderMoudle)
+    [FURenderKit shareRenderKit].beauty = nil;
 #endif
 }
 
 - (void)destory {
 #if __has_include(Sensetime)
     [self reset];
+    _videoProcessing = nil;
+#elif __has_include(FURenderMoudle)
+    [FURenderKit shareRenderKit].beauty = nil;
+    [FURenderKit shareRenderKit].makeup = nil;
+    [[FURenderKit shareRenderKit].stickerContainer removeAllSticks];
+    [FURenderKit destroy];
     _videoProcessing = nil;
 #endif
 }

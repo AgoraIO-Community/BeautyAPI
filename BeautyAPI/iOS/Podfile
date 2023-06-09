@@ -1,15 +1,15 @@
 # Uncomment the next line to define a global platform for your project
 # platform :ios, '9.0'
 
-#plugin 'cocoapods-pod-sign'
-#skip_pod_bundle_sign # 用来跳过Xcode对bundle资源的签名
+plugin 'cocoapods-pod-sign'
+skip_pod_bundle_sign # 用来跳过Xcode对bundle资源的签名
 
 target 'BeautyAPi' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
 
   pod 'AgoraRtcEngine_iOS', '~> 4.2.0'
-  pod 'SenseLib', :path => 'sense.podspec'
-#  pod 'fuLib', :path => 'fu.podspec'
+#  pod 'SenseLib', :path => 'sense.podspec'
+  pod 'fuLib', :path => 'fu.podspec'
 
 end

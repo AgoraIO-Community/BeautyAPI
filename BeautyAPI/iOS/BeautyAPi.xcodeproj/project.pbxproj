@@ -34,6 +34,7 @@
 		E72D78832A286F2900C9134C /* AlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72D78822A286F2900C9134C /* AlertManager.swift */; };
 		E72D78872A2893F300C9134C /* CLSettingCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72D78862A2893F300C9134C /* CLSettingCellView.swift */; };
 		E72D78892A2897E200C9134C /* Configs.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72D78882A2897E200C9134C /* Configs.swift */; };
+		E732E9232A31A786004403AF /* FUManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E732E9222A31A786004403AF /* FUManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -83,6 +84,9 @@
 		E72D78822A286F2900C9134C /* AlertManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlertManager.swift; sourceTree = "<group>"; };
 		E72D78862A2893F300C9134C /* CLSettingCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CLSettingCellView.swift; sourceTree = "<group>"; };
 		E72D78882A2897E200C9134C /* Configs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configs.swift; sourceTree = "<group>"; };
+		E732E9202A31A786004403AF /* authpack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = authpack.h; sourceTree = "<group>"; };
+		E732E9212A31A786004403AF /* FUManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FUManager.h; sourceTree = "<group>"; };
+		E732E9222A31A786004403AF /* FUManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FUManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -140,6 +144,7 @@
 				E72D78592A25D36000C9134C /* Util */,
 				E72D78582A25D34B00C9134C /* BeautyAPI */,
 				E72D78292A25976500C9134C /* SenseBeaufy */,
+				E732E91F2A31A786004403AF /* FUBeauty */,
 				E72D78152A25963500C9134C /* AppDelegate.swift */,
 				E72D78172A25963500C9134C /* SceneDelegate.swift */,
 				E72D78192A25963500C9134C /* ViewController.swift */,
@@ -211,6 +216,16 @@
 				E72D78862A2893F300C9134C /* CLSettingCellView.swift */,
 			);
 			path = PickerView;
+			sourceTree = "<group>";
+		};
+		E732E91F2A31A786004403AF /* FUBeauty */ = {
+			isa = PBXGroup;
+			children = (
+				E732E9202A31A786004403AF /* authpack.h */,
+				E732E9212A31A786004403AF /* FUManager.h */,
+				E732E9222A31A786004403AF /* FUManager.m */,
+			);
+			path = FUBeauty;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -369,6 +384,7 @@
 				E72D78182A25963500C9134C /* SceneDelegate.swift in Sources */,
 				E72D78872A2893F300C9134C /* CLSettingCellView.swift in Sources */,
 				E72D78572A259E9C00C9134C /* KeyCenter.swift in Sources */,
+				E732E9232A31A786004403AF /* FUManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

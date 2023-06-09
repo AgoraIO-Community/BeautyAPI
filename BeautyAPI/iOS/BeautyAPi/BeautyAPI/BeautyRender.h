@@ -6,12 +6,20 @@
 //
 
 #define Sensetime "st_mobile_common.h"
+#define FURenderMoudle <FURenderKit/FURenderKit.h>
 
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
+
 #if __has_include("VideoProcessingManager.h")
 #import "VideoProcessingManager.h"
 #endif
+
+#if __has_include("FUManager.h")
+#import "FUManager.h"
+#import <FURenderKit/FURenderKit.h>
+#endif
+
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -21,13 +29,16 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) VideoProcessingManager *videoProcessing;
 #endif
 
-- (void)setOptimizedDefault;
+#if __has_include(FURenderMoudle)
+@property (nonatomic, strong) FUManager *videoProcessing;
+#endif
+
+- (void)setBeautyPreset;
 
 - (CVPixelBufferRef)onCapture: (CVPixelBufferRef)pixelBuffer;
 
 - (void)setMakeup: (BOOL)isSelected;
 - (void)setSticker: (BOOL)isSelected;
-- (void)setFilter: (BOOL)isSelected;
 
 - (void)reset;
 

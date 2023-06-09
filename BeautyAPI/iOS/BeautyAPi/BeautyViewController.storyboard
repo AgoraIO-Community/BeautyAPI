@@ -60,7 +60,7 @@
                                         <rect key="frame" x="0.0" y="0.0" width="393" height="75"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Tlp-9r-vPD">
-                                                <rect key="frame" x="0.0" y="0.0" width="98.333333333333329" height="75"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="131" height="75"/>
                                                 <color key="tintColor" systemColor="systemBlueColor"/>
                                                 <state key="normal" title="Button"/>
                                                 <buttonConfiguration key="configuration" style="plain" title="美颜">
@@ -71,7 +71,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4zU-Gd-Fcv">
-                                                <rect key="frame" x="98.333333333333343" y="0.0" width="98.333333333333343" height="75"/>
+                                                <rect key="frame" x="131" y="0.0" width="131" height="75"/>
                                                 <state key="normal" title="Button"/>
                                                 <buttonConfiguration key="configuration" style="plain" title="美妆">
                                                     <color key="baseForegroundColor" systemColor="systemPinkColor"/>
@@ -81,23 +81,13 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TMg-nB-4ZI">
-                                                <rect key="frame" x="196.66666666666666" y="0.0" width="97.999999999999972" height="75"/>
+                                                <rect key="frame" x="262" y="0.0" width="131" height="75"/>
                                                 <state key="normal" title="Button"/>
                                                 <buttonConfiguration key="configuration" style="plain" title="贴纸">
                                                     <color key="baseForegroundColor" systemColor="systemPinkColor"/>
                                                 </buttonConfiguration>
                                                 <connections>
                                                     <action selector="onClickStickerButton:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="5iv-4S-5Uk"/>
-                                                </connections>
-                                            </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yi8-1r-uQj">
-                                                <rect key="frame" x="294.66666666666669" y="0.0" width="98.333333333333314" height="75"/>
-                                                <state key="normal" title="Button"/>
-                                                <buttonConfiguration key="configuration" style="plain" title="滤镜">
-                                                    <color key="baseForegroundColor" systemColor="systemPinkColor"/>
-                                                </buttonConfiguration>
-                                                <connections>
-                                                    <action selector="onClickFilterButton:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="sSj-xK-7MA"/>
                                                 </connections>
                                             </button>
                                         </subviews>
