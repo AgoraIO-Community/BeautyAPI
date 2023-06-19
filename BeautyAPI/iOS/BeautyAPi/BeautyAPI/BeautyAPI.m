@@ -60,6 +60,10 @@
     if (pixelBuffer == nil) {
         return -1;
     }
+    if (self.isEnable == NO && callback) {
+        callback(pixelBuffer);
+        return -1;
+    }
     CVPixelBufferRef pb = [self.config.beautyRender onCapture:pixelBuffer];
     if (pb == nil) {
         return -1;
