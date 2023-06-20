@@ -36,8 +36,8 @@ class BeautyViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        setupBeautyAPI()
         setupUI()
+        setupBeautyAPI()
         setupRTC()
         title = channleName
     }
@@ -74,6 +74,9 @@ class BeautyViewController: UIViewController {
     }
     
     private func setupBeautyAPI() {
+        // 设置encode编码需要在初始化BeatuyAPI之前
+        updateVideoEncodeConfig()
+        
         let config = BeautyConfig()
         config.rtcEngine = rtcEngine
         config.captureMode = capture == "Custom" ? .custom : .agora
@@ -100,8 +103,6 @@ class BeautyViewController: UIViewController {
         if capture == "Custom" {
             rtcEngine.setVideoFrameDelegate(self)
         }
-        
-        updateVideoEncodeConfig()
         
         let mediaOption = AgoraRtcChannelMediaOptions()
         mediaOption.clientRoleType = role == "Broascast" ? .broadcaster : .audience
