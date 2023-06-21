@@ -126,6 +126,7 @@
                         <outlet property="localView" destination="mCZ-rv-Eti" id="CCq-kq-0d9"/>
                         <outlet property="remoteView" destination="4T7-Zc-wja" id="T21-xO-ySI"/>
                         <outlet property="settingButton" destination="gkN-NE-DbW" id="1qr-hw-F5z"/>
+                        <outlet property="toolContainerView" destination="KfK-QW-zxR" id="5fa-op-lf1"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

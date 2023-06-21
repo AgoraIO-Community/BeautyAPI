@@ -12,6 +12,7 @@ class BeautyViewController: UIViewController {
     @IBOutlet weak var remoteView: UIView!
     @IBOutlet weak var settingButton: UIButton!
     @IBOutlet weak var cameraButton: UIButton!
+    @IBOutlet weak var toolContainerView: UIView!
     
     private lazy var rtcEngine: AgoraRtcEngineKit = {
         let config = AgoraRtcEngineConfig()
@@ -27,6 +28,9 @@ class BeautyViewController: UIViewController {
     
     private lazy var beautyAPI = BeautyAPI()
     private lazy var render = BeautyRender()
+    private var isBroascast: Bool {
+        role == "Broascast"
+    }
     public var channleName: String?
     public var resolution: CGSize = .zero
     public var fps: String?
@@ -96,8 +100,10 @@ class BeautyViewController: UIViewController {
     }
     
     private func setupRTC() {
-        beautyAPI.setupLocalVideo(localView, renderMode: .hidden)
-        rtcEngine.startPreview()
+        if isBroascast {
+            beautyAPI.setupLocalVideo(localView, renderMode: .hidden)
+            rtcEngine.startPreview()
+        }
         
         // captureMode为custom时需要注册delegate
         if capture == "Custom" {
@@ -105,7 +111,7 @@ class BeautyViewController: UIViewController {
         }
         
         let mediaOption = AgoraRtcChannelMediaOptions()
-        mediaOption.clientRoleType = role == "Broascast" ? .broadcaster : .audience
+        mediaOption.clientRoleType = isBroascast ? .broadcaster : .audience
         mediaOption.autoSubscribeAudio = true
         mediaOption.autoSubscribeVideo = true
         mediaOption.publishCameraTrack = mediaOption.clientRoleType == .broadcaster
@@ -138,6 +144,10 @@ class BeautyViewController: UIViewController {
         settingButton.layer.masksToBounds = true
         settingButton.setTitle("", for: .normal)
         settingButton.setImage(UIImage(systemName: "gearshape")?.withTintColor(.white, renderingMode: .alwaysOriginal), for: .normal)
+        
+        cameraButton.isHidden = !isBroascast
+        settingButton.isHidden = !isBroascast
+        toolContainerView.isHidden = !isBroascast
     }
     
     deinit {
@@ -211,10 +221,10 @@ extension BeautyViewController: AgoraRtcEngineDelegate {
         let videoCanvas = AgoraRtcVideoCanvas()
         videoCanvas.uid = uid
         // the view to be binded
-        videoCanvas.view = remoteView
+        videoCanvas.view = isBroascast ? remoteView : localView
         videoCanvas.renderMode = .hidden
         rtcEngine.setupRemoteVideo(videoCanvas)
-        remoteView.isHidden = false
+        remoteView.isHidden = !isBroascast
     }
     
     /// callback when a remote user is leaving the channel, note audience in live broadcast mode will NOT trigger this event
