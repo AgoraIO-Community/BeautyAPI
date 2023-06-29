@@ -141,10 +141,7 @@
 }
 
 - (AgoraVideoFormat)getVideoFormatPreference{
-#if __has_include(Sensetime)
     return AgoraVideoFormatCVPixelNV12;
-#endif
-    return AgoraVideoFormatCVPixelBGRA;
 }
 - (AgoraVideoFrameProcessMode)getVideoFrameProcessMode{
     return AgoraVideoFrameProcessModeReadWrite;
@@ -156,6 +153,10 @@
 
 - (BOOL)getRotationApplied {
     return NO;
+}
+
+- (AgoraVideoFramePosition)getObservedFramePosition {
+    return AgoraVideoFramePositionPostCapture;
 }
 
 @end

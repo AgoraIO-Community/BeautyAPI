@@ -128,7 +128,7 @@ class BeautyViewController: UIViewController {
                                                                frameRate: fps,
                                                                bitrate: fps.rawValue,
                                                                orientationMode: .fixedPortrait,
-                                                               mirrorMode: .enabled)
+                                                               mirrorMode: .disabled)
         rtcEngine.setVideoEncoderConfiguration(videoEncodeConfig)
     }
     
@@ -223,6 +223,7 @@ extension BeautyViewController: AgoraRtcEngineDelegate {
         // the view to be binded
         videoCanvas.view = isBroascast ? remoteView : localView
         videoCanvas.renderMode = .hidden
+//        videoCanvas.mirrorMode = .disabled
         rtcEngine.setupRemoteVideo(videoCanvas)
         remoteView.isHidden = !isBroascast
     }

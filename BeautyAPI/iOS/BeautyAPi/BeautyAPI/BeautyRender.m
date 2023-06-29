@@ -113,7 +113,7 @@
 #elif __has_include(FURenderMoudle)
     if (isSelected) {
         NSBundle *bundle = [BundleUtil bundleWithBundleName:@"FURenderKit" podName:@"fuLib"];
-        NSString *path = [bundle pathForResource:[NSString stringWithFormat:@"贴纸/%@", @"DaisyPig"] ofType:@"bundle"];
+        NSString *path = [bundle pathForResource:[NSString stringWithFormat:@"贴纸/%@", @"fashi"] ofType:@"bundle"];
         FUSticker *sticker = [[FUSticker alloc] initWithPath:path name:@"sticker"];
         if (self.currentSticker) {
             [[FURenderKit shareRenderKit].stickerContainer replaceSticker:self.currentSticker withSticker:sticker completion:nil];
