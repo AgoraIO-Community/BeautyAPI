@@ -35,6 +35,18 @@
 		E72D78872A2893F300C9134C /* CLSettingCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72D78862A2893F300C9134C /* CLSettingCellView.swift */; };
 		E72D78892A2897E200C9134C /* Configs.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72D78882A2897E200C9134C /* Configs.swift */; };
 		E732E9232A31A786004403AF /* FUManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E732E9222A31A786004403AF /* FUManager.m */; };
+		E77902B72A4D636C008791AD /* BELicenseHelper.mm in Sources */ = {isa = PBXBuildFile; fileRef = E779029B2A4D636C008791AD /* BELicenseHelper.mm */; };
+		E77902B82A4D636C008791AD /* BEOpenGLRenderHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E779029C2A4D636C008791AD /* BEOpenGLRenderHelper.m */; };
+		E77902B92A4D636C008791AD /* BEEffectManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = E779029F2A4D636C008791AD /* BEEffectManager.mm */; };
+		E77902BA2A4D636C008791AD /* BEFrameProcessor.mm in Sources */ = {isa = PBXBuildFile; fileRef = E77902A32A4D636C008791AD /* BEFrameProcessor.mm */; };
+		E77902BB2A4D636C008791AD /* BEEffectResourceHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E77902A42A4D636C008791AD /* BEEffectResourceHelper.m */; };
+		E77902BC2A4D636C008791AD /* BEResourceHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E77902A62A4D636C008791AD /* BEResourceHelper.m */; };
+		E77902BD2A4D636C008791AD /* BERenderHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E77902A92A4D636C008791AD /* BERenderHelper.m */; };
+		E77902C02A4D636C008791AD /* BEGLTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = E77902AD2A4D636C008791AD /* BEGLTexture.m */; };
+		E77902C12A4D636C008791AD /* BEHttpRequestProvider.mm in Sources */ = {isa = PBXBuildFile; fileRef = E77902AF2A4D636C008791AD /* BEHttpRequestProvider.mm */; };
+		E77902C22A4D636C008791AD /* BEPixelBufferInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = E77902B22A4D636C008791AD /* BEPixelBufferInfo.m */; };
+		E77902C32A4D636C008791AD /* BEImageUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E77902B42A4D636C008791AD /* BEImageUtils.m */; };
+		E77902C42A4D636C008791AD /* BERender.mm in Sources */ = {isa = PBXBuildFile; fileRef = E77902B62A4D636C008791AD /* BERender.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -87,6 +99,32 @@
 		E732E9202A31A786004403AF /* authpack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = authpack.h; sourceTree = "<group>"; };
 		E732E9212A31A786004403AF /* FUManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FUManager.h; sourceTree = "<group>"; };
 		E732E9222A31A786004403AF /* FUManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FUManager.m; sourceTree = "<group>"; };
+		E779029B2A4D636C008791AD /* BELicenseHelper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BELicenseHelper.mm; sourceTree = "<group>"; };
+		E779029C2A4D636C008791AD /* BEOpenGLRenderHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEOpenGLRenderHelper.m; sourceTree = "<group>"; };
+		E779029D2A4D636C008791AD /* Core.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Core.h; sourceTree = "<group>"; };
+		E779029E2A4D636C008791AD /* BERenderHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BERenderHelper.h; sourceTree = "<group>"; };
+		E779029F2A4D636C008791AD /* BEEffectManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BEEffectManager.mm; sourceTree = "<group>"; };
+		E77902A02A4D636C008791AD /* BEGLTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEGLTexture.h; sourceTree = "<group>"; };
+		E77902A12A4D636C008791AD /* BELicenseHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BELicenseHelper.h; sourceTree = "<group>"; };
+		E77902A22A4D636C008791AD /* macro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = macro.h; sourceTree = "<group>"; };
+		E77902A32A4D636C008791AD /* BEFrameProcessor.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BEFrameProcessor.mm; sourceTree = "<group>"; };
+		E77902A42A4D636C008791AD /* BEEffectResourceHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEEffectResourceHelper.m; sourceTree = "<group>"; };
+		E77902A52A4D636C008791AD /* BEFrameProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEFrameProcessor.h; sourceTree = "<group>"; };
+		E77902A62A4D636C008791AD /* BEResourceHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEResourceHelper.m; sourceTree = "<group>"; };
+		E77902A72A4D636C008791AD /* BEImageUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEImageUtils.h; sourceTree = "<group>"; };
+		E77902A82A4D636C008791AD /* BEPixelBufferInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEPixelBufferInfo.h; sourceTree = "<group>"; };
+		E77902A92A4D636C008791AD /* BERenderHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BERenderHelper.m; sourceTree = "<group>"; };
+		E77902AA2A4D636C008791AD /* BEOpenGLRenderHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEOpenGLRenderHelper.h; sourceTree = "<group>"; };
+		E77902AD2A4D636C008791AD /* BEGLTexture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEGLTexture.m; sourceTree = "<group>"; };
+		E77902AE2A4D636C008791AD /* BEHttpRequestProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEHttpRequestProvider.h; sourceTree = "<group>"; };
+		E77902AF2A4D636C008791AD /* BEHttpRequestProvider.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BEHttpRequestProvider.mm; sourceTree = "<group>"; };
+		E77902B02A4D636C008791AD /* BEEffectManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEEffectManager.h; sourceTree = "<group>"; };
+		E77902B12A4D636C008791AD /* BERender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BERender.h; sourceTree = "<group>"; };
+		E77902B22A4D636C008791AD /* BEPixelBufferInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEPixelBufferInfo.m; sourceTree = "<group>"; };
+		E77902B32A4D636C008791AD /* BEResourceHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEResourceHelper.h; sourceTree = "<group>"; };
+		E77902B42A4D636C008791AD /* BEImageUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEImageUtils.m; sourceTree = "<group>"; };
+		E77902B52A4D636C008791AD /* BEEffectResourceHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEEffectResourceHelper.h; sourceTree = "<group>"; };
+		E77902B62A4D636C008791AD /* BERender.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BERender.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,6 +183,7 @@
 				E72D78582A25D34B00C9134C /* BeautyAPI */,
 				E72D78292A25976500C9134C /* SenseBeaufy */,
 				E732E91F2A31A786004403AF /* FUBeauty */,
+				E77902992A4D636C008791AD /* ByteBeaufy */,
 				E72D78152A25963500C9134C /* AppDelegate.swift */,
 				E72D78172A25963500C9134C /* SceneDelegate.swift */,
 				E72D78192A25963500C9134C /* ViewController.swift */,
@@ -226,6 +265,39 @@
 				E732E9222A31A786004403AF /* FUManager.m */,
 			);
 			path = FUBeauty;
+			sourceTree = "<group>";
+		};
+		E77902992A4D636C008791AD /* ByteBeaufy */ = {
+			isa = PBXGroup;
+			children = (
+				E779029B2A4D636C008791AD /* BELicenseHelper.mm */,
+				E779029C2A4D636C008791AD /* BEOpenGLRenderHelper.m */,
+				E779029D2A4D636C008791AD /* Core.h */,
+				E779029E2A4D636C008791AD /* BERenderHelper.h */,
+				E779029F2A4D636C008791AD /* BEEffectManager.mm */,
+				E77902A02A4D636C008791AD /* BEGLTexture.h */,
+				E77902A12A4D636C008791AD /* BELicenseHelper.h */,
+				E77902A22A4D636C008791AD /* macro.h */,
+				E77902A32A4D636C008791AD /* BEFrameProcessor.mm */,
+				E77902A42A4D636C008791AD /* BEEffectResourceHelper.m */,
+				E77902A52A4D636C008791AD /* BEFrameProcessor.h */,
+				E77902A62A4D636C008791AD /* BEResourceHelper.m */,
+				E77902A72A4D636C008791AD /* BEImageUtils.h */,
+				E77902A82A4D636C008791AD /* BEPixelBufferInfo.h */,
+				E77902A92A4D636C008791AD /* BERenderHelper.m */,
+				E77902AA2A4D636C008791AD /* BEOpenGLRenderHelper.h */,
+				E77902AD2A4D636C008791AD /* BEGLTexture.m */,
+				E77902AE2A4D636C008791AD /* BEHttpRequestProvider.h */,
+				E77902AF2A4D636C008791AD /* BEHttpRequestProvider.mm */,
+				E77902B02A4D636C008791AD /* BEEffectManager.h */,
+				E77902B12A4D636C008791AD /* BERender.h */,
+				E77902B22A4D636C008791AD /* BEPixelBufferInfo.m */,
+				E77902B32A4D636C008791AD /* BEResourceHelper.h */,
+				E77902B42A4D636C008791AD /* BEImageUtils.m */,
+				E77902B52A4D636C008791AD /* BEEffectResourceHelper.h */,
+				E77902B62A4D636C008791AD /* BERender.mm */,
+			);
+			path = ByteBeaufy;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -362,28 +434,40 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E77902BC2A4D636C008791AD /* BEResourceHelper.m in Sources */,
 				E72D786B2A27313F00C9134C /* ViewController.swift in Sources */,
+				E77902C22A4D636C008791AD /* BEPixelBufferInfo.m in Sources */,
 				E72D78892A2897E200C9134C /* Configs.swift in Sources */,
 				E72D78402A25976500C9134C /* EffectsDetector.m in Sources */,
 				E72D787C2A284A1C00C9134C /* BeautyViewController.swift in Sources */,
+				E77902B72A4D636C008791AD /* BELicenseHelper.mm in Sources */,
 				E72D78442A25976500C9134C /* EffectsLicense.m in Sources */,
 				E72D78692A27297700C9134C /* BeautyRender.m in Sources */,
 				E72D78422A25976500C9134C /* EffectsProcess.m in Sources */,
 				E72D783E2A25976500C9134C /* EffectsAttribute.m in Sources */,
 				E72D78682A27297700C9134C /* BeautyAPI.m in Sources */,
 				E72D786E2A27320400C9134C /* BeautyConfig.m in Sources */,
+				E77902C42A4D636C008791AD /* BERender.mm in Sources */,
 				E72D78162A25963500C9134C /* AppDelegate.swift in Sources */,
 				E72D78472A25976500C9134C /* EffectsCommonObject.m in Sources */,
+				E77902C32A4D636C008791AD /* BEImageUtils.m in Sources */,
 				E72D78812A286F1600C9134C /* PickerView.swift in Sources */,
 				E72D78832A286F2900C9134C /* AlertManager.swift in Sources */,
+				E77902C12A4D636C008791AD /* BEHttpRequestProvider.mm in Sources */,
+				E77902BA2A4D636C008791AD /* BEFrameProcessor.mm in Sources */,
 				E72D78432A25976500C9134C /* VideoProcessingManager.m in Sources */,
+				E77902C02A4D636C008791AD /* BEGLTexture.m in Sources */,
+				E77902B82A4D636C008791AD /* BEOpenGLRenderHelper.m in Sources */,
 				E72D78532A259AE500C9134C /* BundleUtil.m in Sources */,
+				E77902BB2A4D636C008791AD /* BEEffectResourceHelper.m in Sources */,
 				E72D78462A25976500C9134C /* EFMotionManager.m in Sources */,
+				E77902B92A4D636C008791AD /* BEEffectManager.mm in Sources */,
 				E72D78412A25976500C9134C /* EffectsAnimal.m in Sources */,
 				E72D783F2A25976500C9134C /* Effects.m in Sources */,
 				E72D78182A25963500C9134C /* SceneDelegate.swift in Sources */,
 				E72D78872A2893F300C9134C /* CLSettingCellView.swift in Sources */,
 				E72D78572A259E9C00C9134C /* KeyCenter.swift in Sources */,
+				E77902BD2A4D636C008791AD /* BERenderHelper.m in Sources */,
 				E732E9232A31A786004403AF /* FUManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -548,7 +632,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = io.agora.rte.extension.faceunity;
+				PRODUCT_BUNDLE_IDENTIFIER = io.agora.rte.extension.bytedance;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "BeautyAPi/BeautyAPI-Bridging-Header.h";
@@ -581,7 +665,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = io.agora.rte.extension.faceunity;
+				PRODUCT_BUNDLE_IDENTIFIER = io.agora.rte.extension.bytedance;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "BeautyAPi/BeautyAPI-Bridging-Header.h";
