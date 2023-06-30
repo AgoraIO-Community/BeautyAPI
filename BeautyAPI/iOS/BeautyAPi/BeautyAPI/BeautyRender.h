@@ -7,19 +7,24 @@
 
 #define Sensetime "st_mobile_common.h"
 #define FURenderMoudle <FURenderKit/FURenderKit.h>
+#define BytesMoudle "bef_effect_ai_api.h"
 
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
 
-#if __has_include("VideoProcessingManager.h")
+#if __has_include("VideoProcessingManager.h") && __has_include(Sensetime)
 #import "VideoProcessingManager.h"
 #endif
 
-#if __has_include("FUManager.h")
+#if __has_include("FUManager.h") && __has_include(<FURenderKit/FURenderKit.h>)
 #import "FUManager.h"
 #import <FURenderKit/FURenderKit.h>
 #endif
 
+#if __has_include(BytesMoudle) && __has_include("BEImageUtils.h") && __has_include("BEFrameProcessor.h")
+#import "BEImageUtils.h"
+#import "BEFrameProcessor.h"
+#endif
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -31,6 +36,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 #if __has_include(FURenderMoudle)
 @property (nonatomic, strong) FUManager *videoProcessing;
+#endif
+
+#if __has_include(BytesMoudle)
+@property (nonatomic, strong) BEFrameProcessor *videoProcessing;
+@property (nonatomic, strong) BEImageUtils *imageUtils;
 #endif
 
 - (void)setBeautyPreset;

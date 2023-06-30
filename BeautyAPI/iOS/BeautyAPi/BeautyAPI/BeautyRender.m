@@ -21,6 +21,8 @@
 @property (nonatomic, strong) FUSticker *currentSticker;
 #endif
 
+@property (nonatomic, strong) NSMutableArray *bytesNodes;
+
 @end
 
 @implementation BeautyRender
@@ -40,6 +42,33 @@
         _videoProcessing = [[FUManager alloc] init];
     }
     return _videoProcessing;
+}
+#endif
+
+- (NSMutableArray *)bytesNodes {
+    if (_bytesNodes == nil) {
+        _bytesNodes = [[NSMutableArray alloc] initWithArray:@[@"/beauty_IOS_lite", @"/reshape_lite", @"/beauty_4Items"]];
+    }
+    return _bytesNodes;
+}
+
+#if __has_include(BytesMoudle)
+- (BEFrameProcessor *)videoProcessing {
+    if (_videoProcessing == nil) {
+        EAGLContext *context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+        [EAGLContext setCurrentContext:context];
+        _videoProcessing = [[BEFrameProcessor alloc]initWithContext:context resourceDelegate:nil];
+        _videoProcessing.processorResult = BECVPixelBuffer;
+        [_videoProcessing setEffectOn:YES];
+        [_videoProcessing updateComposerNodes:self.bytesNodes];
+    }
+    return _videoProcessing;
+}
+- (BEImageUtils *)imageUtils {
+    if (_imageUtils == nil) {
+        _imageUtils = [[BEImageUtils alloc] init];
+    }
+    return _imageUtils;
 }
 #endif
 
@@ -98,6 +127,20 @@
         [FURenderKit shareRenderKit].makeup.enable = NO;
         [FURenderKit shareRenderKit].makeup = nil;
     }
+#elif __has_include(BytesMoudle)
+    if (isSelected) {
+        if (![self.bytesNodes containsObject:@"/style_makeup/qise"]) {
+            [self.bytesNodes addObject:@"/style_makeup/qise"];
+            [_videoProcessing updateComposerNodes:self.bytesNodes];
+        }
+        [self.videoProcessing updateComposerNodeIntensity:@"/style_makeup/qise" key:@"Makeup_ALL" intensity:0.6];
+    } else {
+        if ([self.bytesNodes containsObject:@"/style_makeup/qise"]) {
+            [self.bytesNodes removeObject:@"/style_makeup/qise"];
+            [_videoProcessing updateComposerNodes:self.bytesNodes];
+        }
+        [self.videoProcessing updateComposerNodeIntensity:@"/style_makeup/qise" key:@"Makeup_ALL" intensity:0];
+    }
 #endif
 }
 - (void)setSticker: (BOOL)isSelected {
@@ -113,7 +156,7 @@
 #elif __has_include(FURenderMoudle)
     if (isSelected) {
         NSBundle *bundle = [BundleUtil bundleWithBundleName:@"FURenderKit" podName:@"fuLib"];
-        NSString *path = [bundle pathForResource:[NSString stringWithFormat:@"贴纸/%@", @"fashi"] ofType:@"bundle"];
+        NSString *path = [bundle pathForResource:[NSString stringWithFormat:@"贴纸/%@", @"fu_zh_fenshu"] ofType:@"bundle"];
         FUSticker *sticker = [[FUSticker alloc] initWithPath:path name:@"sticker"];
         if (self.currentSticker) {
             [[FURenderKit shareRenderKit].stickerContainer replaceSticker:self.currentSticker withSticker:sticker completion:nil];
@@ -123,6 +166,12 @@
         self.currentSticker = sticker;
     } else {
         [[FURenderKit shareRenderKit].stickerContainer removeAllSticks];
+    }
+#elif __has_include(BytesMoudle)
+    if (isSelected) {
+        [self.videoProcessing setStickerPath:@"stickers_huanlongshu"];
+    } else {
+        [self.videoProcessing setStickerPath:@""];
     }
 #endif
 }
@@ -155,6 +204,18 @@
     NSString *faceAIPath = [bundle pathForResource:@"graphics/face_beautification" ofType:@"bundle"];
     FUBeauty *beauty = [[FUBeauty alloc] initWithPath:faceAIPath name:@"FUBeauty"];
     [FURenderKit shareRenderKit].beauty = beauty;
+#elif __has_include(BytesMoudle)
+    [self.videoProcessing updateComposerNodeIntensity:@"/beauty_IOS_lite" key:@"whiten" intensity:0.5];
+    [self.videoProcessing updateComposerNodeIntensity:@"/beauty_IOS_lite" key:@"smooth" intensity:0.3];
+    [self.videoProcessing updateComposerNodeIntensity:@"/reshape_lite" key:@"Internal_Deform_Overall" intensity:0.15];
+    [self.videoProcessing updateComposerNodeIntensity:@"/reshape_lite" key:@"Internal_Deform_Zoom_Cheekbone" intensity:0.3];
+    [self.videoProcessing updateComposerNodeIntensity:@"/reshape_lite" key:@"Internal_Deform_Eye" intensity:0.15];
+    [self.videoProcessing updateComposerNodeIntensity:@"/reshape_lite" key:@"Internal_Deform_Nose" intensity:0.15];
+    [self.videoProcessing updateComposerNodeIntensity:@"/reshape_lite" key:@"Internal_Deform_Chin" intensity:0.46];
+    [self.videoProcessing updateComposerNodeIntensity:@"/reshape_lite" key:@"Internal_Deform_Zoom_Jawbone" intensity:0.46];
+    [self.videoProcessing updateComposerNodeIntensity:@"/reshape_lite" key:@"Internal_Deform_Forehead" intensity:0.4];
+    [self.videoProcessing updateComposerNodeIntensity:@"/reshape_lite" key:@"Internal_Deform_ZoomMouth" intensity:0.16];
+    [self.videoProcessing updateComposerNodeIntensity:@"/beauty_4Items" key:@"BEF_BEAUTY_WHITEN_TEETH" intensity:0.2];
 #endif
 }
 
@@ -166,6 +227,14 @@
     return nil;
 #elif __has_include(FURenderMoudle)
     return [self.videoProcessing processFrame:pixelBuffer];
+#elif __has_include(BytesMoudle)
+    BEPixelBufferInfo *pixelBufferInfo = [self.imageUtils getCVPixelBufferInfo:pixelBuffer];
+    if (pixelBufferInfo.format != BE_BGRA) {
+        pixelBuffer = [self.imageUtils transforCVPixelBufferToCVPixelBuffer:pixelBuffer outputFormat:BE_BGRA];
+    }
+    CVPixelBufferRef px = [self.videoProcessing process: pixelBuffer
+                                               timeStamp: [NSDate date].timeIntervalSince1970].pixelBuffer;
+    return px;
 #endif
     return nil;
 }
@@ -178,6 +247,9 @@
     }
 #elif __has_include(FURenderMoudle)
     [FURenderKit shareRenderKit].beauty = nil;
+#elif __has_include(BytesMoudle)
+    [self.videoProcessing updateComposerNodeIntensity:@"/beauty_IOS_lite" key:@"whiten" intensity:0];
+    [self.videoProcessing updateComposerNodeIntensity:@"/beauty_IOS_lite" key:@"smooth" intensity:0];
 #endif
 }
 
@@ -191,6 +263,9 @@
     [[FURenderKit shareRenderKit].stickerContainer removeAllSticks];
     [FURenderKit destroy];
     _videoProcessing = nil;
+#elif __has_include(BytesMoudle)
+    _videoProcessing = nil;
+    _imageUtils = nil;
 #endif
 }
 
