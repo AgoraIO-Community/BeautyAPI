@@ -35,11 +35,11 @@ NS_ASSUME_NONNULL_BEGIN
 #endif
 
 #if __has_include(FURenderMoudle)
-@property (nonatomic, strong) FUManager *videoProcessing;
+@property (nonatomic, strong) FUManager *fuManager;
 #endif
 
 #if __has_include(BytesMoudle)
-@property (nonatomic, strong) BEFrameProcessor *videoProcessing;
+@property (nonatomic, strong) BEFrameProcessor *frameProcessor;
 @property (nonatomic, strong) BEImageUtils *imageUtils;
 #endif
 
