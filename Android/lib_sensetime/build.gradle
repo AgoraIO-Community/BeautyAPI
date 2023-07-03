@@ -37,9 +37,9 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.1.0'
     compileOnly "io.agora.rtc:full-sdk:$AGORA_RTC_VERSION"
 
-    api project(':lib_sensetime:libs:SenseArSourceManager')
-    api project(':lib_sensetime:libs:STMobileJNI')
-    api project(':lib_sensetime:libs:HardwareBuffer')
+    api project(':lib_sensetime_SenseArSourceManager')
+    api project(':lib_sensetime_STMobileJNI')
+    api project(':lib_sensetime_HardwareBuffer')
 }
 
 // Because the components are created only during the afterEvaluate phase, you must
