@@ -1,0 +1,9 @@
+rootProject.name = "BeautyAPI"
+include ':app'
+include ':lib_sensetime'
+include ':lib_sensetime:libs:SenseArSourceManager'
+include ':lib_sensetime:libs:STMobileJNI'
+include ':lib_sensetime:libs:HardwareBuffer'
+include ':lib_faceunity'
+include ':lib_bytedance'
+include ':lib_bytedance:libs:EffectAAR'
