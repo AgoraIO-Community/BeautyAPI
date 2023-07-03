@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="beauty_type">
+        <item>@string/beauty_sensetime</item>
+        <item>@string/beauty_faceunity</item>
+        <item>@string/beauty_bytedance</item>
+    </array>
+
+    <array name="beauty_process_mode">
+        <item>@string/beauty_process_auto</item>
+        <item>@string/beauty_process_i420</item>
+        <item>@string/beauty_process_texture</item>
+    </array>
+
+    <array name="beauty_capture_mode">
+        <item>@string/beauty_capture_agora</item>
+        <item>@string/beauty_capture_custom</item>
+    </array>
+
+    <array name="resolution">
+        <item>VD_1920x1080</item>
+        <item>VD_1280x720</item>
+        <item>VD_960x540</item>
+        <item>VD_840x480</item>
+        <item>VD_640x360</item>
+    </array>
+
+    <array name="frame_rate">
+        <item>FRAME_RATE_FPS_15</item>
+        <item>FRAME_RATE_FPS_24</item>
+        <item>FRAME_RATE_FPS_30</item>
+        <item>FRAME_RATE_FPS_60</item>
+    </array>
+
+    <array name="role_type">
+        <item>@string/broadcast</item>
+        <item>@string/audience</item>
+    </array>
+</resources>

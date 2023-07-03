@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">AgoraBeautyAPI</string>
+    <string name="beauty_sensetime">SenseTime</string>
+    <string name="beauty_faceunity">FaceUnity</string>
+    <string name="beauty_bytedance">ByteDance</string>
+    <string name="audience">Audience</string>
+    <string name="broadcast">Broascast</string>
+    <string name="beauty_process_auto">Auto</string>
+    <string name="beauty_process_i420">I420</string>
+    <string name="beauty_process_texture">Texture</string>
+    <string name="beauty_capture_agora">Agora</string>
+    <string name="beauty_capture_custom">Custom</string>
+
+</resources>

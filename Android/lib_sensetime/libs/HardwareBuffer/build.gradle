@@ -1,0 +1,36 @@
+apply plugin: 'maven-publish'
+
+configurations.maybeCreate("default")
+def publishArtifact = artifacts.add("default", file("HardwareBuffer-release.aar"))
+
+// Because the components are created only during the afterEvaluate phase, you must
+// configure your publications using the afterEvaluate() lifecycle method.
+afterEvaluate {
+    publishing {
+        publications {
+            // Creates a Maven publication called "release".
+            release(MavenPublication) {
+                // You can then customize attributes of the publication as shown below.
+                artifact publishArtifact
+                groupId = 'io.github.agoraio-community'
+                artifactId = 'BeautyAPI-SenseTime-LibHardwareBuffer'
+                version = "$LIB_VERSION"
+            }
+            debug(MavenPublication) {
+                // You can then customize attributes of the publication as shown below.
+                artifact publishArtifact
+                groupId = 'io.github.agoraio-community'
+                artifactId = 'BeautyAPI-SenseTime-LibHardwareBuffer'
+                version = "$LIB_VERSION"
+            }
+        }
+        if(IS_PUBLISH_LOCAL){
+            repositories {
+                maven {
+                    url = "file://${rootProject.projectDir.path}/maven"
+                    println("maven publish to ${url}")
+                }
+            }
+        }
+    }
+}
