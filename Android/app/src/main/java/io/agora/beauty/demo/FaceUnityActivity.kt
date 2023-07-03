@@ -140,7 +140,7 @@ class FaceUnityActivity : ComponentActivity() {
         }
     }
     private val fuRenderKit by lazy {
-        FURenderer.getInstance().setup(this, authpack.A())
+        FURenderer.getInstance().setup(this, getAuth())
         FURenderKit.getInstance()
     }
 
@@ -287,5 +287,11 @@ class FaceUnityActivity : ComponentActivity() {
         RtcEngine.destroy()
     }
 
-
+    private fun getAuth(): ByteArray{
+        val authpack = Class.forName("io.agora.beauty.demo.authpack")
+        val aMethod = authpack.getDeclaredMethod("A")
+        aMethod.isAccessible = true
+        val authValue = aMethod.invoke(null) as? ByteArray
+        return authValue ?: ByteArray(0)
+    }
 }
