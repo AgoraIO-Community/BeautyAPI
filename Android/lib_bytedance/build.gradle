@@ -37,7 +37,7 @@ dependencies {
     implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.1.0'
     compileOnly "io.agora.rtc:full-sdk:$AGORA_RTC_VERSION"
 
-    api project(':lib_bytedance:libs:EffectAAR')
+    api project(':lib_bytedance_EffectAAR')
 }
 
 // Because the components are created only during the afterEvaluate phase, you must
