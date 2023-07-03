@@ -3,10 +3,7 @@ apply plugin: 'kotlin-android'
 
 def properties = new Properties()
 properties.load(rootProject.file("local.properties").newDataInputStream())
-final def AGORA_APP_ID = properties.getProperty("AGORA_APP_ID")
-if (AGORA_APP_ID.isEmpty()) {
-    throw new GradleException("请在 local.properties 中配置AGORA_APP_ID")
-}
+final def AGORA_APP_ID = "${properties.getProperty("AGORA_APP_ID")}"
 
 android {
     compileSdkVersion 31
