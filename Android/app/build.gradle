@@ -71,9 +71,9 @@ dependencies {
 
     implementation "io.agora.rtc:full-sdk:$AGORA_RTC_VERSION"
     if (new File("${rootProject.rootDir}/maven").exists()) {
-        implementation "io.github.agoraio-community:BeautyAPI-ByteDance:$LIB_VERSION"
-        implementation "io.github.agoraio-community:BeautyAPI-FaceUnity:$LIB_VERSION"
-        implementation "io.github.agoraio-community:BeautyAPI-SenseTime:$LIB_VERSION"
+        implementation "com.github.AgoraIO-Community:BeautyAPI-ByteDance:$LIB_VERSION"
+        implementation "com.github.AgoraIO-Community:BeautyAPI-FaceUnity:$LIB_VERSION"
+        implementation "com.github.AgoraIO-Community:BeautyAPI-SenseTime:$LIB_VERSION"
     } else {
         implementation project(":lib_sensetime")
         implementation project(":lib_faceunity")

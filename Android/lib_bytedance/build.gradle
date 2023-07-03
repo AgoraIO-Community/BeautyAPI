@@ -51,7 +51,7 @@ afterEvaluate {
                 from components.release
 
                 // You can then customize attributes of the publication as shown below.
-                groupId = 'io.github.agoraio-community'
+                groupId = 'com.github.AgoraIO-Community'
                 artifactId = 'BeautyAPI-ByteDance'
                 version = "$LIB_VERSION"
             }
@@ -60,7 +60,7 @@ afterEvaluate {
                 // Applies the component for the debug build variant.
                 from components.debug
 
-                groupId = 'io.github.agoraio-community'
+                groupId = 'com.github.AgoraIO-Community'
                 artifactId = 'BeautyAPI-ByteDance'
                 version = "$LIB_VERSION"
             }
