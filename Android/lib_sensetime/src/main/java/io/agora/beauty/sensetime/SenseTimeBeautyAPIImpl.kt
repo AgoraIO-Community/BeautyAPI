@@ -404,7 +404,9 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         )
         nv21ByteBuffer?.position(0)
         nv21ByteBuffer?.get(nv21ByteArray)
-        i420Buffer.release()
+        if (buffer !is I420Buffer) {
+            i420Buffer.release()
+        }
         return nv21ByteArray
     }
 

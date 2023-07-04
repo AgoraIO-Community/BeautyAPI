@@ -12,6 +12,18 @@
         android:layout_height="45dp"
         android:text="美颜开关"/>
 
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#eeeeee"/>
+
+    <Switch
+        android:id="@+id/swColorEnhance"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:text="视频增强"/>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
