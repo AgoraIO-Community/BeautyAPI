@@ -16,6 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (CVPixelBufferRef)onCapture: (CVPixelBufferRef)pixelBuffer;
 
+- (AgoraVideoFormat)getVideoFormatPreference;
+
 - (void)setMakeup: (BOOL)isSelected;
 
 - (void)setSticker: (BOOL)isSelected;

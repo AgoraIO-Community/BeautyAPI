@@ -46,6 +46,10 @@
     return pixelBuffer;
 }
 
+- (AgoraVideoFormat)getVideoFormatPreference {
+    return AgoraVideoFormatCVPixelNV12;
+}
+
 - (void)reset {
 #if __has_include(FURenderMoudle)
     [FURenderKit shareRenderKit].beauty = nil;

@@ -141,7 +141,7 @@
 }
 
 - (AgoraVideoFormat)getVideoFormatPreference{
-    return AgoraVideoFormatCVPixelNV12;
+    return [self.config.beautyRender getVideoFormatPreference];
 }
 - (AgoraVideoFrameProcessMode)getVideoFrameProcessMode{
     return AgoraVideoFrameProcessModeReadWrite;
