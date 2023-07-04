@@ -1,3 +1,7 @@
 /build
 /src/main/assets
 /src/main/java/io/agora/beauty/demo/authpack.java
+
+!src/main/assets/beauty_bytedance/PLACEHOLDER
+!src/main/assets/beauty_faceunity/PLACEHOLDER
+!src/main/assets/beauty_sensetime/PLACEHOLDER
