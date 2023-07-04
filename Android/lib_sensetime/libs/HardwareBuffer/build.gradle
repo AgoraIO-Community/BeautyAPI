@@ -12,15 +12,15 @@ afterEvaluate {
             release(MavenPublication) {
                 // You can then customize attributes of the publication as shown below.
                 artifact publishArtifact
-                groupId = 'com.github.AgoraIO-Community'
-                artifactId = 'BeautyAPI-SenseTime-LibHardwareBuffer'
+                groupId = 'com.github.AgoraIO-Community.BeautyAPI'
+                artifactId = 'SenseTime-LibHardwareBuffer'
                 version = "$LIB_VERSION"
             }
             debug(MavenPublication) {
                 // You can then customize attributes of the publication as shown below.
                 artifact publishArtifact
-                groupId = 'com.github.AgoraIO-Community'
-                artifactId = 'BeautyAPI-SenseTime-LibHardwareBuffer'
+                groupId = 'com.github.AgoraIO-Community.BeautyAPI'
+                artifactId = 'SenseTime-LibHardwareBuffer'
                 version = "$LIB_VERSION"
             }
         }
