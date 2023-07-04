@@ -52,15 +52,16 @@
 
 - (nonnull CVPixelBufferRef)onCapture:(nonnull CVPixelBufferRef)pixelBuffer { 
 #if __has_include(BytesMoudle)
-    BEPixelBufferInfo *pixelBufferInfo = [self.imageUtils getCVPixelBufferInfo:pixelBuffer];
-    if (pixelBufferInfo.format != BE_BGRA) {
-        pixelBuffer = [self.imageUtils transforCVPixelBufferToCVPixelBuffer:pixelBuffer outputFormat:BE_BGRA];
-    }
+    pixelBuffer = [self.imageUtils transforCVPixelBufferToCVPixelBuffer:pixelBuffer outputFormat:BE_BGRA];
     CVPixelBufferRef px = [self.frameProcessor process: pixelBuffer
                                                timeStamp: [NSDate date].timeIntervalSince1970].pixelBuffer;
     return px;
 #endif
     return nil;
+}
+
+- (AgoraVideoFormat)getVideoFormatPreference {
+    return AgoraVideoFormatCVPixelBGRA;
 }
 
 - (void)reset { 

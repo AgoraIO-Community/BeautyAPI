@@ -97,7 +97,7 @@ class BeautyViewController: UIViewController {
         default:
             config.beautyRender = bytesRender
         }
-        config.statsEnable = false
+        config.statsEnable = true
         config.statsDuration = 5
         config.eventCallback = { stats in
             print("min == \(stats.minCostMs)")
@@ -191,6 +191,9 @@ extension BeautyViewController: AgoraVideoFrameDelegate {
     
     func getRotationApplied() -> Bool {
         false
+    }
+    func getObservedFramePosition() -> AgoraVideoFramePosition {
+        .postCapture
     }
 }
 
