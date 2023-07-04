@@ -51,8 +51,8 @@ afterEvaluate {
                 from components.release
 
                 // You can then customize attributes of the publication as shown below.
-                groupId = 'com.github.AgoraIO-Community'
-                artifactId = 'BeautyAPI-FaceUnity'
+                groupId = 'com.github.AgoraIO-Community.BeautyAPI'
+                artifactId = 'FaceUnity'
                 version = "$LIB_VERSION"
             }
             // Creates a Maven publication called “debug”.
@@ -60,8 +60,8 @@ afterEvaluate {
                 // Applies the component for the debug build variant.
                 from components.debug
 
-                groupId = 'com.github.AgoraIO-Community'
-                artifactId = 'BeautyAPI-FaceUnity'
+                groupId = 'com.github.AgoraIO-Community.BeautyAPI'
+                artifactId = 'FaceUnity'
                 version = "$LIB_VERSION"
             }
         }
