@@ -11,8 +11,8 @@ Pod::Spec.new do |s|
   s.weak_frameworks = 'Metal','MetalPerformanceShaders', 'Photos', 'CoreML'
   s.source        = { :git => "" }
   s.source_files  =  "ByteEffectLib/**/*.h"
-  # s.public_header_files = "ByteEffectLib/**/*.h"
-  # s.header_mappings_dir = "ByteEffectLib/BytedEffectSDK/"
+  s.public_header_files = "ByteEffectLib/**/*.h"
+  s.header_mappings_dir = "ByteEffectLib/BytedEffectSDK/"
   s.vendored_libraries = "ByteEffectLib/*.a"
   s.resource_bundles    = {"ByteEffectLib" => "ByteEffectLib/**/*.bundle"}
   s.platform     = :ios, '9.0'

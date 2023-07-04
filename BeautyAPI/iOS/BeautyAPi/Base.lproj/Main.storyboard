@@ -90,12 +90,27 @@
                                     <action selector="onClickCaptureButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="j64-5u-BYv"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="美颜" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="v1c-dZ-sk8">
+                                <rect key="frame" x="44" y="476" width="35" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="URN-ky-aSf">
+                                <rect key="frame" x="260" y="469" width="103" height="35"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="sensetime"/>
+                                <connections>
+                                    <action selector="onClickChoseBeautyType:" destination="BYZ-38-t0r" eventType="touchUpInside" id="yde-6o-5G7"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="u5g-1B-3c7" firstAttribute="top" secondItem="JCO-Gq-Eha" secondAttribute="bottom" constant="10" id="1DP-hh-VhJ"/>
                             <constraint firstItem="nve-Qw-SHO" firstAttribute="top" secondItem="eEh-Ut-trt" secondAttribute="bottom" constant="24" id="2V0-c1-LBc"/>
+                            <constraint firstItem="v1c-dZ-sk8" firstAttribute="top" secondItem="nve-Qw-SHO" secondAttribute="bottom" constant="20" id="7ES-7L-Tsz"/>
                             <constraint firstItem="BN2-Fb-QNv" firstAttribute="top" secondItem="jaJ-kG-049" secondAttribute="bottom" constant="3" id="88x-Rg-wmN"/>
                             <constraint firstItem="BN2-Fb-QNv" firstAttribute="trailing" secondItem="JCO-Gq-Eha" secondAttribute="trailing" id="8cB-iW-5jN"/>
                             <constraint firstItem="b34-vf-Hsz" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="150" id="Fhm-Lk-7Ii"/>
@@ -104,17 +119,20 @@
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="b34-vf-Hsz" secondAttribute="trailing" constant="44" id="Jka-n7-VRI"/>
                             <constraint firstItem="nve-Qw-SHO" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="44" id="KSU-es-shb"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="u5g-1B-3c7" secondAttribute="trailing" constant="39" id="Msh-wS-OfV"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="URN-ky-aSf" secondAttribute="trailing" constant="30" id="W6p-Pd-CWs"/>
                             <constraint firstItem="AT4-AP-5fJ" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="44" id="WIR-g9-v9W"/>
                             <constraint firstItem="AT4-AP-5fJ" firstAttribute="top" secondItem="b34-vf-Hsz" secondAttribute="bottom" constant="22" id="X0l-ip-rcu"/>
+                            <constraint firstItem="v1c-dZ-sk8" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="44" id="Yf9-8w-dfe"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="jaJ-kG-049" secondAttribute="trailing" constant="31" id="avv-7x-N2n"/>
                             <constraint firstItem="jaJ-kG-049" firstAttribute="top" secondItem="b34-vf-Hsz" secondAttribute="bottom" constant="15" id="dCe-J4-HQJ"/>
+                            <constraint firstItem="URN-ky-aSf" firstAttribute="top" secondItem="u5g-1B-3c7" secondAttribute="bottom" constant="5" id="elV-nb-DAj"/>
                             <constraint firstItem="Fa4-e9-Cuw" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="etV-3r-x86"/>
                             <constraint firstItem="eEh-Ut-trt" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="44" id="kEz-w2-hJo"/>
                             <constraint firstItem="pN3-ph-fqS" firstAttribute="top" secondItem="AT4-AP-5fJ" secondAttribute="bottom" constant="17" id="lG4-iA-of8"/>
+                            <constraint firstItem="Fa4-e9-Cuw" firstAttribute="top" secondItem="URN-ky-aSf" secondAttribute="bottom" constant="28" id="lbC-gz-MDe"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="JCO-Gq-Eha" secondAttribute="trailing" constant="39" id="muk-YM-rkc"/>
                             <constraint firstItem="eEh-Ut-trt" firstAttribute="top" secondItem="pN3-ph-fqS" secondAttribute="bottom" constant="22" id="rSP-vd-V3n"/>
                             <constraint firstItem="pN3-ph-fqS" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="44" id="uHk-0v-Dgy"/>
-                            <constraint firstItem="Fa4-e9-Cuw" firstAttribute="top" secondItem="u5g-1B-3c7" secondAttribute="bottom" constant="68" id="w9E-Dp-1PP"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="iGo-Dz-rur"/>

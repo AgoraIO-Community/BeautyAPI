@@ -13,6 +13,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var fpsButton: UIButton!
     @IBOutlet weak var roleButton: UIButton!
     @IBOutlet weak var captureButton: UIButton!
+    private var beautyType: String = "sensetime"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,6 +60,17 @@ class ViewController: UIViewController {
         }
         pickerView.show()
     }
+
+    @IBAction func onClickChoseBeautyType(_ sender: UIButton) {
+        let pickerView = PickerView()
+        pickerView.dataArray = Configs.beautyTypes
+        pickerView.pickerViewSelectedValueClosure = { [weak self] value in
+            sender.setTitle(value, for: .normal)
+            self?.beautyType = value
+        }
+        pickerView.show()
+    }
+    
     @IBAction func onClickJoinChannelButton(_ sender: Any) {
         view.endEditing(true)
         let resolution = Configs.resolution[resolutionButton.titleLabel?.text ?? ""] ?? .zero
@@ -72,7 +84,7 @@ class ViewController: UIViewController {
         newViewController.channleName = textFiled.text
         newViewController.capture = captureButton.titleLabel?.text
         newViewController.role = roleButton.titleLabel?.text
-
+        newViewController.beautyType = beautyType
         navigationController?.pushViewController(newViewController, animated: true)
     }
 }

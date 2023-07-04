@@ -7,7 +7,6 @@
 
 #import "BeautyAPI.h"
 #import <AgoraRtcKit/AgoraRtcKit.h>
-#import "BeautyRender.h"
 
 @interface BeautyAPI ()<AgoraVideoFrameDelegate>
 
@@ -38,6 +37,7 @@
     if (config.beautyRender == nil) {
         return -1;
     }
+    self.beautyRender = config.beautyRender;
     if (config.captureMode == CaptureModeAgora) {
         [config.rtcEngine setVideoFrameDelegate:self];
     }

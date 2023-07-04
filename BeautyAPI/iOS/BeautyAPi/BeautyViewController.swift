@@ -27,7 +27,10 @@ class BeautyViewController: UIViewController {
     }()
     
     private lazy var beautyAPI = BeautyAPI()
-    private lazy var render = BeautyRender()
+    private lazy var fuRender = FUBeautyRender()
+    private lazy var senseRender = SenseBeautyRender()
+    private lazy var bytesRender = BytesBeautyRender()
+    
     private var isBroascast: Bool {
         role == "Broascast"
     }
@@ -36,6 +39,7 @@ class BeautyViewController: UIViewController {
     public var fps: String?
     public var role: String?
     public var capture: String?
+    public var beautyType: String = "sensetime"
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -69,12 +73,13 @@ class BeautyViewController: UIViewController {
     @IBAction func onClickStyleButton(_ sender: UIButton) {
         sender.isSelected = !sender.isSelected
         sender.setTitleColor(sender.isSelected ? .orange : .systemPink, for: sender.isSelected ? .selected : .normal)
-        render.setMakeup(sender.isSelected)
+        beautyAPI.beautyRender?.setMakeup(sender.isSelected)
+
     }
     @IBAction func onClickStickerButton(_ sender: UIButton) {
         sender.isSelected = !sender.isSelected
         sender.setTitleColor(sender.isSelected ? .orange : .systemPink, for: sender.isSelected ? .selected : .normal)
-        render.setSticker(sender.isSelected)
+        beautyAPI.beautyRender?.setSticker(sender.isSelected)
     }
     
     private func setupBeautyAPI() {
@@ -84,7 +89,14 @@ class BeautyViewController: UIViewController {
         let config = BeautyConfig()
         config.rtcEngine = rtcEngine
         config.captureMode = capture == "Custom" ? .custom : .agora
-        config.beautyRender = render
+        switch beautyType {
+        case "sensetime":
+            config.beautyRender = senseRender
+        case "fu":
+            config.beautyRender = fuRender
+        default:
+            config.beautyRender = bytesRender
+        }
         config.statsEnable = false
         config.statsDuration = 5
         config.eventCallback = { stats in
