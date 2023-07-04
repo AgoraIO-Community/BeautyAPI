@@ -316,7 +316,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
             val renderMatrix = Matrix()
             renderMatrix.preTranslate(0.5f, 0.5f)
             renderMatrix.preRotate(videoFrame.rotation.toFloat())
-            renderMatrix.preScale(if(isFront) -1.0f else 1.0f, -1.0f)
+            renderMatrix.preScale(if (isFront) -1.0f else 1.0f, -1.0f)
             renderMatrix.preTranslate(-0.5f, -0.5f)
             val finalMatrix = Matrix(buffer.transformMatrix)
             finalMatrix.preConcat(renderMatrix)
@@ -420,7 +420,9 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
         )
         nv21ByteBuffer?.position(0)
         nv21ByteBuffer?.get(nv21ByteArray)
-        i420Buffer.release()
+        if (buffer !is I420Buffer) {
+            i420Buffer.release()
+        }
         return nv21ByteArray
     }
 
@@ -435,7 +437,9 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
         i420Buffer.dataY.get(byteArray, 0, width * height)
         i420Buffer.dataV.get(byteArray, width * height, width * height / 4)
         i420Buffer.dataU.get(byteArray, width * height + width * height / 4, width * height / 4)
-        i420Buffer.release()
+        if (buffer !is I420Buffer) {
+            i420Buffer.release()
+        }
         return byteArray
     }
 

@@ -431,7 +431,9 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         )
         outBuffer.position(0)
         outBuffer.get(outArray)
-        i420Buffer.release()
+        if(buffer !is I420Buffer){
+            i420Buffer.release()
+        }
         return outArray
     }
 

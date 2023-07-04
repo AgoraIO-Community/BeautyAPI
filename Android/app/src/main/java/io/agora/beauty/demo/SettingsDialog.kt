@@ -30,6 +30,12 @@ class SettingsDialog(private val context: Context) {
         }
     }
 
+    fun setOnColorEnhanceChangeListener(onChanged: (enable: Boolean) -> Unit) {
+        mBinding.swColorEnhance.setOnCheckedChangeListener { _, isChecked ->
+            onChanged.invoke(isChecked)
+        }
+    }
+
     fun setResolutionSelect(resolution: String) {
         for (i in 0 until mBinding.spResolution.count) {
             if (mBinding.spResolution.getItemAtPosition(i).equals(resolution)) {

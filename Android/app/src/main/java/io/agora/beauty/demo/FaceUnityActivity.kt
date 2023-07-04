@@ -28,6 +28,7 @@ import io.agora.rtc2.Constants
 import io.agora.rtc2.IRtcEngineEventHandler
 import io.agora.rtc2.RtcEngine
 import io.agora.rtc2.RtcEngineConfig
+import io.agora.rtc2.video.ColorEnhanceOptions
 import io.agora.rtc2.video.IVideoFrameObserver
 import io.agora.rtc2.video.VideoCanvas
 import io.agora.rtc2.video.VideoEncoderConfiguration
@@ -111,7 +112,9 @@ class FaceUnityActivity : ComponentActivity() {
             mContext = applicationContext
             mAppId = BuildConfig.AGORA_APP_ID
             mEventHandler = object : IRtcEngineEventHandler() {}
-        })
+        }).apply {
+            enableExtension("agora_video_filters_clear_vision", "clear_vision", true)
+        }
     }
     private val mFaceUnityApi by lazy {
         createFaceUnityBeautyAPI()
@@ -136,6 +139,12 @@ class FaceUnityActivity : ComponentActivity() {
             setBeautyEnable(beautyEnableDefault)
             setOnBeautyChangeListener { enable ->
                 mFaceUnityApi.enable(enable)
+            }
+            setOnColorEnhanceChangeListener {enable ->
+                val options = ColorEnhanceOptions()
+                options.strengthLevel = 0.5f
+                options.skinProtectLevel = 0.5f
+                mRtcEngine.setColorEnhanceOptions(enable, options)
             }
         }
     }
