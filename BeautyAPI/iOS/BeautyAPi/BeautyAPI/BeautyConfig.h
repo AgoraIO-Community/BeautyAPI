@@ -7,9 +7,25 @@
 
 #import <Foundation/Foundation.h>
 #import <AgoraRtcKit/AgoraRtcKit.h>
-#import "BeautyRender.h"
 
 NS_ASSUME_NONNULL_BEGIN
+
+@protocol BeautyRenderDelegate <NSObject>
+
+- (void)setBeautyPreset;
+
+- (CVPixelBufferRef)onCapture: (CVPixelBufferRef)pixelBuffer;
+
+- (void)setMakeup: (BOOL)isSelected;
+
+- (void)setSticker: (BOOL)isSelected;
+
+- (void)reset;
+
+- (void)destory;
+
+@end
+
 
 typedef NS_ENUM(NSInteger, CaptureMode) {
     CaptureModeAgora = 0,
@@ -30,7 +46,7 @@ typedef NS_ENUM(NSInteger, CaptureMode) {
 // 由外部传入的rtc对象，不可为空
 @property(nonatomic, weak)AgoraRtcEngineKit *rtcEngine;
 // 由外部传入的美颜SDK接口对象(不同厂家不一样)，不可为空
-@property(nonatomic, strong)BeautyRender *beautyRender;
+@property(nonatomic, strong)id<BeautyRenderDelegate>beautyRender;
 // 是否由内部自动注册祼数据回调处理
 @property(nonatomic, assign)CaptureMode captureMode;
 // 事件回调，包含美颜耗时

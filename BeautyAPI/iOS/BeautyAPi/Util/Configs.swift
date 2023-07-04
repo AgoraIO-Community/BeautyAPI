@@ -16,6 +16,7 @@ enum Configs {
     static let fps: [String] = ["FPS_15", "FPS_24", "FPS_30", "FPS_60"]
     static let roles: [String] = ["Broascast", "Audience"]
     static let captures: [String] = ["Agora", "Custom"]
+    static let beautyTypes: [String] = ["sensetime", "fu", "bytes"]
 }
 
 

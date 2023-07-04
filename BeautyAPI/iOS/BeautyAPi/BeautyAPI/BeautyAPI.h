@@ -26,6 +26,11 @@ typedef NS_ENUM(NSInteger, BeautyPresetMode) {
 @property (nonatomic, assign) BOOL isFrontCamera;
 
 /**
+ *  Render
+ **/
+@property (nonatomic, weak) id<BeautyRenderDelegate>beautyRender;
+
+/**
  * 创建并初始化美颜场景化API，如果外部调用过registerVideoFrameObserver，那create必须在此之后调用
  *
  * @param config 配置

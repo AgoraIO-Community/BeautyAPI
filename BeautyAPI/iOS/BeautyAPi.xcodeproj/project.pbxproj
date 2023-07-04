@@ -25,7 +25,6 @@
 		E72D78532A259AE500C9134C /* BundleUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = E72D78522A259AE500C9134C /* BundleUtil.m */; };
 		E72D78572A259E9C00C9134C /* KeyCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72D78562A259E9C00C9134C /* KeyCenter.swift */; };
 		E72D78682A27297700C9134C /* BeautyAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = E72D78642A27297700C9134C /* BeautyAPI.m */; };
-		E72D78692A27297700C9134C /* BeautyRender.m in Sources */ = {isa = PBXBuildFile; fileRef = E72D78672A27297700C9134C /* BeautyRender.m */; };
 		E72D786B2A27313F00C9134C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72D78192A25963500C9134C /* ViewController.swift */; };
 		E72D786E2A27320400C9134C /* BeautyConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = E72D786D2A27320400C9134C /* BeautyConfig.m */; };
 		E72D787C2A284A1C00C9134C /* BeautyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72D787B2A284A1C00C9134C /* BeautyViewController.swift */; };
@@ -47,6 +46,9 @@
 		E77902C22A4D636C008791AD /* BEPixelBufferInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = E77902B22A4D636C008791AD /* BEPixelBufferInfo.m */; };
 		E77902C32A4D636C008791AD /* BEImageUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E77902B42A4D636C008791AD /* BEImageUtils.m */; };
 		E77902C42A4D636C008791AD /* BERender.mm in Sources */ = {isa = PBXBuildFile; fileRef = E77902B62A4D636C008791AD /* BERender.mm */; };
+		E77902C72A4E81F9008791AD /* FUBeautyRender.m in Sources */ = {isa = PBXBuildFile; fileRef = E77902C62A4E81F9008791AD /* FUBeautyRender.m */; };
+		E77902CA2A4E870E008791AD /* SenseBeautyRender.m in Sources */ = {isa = PBXBuildFile; fileRef = E77902C92A4E870E008791AD /* SenseBeautyRender.m */; };
+		E77902CD2A4E88D4008791AD /* BytesBeautyRender.m in Sources */ = {isa = PBXBuildFile; fileRef = E77902CC2A4E88D4008791AD /* BytesBeautyRender.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -85,9 +87,7 @@
 		E72D78522A259AE500C9134C /* BundleUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BundleUtil.m; sourceTree = "<group>"; };
 		E72D78562A259E9C00C9134C /* KeyCenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyCenter.swift; sourceTree = "<group>"; };
 		E72D78642A27297700C9134C /* BeautyAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeautyAPI.m; sourceTree = "<group>"; };
-		E72D78652A27297700C9134C /* BeautyRender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeautyRender.h; sourceTree = "<group>"; };
 		E72D78662A27297700C9134C /* BeautyAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeautyAPI.h; sourceTree = "<group>"; };
-		E72D78672A27297700C9134C /* BeautyRender.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeautyRender.m; sourceTree = "<group>"; };
 		E72D786C2A27320400C9134C /* BeautyConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BeautyConfig.h; sourceTree = "<group>"; };
 		E72D786D2A27320400C9134C /* BeautyConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BeautyConfig.m; sourceTree = "<group>"; };
 		E72D787B2A284A1C00C9134C /* BeautyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeautyViewController.swift; sourceTree = "<group>"; };
@@ -125,6 +125,12 @@
 		E77902B42A4D636C008791AD /* BEImageUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEImageUtils.m; sourceTree = "<group>"; };
 		E77902B52A4D636C008791AD /* BEEffectResourceHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEEffectResourceHelper.h; sourceTree = "<group>"; };
 		E77902B62A4D636C008791AD /* BERender.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BERender.mm; sourceTree = "<group>"; };
+		E77902C52A4E81F9008791AD /* FUBeautyRender.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FUBeautyRender.h; sourceTree = "<group>"; };
+		E77902C62A4E81F9008791AD /* FUBeautyRender.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FUBeautyRender.m; sourceTree = "<group>"; };
+		E77902C82A4E870E008791AD /* SenseBeautyRender.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SenseBeautyRender.h; sourceTree = "<group>"; };
+		E77902C92A4E870E008791AD /* SenseBeautyRender.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SenseBeautyRender.m; sourceTree = "<group>"; };
+		E77902CB2A4E88D4008791AD /* BytesBeautyRender.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BytesBeautyRender.h; sourceTree = "<group>"; };
+		E77902CC2A4E88D4008791AD /* BytesBeautyRender.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BytesBeautyRender.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -231,8 +237,12 @@
 				E72D786D2A27320400C9134C /* BeautyConfig.m */,
 				E72D78662A27297700C9134C /* BeautyAPI.h */,
 				E72D78642A27297700C9134C /* BeautyAPI.m */,
-				E72D78652A27297700C9134C /* BeautyRender.h */,
-				E72D78672A27297700C9134C /* BeautyRender.m */,
+				E77902C82A4E870E008791AD /* SenseBeautyRender.h */,
+				E77902C92A4E870E008791AD /* SenseBeautyRender.m */,
+				E77902CB2A4E88D4008791AD /* BytesBeautyRender.h */,
+				E77902CC2A4E88D4008791AD /* BytesBeautyRender.m */,
+				E77902C52A4E81F9008791AD /* FUBeautyRender.h */,
+				E77902C62A4E81F9008791AD /* FUBeautyRender.m */,
 			);
 			path = BeautyAPI;
 			sourceTree = "<group>";
@@ -312,7 +322,7 @@
 				E72D780F2A25963500C9134C /* Frameworks */,
 				E72D78102A25963500C9134C /* Resources */,
 				4A7E14FC6F165CEF1D9D182A /* [CP] Embed Pods Frameworks */,
-				0717BC8432324D86D0641E60 /* [CP] Copy Pods Resources */,
+				D75195E1A4B9B5CF3F9BD2CB /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -371,23 +381,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0717BC8432324D86D0641E60 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-BeautyAPi/Pods-BeautyAPi-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-BeautyAPi/Pods-BeautyAPi-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BeautyAPi/Pods-BeautyAPi-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		0E044CBA6BCD9001EE9FA9A0 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -427,6 +420,23 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BeautyAPi/Pods-BeautyAPi-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		D75195E1A4B9B5CF3F9BD2CB /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BeautyAPi/Pods-BeautyAPi-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BeautyAPi/Pods-BeautyAPi-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BeautyAPi/Pods-BeautyAPi-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -434,16 +444,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E77902C72A4E81F9008791AD /* FUBeautyRender.m in Sources */,
 				E77902BC2A4D636C008791AD /* BEResourceHelper.m in Sources */,
 				E72D786B2A27313F00C9134C /* ViewController.swift in Sources */,
 				E77902C22A4D636C008791AD /* BEPixelBufferInfo.m in Sources */,
 				E72D78892A2897E200C9134C /* Configs.swift in Sources */,
+				E77902CD2A4E88D4008791AD /* BytesBeautyRender.m in Sources */,
 				E72D78402A25976500C9134C /* EffectsDetector.m in Sources */,
 				E72D787C2A284A1C00C9134C /* BeautyViewController.swift in Sources */,
 				E77902B72A4D636C008791AD /* BELicenseHelper.mm in Sources */,
 				E72D78442A25976500C9134C /* EffectsLicense.m in Sources */,
-				E72D78692A27297700C9134C /* BeautyRender.m in Sources */,
 				E72D78422A25976500C9134C /* EffectsProcess.m in Sources */,
+				E77902CA2A4E870E008791AD /* SenseBeautyRender.m in Sources */,
 				E72D783E2A25976500C9134C /* EffectsAttribute.m in Sources */,
 				E72D78682A27297700C9134C /* BeautyAPI.m in Sources */,
 				E72D786E2A27320400C9134C /* BeautyConfig.m in Sources */,
@@ -632,7 +644,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = io.agora.rte.extension.bytedance;
+				PRODUCT_BUNDLE_IDENTIFIER = io.agora.test.entfull;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "BeautyAPi/BeautyAPI-Bridging-Header.h";
@@ -665,7 +677,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = io.agora.rte.extension.bytedance;
+				PRODUCT_BUNDLE_IDENTIFIER = io.agora.test.entfull;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "BeautyAPi/BeautyAPI-Bridging-Header.h";
