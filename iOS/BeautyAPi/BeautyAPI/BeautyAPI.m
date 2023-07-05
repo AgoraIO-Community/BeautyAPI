@@ -87,11 +87,10 @@
     if (self.config.beautyRender == nil) {
         return -1;
     }
-    if (mode == BeautyPresetModeDefault) {
-        [self.config.beautyRender setBeautyPreset];
-    } else {
-        [self.config.beautyRender reset];
+    if (mode == BeautyPresetModeCustom) {
+        return -1;
     }
+    [self.config.beautyRender setBeautyPreset];
     return 0;
 }
 
