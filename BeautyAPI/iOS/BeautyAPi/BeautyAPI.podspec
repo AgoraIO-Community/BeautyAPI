@@ -3,10 +3,10 @@ Pod::Spec.new do |spec|
   spec.version      = "1.0.0"
   spec.summary      = "ZhaoYongqiang"
   spec.description  = "BeautyAPI"
-  spec.homepage     = "https://github.com/AgoraIO-Community/MediaIO-Camera"
+  spec.homepage     = "https://github.com/AgoraIO-Community/BeautyAPI"
   spec.license      = "MIT"
   spec.author       = { "ZYQ" => "zhaoyongqiang@agora.io" }
-  spec.source       = { :git => "https://github.com/AgoraIO-Community/MediaIO-Camera.git", :tag => spec.version }
+  spec.source       = { :git => "https://github.com/AgoraIO-Community/BeautyAPI.git", :tag => spec.version }
 
   # 默认加载所有
   spec.default_subspec = "All"
