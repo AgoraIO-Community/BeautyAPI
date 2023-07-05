@@ -6,7 +6,6 @@
 //
 
 #import "SenseBeautyRender.h"
-#import "BundleUtil.h"
 
 @interface SenseBeautyRender ()
 

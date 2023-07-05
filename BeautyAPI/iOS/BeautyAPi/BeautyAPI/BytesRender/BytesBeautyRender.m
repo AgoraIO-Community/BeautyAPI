@@ -6,7 +6,6 @@
 //
 
 #import "BytesBeautyRender.h"
-#import "BundleUtil.h"
 
 @interface BytesBeautyRender ()
 
