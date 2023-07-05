@@ -97,8 +97,8 @@ class BeautyViewController: UIViewController {
         default:
             config.beautyRender = bytesRender
         }
-        config.statsEnable = true
-        config.statsDuration = 5
+        config.statsEnable = false
+        config.statsDuration = 1
         config.eventCallback = { stats in
             print("min == \(stats.minCostMs)")
             print("max == \(stats.maxCostMs)")
