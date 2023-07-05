@@ -233,16 +233,13 @@
 		E72D78582A25D34B00C9134C /* BeautyAPI */ = {
 			isa = PBXGroup;
 			children = (
+				E77902D02A5556A9008791AD /* FURender */,
+				E77902CF2A55569D008791AD /* BytesRender */,
+				E77902CE2A55568C008791AD /* SenseRender */,
 				E72D786C2A27320400C9134C /* BeautyConfig.h */,
 				E72D786D2A27320400C9134C /* BeautyConfig.m */,
 				E72D78662A27297700C9134C /* BeautyAPI.h */,
 				E72D78642A27297700C9134C /* BeautyAPI.m */,
-				E77902C82A4E870E008791AD /* SenseBeautyRender.h */,
-				E77902C92A4E870E008791AD /* SenseBeautyRender.m */,
-				E77902CB2A4E88D4008791AD /* BytesBeautyRender.h */,
-				E77902CC2A4E88D4008791AD /* BytesBeautyRender.m */,
-				E77902C52A4E81F9008791AD /* FUBeautyRender.h */,
-				E77902C62A4E81F9008791AD /* FUBeautyRender.m */,
 			);
 			path = BeautyAPI;
 			sourceTree = "<group>";
@@ -308,6 +305,33 @@
 				E77902B62A4D636C008791AD /* BERender.mm */,
 			);
 			path = ByteBeaufy;
+			sourceTree = "<group>";
+		};
+		E77902CE2A55568C008791AD /* SenseRender */ = {
+			isa = PBXGroup;
+			children = (
+				E77902C82A4E870E008791AD /* SenseBeautyRender.h */,
+				E77902C92A4E870E008791AD /* SenseBeautyRender.m */,
+			);
+			path = SenseRender;
+			sourceTree = "<group>";
+		};
+		E77902CF2A55569D008791AD /* BytesRender */ = {
+			isa = PBXGroup;
+			children = (
+				E77902CB2A4E88D4008791AD /* BytesBeautyRender.h */,
+				E77902CC2A4E88D4008791AD /* BytesBeautyRender.m */,
+			);
+			path = BytesRender;
+			sourceTree = "<group>";
+		};
+		E77902D02A5556A9008791AD /* FURender */ = {
+			isa = PBXGroup;
+			children = (
+				E77902C52A4E81F9008791AD /* FUBeautyRender.h */,
+				E77902C62A4E81F9008791AD /* FUBeautyRender.m */,
+			);
+			path = FURender;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
