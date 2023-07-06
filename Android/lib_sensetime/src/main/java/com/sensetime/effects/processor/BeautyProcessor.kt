@@ -63,6 +63,7 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
     private var mCustomEvent = 0
     private var mInputWidth = 0
     private var mInputHeight = 0
+    private var isLastFrontCamera = false
 
     @Volatile
     private var isReleased = false
@@ -231,6 +232,7 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
                 mInputHeight,
                 current
             )
+            GLES20.glFinish()
 
             mSTMobileHardwareBufferNative?.downloadRgbaImage(
                 mInputWidth,
@@ -331,9 +333,10 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
         }
         val current = cacheExecutor.current()
 
-        if (mInputWidth != input.width || mInputHeight != input.height) {
+        if (mInputWidth != input.width || mInputHeight != input.height || isLastFrontCamera != input.isFrontCamera) {
             mInputWidth = input.width
             mInputHeight = input.height
+            isLastFrontCamera = input.isFrontCamera
             cacheExecutor.cleanAllTasks()
             return glExecutor.execute(Callable {
                 cacheExecutor
@@ -460,7 +463,7 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
                         outFrameBuffer?.setSize(outSize.width, outSize.height)
                         outFrameBuffer?.setFlipV(true)
                         outFrameBuffer?.process(stEffectRenderOutParam.texture?.id ?: 0)
-
+                        GLES20.glFinish()
 
                         LogUtils.i("processDoubleInput index=$executedIndex render end")
                         return@Callable OutputInfo(
@@ -493,6 +496,7 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
 
                     glFrameBuffer.process(input.textureId)
                     LogUtils.i("processDoubleInput index=$current cache frame buffer")
+                    GLES20.glFinish()
                     return@Callable null
                 })
             },
