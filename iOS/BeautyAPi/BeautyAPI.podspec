@@ -53,7 +53,6 @@ Pod::Spec.new do |spec|
     ss.framework  = "Foundation"
   end
 
-  spec.dependency 'AgoraRtcEngine_iOS'
   spec.ios.deployment_target = '10.0'
   spec.requires_arc  = true
 end

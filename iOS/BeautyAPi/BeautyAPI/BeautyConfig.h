@@ -6,7 +6,12 @@
 //
 
 #import <Foundation/Foundation.h>
+
+#if __has_include(<AgoraRtcKit/AgoraRtcKit.h>)
 #import <AgoraRtcKit/AgoraRtcKit.h>
+#else
+#import <AVFoundation/AVFoundation.h>
+#endif
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -15,8 +20,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setBeautyPreset;
 
 - (CVPixelBufferRef)onCapture: (CVPixelBufferRef)pixelBuffer;
-
+#if __has_include(<AgoraRtcKit/AgoraRtcKit.h>)
 - (AgoraVideoFormat)getVideoFormatPreference;
+#endif
 
 - (void)setMakeup: (BOOL)isSelected;
 
@@ -45,8 +51,10 @@ typedef NS_ENUM(NSInteger, CaptureMode) {
 @end
 
 @interface BeautyConfig : NSObject
+#if __has_include(<AgoraRtcKit/AgoraRtcKit.h>)
 // 由外部传入的rtc对象，不可为空
 @property(nonatomic, weak)AgoraRtcEngineKit *rtcEngine;
+#endif
 // 由外部传入的美颜SDK接口对象(不同厂家不一样)，不可为空
 @property(nonatomic, weak)id<BeautyRenderDelegate>beautyRender;
 // 是否由内部自动注册祼数据回调处理

@@ -89,9 +89,11 @@
     return pixelBuffer;
 }
 
+#if __has_include(<AgoraRtcKit/AgoraRtcKit.h>)
 - (AgoraVideoFormat)getVideoFormatPreference {
     return AgoraVideoFormatCVPixelNV12;
 }
+#endif
 
 - (void)reset { 
 #if __has_include(Sensetime)

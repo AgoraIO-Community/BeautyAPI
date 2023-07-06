@@ -58,10 +58,11 @@
 #endif
     return nil;
 }
-
+#if __has_include(<AgoraRtcKit/AgoraRtcKit.h>)
 - (AgoraVideoFormat)getVideoFormatPreference {
     return AgoraVideoFormatCVPixelBGRA;
 }
+#endif
 
 - (void)reset { 
 #if __has_include(BytesMoudle)

@@ -6,15 +6,19 @@
 //
 
 #import "BeautyAPI.h"
-#import <AgoraRtcKit/AgoraRtcKit.h>
 
-@interface BeautyAPI ()<AgoraVideoFrameDelegate>
+@interface BeautyAPI ()
 
 @property (nonatomic, strong) BeautyConfig *config;
 @property (nonatomic, assign) CFTimeInterval preTime;
 @property (nonatomic, strong) NSMutableArray *statsArray;
 
 @end
+
+#if __has_include(<AgoraRtcKit/AgoraRtcKit.h>)
+@interface BeautyAPI ()<AgoraVideoFrameDelegate>
+@end
+#endif
 
 @implementation BeautyAPI
 
@@ -39,7 +43,11 @@
     }
     self.beautyRender = config.beautyRender;
     if (config.captureMode == CaptureModeAgora) {
+#if __has_include(<AgoraRtcKit/AgoraRtcKit.h>)
         [config.rtcEngine setVideoFrameDelegate:self];
+#else
+        return -1;
+#endif
     }
     return 0;
 }
@@ -74,6 +82,7 @@
     return 0;
 }
 
+#if __has_include(<AgoraRtcKit/AgoraRtcKit.h>)
 - (int)setupLocalVideo:(UIView *)view renderMode:(AgoraVideoRenderMode)renderMode {
     AgoraRtcVideoCanvas *localCanvas = [[AgoraRtcVideoCanvas alloc] init];
     localCanvas.mirrorMode = AgoraVideoMirrorModeDisabled;
@@ -82,6 +91,7 @@
     localCanvas.uid = 0;
     return [self.config.rtcEngine setupLocalVideo:localCanvas];
 }
+#endif
 
 - (int)setBeautyPreset: (BeautyPresetMode)mode {
     if (self.config.beautyRender == nil) {
@@ -98,13 +108,16 @@
     if (self.config == nil) {
         return -1;
     }
+#if __has_include(<AgoraRtcKit/AgoraRtcKit.h>)
     [self.config.rtcEngine setVideoFrameDelegate:nil];
+#endif
     [self.config.beautyRender destory];
     self.config = nil;
     return 0;
 }
 
 #pragma mark - VideoFrameDelegate
+#if __has_include(<AgoraRtcKit/AgoraRtcKit.h>)
 - (BOOL)onCaptureVideoFrame:(AgoraOutputVideoFrame *)videoFrame sourceType:(AgoraVideoSourceType)sourceType {
     if (!self.isEnable) { return YES; }
     CFTimeInterval startTime = CACurrentMediaTime();
@@ -157,5 +170,6 @@
 - (AgoraVideoFramePosition)getObservedFramePosition {
     return AgoraVideoFramePositionPostCapture;
 }
+#endif
 
 @end
