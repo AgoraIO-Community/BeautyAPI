@@ -23,7 +23,6 @@
 - (FUManager *)fuManager {
     if (_fuManager == nil) {
         _fuManager = [[FUManager alloc] init];
-        NSLog(@"version === %@",[FURenderKit getVersion]);
     }
     return _fuManager;
 }
