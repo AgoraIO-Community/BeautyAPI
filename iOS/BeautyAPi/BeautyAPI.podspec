@@ -32,15 +32,15 @@ Pod::Spec.new do |spec|
   end
 
   spec.subspec "Sensetime" do |ss|
-    ss.source_files = 'BeautyRender/SenseRender/*.{h,m}'
-    ss.public_header_files = 'BeautyRender/SenseRender/*.{h}'
+    ss.source_files = 'BeautyAPI/SenseRender/*.{h,m}'
+    ss.public_header_files = 'BeautyAPI/SenseRender/*.{h}'
     ss.dependency "BeautyAPI/Core"
     ss.framework  = "Foundation"
   end
 
   spec.subspec "FU" do |ss|
-    ss.source_files = 'BeautyRender/FURender/*.{h,m}'
-    ss.public_header_files = 'BeautyRender/FURender/*.{h}'
+    ss.source_files = 'BeautyAPI/FURender/*.{h,m}'
+    ss.public_header_files = 'BeautyAPI/FURender/*.{h}'
     ss.dependency "BeautyAPI/Core"
     ss.dependency "BeautyAPI/Bundle"
     ss.dependency 'FURenderKit'
@@ -48,8 +48,8 @@ Pod::Spec.new do |spec|
   end
 
   spec.subspec "Bytes" do |ss|
-    ss.source_files = 'BeautyRender/BytesRender/*.{h,m}'
-    ss.public_header_files = 'BeautyRender/BytesRender/*.{h}'
+    ss.source_files = 'BeautyAPI/BytesRender/*.{h,m}'
+    ss.public_header_files = 'BeautyAPI/BytesRender/*.{h}'
     ss.dependency "BeautyAPI/Core"
     ss.framework  = "Foundation"
   end
