@@ -37,25 +37,29 @@ import com.sensetime.stmobile.params.STRotateType
 import com.sensetime.stmobile.sticker_module_types.STCustomEvent
 import java.util.concurrent.Callable
 import kotlin.math.max
+import kotlin.math.min
 
-class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
+class BeautyProcessor(cache: Int = 2) : IBeautyProcessor {
     private val TAG = this::class.java.simpleName
+    private val cacheCount = max(min(cache, 2), 1)
     private val cacheExecutor = QueueBlockThreadExecutor<Int>(cacheCount, 1)
     private val glExecutor = QueueBlockThreadExecutor<OutputInfo>(0, 1)
 
     private var eglContextHelper: EGLContextHelper? = null
-    private var glCopyHelper = GLCopyHelper(cacheCount)
-    private val cacheFrameBuffer = arrayOfNulls<GLFrameBuffer>(max(cacheCount, 1))
-    private var mAnimalFaceInfo = arrayOfNulls<STAnimalFaceInfo>(max(cacheCount, 1))
-    private val inputTextures = arrayOfNulls<Int>(max(cacheCount, 1))
-    private val inputByteArrays = arrayOfNulls<ByteArray>(max(cacheCount, 1))
-    private var inputGLFrameBuffer: GLFrameBuffer? = null
-    private var outTextureIds = arrayOfNulls<Int>(max(cacheCount, 1))
-    private var outFrameBuffer: GLFrameBuffer? = null
+    private var glCopyHelper = GLCopyHelper()
+    private var glFrameBuffer = GLFrameBuffer()
+
+    private val inputTextureIds = arrayOfNulls<Int>(cacheCount)
+    private val inputByteArrays = arrayOfNulls<ByteArray>(cacheCount)
+
+    private var processInTextureId = -1
+    private var beautyOutTextureId = -1
+    private var finalOutTextureId = -1
 
     private lateinit var mSTMobileEffectNative: STMobileEffectNative
     private lateinit var mSTHumanActionNative: STMobileHumanActionNative
     private var mSTMobileColorConvertNative: STMobileColorConvertNative? = null
+    private var mAnimalFaceInfo = arrayOfNulls<STAnimalFaceInfo>(cacheCount)
     private var mStAnimalNative: STMobileAnimalNative? = null
     private var mSTMobileHardwareBufferNative: STMobileHardwareBufferNative? = null
 
@@ -63,6 +67,8 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
     private var mCustomEvent = 0
     private var mInputWidth = 0
     private var mInputHeight = 0
+    private var mProcessWidth = 0
+    private var mProcessHeight = 0
     private var isLastFrontCamera = false
 
     @Volatile
@@ -83,17 +89,24 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
         mAccelerometer?.stop()
         mAccelerometer = null
         glExecutor.execute(Callable {
-            cacheFrameBuffer.forEachIndexed { index, buffer ->
-                buffer?.release()
-                cacheFrameBuffer[index] = null
+            if(processInTextureId != -1){
+                GLES20.glDeleteTextures(1, intArrayOf(processInTextureId), 0)
+                processInTextureId = -1
             }
-            outTextureIds.forEachIndexed { index, textureId ->
-                textureId?.let { GLES20.glDeleteTextures(1, intArrayOf(it), 0) }
-                outTextureIds[index] = null
+            if(beautyOutTextureId != -1){
+                GLES20.glDeleteTextures(1, intArrayOf(beautyOutTextureId), 0)
+                beautyOutTextureId = -1
             }
-            inputTextures.forEachIndexed { index, textureId ->
+            if(finalOutTextureId != -1){
+                GLES20.glDeleteTextures(1, intArrayOf(finalOutTextureId), 0)
+                finalOutTextureId = -1
+            }
+            inputByteArrays.forEachIndexed { index, bytes ->
+                inputByteArrays[index] = null
+            }
+            inputTextureIds.forEachIndexed { index, textureId ->
                 textureId?.let { GLES20.glDeleteTextures(1, intArrayOf(it), 0) }
-                inputTextures[index] = null
+                inputTextureIds[index] = null
             }
             if (mSTMobileColorConvertNative != null) {
                 mSTMobileColorConvertNative?.destroyInstance()
@@ -103,11 +116,8 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
                 it.release()
                 eglContextHelper = null
             }
+            glFrameBuffer.release()
             glCopyHelper.release()
-            inputGLFrameBuffer?.let {
-                it.release()
-                inputGLFrameBuffer = null
-            }
             mSTMobileHardwareBufferNative?.release()
             mSTMobileHardwareBufferNative = null
             return@Callable null
@@ -183,62 +193,74 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
             return null
         }
         val current = cacheExecutor.current()
+        val outSize = when (input.cameraOrientation) {
+            90, 270 -> Size(input.height, input.width)
+            else -> Size(input.width, input.height)
+        }
+        val width = outSize.width
+        val height = outSize.height
+
         glExecutor.execute(Callable {
             if (isReleased) {
                 return@Callable null
             }
             if (mSTMobileHardwareBufferNative == null) {
-                mInputWidth = input.width
-                mInputHeight = input.height
+                mProcessWidth = input.width
+                mProcessHeight = input.height
                 mSTMobileHardwareBufferNative = STMobileHardwareBufferNative().apply {
                     init(
-                        mInputWidth,
-                        mInputHeight,
+                        width,
+                        height,
                         STMobileHardwareBufferNative.HARDWARE_BUFFER_FORMAT_RGBA,
                         STMobileHardwareBufferNative.HARDWARE_BUFFER_USAGE_DOWNLOAD
                     )
                 }
-                inputByteArrays.forEachIndexed { index, _ ->
-                    inputByteArrays[index] = ByteArray(mInputWidth * mInputHeight * 4)
-                }
-            } else if (mInputWidth != input.width || mInputHeight != input.height) {
+            } else if (mProcessWidth != input.width || mProcessHeight != input.height) {
                 mSTMobileHardwareBufferNative?.release()
                 mSTMobileHardwareBufferNative = null
-                cacheExecutor.cleanAllTasks()
-                outTextureIds.forEachIndexed { index, textureId ->
+                inputTextureIds.forEachIndexed { index, textureId ->
                     textureId?.let { GLES20.glDeleteTextures(1, intArrayOf(it), 0) }
-                    outTextureIds[index] = null
+                    inputTextureIds[index] = null
                 }
                 return@Callable null
             }
-            if (inputGLFrameBuffer == null) {
-                inputGLFrameBuffer = GLFrameBuffer(input.textureType)
-            } else if (inputGLFrameBuffer?.textureType != input.textureType) {
-                inputGLFrameBuffer?.release()
-                inputGLFrameBuffer = null
-                return@Callable null
+
+            inputByteArrays[current] = ByteArray(width * height * 4)
+
+            var textureId = inputTextureIds[current]
+            if (textureId == null) {
+                textureId = glFrameBuffer.createTexture(width, height)
+                inputTextureIds[current] = textureId
             }
-            inputGLFrameBuffer?.setSize(mInputWidth, mInputHeight)
+
+            glFrameBuffer.textureId = textureId
+            glFrameBuffer.setSize(width, height)
+            glFrameBuffer.resetTransform()
+            glFrameBuffer.setRotation(input.cameraOrientation)
             if (input.textureMatrix != null) {
-                inputGLFrameBuffer?.setTexMatrix(input.textureMatrix)
-                inputGLFrameBuffer?.setFlipV(true)
+                glFrameBuffer.setTexMatrix(input.textureMatrix)
+                glFrameBuffer.setFlipH(!input.isFrontCamera)
+            } else {
+                glFrameBuffer.setFlipH(input.isFrontCamera)
             }
-            inputGLFrameBuffer?.process(input.textureId)
+            glFrameBuffer.process(input.textureId, input.textureType)
 
-            glCopyHelper.copy2DTextureToOesTexture(
-                inputGLFrameBuffer?.textureId ?: return@Callable null,
-                mSTMobileHardwareBufferNative?.textureId ?: return@Callable null,
-                mInputWidth,
-                mInputHeight,
-                current
-            )
+            mSTMobileHardwareBufferNative?.let {
+                glCopyHelper.copy2DTextureToOesTexture(
+                    textureId,
+                    it.textureId,
+                    width,
+                    height,
+                    0
+                )
+                it.downloadRgbaImage(
+                    width,
+                    height,
+                    inputByteArrays[current]
+                )
+            }
+
             GLES20.glFinish()
-
-            mSTMobileHardwareBufferNative?.downloadRgbaImage(
-                mInputWidth,
-                mInputHeight,
-                inputByteArrays[current]
-            )
             return@Callable null
         })
 
@@ -246,14 +268,14 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
             InputInfo(
                 inputByteArrays[current],
                 STCommonNative.ST_PIX_FMT_RGBA8888,
-                input.textureId,
-                input.textureType,
-                input.textureMatrix,
+                inputTextureIds[current],
+                GLES20.GL_TEXTURE_2D,
+                GlUtil.IDENTITY_MATRIX,
                 1,
-                input.width,
-                input.height,
+                width,
+                height,
                 input.isFrontCamera,
-                input.cameraOrientation,
+                0,
                 input.timestamp,
             )
         )
@@ -266,7 +288,6 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
         if (input.bytes == null) {
             return null
         }
-        val current = cacheExecutor.current()
         glExecutor.execute(Callable {
             if (isReleased) {
                 return@Callable null
@@ -281,23 +302,16 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
             } else if (mInputWidth != input.width || mInputHeight != input.height) {
                 mSTMobileColorConvertNative?.destroyInstance()
                 mSTMobileColorConvertNative = null
-                inputTextures.forEachIndexed { index, textureId ->
-                    textureId?.let { GLES20.glDeleteTextures(1, intArrayOf(it), 0) }
-                    inputTextures[index] = null
-                }
-                cacheExecutor.cleanAllTasks()
-                outTextureIds.forEachIndexed { index, textureId ->
-                    textureId?.let { GLES20.glDeleteTextures(1, intArrayOf(it), 0) }
-                    outTextureIds[index] = null
+                if(processInTextureId != -1){
+                    GLES20.glDeleteTextures(1, intArrayOf(processInTextureId), 0)
+                    processInTextureId = -1
                 }
                 return@Callable null
             }
-            var textureId = inputTextures[current]
-            if (textureId == null) {
-                val texIds = IntArray(1)
-                GlUtil.initEffectTexture(input.width, input.height, texIds, GLES20.GL_TEXTURE_2D)
-                textureId = texIds[0]
-                inputTextures[current] = textureId
+            var textureId = processInTextureId
+            if (textureId == -1) {
+                textureId = glFrameBuffer.createTexture(input.width, input.height)
+                processInTextureId = textureId
             }
             //上传nv21 buffer到纹理
             mSTMobileColorConvertNative?.nv21BufferToRgbaTexture(
@@ -314,7 +328,7 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
             InputInfo(
                 input.bytes,
                 input.bytesType,
-                inputTextures[current] ?: return null,
+                processInTextureId,
                 GLES20.GL_TEXTURE_2D,
                 input.textureMatrix,
                 0,
@@ -338,14 +352,30 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
             mInputHeight = input.height
             isLastFrontCamera = input.isFrontCamera
             cacheExecutor.cleanAllTasks()
-            return glExecutor.execute(Callable {
-                cacheExecutor
-                outTextureIds.forEachIndexed { index, textureId ->
-                    textureId?.let { GLES20.glDeleteTextures(1, intArrayOf(it), 0) }
-                    outTextureIds[index] = null
+            inputTextureIds.forEachIndexed { index, textureId ->
+                if (textureId != null) {
+                    GLES20.glDeleteTextures(1, intArrayOf(textureId), 0)
+                    inputTextureIds[index] = null
                 }
-                return@Callable null
-            })
+            }
+            inputByteArrays.forEachIndexed { index, bytes ->
+                inputByteArrays[index] = null
+            }
+            if (beautyOutTextureId == -1) {
+                glExecutor.execute(Callable {
+                    GLES20.glDeleteTextures(1, intArrayOf(beautyOutTextureId), 0)
+                    beautyOutTextureId = -1
+                    return@Callable null
+                })
+            }
+            if (finalOutTextureId == -1) {
+                glExecutor.execute(Callable {
+                    GLES20.glDeleteTextures(1, intArrayOf(finalOutTextureId), 0)
+                    finalOutTextureId = -1
+                    return@Callable null
+                })
+            }
+            return null
         }
 
         val outSize = when (input.cameraOrientation) {
@@ -362,30 +392,30 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
                         if (isReleased) {
                             return@Callable null
                         }
-                        val glFrameBuffer = cacheFrameBuffer[executedIndex] ?: return@Callable null
-                        var outTextureId = outTextureIds[executedIndex]
-                        if (outTextureId == null) {
-                            val texId = IntArray(1)
-                            GlUtil.initEffectTexture(
-                                outSize.width,
-                                outSize.height,
-                                texId,
-                                GLES20.GL_TEXTURE_2D
-                            )
-                            outTextureId = texId[0]
-                            outTextureIds[executedIndex] = outTextureId
+                        val width = outSize.width
+                        val height = outSize.height
+                        val inputTextureId = inputTextureIds[executedIndex] ?: return@Callable null
+                        var beautyOutTextureId = this@BeautyProcessor.beautyOutTextureId;
+                        if (beautyOutTextureId == -1) {
+                            beautyOutTextureId = glFrameBuffer.createTexture(width, height)
+                            this@BeautyProcessor.beautyOutTextureId = beautyOutTextureId
+                        }
+                        var finalOutTextureId = this@BeautyProcessor.finalOutTextureId
+                        if (finalOutTextureId == -1) {
+                            finalOutTextureId = glFrameBuffer.createTexture(width, height)
+                            this@BeautyProcessor.finalOutTextureId = finalOutTextureId
                         }
                         //输入纹理
                         val stEffectTexture =
                             STEffectTexture(
-                                glFrameBuffer.textureId,
-                                outSize.width,
-                                outSize.height,
+                                inputTextureId,
+                                width,
+                                height,
                                 0
                             )
                         //输出纹理，需要在上层初始化
                         val stEffectTextureOut =
-                            STEffectTexture(outTextureId, outSize.width, outSize.height, 0)
+                            STEffectTexture(beautyOutTextureId, width, height, 0)
 
                         //用户自定义参数设置
                         val event: Int = mCustomEvent
@@ -457,46 +487,58 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
                             mCustomEvent = 0
                         }
 
-                        if (outFrameBuffer == null) {
-                            outFrameBuffer = GLFrameBuffer(GLES20.GL_TEXTURE_2D)
-                        }
-                        outFrameBuffer?.setSize(outSize.width, outSize.height)
-                        outFrameBuffer?.setFlipV(true)
-                        outFrameBuffer?.process(stEffectRenderOutParam.texture?.id ?: 0)
+                        glFrameBuffer.setSize(width, height)
+                        glFrameBuffer.resetTransform()
+                        glFrameBuffer.setFlipV(true)
+                        glFrameBuffer.textureId = finalOutTextureId
+                        glFrameBuffer.process(
+                            stEffectRenderOutParam.texture?.id ?: 0,
+                            GLES20.GL_TEXTURE_2D
+                        )
                         GLES20.glFinish()
 
                         LogUtils.i("processDoubleInput index=$executedIndex render end")
                         return@Callable OutputInfo(
-                            textureId = outFrameBuffer?.textureId ?: 0,
-                            width = outSize.width,
-                            height = outSize.height,
+                            textureId = finalOutTextureId,
+                            width = width,
+                            height = height,
                             timestamp = input.timestamp
                         )
                     })
                 }
+
+                var inputByteArray = inputByteArrays[current]
+                if (inputByteArray == null) {
+                    val byteArraySize = mInputWidth * mInputHeight * 3 / 2
+                    inputByteArray = ByteArray(byteArraySize)
+                    inputByteArrays[current] = inputByteArray
+                    System.arraycopy(input.bytes, 0, inputByteArray, 0, byteArraySize)
+                }
+
                 glExecutor.execute(Callable {
-                    var glFrameBuffer = cacheFrameBuffer[current]
-                    if (glFrameBuffer == null) {
-                        glFrameBuffer = GLFrameBuffer(input.textureType)
-                        cacheFrameBuffer[current] = glFrameBuffer
-                    } else if (glFrameBuffer.textureType != input.textureType) {
-                        glFrameBuffer.release()
-                        glFrameBuffer = GLFrameBuffer(input.textureType)
-                        cacheFrameBuffer[current] = glFrameBuffer
+                    val width = outSize.width
+                    val height = outSize.height
+                    var inputTextureId = inputTextureIds[current]
+                    if (inputTextureId == null) {
+                        inputTextureId = glFrameBuffer.createTexture(width, height)
+                        inputTextureIds[current] = inputTextureId
                     }
-                    glFrameBuffer.setSize(outSize.width, outSize.height)
-                    glFrameBuffer.setRotation(input.cameraOrientation)
-                    if (input.textureMatrix != null) {
-                        glFrameBuffer.setTexMatrix(input.textureMatrix)
-                        glFrameBuffer.setFlipH(!input.isFrontCamera)
-                    } else {
-                        glFrameBuffer.setFlipH(input.isFrontCamera)
+                    if (input.textureId != inputTextureId) {
+                        glFrameBuffer.textureId = inputTextureId
+                        glFrameBuffer.setSize(width, height)
+                        glFrameBuffer.resetTransform()
+                        glFrameBuffer.setRotation(input.cameraOrientation)
+                        if (input.textureMatrix != null) {
+                            glFrameBuffer.setTexMatrix(input.textureMatrix)
+                            glFrameBuffer.setFlipH(!input.isFrontCamera)
+                        } else {
+                            glFrameBuffer.setFlipH(input.isFrontCamera)
+                        }
+                        glFrameBuffer.process(input.textureId, input.textureType)
+                        GLES20.glFinish()
                     }
 
-
-                    glFrameBuffer.process(input.textureId)
                     LogUtils.i("processDoubleInput index=$current cache frame buffer")
-                    GLES20.glFinish()
                     return@Callable null
                 })
             },
@@ -506,19 +548,23 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
                 }
                 LogUtils.i("processDoubleInput index=$current nativeHumanActionDetect start")
                 val orientation: Int =
-                    getHumanActionOrientation(input.isFrontCamera, input.cameraOrientation)
+                    if (input.cameraOrientation == 0) STRotateType.ST_CLOCKWISE_ROTATE_0 else getHumanActionOrientation(
+                        input.isFrontCamera,
+                        input.cameraOrientation
+                    )
                 val deviceOrientation: Int =
                     mAccelerometer?.direction ?: CLOCKWISE_ANGLE.Deg90.value
                 val startHumanAction = System.currentTimeMillis()
                 //Log.e(TAG, "config: "+Long.toHexString(mDetectConfig) );
                 val ret: Int = mSTHumanActionNative.nativeHumanActionDetectPtr(
-                    input.bytes,
+                    inputByteArrays[current],
                     input.bytesType,
                     mSTMobileEffectNative.humanActionDetectConfig,
                     orientation,
                     input.width,
                     input.height
                 )
+                inputByteArrays[current] = null
 
                 LogUtils.i(
                     TAG,
@@ -551,6 +597,7 @@ class BeautyProcessor(private val cacheCount: Int = 2) : IBeautyProcessor {
                 }
                 LogUtils.i("processDoubleInput index=$current nativeHumanActionDetect end")
                 mSTHumanActionNative.updateNativeHumanActionCache((current + input.diffBetweenBytesAndTexture) % cacheCount)
+
                 if (isReleased) {
                     return@Callable -1
                 }

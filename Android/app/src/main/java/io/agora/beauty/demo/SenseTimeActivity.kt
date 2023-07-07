@@ -308,7 +308,7 @@ class SenseTimeActivity : ComponentActivity() {
                 .toTypedArray()
             val className = split[0]
             val fileName = split[1]
-            val _path = FileUtils.getFilePath(this, className + File.separator + fileName)
+            val _path = FileUtils.getFilePath(this, mSTRenderKit.getResourcePath(className) + File.separator + fileName)
             FileUtils.copyFileIfNeed(this, fileName, mSTRenderKit.getResourcePath(className))
             mSTRenderKit.setMakeupForType(type, _path)
             mSTRenderKit.setMakeupStrength(type, strength)
@@ -322,7 +322,7 @@ class SenseTimeActivity : ComponentActivity() {
             path.split(File.separator.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         val className = split[0]
         val fileName = split[1]
-        val _path = FileUtils.getFilePath(this, className + File.separator + fileName)
+        val _path = FileUtils.getFilePath(this, mSTRenderKit.getResourcePath(className) + File.separator + fileName)
         FileUtils.copyFileIfNeed(this, fileName, mSTRenderKit.getResourcePath(className))
         if (!attach) {
             mSTRenderKit.removeSticker(_path)
@@ -339,7 +339,7 @@ class SenseTimeActivity : ComponentActivity() {
         val filterName = split[1].split("_".toRegex()).dropLastWhile { it.isEmpty() }
             .toTypedArray()[2].split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
             .toTypedArray()[0]
-        val path = FileUtils.getFilePath(this, className + File.separator + fileName)
+        val path = FileUtils.getFilePath(this, mSTRenderKit.getResourcePath(className) + File.separator + fileName)
         FileUtils.copyFileIfNeed(this, fileName, mSTRenderKit.getResourcePath(className))
         mSTRenderKit.setFilterStyle(className, filterName, path)
         mSTRenderKit.setFilterStrength(strength)
