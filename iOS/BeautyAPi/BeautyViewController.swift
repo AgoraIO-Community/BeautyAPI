@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import BeautyAPI
 
 class BeautyViewController: UIViewController {
     @IBOutlet weak var localView: UIView!

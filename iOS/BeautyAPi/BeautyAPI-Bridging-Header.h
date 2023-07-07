@@ -6,9 +6,6 @@
 //
 
 #import "VideoProcessingManager.h"
-#import "BeautyAPI.h"
-#import "BeautyConfig.h"
-#import "BundleUtil.h"
+#import "BytesBeautyRender.h"
 #import "FUBeautyRender.h"
 #import "SenseBeautyRender.h"
-#import "BytesBeautyRender.h"

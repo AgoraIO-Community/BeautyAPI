@@ -154,12 +154,6 @@ static FUManager *shareManager = NULL;
 }
 
 
-- (void)onCameraChange {
-#if __has_include(<FURenderKit/FURenderKit.h>)
-    [FUAIKit resetTrackedResult];
-#endif
-}
-
 - (void)setStickerPath: (NSString *)stickerName {
     NSBundle *bundle = [BundleUtil bundleWithBundleName:@"FURenderKit" podName:@"fuLib"];
     NSString *path = [bundle pathForResource:[NSString stringWithFormat:@"贴纸/%@", stickerName] ofType:@"bundle"];

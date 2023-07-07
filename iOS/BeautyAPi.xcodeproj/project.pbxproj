@@ -22,18 +22,14 @@
 		E72D78442A25976500C9134C /* EffectsLicense.m in Sources */ = {isa = PBXBuildFile; fileRef = E72D78342A25976500C9134C /* EffectsLicense.m */; };
 		E72D78462A25976500C9134C /* EFMotionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E72D78392A25976500C9134C /* EFMotionManager.m */; };
 		E72D78472A25976500C9134C /* EffectsCommonObject.m in Sources */ = {isa = PBXBuildFile; fileRef = E72D783B2A25976500C9134C /* EffectsCommonObject.m */; };
-		E72D78532A259AE500C9134C /* BundleUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = E72D78522A259AE500C9134C /* BundleUtil.m */; };
 		E72D78572A259E9C00C9134C /* KeyCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72D78562A259E9C00C9134C /* KeyCenter.swift */; };
-		E72D78682A27297700C9134C /* BeautyAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = E72D78642A27297700C9134C /* BeautyAPI.m */; };
 		E72D786B2A27313F00C9134C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72D78192A25963500C9134C /* ViewController.swift */; };
-		E72D786E2A27320400C9134C /* BeautyConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = E72D786D2A27320400C9134C /* BeautyConfig.m */; };
 		E72D787C2A284A1C00C9134C /* BeautyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72D787B2A284A1C00C9134C /* BeautyViewController.swift */; };
 		E72D787E2A284BBA00C9134C /* BeautyViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E72D787D2A284BBA00C9134C /* BeautyViewController.storyboard */; };
 		E72D78812A286F1600C9134C /* PickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72D78802A286F1600C9134C /* PickerView.swift */; };
 		E72D78832A286F2900C9134C /* AlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72D78822A286F2900C9134C /* AlertManager.swift */; };
 		E72D78872A2893F300C9134C /* CLSettingCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72D78862A2893F300C9134C /* CLSettingCellView.swift */; };
 		E72D78892A2897E200C9134C /* Configs.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72D78882A2897E200C9134C /* Configs.swift */; };
-		E732E9232A31A786004403AF /* FUManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E732E9222A31A786004403AF /* FUManager.m */; };
 		E77902B72A4D636C008791AD /* BELicenseHelper.mm in Sources */ = {isa = PBXBuildFile; fileRef = E779029B2A4D636C008791AD /* BELicenseHelper.mm */; };
 		E77902B82A4D636C008791AD /* BEOpenGLRenderHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E779029C2A4D636C008791AD /* BEOpenGLRenderHelper.m */; };
 		E77902B92A4D636C008791AD /* BEEffectManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = E779029F2A4D636C008791AD /* BEEffectManager.mm */; };
@@ -46,9 +42,11 @@
 		E77902C22A4D636C008791AD /* BEPixelBufferInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = E77902B22A4D636C008791AD /* BEPixelBufferInfo.m */; };
 		E77902C32A4D636C008791AD /* BEImageUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E77902B42A4D636C008791AD /* BEImageUtils.m */; };
 		E77902C42A4D636C008791AD /* BERender.mm in Sources */ = {isa = PBXBuildFile; fileRef = E77902B62A4D636C008791AD /* BERender.mm */; };
-		E77902C72A4E81F9008791AD /* FUBeautyRender.m in Sources */ = {isa = PBXBuildFile; fileRef = E77902C62A4E81F9008791AD /* FUBeautyRender.m */; };
-		E77902CA2A4E870E008791AD /* SenseBeautyRender.m in Sources */ = {isa = PBXBuildFile; fileRef = E77902C92A4E870E008791AD /* SenseBeautyRender.m */; };
-		E77902CD2A4E88D4008791AD /* BytesBeautyRender.m in Sources */ = {isa = PBXBuildFile; fileRef = E77902CC2A4E88D4008791AD /* BytesBeautyRender.m */; };
+		E77902F82A57C067008791AD /* FUManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E77902F72A57C066008791AD /* FUManager.m */; };
+		E77903052A57E5E8008791AD /* FUBeautyRender.m in Sources */ = {isa = PBXBuildFile; fileRef = E77902FD2A57E5E8008791AD /* FUBeautyRender.m */; };
+		E77903062A57E5E8008791AD /* BytesBeautyRender.m in Sources */ = {isa = PBXBuildFile; fileRef = E77903002A57E5E8008791AD /* BytesBeautyRender.m */; };
+		E77903072A57E5E8008791AD /* SenseBeautyRender.m in Sources */ = {isa = PBXBuildFile; fileRef = E77903042A57E5E8008791AD /* SenseBeautyRender.m */; };
+		E779030B2A57E643008791AD /* BundleUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = E779030A2A57E643008791AD /* BundleUtil.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -83,13 +81,7 @@
 		E72D783C2A25976500C9134C /* VideoProcessingManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoProcessingManager.h; sourceTree = "<group>"; };
 		E72D783D2A25976500C9134C /* EffectsProcess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EffectsProcess.h; sourceTree = "<group>"; };
 		E72D784E2A2598B900C9134C /* BeautyAPI-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BeautyAPI-Bridging-Header.h"; sourceTree = "<group>"; };
-		E72D78512A259AE500C9134C /* BundleUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BundleUtil.h; sourceTree = "<group>"; };
-		E72D78522A259AE500C9134C /* BundleUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BundleUtil.m; sourceTree = "<group>"; };
 		E72D78562A259E9C00C9134C /* KeyCenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyCenter.swift; sourceTree = "<group>"; };
-		E72D78642A27297700C9134C /* BeautyAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeautyAPI.m; sourceTree = "<group>"; };
-		E72D78662A27297700C9134C /* BeautyAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeautyAPI.h; sourceTree = "<group>"; };
-		E72D786C2A27320400C9134C /* BeautyConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BeautyConfig.h; sourceTree = "<group>"; };
-		E72D786D2A27320400C9134C /* BeautyConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BeautyConfig.m; sourceTree = "<group>"; };
 		E72D787B2A284A1C00C9134C /* BeautyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeautyViewController.swift; sourceTree = "<group>"; };
 		E72D787D2A284BBA00C9134C /* BeautyViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = BeautyViewController.storyboard; sourceTree = "<group>"; };
 		E72D78802A286F1600C9134C /* PickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PickerView.swift; sourceTree = "<group>"; };
@@ -97,8 +89,6 @@
 		E72D78862A2893F300C9134C /* CLSettingCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CLSettingCellView.swift; sourceTree = "<group>"; };
 		E72D78882A2897E200C9134C /* Configs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configs.swift; sourceTree = "<group>"; };
 		E732E9202A31A786004403AF /* authpack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = authpack.h; sourceTree = "<group>"; };
-		E732E9212A31A786004403AF /* FUManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FUManager.h; sourceTree = "<group>"; };
-		E732E9222A31A786004403AF /* FUManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FUManager.m; sourceTree = "<group>"; };
 		E779029B2A4D636C008791AD /* BELicenseHelper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BELicenseHelper.mm; sourceTree = "<group>"; };
 		E779029C2A4D636C008791AD /* BEOpenGLRenderHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEOpenGLRenderHelper.m; sourceTree = "<group>"; };
 		E779029D2A4D636C008791AD /* Core.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Core.h; sourceTree = "<group>"; };
@@ -125,12 +115,16 @@
 		E77902B42A4D636C008791AD /* BEImageUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEImageUtils.m; sourceTree = "<group>"; };
 		E77902B52A4D636C008791AD /* BEEffectResourceHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEEffectResourceHelper.h; sourceTree = "<group>"; };
 		E77902B62A4D636C008791AD /* BERender.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BERender.mm; sourceTree = "<group>"; };
-		E77902C52A4E81F9008791AD /* FUBeautyRender.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FUBeautyRender.h; sourceTree = "<group>"; };
-		E77902C62A4E81F9008791AD /* FUBeautyRender.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FUBeautyRender.m; sourceTree = "<group>"; };
-		E77902C82A4E870E008791AD /* SenseBeautyRender.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SenseBeautyRender.h; sourceTree = "<group>"; };
-		E77902C92A4E870E008791AD /* SenseBeautyRender.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SenseBeautyRender.m; sourceTree = "<group>"; };
-		E77902CB2A4E88D4008791AD /* BytesBeautyRender.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BytesBeautyRender.h; sourceTree = "<group>"; };
-		E77902CC2A4E88D4008791AD /* BytesBeautyRender.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BytesBeautyRender.m; sourceTree = "<group>"; };
+		E77902F62A57C066008791AD /* FUManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FUManager.h; sourceTree = "<group>"; };
+		E77902F72A57C066008791AD /* FUManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FUManager.m; sourceTree = "<group>"; };
+		E77902FD2A57E5E8008791AD /* FUBeautyRender.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FUBeautyRender.m; sourceTree = "<group>"; };
+		E77902FE2A57E5E8008791AD /* FUBeautyRender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FUBeautyRender.h; sourceTree = "<group>"; };
+		E77903002A57E5E8008791AD /* BytesBeautyRender.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BytesBeautyRender.m; sourceTree = "<group>"; };
+		E77903012A57E5E8008791AD /* BytesBeautyRender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BytesBeautyRender.h; sourceTree = "<group>"; };
+		E77903032A57E5E8008791AD /* SenseBeautyRender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SenseBeautyRender.h; sourceTree = "<group>"; };
+		E77903042A57E5E8008791AD /* SenseBeautyRender.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SenseBeautyRender.m; sourceTree = "<group>"; };
+		E77903092A57E643008791AD /* BundleUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BundleUtil.h; sourceTree = "<group>"; };
+		E779030A2A57E643008791AD /* BundleUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BundleUtil.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -185,8 +179,9 @@
 			children = (
 				E72D787F2A286F0900C9134C /* PickerView */,
 				E72D78562A259E9C00C9134C /* KeyCenter.swift */,
-				E72D78592A25D36000C9134C /* Util */,
-				E72D78582A25D34B00C9134C /* BeautyAPI */,
+				E72D78882A2897E200C9134C /* Configs.swift */,
+				E77903082A57E643008791AD /* Util */,
+				E77902FB2A57E5B4008791AD /* BeautyRender */,
 				E72D78292A25976500C9134C /* SenseBeaufy */,
 				E732E91F2A31A786004403AF /* FUBeauty */,
 				E77902992A4D636C008791AD /* ByteBeaufy */,
@@ -230,30 +225,6 @@
 			path = SenseBeaufy;
 			sourceTree = "<group>";
 		};
-		E72D78582A25D34B00C9134C /* BeautyAPI */ = {
-			isa = PBXGroup;
-			children = (
-				E77902D02A5556A9008791AD /* FURender */,
-				E77902CF2A55569D008791AD /* BytesRender */,
-				E77902CE2A55568C008791AD /* SenseRender */,
-				E72D786C2A27320400C9134C /* BeautyConfig.h */,
-				E72D786D2A27320400C9134C /* BeautyConfig.m */,
-				E72D78662A27297700C9134C /* BeautyAPI.h */,
-				E72D78642A27297700C9134C /* BeautyAPI.m */,
-			);
-			path = BeautyAPI;
-			sourceTree = "<group>";
-		};
-		E72D78592A25D36000C9134C /* Util */ = {
-			isa = PBXGroup;
-			children = (
-				E72D78512A259AE500C9134C /* BundleUtil.h */,
-				E72D78522A259AE500C9134C /* BundleUtil.m */,
-				E72D78882A2897E200C9134C /* Configs.swift */,
-			);
-			path = Util;
-			sourceTree = "<group>";
-		};
 		E72D787F2A286F0900C9134C /* PickerView */ = {
 			isa = PBXGroup;
 			children = (
@@ -267,9 +238,9 @@
 		E732E91F2A31A786004403AF /* FUBeauty */ = {
 			isa = PBXGroup;
 			children = (
+				E77902F62A57C066008791AD /* FUManager.h */,
+				E77902F72A57C066008791AD /* FUManager.m */,
 				E732E9202A31A786004403AF /* authpack.h */,
-				E732E9212A31A786004403AF /* FUManager.h */,
-				E732E9222A31A786004403AF /* FUManager.m */,
 			);
 			path = FUBeauty;
 			sourceTree = "<group>";
@@ -307,31 +278,50 @@
 			path = ByteBeaufy;
 			sourceTree = "<group>";
 		};
-		E77902CE2A55568C008791AD /* SenseRender */ = {
+		E77902FB2A57E5B4008791AD /* BeautyRender */ = {
 			isa = PBXGroup;
 			children = (
-				E77902C82A4E870E008791AD /* SenseBeautyRender.h */,
-				E77902C92A4E870E008791AD /* SenseBeautyRender.m */,
+				E77902FF2A57E5E8008791AD /* BytesRender */,
+				E77902FC2A57E5E8008791AD /* FURender */,
+				E77903022A57E5E8008791AD /* SenseRender */,
 			);
-			path = SenseRender;
+			path = BeautyRender;
 			sourceTree = "<group>";
 		};
-		E77902CF2A55569D008791AD /* BytesRender */ = {
+		E77902FC2A57E5E8008791AD /* FURender */ = {
 			isa = PBXGroup;
 			children = (
-				E77902CB2A4E88D4008791AD /* BytesBeautyRender.h */,
-				E77902CC2A4E88D4008791AD /* BytesBeautyRender.m */,
+				E77902FD2A57E5E8008791AD /* FUBeautyRender.m */,
+				E77902FE2A57E5E8008791AD /* FUBeautyRender.h */,
+			);
+			path = FURender;
+			sourceTree = "<group>";
+		};
+		E77902FF2A57E5E8008791AD /* BytesRender */ = {
+			isa = PBXGroup;
+			children = (
+				E77903002A57E5E8008791AD /* BytesBeautyRender.m */,
+				E77903012A57E5E8008791AD /* BytesBeautyRender.h */,
 			);
 			path = BytesRender;
 			sourceTree = "<group>";
 		};
-		E77902D02A5556A9008791AD /* FURender */ = {
+		E77903022A57E5E8008791AD /* SenseRender */ = {
 			isa = PBXGroup;
 			children = (
-				E77902C52A4E81F9008791AD /* FUBeautyRender.h */,
-				E77902C62A4E81F9008791AD /* FUBeautyRender.m */,
+				E77903032A57E5E8008791AD /* SenseBeautyRender.h */,
+				E77903042A57E5E8008791AD /* SenseBeautyRender.m */,
 			);
-			path = FURender;
+			path = SenseRender;
+			sourceTree = "<group>";
+		};
+		E77903082A57E643008791AD /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				E77903092A57E643008791AD /* BundleUtil.h */,
+				E779030A2A57E643008791AD /* BundleUtil.m */,
+			);
+			path = Util;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -346,7 +336,7 @@
 				E72D780F2A25963500C9134C /* Frameworks */,
 				E72D78102A25963500C9134C /* Resources */,
 				4A7E14FC6F165CEF1D9D182A /* [CP] Embed Pods Frameworks */,
-				D75195E1A4B9B5CF3F9BD2CB /* [CP] Copy Pods Resources */,
+				3D529FAC4B1E845162F4D78C /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -427,6 +417,23 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		3D529FAC4B1E845162F4D78C /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BeautyAPi/Pods-BeautyAPi-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BeautyAPi/Pods-BeautyAPi-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BeautyAPi/Pods-BeautyAPi-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		4A7E14FC6F165CEF1D9D182A /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -444,23 +451,6 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BeautyAPi/Pods-BeautyAPi-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		D75195E1A4B9B5CF3F9BD2CB /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-BeautyAPi/Pods-BeautyAPi-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-BeautyAPi/Pods-BeautyAPi-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BeautyAPi/Pods-BeautyAPi-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -468,43 +458,41 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E77902C72A4E81F9008791AD /* FUBeautyRender.m in Sources */,
 				E77902BC2A4D636C008791AD /* BEResourceHelper.m in Sources */,
 				E72D786B2A27313F00C9134C /* ViewController.swift in Sources */,
 				E77902C22A4D636C008791AD /* BEPixelBufferInfo.m in Sources */,
 				E72D78892A2897E200C9134C /* Configs.swift in Sources */,
-				E77902CD2A4E88D4008791AD /* BytesBeautyRender.m in Sources */,
 				E72D78402A25976500C9134C /* EffectsDetector.m in Sources */,
 				E72D787C2A284A1C00C9134C /* BeautyViewController.swift in Sources */,
 				E77902B72A4D636C008791AD /* BELicenseHelper.mm in Sources */,
 				E72D78442A25976500C9134C /* EffectsLicense.m in Sources */,
 				E72D78422A25976500C9134C /* EffectsProcess.m in Sources */,
-				E77902CA2A4E870E008791AD /* SenseBeautyRender.m in Sources */,
 				E72D783E2A25976500C9134C /* EffectsAttribute.m in Sources */,
-				E72D78682A27297700C9134C /* BeautyAPI.m in Sources */,
-				E72D786E2A27320400C9134C /* BeautyConfig.m in Sources */,
 				E77902C42A4D636C008791AD /* BERender.mm in Sources */,
 				E72D78162A25963500C9134C /* AppDelegate.swift in Sources */,
 				E72D78472A25976500C9134C /* EffectsCommonObject.m in Sources */,
+				E77902F82A57C067008791AD /* FUManager.m in Sources */,
 				E77902C32A4D636C008791AD /* BEImageUtils.m in Sources */,
 				E72D78812A286F1600C9134C /* PickerView.swift in Sources */,
+				E77903052A57E5E8008791AD /* FUBeautyRender.m in Sources */,
 				E72D78832A286F2900C9134C /* AlertManager.swift in Sources */,
 				E77902C12A4D636C008791AD /* BEHttpRequestProvider.mm in Sources */,
 				E77902BA2A4D636C008791AD /* BEFrameProcessor.mm in Sources */,
 				E72D78432A25976500C9134C /* VideoProcessingManager.m in Sources */,
 				E77902C02A4D636C008791AD /* BEGLTexture.m in Sources */,
 				E77902B82A4D636C008791AD /* BEOpenGLRenderHelper.m in Sources */,
-				E72D78532A259AE500C9134C /* BundleUtil.m in Sources */,
 				E77902BB2A4D636C008791AD /* BEEffectResourceHelper.m in Sources */,
+				E77903062A57E5E8008791AD /* BytesBeautyRender.m in Sources */,
+				E779030B2A57E643008791AD /* BundleUtil.m in Sources */,
 				E72D78462A25976500C9134C /* EFMotionManager.m in Sources */,
 				E77902B92A4D636C008791AD /* BEEffectManager.mm in Sources */,
 				E72D78412A25976500C9134C /* EffectsAnimal.m in Sources */,
+				E77903072A57E5E8008791AD /* SenseBeautyRender.m in Sources */,
 				E72D783F2A25976500C9134C /* Effects.m in Sources */,
 				E72D78182A25963500C9134C /* SceneDelegate.swift in Sources */,
 				E72D78872A2893F300C9134C /* CLSettingCellView.swift in Sources */,
 				E72D78572A259E9C00C9134C /* KeyCenter.swift in Sources */,
 				E77902BD2A4D636C008791AD /* BERenderHelper.m in Sources */,
-				E732E9232A31A786004403AF /* FUManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -654,6 +642,11 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = YS397FG5PA;
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/BeautyAPI/BeautyAPI.framework/Headers\"",
+					"$(SRCROOT)/*/FUManager.h/**",
+				);
 				INFOPLIST_FILE = BeautyAPi/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Request Camera Access";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Request Mic Access";
