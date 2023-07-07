@@ -7,6 +7,10 @@ import android.opengl.GLES30;
 public class GLCopyHelper {
     private final int bufferCount;
 
+    public GLCopyHelper(){
+        this(1);
+    }
+
     public GLCopyHelper(int bufferCount){
         this.bufferCount = bufferCount;
     }

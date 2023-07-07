@@ -27,7 +27,6 @@ package io.agora.beauty.sensetime
 import android.graphics.Matrix
 import android.opengl.GLES11Ext
 import android.opengl.GLES20
-import android.os.Build
 import android.view.SurfaceView
 import android.view.TextureView
 import android.view.View
@@ -38,6 +37,7 @@ import io.agora.base.VideoFrame
 import io.agora.base.VideoFrame.I420Buffer
 import io.agora.base.VideoFrame.TextureBuffer
 import io.agora.base.internal.video.RendererCommon
+import io.agora.base.internal.video.YuvConverter
 import io.agora.base.internal.video.YuvHelper
 import io.agora.rtc2.Constants
 import io.agora.rtc2.gl.EglBaseProvider
@@ -285,7 +285,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         val startTime = System.currentTimeMillis()
 
         val processTexId = when(beautyMode){
-            1 -> processBeautySingleTexture(videoFrame)
+            1 -> processBeautyDoubleInput(videoFrame)
             2 -> processBeautySingleBuffer(videoFrame)
             else -> processBeautyAuto(videoFrame)
         }
@@ -311,10 +311,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
 
     private fun processBeautyAuto(videoFrame: VideoFrame): Int {
         val buffer = videoFrame.buffer
-        return if (buffer is TextureBuffer && Build.VERSION.SDK_INT >= 26) {
-            // Android 8.0以上使用单纹理输入，内部使用HardwareBuffer转nv21
-            processBeautySingleTexture(videoFrame)
-        } else if(buffer is TextureBuffer){
+        return if(buffer is TextureBuffer){
             processBeautyDoubleInput(videoFrame)
         } else {
             processBeautySingleBuffer(videoFrame)
@@ -378,13 +375,16 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
                     TextureBuffer.Type.OES -> GLES11Ext.GL_TEXTURE_EXTERNAL_OES
                     else -> GLES20.GL_TEXTURE_2D
                 },
-                matrix
+                matrix,
+                1 // pbo会缓存一帧
             )
         })
     }
 
     private fun getNV21Buffer(videoFrame: VideoFrame) : ByteArray? {
         val buffer = videoFrame.buffer
+        YuvConverter.setEnablePboOpt(true)
+        YuvConverter.setEnableConvertPerLog(true)
         val i420Buffer = buffer as? I420Buffer ?: buffer.toI420()
         val width = i420Buffer.width
         val height = i420Buffer.height

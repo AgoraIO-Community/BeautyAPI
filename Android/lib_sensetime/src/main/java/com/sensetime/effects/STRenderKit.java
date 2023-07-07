@@ -347,7 +347,11 @@ public class STRenderKit {
         return process.getTextureId();
     }
 
-    public int preProcess(int width, int height, int rotation, @NotNull byte[] bytes, int bytesType, int textureId, int textureType, float[] textureMatrix) {
+    public int preProcess(int width, int height, int rotation,
+                          @NotNull byte[] bytes, int bytesType,
+                          int textureId, int textureType,
+                          float[] textureMatrix,
+                          int diffBetweenBytesAndTexture) {
         if (!mAuthorized) {
             return -2;
         }
@@ -363,7 +367,7 @@ public class STRenderKit {
                 textureId,
                 textureType,
                 textureMatrix,
-                1,
+                diffBetweenBytesAndTexture,
                 width,
                 height,
                 rotation == 270,

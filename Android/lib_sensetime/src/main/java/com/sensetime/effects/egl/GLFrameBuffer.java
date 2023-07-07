@@ -1,5 +1,6 @@
 package com.sensetime.effects.egl;
 
+import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
@@ -10,21 +11,18 @@ import com.sensetime.effects.utils.GlUtil;
 
 public class GLFrameBuffer {
 
-    private int[] mFramebuffer = new int[]{-1};
-    private int[] mTargetTexture = new int[]{-1};
+    private int mFramebufferId = -1;
+    private int mTextureId = -1;
     private int mWidth, mHeight, mRotation;
-    private boolean isFlipV, isFlipH;
+    private boolean isFlipV, isFlipH, isTextureInner, isTextureChanged, isSizeChanged;
 
-    private final int textureType;
-
-    private final BaseProgram mProgram;
+    private OESProgram mOESProgram;
+    private GL2DProgram mGL2DProgram;
 
     private float[] mMVPMatrix = new float[16];
     private float[] mTexMatrix = GlUtil.IDENTITY_MATRIX;
 
-    public GLFrameBuffer(int textureType) {
-        this.textureType = textureType;
-        mProgram = textureType == GLES20.GL_TEXTURE_2D ? new GL2DProgram() : new OESProgram();
+    public GLFrameBuffer() {
         Matrix.setIdentityM(mMVPMatrix, 0);
     }
 
@@ -32,8 +30,7 @@ public class GLFrameBuffer {
         if (mWidth != width || mHeight != height) {
             mWidth = width;
             mHeight = height;
-            deleteFramebuffer();
-            bindFramebuffer(width, height);
+            isSizeChanged = true;
             return true;
         }
         return false;
@@ -60,14 +57,17 @@ public class GLFrameBuffer {
         }
     }
 
+    public void setTextureId(int textureId){
+        if(mTextureId != textureId){
+            deleteTexture();
+            mTextureId = textureId;
+            isTextureChanged = true;
+        }
+    }
+
     public int getTextureId(){
-        return mTargetTexture[0];
+        return mTextureId;
     }
-
-    public int getTextureType(){
-        return textureType;
-    }
-
 
     public void setTexMatrix(float[] matrix) {
         if (matrix != null) {
@@ -77,51 +77,84 @@ public class GLFrameBuffer {
         }
     }
 
+    public void resetTransform(){
+        mTexMatrix = GlUtil.IDENTITY_MATRIX;
+        isFlipH = isFlipV = false;
+        mRotation = 0;
+        Matrix.setIdentityM(mMVPMatrix, 0);
+    }
 
-    public int process(int textureId) {
-        if (mFramebuffer[0] == -1) {
+    public int process(int textureId, int textureType) {
+        if (mWidth <= 0 && mHeight <= 0) {
             throw new RuntimeException("setSize firstly!");
         }
 
-        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, mFramebuffer[0]);
+        if(mTextureId == -1){
+            mTextureId = createTexture(mWidth, mHeight);
+            bindFramebuffer(mTextureId);
+            isTextureInner = true;
+        }else if(isTextureInner && isSizeChanged){
+            GLES20.glDeleteTextures(1, new int[]{mTextureId}, 0);
+            mTextureId = createTexture(mWidth, mHeight);
+            bindFramebuffer(mTextureId);
+        }else if(isTextureChanged){
+            bindFramebuffer(mTextureId);
+        }
+        isTextureChanged = false;
+        isSizeChanged = false;
+
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, mFramebufferId);
         GlUtil.checkGlError("glBindFramebuffer");
         GLES20.glViewport(0, 0, mWidth, mHeight);
         GLES20.glClearColor(1f, 0, 0, 1f);
 
-        mProgram.draw(textureId, mTexMatrix, mMVPMatrix);
+        BaseProgram drawProgram;
+        if(textureType == GLES11Ext.GL_TEXTURE_EXTERNAL_OES){
+            if(mOESProgram == null){
+                mOESProgram = new OESProgram();
+            }
+            drawProgram = mOESProgram;
+        }else{
+            if(mGL2DProgram == null){
+                mGL2DProgram = new GL2DProgram();
+            }
+            drawProgram = mGL2DProgram;
+        }
+        drawProgram.draw(textureId, mTexMatrix, mMVPMatrix);
 
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
-        GLES20.glUseProgram(0);
 
-        return mTargetTexture[0];
+        return mTextureId;
     }
 
     public void release(){
+        deleteTexture();
         deleteFramebuffer();
-        mProgram.release();
+        if(mGL2DProgram != null){
+            mGL2DProgram.release();
+            mGL2DProgram = null;
+        }
+        if(mOESProgram != null){
+            mOESProgram.release();
+            mOESProgram = null;
+        }
     }
 
 
     private void deleteFramebuffer() {
-        if (mTargetTexture[0] != -1) {
-            GLES20.glDeleteTextures(1, mTargetTexture, 0);
-            mTargetTexture[0] = -1;
-        }
-
-        if (mFramebuffer[0] != -1) {
-            GLES20.glDeleteFramebuffers(1, mFramebuffer, 0);
-            mFramebuffer[0] = -1;
+        if (mFramebufferId != -1) {
+            GLES20.glDeleteFramebuffers(1, new int[]{mFramebufferId}, 0);
+            mFramebufferId = -1;
         }
     }
 
-    private void bindFramebuffer(int width, int height) {
-        GLES20.glGenFramebuffers(1, mFramebuffer, 0);
-        GlUtil.checkGlError("glGenFramebuffers");
-
-        GLES20.glGenTextures(1, mTargetTexture, 0);
+    public int createTexture(int width, int height){
+        int[] textures = new int[1];
+        GLES20.glGenTextures(1, textures, 0);
         GlUtil.checkGlError("glGenTextures");
+        int textureId = textures[0];
 
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTargetTexture[0]);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
         GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, width, height, 0,
                 GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, null);
 
@@ -134,14 +167,35 @@ public class GLFrameBuffer {
         GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,
                 GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
 
-        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, mFramebuffer[0]);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, GLES20.GL_NONE);
+
+        return textureId;
+    }
+
+    private void deleteTexture() {
+        if (isTextureInner && mTextureId != -1) {
+            GLES20.glDeleteTextures(1, new int[]{mTextureId}, 0);
+        }
+        isTextureInner = false;
+        mTextureId = -1;
+    }
+
+    private void bindFramebuffer(int textureId) {
+        if(mFramebufferId == -1){
+            int[] framebuffers = new int[1];
+            GLES20.glGenFramebuffers(1, framebuffers, 0);
+            GlUtil.checkGlError("glGenFramebuffers");
+            mFramebufferId = framebuffers[0];
+        }
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, mFramebufferId);
         GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER,
                 GLES20.GL_COLOR_ATTACHMENT0,
                 GLES20.GL_TEXTURE_2D,
-                mTargetTexture[0], 0);
+                textureId, 0);
 
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
-        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, GLES20.GL_NONE);
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, GLES20.GL_NONE);
     }
+
 
 }
