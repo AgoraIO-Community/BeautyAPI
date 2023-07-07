@@ -43,10 +43,12 @@
 		E77902C32A4D636C008791AD /* BEImageUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E77902B42A4D636C008791AD /* BEImageUtils.m */; };
 		E77902C42A4D636C008791AD /* BERender.mm in Sources */ = {isa = PBXBuildFile; fileRef = E77902B62A4D636C008791AD /* BERender.mm */; };
 		E77902F82A57C067008791AD /* FUManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E77902F72A57C066008791AD /* FUManager.m */; };
-		E77903052A57E5E8008791AD /* FUBeautyRender.m in Sources */ = {isa = PBXBuildFile; fileRef = E77902FD2A57E5E8008791AD /* FUBeautyRender.m */; };
-		E77903062A57E5E8008791AD /* BytesBeautyRender.m in Sources */ = {isa = PBXBuildFile; fileRef = E77903002A57E5E8008791AD /* BytesBeautyRender.m */; };
-		E77903072A57E5E8008791AD /* SenseBeautyRender.m in Sources */ = {isa = PBXBuildFile; fileRef = E77903042A57E5E8008791AD /* SenseBeautyRender.m */; };
 		E779030B2A57E643008791AD /* BundleUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = E779030A2A57E643008791AD /* BundleUtil.m */; };
+		E779031A2A57EE58008791AD /* BeautyConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = E779030D2A57EE58008791AD /* BeautyConfig.m */; };
+		E779031B2A57EE58008791AD /* FUBeautyRender.m in Sources */ = {isa = PBXBuildFile; fileRef = E77903102A57EE58008791AD /* FUBeautyRender.m */; };
+		E779031C2A57EE58008791AD /* BeautyAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = E77903132A57EE58008791AD /* BeautyAPI.m */; };
+		E779031D2A57EE58008791AD /* SenseBeautyRender.m in Sources */ = {isa = PBXBuildFile; fileRef = E77903162A57EE58008791AD /* SenseBeautyRender.m */; };
+		E779031E2A57EE58008791AD /* BytesBeautyRender.m in Sources */ = {isa = PBXBuildFile; fileRef = E77903182A57EE58008791AD /* BytesBeautyRender.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -117,14 +119,18 @@
 		E77902B62A4D636C008791AD /* BERender.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BERender.mm; sourceTree = "<group>"; };
 		E77902F62A57C066008791AD /* FUManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FUManager.h; sourceTree = "<group>"; };
 		E77902F72A57C066008791AD /* FUManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FUManager.m; sourceTree = "<group>"; };
-		E77902FD2A57E5E8008791AD /* FUBeautyRender.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FUBeautyRender.m; sourceTree = "<group>"; };
-		E77902FE2A57E5E8008791AD /* FUBeautyRender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FUBeautyRender.h; sourceTree = "<group>"; };
-		E77903002A57E5E8008791AD /* BytesBeautyRender.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BytesBeautyRender.m; sourceTree = "<group>"; };
-		E77903012A57E5E8008791AD /* BytesBeautyRender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BytesBeautyRender.h; sourceTree = "<group>"; };
-		E77903032A57E5E8008791AD /* SenseBeautyRender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SenseBeautyRender.h; sourceTree = "<group>"; };
-		E77903042A57E5E8008791AD /* SenseBeautyRender.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SenseBeautyRender.m; sourceTree = "<group>"; };
 		E77903092A57E643008791AD /* BundleUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BundleUtil.h; sourceTree = "<group>"; };
 		E779030A2A57E643008791AD /* BundleUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BundleUtil.m; sourceTree = "<group>"; };
+		E779030D2A57EE58008791AD /* BeautyConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeautyConfig.m; sourceTree = "<group>"; };
+		E779030E2A57EE58008791AD /* BeautyAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeautyAPI.h; sourceTree = "<group>"; };
+		E77903102A57EE58008791AD /* FUBeautyRender.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FUBeautyRender.m; sourceTree = "<group>"; };
+		E77903112A57EE58008791AD /* FUBeautyRender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FUBeautyRender.h; sourceTree = "<group>"; };
+		E77903122A57EE58008791AD /* BeautyConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeautyConfig.h; sourceTree = "<group>"; };
+		E77903132A57EE58008791AD /* BeautyAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeautyAPI.m; sourceTree = "<group>"; };
+		E77903152A57EE58008791AD /* SenseBeautyRender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SenseBeautyRender.h; sourceTree = "<group>"; };
+		E77903162A57EE58008791AD /* SenseBeautyRender.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SenseBeautyRender.m; sourceTree = "<group>"; };
+		E77903182A57EE58008791AD /* BytesBeautyRender.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BytesBeautyRender.m; sourceTree = "<group>"; };
+		E77903192A57EE58008791AD /* BytesBeautyRender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BytesBeautyRender.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -180,8 +186,8 @@
 				E72D787F2A286F0900C9134C /* PickerView */,
 				E72D78562A259E9C00C9134C /* KeyCenter.swift */,
 				E72D78882A2897E200C9134C /* Configs.swift */,
+				E779030C2A57EE58008791AD /* BeautyAPI */,
 				E77903082A57E643008791AD /* Util */,
-				E77902FB2A57E5B4008791AD /* BeautyRender */,
 				E72D78292A25976500C9134C /* SenseBeaufy */,
 				E732E91F2A31A786004403AF /* FUBeauty */,
 				E77902992A4D636C008791AD /* ByteBeaufy */,
@@ -278,43 +284,6 @@
 			path = ByteBeaufy;
 			sourceTree = "<group>";
 		};
-		E77902FB2A57E5B4008791AD /* BeautyRender */ = {
-			isa = PBXGroup;
-			children = (
-				E77902FF2A57E5E8008791AD /* BytesRender */,
-				E77902FC2A57E5E8008791AD /* FURender */,
-				E77903022A57E5E8008791AD /* SenseRender */,
-			);
-			path = BeautyRender;
-			sourceTree = "<group>";
-		};
-		E77902FC2A57E5E8008791AD /* FURender */ = {
-			isa = PBXGroup;
-			children = (
-				E77902FD2A57E5E8008791AD /* FUBeautyRender.m */,
-				E77902FE2A57E5E8008791AD /* FUBeautyRender.h */,
-			);
-			path = FURender;
-			sourceTree = "<group>";
-		};
-		E77902FF2A57E5E8008791AD /* BytesRender */ = {
-			isa = PBXGroup;
-			children = (
-				E77903002A57E5E8008791AD /* BytesBeautyRender.m */,
-				E77903012A57E5E8008791AD /* BytesBeautyRender.h */,
-			);
-			path = BytesRender;
-			sourceTree = "<group>";
-		};
-		E77903022A57E5E8008791AD /* SenseRender */ = {
-			isa = PBXGroup;
-			children = (
-				E77903032A57E5E8008791AD /* SenseBeautyRender.h */,
-				E77903042A57E5E8008791AD /* SenseBeautyRender.m */,
-			);
-			path = SenseRender;
-			sourceTree = "<group>";
-		};
 		E77903082A57E643008791AD /* Util */ = {
 			isa = PBXGroup;
 			children = (
@@ -322,6 +291,47 @@
 				E779030A2A57E643008791AD /* BundleUtil.m */,
 			);
 			path = Util;
+			sourceTree = "<group>";
+		};
+		E779030C2A57EE58008791AD /* BeautyAPI */ = {
+			isa = PBXGroup;
+			children = (
+				E779030E2A57EE58008791AD /* BeautyAPI.h */,
+				E77903132A57EE58008791AD /* BeautyAPI.m */,
+				E77903122A57EE58008791AD /* BeautyConfig.h */,
+				E779030D2A57EE58008791AD /* BeautyConfig.m */,
+				E779030F2A57EE58008791AD /* FURender */,
+				E77903142A57EE58008791AD /* SenseRender */,
+				E77903172A57EE58008791AD /* BytesRender */,
+			);
+			path = BeautyAPI;
+			sourceTree = "<group>";
+		};
+		E779030F2A57EE58008791AD /* FURender */ = {
+			isa = PBXGroup;
+			children = (
+				E77903102A57EE58008791AD /* FUBeautyRender.m */,
+				E77903112A57EE58008791AD /* FUBeautyRender.h */,
+			);
+			path = FURender;
+			sourceTree = "<group>";
+		};
+		E77903142A57EE58008791AD /* SenseRender */ = {
+			isa = PBXGroup;
+			children = (
+				E77903152A57EE58008791AD /* SenseBeautyRender.h */,
+				E77903162A57EE58008791AD /* SenseBeautyRender.m */,
+			);
+			path = SenseRender;
+			sourceTree = "<group>";
+		};
+		E77903172A57EE58008791AD /* BytesRender */ = {
+			isa = PBXGroup;
+			children = (
+				E77903182A57EE58008791AD /* BytesBeautyRender.m */,
+				E77903192A57EE58008791AD /* BytesBeautyRender.h */,
+			);
+			path = BytesRender;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -460,6 +470,7 @@
 			files = (
 				E77902BC2A4D636C008791AD /* BEResourceHelper.m in Sources */,
 				E72D786B2A27313F00C9134C /* ViewController.swift in Sources */,
+				E779031D2A57EE58008791AD /* SenseBeautyRender.m in Sources */,
 				E77902C22A4D636C008791AD /* BEPixelBufferInfo.m in Sources */,
 				E72D78892A2897E200C9134C /* Configs.swift in Sources */,
 				E72D78402A25976500C9134C /* EffectsDetector.m in Sources */,
@@ -470,24 +481,25 @@
 				E72D783E2A25976500C9134C /* EffectsAttribute.m in Sources */,
 				E77902C42A4D636C008791AD /* BERender.mm in Sources */,
 				E72D78162A25963500C9134C /* AppDelegate.swift in Sources */,
+				E779031A2A57EE58008791AD /* BeautyConfig.m in Sources */,
 				E72D78472A25976500C9134C /* EffectsCommonObject.m in Sources */,
 				E77902F82A57C067008791AD /* FUManager.m in Sources */,
 				E77902C32A4D636C008791AD /* BEImageUtils.m in Sources */,
+				E779031B2A57EE58008791AD /* FUBeautyRender.m in Sources */,
 				E72D78812A286F1600C9134C /* PickerView.swift in Sources */,
-				E77903052A57E5E8008791AD /* FUBeautyRender.m in Sources */,
 				E72D78832A286F2900C9134C /* AlertManager.swift in Sources */,
 				E77902C12A4D636C008791AD /* BEHttpRequestProvider.mm in Sources */,
+				E779031C2A57EE58008791AD /* BeautyAPI.m in Sources */,
 				E77902BA2A4D636C008791AD /* BEFrameProcessor.mm in Sources */,
 				E72D78432A25976500C9134C /* VideoProcessingManager.m in Sources */,
 				E77902C02A4D636C008791AD /* BEGLTexture.m in Sources */,
 				E77902B82A4D636C008791AD /* BEOpenGLRenderHelper.m in Sources */,
 				E77902BB2A4D636C008791AD /* BEEffectResourceHelper.m in Sources */,
-				E77903062A57E5E8008791AD /* BytesBeautyRender.m in Sources */,
 				E779030B2A57E643008791AD /* BundleUtil.m in Sources */,
 				E72D78462A25976500C9134C /* EFMotionManager.m in Sources */,
 				E77902B92A4D636C008791AD /* BEEffectManager.mm in Sources */,
 				E72D78412A25976500C9134C /* EffectsAnimal.m in Sources */,
-				E77903072A57E5E8008791AD /* SenseBeautyRender.m in Sources */,
+				E779031E2A57EE58008791AD /* BytesBeautyRender.m in Sources */,
 				E72D783F2A25976500C9134C /* Effects.m in Sources */,
 				E72D78182A25963500C9134C /* SceneDelegate.swift in Sources */,
 				E72D78872A2893F300C9134C /* CLSettingCellView.swift in Sources */,

@@ -9,3 +9,4 @@
 #import "BytesBeautyRender.h"
 #import "FUBeautyRender.h"
 #import "SenseBeautyRender.h"
+#import "BeautyAPI.h"

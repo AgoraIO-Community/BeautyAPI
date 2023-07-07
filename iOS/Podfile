@@ -9,7 +9,7 @@ target 'BeautyAPi' do
   use_frameworks!
 
   pod 'AgoraRtcEngine_iOS', '~> 4.2.0'
-  pod 'BeautyAPI', :path => Dir.pwd() + '/BeautyAPi/BeautyAPI.podspec'
+#  pod 'BeautyAPI', :path => Dir.pwd() + '/BeautyAPi/BeautyAPI.podspec'
   pod 'SenseLib', :path => 'sense.podspec'
   pod 'fuLib', :path => 'fu.podspec'
   pod 'bytedEffect', :path => 'bytedEffect.podspec'
