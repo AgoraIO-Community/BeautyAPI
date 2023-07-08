@@ -27,6 +27,7 @@ package io.agora.beauty.sensetime
 import android.graphics.Matrix
 import android.opengl.GLES11Ext
 import android.opengl.GLES20
+import android.os.Build
 import android.view.SurfaceView
 import android.view.TextureView
 import android.view.View
@@ -285,7 +286,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         val startTime = System.currentTimeMillis()
 
         val processTexId = when(beautyMode){
-            1 -> processBeautyDoubleInput(videoFrame)
+            1 -> processBeautySingleTexture(videoFrame)
             2 -> processBeautySingleBuffer(videoFrame)
             else -> processBeautyAuto(videoFrame)
         }
@@ -311,7 +312,10 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
 
     private fun processBeautyAuto(videoFrame: VideoFrame): Int {
         val buffer = videoFrame.buffer
-        return if(buffer is TextureBuffer){
+        return if (buffer is TextureBuffer && Build.VERSION.SDK_INT >= 26) {
+            // Android 8.0以上使用单纹理输入，内部使用HardwareBuffer转nv21
+            processBeautySingleTexture(videoFrame)
+        } else if(buffer is TextureBuffer){
             processBeautyDoubleInput(videoFrame)
         } else {
             processBeautySingleBuffer(videoFrame)

@@ -172,6 +172,13 @@ public class GLFrameBuffer {
         return textureId;
     }
 
+    public void resizeTexture(int textureId, int width, int height) {
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
+        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, width, height, 0,
+                GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, null);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, GLES20.GL_NONE);
+    }
+
     private void deleteTexture() {
         if (isTextureInner && mTextureId != -1) {
             GLES20.glDeleteTextures(1, new int[]{mTextureId}, 0);

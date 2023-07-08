@@ -2,73 +2,50 @@ package com.sensetime.effects.processor
 
 import android.annotation.TargetApi
 import android.content.Context
-import android.hardware.Camera
 import android.opengl.GLES20
 import android.os.Build
 import android.util.Log
-import android.util.Size
-import com.sensetime.effects.egl.EGLContextHelper
 import com.sensetime.effects.egl.GLCopyHelper
 import com.sensetime.effects.egl.GLFrameBuffer
-import com.sensetime.effects.utils.Accelerometer
+import com.sensetime.effects.egl.GLTextureBufferQueue
 import com.sensetime.effects.utils.Accelerometer.CLOCKWISE_ANGLE
 import com.sensetime.effects.utils.CostTimeUtils
-import com.sensetime.effects.utils.GlUtil
 import com.sensetime.effects.utils.LogUtils
-import com.sensetime.effects.utils.QueueBlockThreadExecutor
 import com.sensetime.hardwarebuffer.STMobileHardwareBufferNative
 import com.sensetime.stmobile.STCommonNative
-import com.sensetime.stmobile.STEffectInImage
 import com.sensetime.stmobile.STMobileAnimalNative
 import com.sensetime.stmobile.STMobileColorConvertNative
 import com.sensetime.stmobile.STMobileEffectNative
 import com.sensetime.stmobile.STMobileHumanActionNative
-import com.sensetime.stmobile.model.STAnimalFace
-import com.sensetime.stmobile.model.STAnimalFaceInfo
 import com.sensetime.stmobile.model.STEffectCustomParam
 import com.sensetime.stmobile.model.STEffectRenderInParam
 import com.sensetime.stmobile.model.STEffectRenderOutParam
 import com.sensetime.stmobile.model.STEffectTexture
-import com.sensetime.stmobile.model.STHumanAction
-import com.sensetime.stmobile.model.STImage
 import com.sensetime.stmobile.model.STQuaternion
 import com.sensetime.stmobile.params.STEffectParam
-import com.sensetime.stmobile.params.STRotateType
 import com.sensetime.stmobile.sticker_module_types.STCustomEvent
-import java.util.concurrent.Callable
-import kotlin.math.max
-import kotlin.math.min
 
-class BeautyProcessor(cache: Int = 2) : IBeautyProcessor {
+class BeautyProcessor : IBeautyProcessor {
     private val TAG = this::class.java.simpleName
-    private val cacheCount = max(min(cache, 2), 1)
-    private val cacheExecutor = QueueBlockThreadExecutor<Int>(cacheCount, 1)
-    private val glExecutor = QueueBlockThreadExecutor<OutputInfo>(0, 1)
 
-    private var eglContextHelper: EGLContextHelper? = null
-    private var glCopyHelper = GLCopyHelper()
-    private var glFrameBuffer = GLFrameBuffer()
+    private val glCopyHelper = GLCopyHelper()
+    private val glFrameBuffer = GLFrameBuffer()
+    private val glTextureBufferQueue = GLTextureBufferQueue(glFrameBuffer)
 
-    private val inputTextureIds = arrayOfNulls<Int>(cacheCount)
-    private val inputByteArrays = arrayOfNulls<ByteArray>(cacheCount)
-
+    private var mProcessWidth = 0
+    private var mProcessHeight = 0
     private var processInTextureId = -1
     private var beautyOutTextureId = -1
     private var finalOutTextureId = -1
 
     private lateinit var mSTMobileEffectNative: STMobileEffectNative
-    private lateinit var mSTHumanActionNative: STMobileHumanActionNative
+    private lateinit var mFaceDetector: FaceDetector
     private var mSTMobileColorConvertNative: STMobileColorConvertNative? = null
-    private var mAnimalFaceInfo = arrayOfNulls<STAnimalFaceInfo>(cacheCount)
-    private var mStAnimalNative: STMobileAnimalNative? = null
     private var mSTMobileHardwareBufferNative: STMobileHardwareBufferNative? = null
 
-    private var mAccelerometer: Accelerometer? = null
     private var mCustomEvent = 0
     private var mInputWidth = 0
     private var mInputHeight = 0
-    private var mProcessWidth = 0
-    private var mProcessHeight = 0
     private var isLastFrontCamera = false
 
     @Volatile
@@ -80,62 +57,37 @@ class BeautyProcessor(cache: Int = 2) : IBeautyProcessor {
         animalNative: STMobileAnimalNative?,
     ) {
         this.mSTMobileEffectNative = effectNative
-        this.mSTHumanActionNative = humanActionNative
-        this.mStAnimalNative = animalNative
+        mFaceDetector = FaceDetector(humanActionNative, effectNative, animalNative)
     }
 
     override fun release() {
         isReleased = true
-        mAccelerometer?.stop()
-        mAccelerometer = null
-        glExecutor.execute(Callable {
-            if(processInTextureId != -1){
-                GLES20.glDeleteTextures(1, intArrayOf(processInTextureId), 0)
-                processInTextureId = -1
-            }
-            if(beautyOutTextureId != -1){
-                GLES20.glDeleteTextures(1, intArrayOf(beautyOutTextureId), 0)
-                beautyOutTextureId = -1
-            }
-            if(finalOutTextureId != -1){
-                GLES20.glDeleteTextures(1, intArrayOf(finalOutTextureId), 0)
-                finalOutTextureId = -1
-            }
-            inputByteArrays.forEachIndexed { index, bytes ->
-                inputByteArrays[index] = null
-            }
-            inputTextureIds.forEachIndexed { index, textureId ->
-                textureId?.let { GLES20.glDeleteTextures(1, intArrayOf(it), 0) }
-                inputTextureIds[index] = null
-            }
-            if (mSTMobileColorConvertNative != null) {
-                mSTMobileColorConvertNative?.destroyInstance()
-                mSTMobileColorConvertNative = null
-            }
-            eglContextHelper?.let {
-                it.release()
-                eglContextHelper = null
-            }
-            glFrameBuffer.release()
-            glCopyHelper.release()
-            mSTMobileHardwareBufferNative?.release()
-            mSTMobileHardwareBufferNative = null
-            return@Callable null
-        })
-        glExecutor.shutdown()
-        cacheExecutor.shutdown()
+        mFaceDetector.release()
+        if (processInTextureId != -1) {
+            GLES20.glDeleteTextures(1, intArrayOf(processInTextureId), 0)
+            processInTextureId = -1
+        }
+        if (beautyOutTextureId != -1) {
+            GLES20.glDeleteTextures(1, intArrayOf(beautyOutTextureId), 0)
+            beautyOutTextureId = -1
+        }
+        if (finalOutTextureId != -1) {
+            GLES20.glDeleteTextures(1, intArrayOf(finalOutTextureId), 0)
+            finalOutTextureId = -1
+        }
+        if (mSTMobileColorConvertNative != null) {
+            mSTMobileColorConvertNative?.destroyInstance()
+            mSTMobileColorConvertNative = null
+        }
+        glFrameBuffer.release()
+        glCopyHelper.release()
+        glTextureBufferQueue.release()
+        mSTMobileHardwareBufferNative?.release()
+        mSTMobileHardwareBufferNative = null
     }
 
     override fun enableSensor(context: Context, enable: Boolean) {
-        if (enable) {
-            if (mAccelerometer == null) {
-                mAccelerometer = Accelerometer(context)
-                mAccelerometer?.start()
-            }
-        } else {
-            mAccelerometer?.stop()
-            mAccelerometer = null
-        }
+        mFaceDetector.enableSensor(context, enable)
     }
 
     override fun triggerScreenTap(isDouble: Boolean) {
@@ -156,23 +108,6 @@ class BeautyProcessor(cache: Int = 2) : IBeautyProcessor {
         if (isReleased) {
             return null
         }
-        if (eglContextHelper == null) {
-            val glContext = GlUtil.getCurrGLContext()
-            glExecutor.execute(Callable {
-                if (isReleased) {
-                    return@Callable null
-                }
-                if (eglContextHelper == null) {
-                    eglContextHelper = EGLContextHelper()
-                        .apply {
-                            initEGL(glContext)
-                            eglMakeCurrent()
-                        }
-                }
-                return@Callable null
-            })
-        }
-
         return if (input.bytes != null && input.textureId != null) {
             processDoubleInput(input)
         } else if (input.bytes != null) {
@@ -192,90 +127,66 @@ class BeautyProcessor(cache: Int = 2) : IBeautyProcessor {
         if (input.textureId == null) {
             return null
         }
-        val current = cacheExecutor.current()
-        val outSize = when (input.cameraOrientation) {
-            90, 270 -> Size(input.height, input.width)
-            else -> Size(input.width, input.height)
+        val width = input.width
+        val height = input.height
+
+        if(processInTextureId == -1){
+            processInTextureId = glFrameBuffer.createTexture(width, height)
         }
-        val width = outSize.width
-        val height = outSize.height
 
-        glExecutor.execute(Callable {
-            if (isReleased) {
-                return@Callable null
-            }
-            if (mSTMobileHardwareBufferNative == null) {
-                mProcessWidth = input.width
-                mProcessHeight = input.height
-                mSTMobileHardwareBufferNative = STMobileHardwareBufferNative().apply {
-                    init(
-                        width,
-                        height,
-                        STMobileHardwareBufferNative.HARDWARE_BUFFER_FORMAT_RGBA,
-                        STMobileHardwareBufferNative.HARDWARE_BUFFER_USAGE_DOWNLOAD
-                    )
-                }
-            } else if (mProcessWidth != input.width || mProcessHeight != input.height) {
-                mSTMobileHardwareBufferNative?.release()
-                mSTMobileHardwareBufferNative = null
-                inputTextureIds.forEachIndexed { index, textureId ->
-                    textureId?.let { GLES20.glDeleteTextures(1, intArrayOf(it), 0) }
-                    inputTextureIds[index] = null
-                }
-                return@Callable null
-            }
-
-            inputByteArrays[current] = ByteArray(width * height * 4)
-
-            var textureId = inputTextureIds[current]
-            if (textureId == null) {
-                textureId = glFrameBuffer.createTexture(width, height)
-                inputTextureIds[current] = textureId
-            }
-
-            glFrameBuffer.textureId = textureId
-            glFrameBuffer.setSize(width, height)
-            glFrameBuffer.resetTransform()
-            glFrameBuffer.setRotation(input.cameraOrientation)
-            if (input.textureMatrix != null) {
-                glFrameBuffer.setTexMatrix(input.textureMatrix)
-                glFrameBuffer.setFlipH(!input.isFrontCamera)
-            } else {
-                glFrameBuffer.setFlipH(input.isFrontCamera)
-            }
-            glFrameBuffer.process(input.textureId, input.textureType)
-
-            mSTMobileHardwareBufferNative?.let {
-                glCopyHelper.copy2DTextureToOesTexture(
-                    textureId,
-                    it.textureId,
+        if (mSTMobileHardwareBufferNative == null) {
+            mProcessWidth = width
+            mProcessHeight = height
+            mSTMobileHardwareBufferNative = STMobileHardwareBufferNative().apply {
+                init(
                     width,
                     height,
-                    0
-                )
-                it.downloadRgbaImage(
-                    width,
-                    height,
-                    inputByteArrays[current]
+                    STMobileHardwareBufferNative.HARDWARE_BUFFER_FORMAT_RGBA,
+                    STMobileHardwareBufferNative.HARDWARE_BUFFER_USAGE_DOWNLOAD
                 )
             }
+        } else if (mProcessWidth != width || mProcessHeight != height) {
+            mSTMobileHardwareBufferNative?.release()
+            mSTMobileHardwareBufferNative = null
+            glFrameBuffer.resizeTexture(processInTextureId, width, height)
+            return null
+        }
 
-            GLES20.glFinish()
-            return@Callable null
-        })
+        glFrameBuffer.textureId = processInTextureId
+        glFrameBuffer.setSize(width, height)
+        glFrameBuffer.resetTransform()
+        glFrameBuffer.process(input.textureId, input.textureType)
+
+        val outBuffer = ByteArray(width * height * 4)
+        mSTMobileHardwareBufferNative?.let {
+            glCopyHelper.copy2DTextureToOesTexture(
+                processInTextureId,
+                it.textureId,
+                width,
+                height,
+                0
+            )
+            it.downloadRgbaImage(
+                width,
+                height,
+                outBuffer
+            )
+        }
+
+        GLES20.glFinish()
 
         return processDoubleInput(
             InputInfo(
-                inputByteArrays[current],
+                outBuffer,
                 STCommonNative.ST_PIX_FMT_RGBA8888,
-                inputTextureIds[current],
+                processInTextureId,
                 GLES20.GL_TEXTURE_2D,
-                GlUtil.IDENTITY_MATRIX,
+                input.textureMatrix,
                 1,
                 width,
                 height,
                 input.isFrontCamera,
-                0,
+                input.cameraOrientation,
                 input.timestamp,
             )
         )
@@ -288,42 +199,32 @@ class BeautyProcessor(cache: Int = 2) : IBeautyProcessor {
         if (input.bytes == null) {
             return null
         }
-        glExecutor.execute(Callable {
-            if (isReleased) {
-                return@Callable null
+        if (processInTextureId == -1) {
+            processInTextureId = glFrameBuffer.createTexture(input.width, input.height)
+        }
+
+        if (mSTMobileColorConvertNative == null) {
+            mProcessWidth = input.width
+            mProcessHeight = input.height
+            glFrameBuffer.resizeTexture(processInTextureId, input.width, input.height)
+            mSTMobileColorConvertNative = STMobileColorConvertNative().apply {
+                createInstance()
+                setTextureSize(mProcessWidth, mProcessHeight)
             }
-            if (mSTMobileColorConvertNative == null) {
-                mInputWidth = input.width
-                mInputHeight = input.height
-                mSTMobileColorConvertNative = STMobileColorConvertNative().apply {
-                    createInstance()
-                    setTextureSize(mInputWidth, mInputHeight)
-                }
-            } else if (mInputWidth != input.width || mInputHeight != input.height) {
-                mSTMobileColorConvertNative?.destroyInstance()
-                mSTMobileColorConvertNative = null
-                if(processInTextureId != -1){
-                    GLES20.glDeleteTextures(1, intArrayOf(processInTextureId), 0)
-                    processInTextureId = -1
-                }
-                return@Callable null
-            }
-            var textureId = processInTextureId
-            if (textureId == -1) {
-                textureId = glFrameBuffer.createTexture(input.width, input.height)
-                processInTextureId = textureId
-            }
-            //上传nv21 buffer到纹理
-            mSTMobileColorConvertNative?.nv21BufferToRgbaTexture(
-                input.width,
-                input.height,
-                0,
-                false,
-                input.bytes,
-                textureId
-            )
-            return@Callable null
-        })
+        } else if (mProcessWidth != input.width || mProcessHeight != input.height) {
+            mSTMobileColorConvertNative?.destroyInstance()
+            mSTMobileColorConvertNative = null
+            return null
+        }
+        //上传nv21 buffer到纹理
+        mSTMobileColorConvertNative?.nv21BufferToRgbaTexture(
+            input.width,
+            input.height,
+            0,
+            false,
+            input.bytes,
+            processInTextureId
+        )
         return processDoubleInput(
             InputInfo(
                 input.bytes,
@@ -342,399 +243,193 @@ class BeautyProcessor(cache: Int = 2) : IBeautyProcessor {
     }
 
     private fun processDoubleInput(input: InputInfo): OutputInfo? {
+        if (isReleased) {
+            return null
+        }
         if (input.bytes == null || input.textureId == null) {
             return null
         }
-        val current = cacheExecutor.current()
-
         if (mInputWidth != input.width || mInputHeight != input.height || isLastFrontCamera != input.isFrontCamera) {
             mInputWidth = input.width
             mInputHeight = input.height
             isLastFrontCamera = input.isFrontCamera
-            cacheExecutor.cleanAllTasks()
-            inputTextureIds.forEachIndexed { index, textureId ->
-                if (textureId != null) {
-                    GLES20.glDeleteTextures(1, intArrayOf(textureId), 0)
-                    inputTextureIds[index] = null
-                }
-            }
-            inputByteArrays.forEachIndexed { index, bytes ->
-                inputByteArrays[index] = null
-            }
-            if (beautyOutTextureId == -1) {
-                glExecutor.execute(Callable {
-                    GLES20.glDeleteTextures(1, intArrayOf(beautyOutTextureId), 0)
-                    beautyOutTextureId = -1
-                    return@Callable null
-                })
-            }
-            if (finalOutTextureId == -1) {
-                glExecutor.execute(Callable {
-                    GLES20.glDeleteTextures(1, intArrayOf(finalOutTextureId), 0)
-                    finalOutTextureId = -1
-                    return@Callable null
-                })
-            }
+            reset()
             return null
         }
 
-        val outSize = when (input.cameraOrientation) {
-            90, 270 -> Size(input.height, input.width)
-            else -> Size(input.width, input.height)
-        }
-        val renderOrientation = getCurrentOrientation()
-        var execute: OutputInfo? = null
-        LogUtils.i("processDoubleInput index=$current")
-        cacheExecutor.execute(
-            beforeSubmit = { executedIndex ->
-                if (executedIndex != null && executedIndex >= 0) {
-                    execute = glExecutor.execute(Callable {
-                        if (isReleased) {
-                            return@Callable null
-                        }
-                        val width = outSize.width
-                        val height = outSize.height
-                        val inputTextureId = inputTextureIds[executedIndex] ?: return@Callable null
-                        var beautyOutTextureId = this@BeautyProcessor.beautyOutTextureId;
-                        if (beautyOutTextureId == -1) {
-                            beautyOutTextureId = glFrameBuffer.createTexture(width, height)
-                            this@BeautyProcessor.beautyOutTextureId = beautyOutTextureId
-                        }
-                        var finalOutTextureId = this@BeautyProcessor.finalOutTextureId
-                        if (finalOutTextureId == -1) {
-                            finalOutTextureId = glFrameBuffer.createTexture(width, height)
-                            this@BeautyProcessor.finalOutTextureId = finalOutTextureId
-                        }
-                        //输入纹理
-                        val stEffectTexture =
-                            STEffectTexture(
-                                inputTextureId,
-                                width,
-                                height,
-                                0
-                            )
-                        //输出纹理，需要在上层初始化
-                        val stEffectTextureOut =
-                            STEffectTexture(beautyOutTextureId, width, height, 0)
-
-                        //用户自定义参数设置
-                        val event: Int = mCustomEvent
-                        val customParam: STEffectCustomParam
-                        val sensorEvent = mAccelerometer?.sensorEvent
-                        customParam =
-                            if (sensorEvent?.values != null && sensorEvent.values.isNotEmpty()) {
-                                STEffectCustomParam(
-                                    STQuaternion(sensorEvent.values),
-                                    input.isFrontCamera,
-                                    event
-                                )
-                            } else {
-                                STEffectCustomParam(
-                                    STQuaternion(0f, 0f, 0f, 1f),
-                                    input.isFrontCamera,
-                                    event
-                                )
-                            }
-
-                        //渲染接口输入参数
-                        val sTEffectRenderInParam = STEffectRenderInParam(
-                            mSTHumanActionNative.getNativeHumanActionResultCache(executedIndex),
-                            mAnimalFaceInfo[executedIndex],
-                            renderOrientation,
-                            renderOrientation,
-                            false,
-                            customParam,
-                            stEffectTexture,
-                            STEffectInImage(
-                                STImage(
-                                    input.bytes,
-                                    input.bytesType,
-                                    input.width,
-                                    input.height
-                                ),
-                                input.cameraOrientation,
-                                input.isFrontCamera
-                            )
-                        )
-                        //渲染接口输出参数
-                        val stEffectRenderOutParam = STEffectRenderOutParam(
-                            stEffectTextureOut,
-                            null,
-                            null
-                        )
-                        LogUtils.i("processDoubleInput index=$executedIndex render start")
-                        val mStartRenderTime = System.currentTimeMillis()
-                        mSTMobileEffectNative.setParam(
-                            STEffectParam.EFFECT_PARAM_USE_INPUT_TIMESTAMP,
-                            1.0f
-                        )
-                        mSTMobileEffectNative.render(
-                            sTEffectRenderInParam,
-                            stEffectRenderOutParam,
-                            false
-                        )
-                        LogUtils.i(
-                            TAG,
-                            "render cost time total: %d",
-                            System.currentTimeMillis() - mStartRenderTime
-                        )
-                        CostTimeUtils.printAverage(
-                            "CostTimeUtils",
-                            System.currentTimeMillis() - mStartRenderTime
-                        )
-
-                        if (event == mCustomEvent) {
-                            mCustomEvent = 0
-                        }
-
-                        glFrameBuffer.setSize(width, height)
-                        glFrameBuffer.resetTransform()
-                        glFrameBuffer.setFlipV(true)
-                        glFrameBuffer.textureId = finalOutTextureId
-                        glFrameBuffer.process(
-                            stEffectRenderOutParam.texture?.id ?: 0,
-                            GLES20.GL_TEXTURE_2D
-                        )
-                        GLES20.glFinish()
-
-                        LogUtils.i("processDoubleInput index=$executedIndex render end")
-                        return@Callable OutputInfo(
-                            textureId = finalOutTextureId,
-                            width = width,
-                            height = height,
-                            timestamp = input.timestamp
-                        )
-                    })
-                }
-
-                var inputByteArray = inputByteArrays[current]
-                if (inputByteArray == null) {
-                    val byteArraySize = mInputWidth * mInputHeight * 3 / 2
-                    inputByteArray = ByteArray(byteArraySize)
-                    inputByteArrays[current] = inputByteArray
-                    System.arraycopy(input.bytes, 0, inputByteArray, 0, byteArraySize)
-                }
-
-                glExecutor.execute(Callable {
-                    val width = outSize.width
-                    val height = outSize.height
-                    var inputTextureId = inputTextureIds[current]
-                    if (inputTextureId == null) {
-                        inputTextureId = glFrameBuffer.createTexture(width, height)
-                        inputTextureIds[current] = inputTextureId
-                    }
-                    if (input.textureId != inputTextureId) {
-                        glFrameBuffer.textureId = inputTextureId
-                        glFrameBuffer.setSize(width, height)
-                        glFrameBuffer.resetTransform()
-                        glFrameBuffer.setRotation(input.cameraOrientation)
-                        if (input.textureMatrix != null) {
-                            glFrameBuffer.setTexMatrix(input.textureMatrix)
-                            glFrameBuffer.setFlipH(!input.isFrontCamera)
-                        } else {
-                            glFrameBuffer.setFlipH(input.isFrontCamera)
-                        }
-                        glFrameBuffer.process(input.textureId, input.textureType)
-                        GLES20.glFinish()
-                    }
-
-                    LogUtils.i("processDoubleInput index=$current cache frame buffer")
-                    return@Callable null
-                })
-            },
-            task = Callable {
-                if (isReleased) {
-                    return@Callable -1
-                }
-                LogUtils.i("processDoubleInput index=$current nativeHumanActionDetect start")
-                val orientation: Int =
-                    if (input.cameraOrientation == 0) STRotateType.ST_CLOCKWISE_ROTATE_0 else getHumanActionOrientation(
-                        input.isFrontCamera,
-                        input.cameraOrientation
-                    )
-                val deviceOrientation: Int =
-                    mAccelerometer?.direction ?: CLOCKWISE_ANGLE.Deg90.value
-                val startHumanAction = System.currentTimeMillis()
-                //Log.e(TAG, "config: "+Long.toHexString(mDetectConfig) );
-                val ret: Int = mSTHumanActionNative.nativeHumanActionDetectPtr(
-                    inputByteArrays[current],
-                    input.bytesType,
-                    mSTMobileEffectNative.humanActionDetectConfig,
-                    orientation,
-                    input.width,
-                    input.height
-                )
-                inputByteArrays[current] = null
-
-                LogUtils.i(
-                    TAG,
-                    "human action cost time: %d, ret: %d",
-                    System.currentTimeMillis() - startHumanAction, ret
-                )
-                //nv21数据为横向，相对于预览方向需要旋转处理，前置摄像头还需要镜像
-                STHumanAction.nativeHumanActionRotateAndMirror(
-                    mSTHumanActionNative,
-                    mSTHumanActionNative.nativeHumanActionResultPtr,
-                    outSize.width,
-                    outSize.height,
-                    if (input.isFrontCamera) Camera.CameraInfo.CAMERA_FACING_FRONT else Camera.CameraInfo.CAMERA_FACING_BACK,
-                    input.cameraOrientation,
-                    deviceOrientation
-                )
-                if (mStAnimalNative != null) {
-                    animalDetect(
-                        input.bytes,
-                        input.bytesType,
-                        getHumanActionOrientation(input.isFrontCamera, input.cameraOrientation),
-                        input.height,
-                        input.width,
-                        current,
-                        input.isFrontCamera,
-                        input.cameraOrientation
-                    )
-                } else {
-                    mAnimalFaceInfo[current] = STAnimalFaceInfo(null, 0)
-                }
-                LogUtils.i("processDoubleInput index=$current nativeHumanActionDetect end")
-                mSTHumanActionNative.updateNativeHumanActionCache((current + input.diffBetweenBytesAndTexture) % cacheCount)
-
-                if (isReleased) {
-                    return@Callable -1
-                }
-                return@Callable current
-            },
+        val textureSize = glTextureBufferQueue.enqueue(
+            GLTextureBufferQueue.TextureIn(
+                input.textureId,
+                input.textureType,
+                input.width,
+                input.height,
+                input.cameraOrientation,
+                input.isFrontCamera,
+                input.textureMatrix
+            )
         )
-        return execute
-    }
-
-
-    /**
-     * 用于humanActionDetect接口。根据传感器方向计算出在不同设备朝向时，人脸在buffer中的朝向
-     *
-     * @return 人脸在buffer中的朝向
-     */
-    private fun getHumanActionOrientation(frontCamera: Boolean, cameraRotation: Int): Int {
-        //获取重力传感器返回的方向
-        var orientation: Int = mAccelerometer?.direction ?: CLOCKWISE_ANGLE.Deg90.value
-
-        //在使用后置摄像头，且传感器方向为0或2时，后置摄像头与前置orientation相反
-        if (!frontCamera && orientation == STRotateType.ST_CLOCKWISE_ROTATE_0) {
-            orientation = STRotateType.ST_CLOCKWISE_ROTATE_180
-        } else if (!frontCamera && orientation == STRotateType.ST_CLOCKWISE_ROTATE_180) {
-            orientation = STRotateType.ST_CLOCKWISE_ROTATE_0
+        if(textureSize <= input.diffBetweenBytesAndTexture){
+            return null
         }
 
-        // 请注意前置摄像头与后置摄像头旋转定义不同 && 不同手机摄像头旋转定义不同
-        if (cameraRotation == 270 && orientation and STRotateType.ST_CLOCKWISE_ROTATE_90 == STRotateType.ST_CLOCKWISE_ROTATE_90
-            || cameraRotation == 90 && orientation and STRotateType.ST_CLOCKWISE_ROTATE_90 == STRotateType.ST_CLOCKWISE_ROTATE_0
-        ) {
-            orientation = orientation xor STRotateType.ST_CLOCKWISE_ROTATE_180
+        val detectorOut = mFaceDetector.dequeue()
+        var out : OutputInfo? = null
+        if (detectorOut != null) {
+            val textureOut = glTextureBufferQueue.dequeue()
+            if (textureOut != null) {
+                val outTextureId = effectApply(
+                    textureOut.textureId,
+                    detectorOut,
+                    textureOut.width,
+                    textureOut.height,
+                    getCurrentOrientation(),
+                    textureOut.isFrontCamera
+                )
+                out = OutputInfo(
+                    outTextureId,
+                    GLES20.GL_TEXTURE_2D,
+                    textureOut.width,
+                    textureOut.height,
+                    System.nanoTime()
+                )
+            } else {
+                Log.e(TAG, "The face detector out can not found its texture out!")
+            }
         }
+        mFaceDetector.enqueue(
+            FaceDetector.DetectorIn(
+                input.bytes,
+                input.bytesType,
+                input.width,
+                input.height,
+                input.isFrontCamera,
+                input.cameraOrientation
+            )
+        )
 
-        return orientation
+        return out
     }
 
-    private fun animalDetect(
-        imageData: ByteArray?,
-        format: Int,
-        orientation: Int,
+    private fun effectApply(
+        textureId: Int,
+        detectorInfo: FaceDetector.DetectorOut,
         width: Int,
         height: Int,
-        index: Int,
-        isFrontCamera: Boolean,
-        cameraRotation: Int
-    ) {
-        val need = mStAnimalNative != null
-        if (need) {
-            val catDetectStartTime = System.currentTimeMillis()
-            val animalDetectConfig = mSTMobileEffectNative.animalDetectConfig.toInt()
-            Log.d(
-                TAG,
-                "test_animalDetect: $animalDetectConfig"
-            )
-            var animalFaces: Array<STAnimalFace?>? = mStAnimalNative?.animalDetect(
-                imageData,
-                format,
-                orientation,
-                animalDetectConfig,
+        orientation: Int,
+        isFrontCamera: Boolean
+    ): Int {
+        var beautyOutTextureId = this@BeautyProcessor.beautyOutTextureId
+        if (beautyOutTextureId == -1) {
+            beautyOutTextureId = glFrameBuffer.createTexture(width, height)
+            this@BeautyProcessor.beautyOutTextureId = beautyOutTextureId
+        }
+        var finalOutTextureId = this@BeautyProcessor.finalOutTextureId
+        if (finalOutTextureId == -1) {
+            finalOutTextureId = glFrameBuffer.createTexture(width, height)
+            this@BeautyProcessor.finalOutTextureId = finalOutTextureId
+        }
+
+        //输入纹理
+        val stEffectTexture =
+            STEffectTexture(
+                textureId,
                 width,
-                height
+                height,
+                0
             )
-            LogUtils.i(
-                TAG,
-                "animal detect cost time: %d",
-                System.currentTimeMillis() - catDetectStartTime
-            )
-            if (!animalFaces.isNullOrEmpty()) {
-                Log.d(
-                    TAG,
-                    "animalDetect: " + animalFaces.size
-                )
-                animalFaces = processAnimalFaceResult(
-                    animalFaces,
-                    width,
-                    height,
+        //输出纹理，需要在上层初始化
+        val stEffectTextureOut =
+            STEffectTexture(beautyOutTextureId, width, height, 0)
+
+        //用户自定义参数设置
+        val event: Int = mCustomEvent
+        val customParam: STEffectCustomParam
+        val sensorEvent = mFaceDetector.getAccelerometer()?.sensorEvent
+        customParam =
+            if (sensorEvent?.values != null && sensorEvent.values.isNotEmpty()) {
+                STEffectCustomParam(
+                    STQuaternion(sensorEvent.values),
                     isFrontCamera,
-                    cameraRotation
+                    event
+                )
+            } else {
+                STEffectCustomParam(
+                    STQuaternion(0f, 0f, 0f, 1f),
+                    isFrontCamera,
+                    event
                 )
             }
-            mAnimalFaceInfo[index] = STAnimalFaceInfo(animalFaces, animalFaces?.size ?: 0)
-        } else {
-            mAnimalFaceInfo[index] = STAnimalFaceInfo(null, 0)
+
+        //渲染接口输入参数
+        val sTEffectRenderInParam = STEffectRenderInParam(
+            detectorInfo.humanResult,
+            detectorInfo.animalResult,
+            orientation,
+            orientation,
+            false,
+            customParam,
+            stEffectTexture,
+            null
+        )
+        //渲染接口输出参数
+        val stEffectRenderOutParam = STEffectRenderOutParam(
+            stEffectTextureOut,
+            null,
+            null
+        )
+        LogUtils.i("processDoubleInput render start")
+        val mStartRenderTime = System.currentTimeMillis()
+        mSTMobileEffectNative.setParam(
+            STEffectParam.EFFECT_PARAM_USE_INPUT_TIMESTAMP,
+            1.0f
+        )
+        mSTMobileEffectNative.render(
+            sTEffectRenderInParam,
+            stEffectRenderOutParam,
+            false
+        )
+        LogUtils.i(
+            TAG,
+            "render cost time total: %d",
+            System.currentTimeMillis() - mStartRenderTime
+        )
+        CostTimeUtils.printAverage(
+            "CostTimeUtils",
+            System.currentTimeMillis() - mStartRenderTime
+        )
+
+        if (event == mCustomEvent) {
+            mCustomEvent = 0
+        }
+
+        glFrameBuffer.setSize(width, height)
+        glFrameBuffer.resetTransform()
+        glFrameBuffer.setFlipV(true)
+        glFrameBuffer.textureId = finalOutTextureId
+        glFrameBuffer.process(
+            stEffectRenderOutParam.texture?.id ?: 0,
+            GLES20.GL_TEXTURE_2D
+        )
+        GLES20.glFinish()
+        return finalOutTextureId
+    }
+
+    private fun reset() {
+        mFaceDetector.reset()
+        glTextureBufferQueue.reset()
+        if (beautyOutTextureId == -1) {
+            GLES20.glDeleteTextures(1, intArrayOf(beautyOutTextureId), 0)
+            beautyOutTextureId = -1
+        }
+        if (finalOutTextureId == -1) {
+            GLES20.glDeleteTextures(1, intArrayOf(finalOutTextureId), 0)
+            finalOutTextureId = -1
         }
     }
 
-
-    private fun processAnimalFaceResult(
-        animalFaces: Array<STAnimalFace?>?,
-        width: Int,
-        height: Int,
-        isFrontCamera: Boolean,
-        cameraOrientation: Int
-    ): Array<STAnimalFace?>? {
-        var animalFacesRet = animalFaces ?: return null
-        if (isFrontCamera && cameraOrientation == 90) {
-            animalFacesRet = STMobileAnimalNative.animalRotate(
-                height,
-                width,
-                STRotateType.ST_CLOCKWISE_ROTATE_90,
-                animalFacesRet,
-                animalFacesRet.size
-            )
-            animalFacesRet =
-                STMobileAnimalNative.animalMirror(width, animalFacesRet, animalFacesRet.size)
-        } else if (isFrontCamera && cameraOrientation == 270) {
-            animalFacesRet = STMobileAnimalNative.animalRotate(
-                height,
-                width,
-                STRotateType.ST_CLOCKWISE_ROTATE_270,
-                animalFacesRet,
-                animalFacesRet.size
-            )
-            animalFacesRet =
-                STMobileAnimalNative.animalMirror(width, animalFacesRet, animalFacesRet.size)
-        } else if (!isFrontCamera && cameraOrientation == 270) {
-            animalFacesRet = STMobileAnimalNative.animalRotate(
-                height,
-                width,
-                STRotateType.ST_CLOCKWISE_ROTATE_270,
-                animalFacesRet,
-                animalFacesRet.size
-            )
-        } else if (!isFrontCamera && cameraOrientation == 90) {
-            animalFacesRet = STMobileAnimalNative.animalRotate(
-                height,
-                width,
-                STRotateType.ST_CLOCKWISE_ROTATE_90,
-                animalFacesRet,
-                animalFacesRet.size
-            )
-        }
-        return animalFacesRet
-    }
 
     private fun getCurrentOrientation(): Int {
-        val dir = mAccelerometer?.direction ?: CLOCKWISE_ANGLE.Deg90.value
+        val dir = mFaceDetector.getAccelerometer()?.direction ?: CLOCKWISE_ANGLE.Deg90.value
         var orientation = dir - 1
         if (orientation < 0) {
             orientation = dir xor 3
