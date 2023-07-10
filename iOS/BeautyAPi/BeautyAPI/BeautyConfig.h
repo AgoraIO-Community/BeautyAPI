@@ -17,20 +17,22 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol BeautyRenderDelegate <NSObject>
 
-- (void)setBeautyPreset;
-
 - (CVPixelBufferRef)onCapture: (CVPixelBufferRef)pixelBuffer;
 #if __has_include(<AgoraRtcKit/AgoraRtcKit.h>)
 - (AgoraVideoFormat)getVideoFormatPreference;
 #endif
+
+- (void)destory;
+
+@optional
+
+- (void)setBeautyPreset;
 
 - (void)setMakeup: (BOOL)isSelected;
 
 - (void)setSticker: (BOOL)isSelected;
 
 - (void)reset;
-
-- (void)destory;
 
 @end
 

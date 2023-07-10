@@ -72,21 +72,21 @@ class BeautyViewController: UIViewController {
         if sender.isSelected {
             beautyAPI.setBeautyPreset(.default)
         } else {
-            beautyAPI.beautyRender?.reset()
+            beautyAPI.beautyRender?.reset?()
         }
     }
     @IBAction func onClickStyleButton(_ sender: UIButton) {
         sender.isSelected = !sender.isSelected
         sender.setTitleColor(sender.isSelected ? .orange : .systemPink, for: sender.isSelected ? .selected : .normal)
         sender.backgroundColor = sender.isSelected ? .systemBlue : .clear
-        beautyAPI.beautyRender?.setMakeup(sender.isSelected)
+        beautyAPI.beautyRender?.setMakeup?(sender.isSelected)
 
     }
     @IBAction func onClickStickerButton(_ sender: UIButton) {
         sender.isSelected = !sender.isSelected
         sender.setTitleColor(sender.isSelected ? .orange : .systemPink, for: sender.isSelected ? .selected : .normal)
         sender.backgroundColor = sender.isSelected ? .systemBlue : .clear
-        beautyAPI.beautyRender?.setSticker(sender.isSelected)
+        beautyAPI.beautyRender?.setSticker?(sender.isSelected)
     }
     
     private func setupBeautyAPI() {
