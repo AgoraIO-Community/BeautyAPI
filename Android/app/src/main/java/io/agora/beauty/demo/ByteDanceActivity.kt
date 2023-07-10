@@ -145,6 +145,7 @@ class ByteDanceActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(mBinding.root)
+        window.decorView.keepScreenOn = true
 
         val isCustomCaptureMode =
             intent.getStringExtra(EXTRA_CAPTURE_MODE) == getString(R.string.beauty_capture_custom)
