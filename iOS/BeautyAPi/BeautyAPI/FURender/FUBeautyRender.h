@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface FUBeautyRender : NSObject <BeautyRenderDelegate>
 
-#if __has_include(FURenderMoudle)
+#if __has_include("FUManager.h")
 @property (nonatomic, strong) FUManager *fuManager;
 #endif
 

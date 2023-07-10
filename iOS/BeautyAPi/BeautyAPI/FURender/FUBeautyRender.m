@@ -19,7 +19,7 @@
 
 @implementation FUBeautyRender
 
-#if __has_include(FURenderMoudle)
+#if __has_include("FUManager.h")
 - (FUManager *)fuManager {
     if (_fuManager == nil) {
         _fuManager = [[FUManager alloc] init];

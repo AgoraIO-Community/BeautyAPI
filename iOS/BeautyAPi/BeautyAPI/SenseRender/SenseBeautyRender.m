@@ -10,7 +10,6 @@
 @interface SenseBeautyRender ()
 
 #if __has_include(Sensetime)
-@property (nonatomic, assign) BOOL isSuccessLicense;
 @property (nonatomic, strong) NSTimer *timer;
 ///贴纸id
 @property (nonatomic, assign) int stickerId;
@@ -47,7 +46,7 @@
     return params;
 }
 
-#if __has_include(Sensetime)
+#if __has_include("VideoProcessingManager.h")
 - (VideoProcessingManager *)videoProcessing {
     if (_videoProcessing == nil) {
         _videoProcessing = [VideoProcessingManager new];
