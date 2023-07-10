@@ -31,7 +31,6 @@ import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
-import java.util.concurrent.TimeUnit
 import javax.microedition.khronos.egl.EGLContext
 
 class TextureProcessHelper(
@@ -146,7 +145,7 @@ class TextureProcessHelper(
             isBegin = true
             Log.d(TAG, "process get cost=${System.currentTimeMillis() - startTime}")
             try {
-                val get =  futureQueue.poll()?.get(500, TimeUnit.MILLISECONDS) ?: -1
+                val get =  futureQueue.poll()?.get() ?: -1
                 if (get == 0) {
                     val dequeue = glTextureBufferQueueOut.dequeue()
                     ret = dequeue?.textureId ?: -1

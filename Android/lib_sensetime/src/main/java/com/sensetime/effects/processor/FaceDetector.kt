@@ -41,7 +41,6 @@ import java.util.concurrent.Callable
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
-import java.util.concurrent.TimeUnit
 
 class FaceDetector(
     private val humanActionNative: STMobileHumanActionNative,
@@ -118,7 +117,7 @@ class FaceDetector(
             val future = cacheFutureQueue.poll()
             if(future != null){
                 try {
-                    val ret = future.get(500, TimeUnit.MILLISECONDS)
+                    val ret = future.get()
                     Log.d(TAG, "Detector dequeue cacheIndex: $ret, queue size: $size")
                     return DetectorOut(
                         humanActionNative.getNativeHumanActionResultCache(ret),
