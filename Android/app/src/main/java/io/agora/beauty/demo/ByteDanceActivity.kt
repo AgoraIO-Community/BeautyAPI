@@ -307,8 +307,8 @@ class ByteDanceActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        mByteDanceApi.release()
         mRtcEngine.leaveChannel()
+        mByteDanceApi.release()
         RtcEngine.destroy()
     }
 

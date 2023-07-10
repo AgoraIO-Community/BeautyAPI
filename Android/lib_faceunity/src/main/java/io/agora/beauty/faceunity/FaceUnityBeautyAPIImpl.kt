@@ -318,6 +318,9 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
                                 it.deviceOrientation = 270
                             }
                         }
+                        if (isReleased) {
+                            return@setFilter -1
+                        }
                         return@setFilter fuRenderKit.renderWithInput(input).texture?.texId ?: -1
                     }
                 }
