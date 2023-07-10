@@ -156,6 +156,20 @@ class TextureProcessHelper(
         return ret
     }
 
+    fun reset(){
+        isBegin = false
+        frameIndex = 0
+        var future = futureQueue.poll()
+        while (future != null) {
+            future.cancel(true)
+            future = futureQueue.poll()
+        }
+        executeSync {
+            glTextureBufferQueueIn.reset()
+            glTextureBufferQueueOut.reset()
+        }
+    }
+
     fun release() {
         isReleased = true
         filter = null

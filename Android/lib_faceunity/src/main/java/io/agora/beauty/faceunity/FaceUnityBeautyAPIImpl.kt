@@ -63,6 +63,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
     private var byteArray: ByteArray? = null
     private var config: Config? = null
     private var enable: Boolean = false
+    private var enableChange: Boolean = false
     private var isReleased: Boolean = false
     private var shouldMirror = false
     private val identityMatrix =  Matrix()
@@ -95,7 +96,10 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         if(config?.captureMode == CaptureMode.Custom){
             skipFrame = 2
         }
-        this.enable = enable
+        if(this.enable != enable){
+            this.enable = enable
+            enableChange = true
+        }
         return ErrorCode.ERROR_OK.value
     }
 
@@ -233,6 +237,10 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             3 -> processBeautySingleTextureAsync(videoFrame)
             else -> processBeautyAuto(videoFrame)
         }
+
+        if (enableChange) {
+            enableChange = false
+        }
         if(config?.statsEnable == true){
             val costTime = System.currentTimeMillis() - startTime
             statsHelper?.once(costTime)
@@ -244,7 +252,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             return false
         }
 
-        if (processTexId < 0) {
+        if (processTexId <= 0) {
             return false
         }
 
@@ -271,6 +279,13 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
     private fun processBeautySingleTextureAsync(videoFrame: VideoFrame): Int {
         val texBufferHelper = textureBufferHelper ?: return -1
         val textureBuffer = videoFrame.buffer as? TextureBuffer ?: return -1
+        if(enableChange){
+            enableChange = false
+            texBufferHelper.invoke {
+                mTextureProcessHelper?.reset()
+            }
+            return -1
+        }
         return texBufferHelper.invoke {
             if(isReleased){
                 return@invoke -1

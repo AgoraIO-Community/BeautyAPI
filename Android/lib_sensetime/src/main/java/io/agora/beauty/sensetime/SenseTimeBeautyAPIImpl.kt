@@ -55,6 +55,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
     private var nv21ByteBuffer: ByteBuffer? = null
     private var config: Config? = null
     private var enable: Boolean = false
+    private var enableChange: Boolean = false
     private var isReleased: Boolean = false
     private var shouldMirror = true
     private var statsHelper: StatsHelper? = null
@@ -85,7 +86,11 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         if(config?.captureMode == CaptureMode.Custom){
             skipFrame = 2
         }
-        this.enable = enable
+        if(this.enable != enable){
+            this.enable = enable
+            this.enableChange = true
+        }
+
         return ErrorCode.ERROR_OK.value
     }
 
@@ -276,6 +281,13 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
             skipFrame --;
             return false
         }
+        if(enableChange){
+            enableChange = false
+            textureBufferHelper?.invoke {
+                val stRenderKit = config?.stRenderKit?: return@invoke
+                stRenderKit.resetProcessor()
+            }
+        }
 
         if (textureBufferHelper == null) {
             textureBufferHelper = TextureBufferHelper.create(
@@ -283,6 +295,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
                 EglBaseProvider.instance().rootEglBase.eglBaseContext
             )
         }
+
         val startTime = System.currentTimeMillis()
 
         val processTexId = when(beautyMode){
@@ -329,7 +342,6 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         val height = buffer.height
 
         val matrix = RendererCommon.convertMatrixFromAndroidGraphicsMatrix(buffer.transformMatrix)
-
         return texBufferHelper.invoke(Callable {
             val stRenderKit = config?.stRenderKit?: return@Callable -1
             return@Callable stRenderKit.preProcess(

@@ -295,13 +295,15 @@ public class STRenderKit {
         mChangeStickerManagerHandler.removeCallbacksAndMessages(null);
         mChangeStickerManagerThread.quit();
         mChangeStickerManagerThread = null;
-        resetProcessor();
+        if (mProcessor != null) {
+            mProcessor.release();
+            mProcessor = null;
+        }
     }
 
     public void resetProcessor() {
         if (mProcessor != null) {
-            mProcessor.release();
-            mProcessor = null;
+            mProcessor.reset();
         }
     }
 
