@@ -306,8 +306,8 @@ class SenseTimeActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        mSenseTimeApi.release()
         mRtcEngine.leaveChannel()
+        mSenseTimeApi.release()
         mSTRenderKit.release()
         RtcEngine.destroy()
     }
