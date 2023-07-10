@@ -25,6 +25,8 @@
 package io.agora.beauty.faceunity
 
 import android.graphics.Matrix
+import android.opengl.GLES11Ext
+import android.opengl.GLES20
 import android.view.SurfaceView
 import android.view.TextureView
 import android.view.View
@@ -41,10 +43,10 @@ import com.faceunity.core.model.facebeauty.FaceBeautyFilterEnum
 import io.agora.base.TextureBufferHelper
 import io.agora.base.VideoFrame
 import io.agora.base.VideoFrame.I420Buffer
+import io.agora.base.VideoFrame.SourceType
 import io.agora.base.VideoFrame.TextureBuffer
 import io.agora.base.internal.video.YuvHelper
-import io.agora.beauty.faceunity.aync.AsyncVideoFrame
-import io.agora.beauty.faceunity.aync.BaseBeautyAsync
+import io.agora.beauty.faceunity.egl.TextureProcessHelper
 import io.agora.rtc2.Constants
 import io.agora.rtc2.gl.EglBaseProvider
 import io.agora.rtc2.video.IVideoFrameObserver
@@ -52,7 +54,6 @@ import io.agora.rtc2.video.VideoCanvas
 import java.io.File
 import java.nio.ByteBuffer
 import java.util.concurrent.Callable
-import java.util.concurrent.Executors
 
 class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
     private var beautyMode = 0 // 0: 自动根据buffer类型切换，1：固定使用OES纹理，2：固定使用i420，3: 单纹理异步模式(自创)
@@ -66,10 +67,9 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
     private var shouldMirror = false
     private val identityMatrix =  Matrix()
     private var mCameraIsFront = true
-    private var mBeautyAsync: BaseBeautyAsync? = null
+    private var mTextureProcessHelper: TextureProcessHelper? = null
     private var statsHelper: StatsHelper? = null
     private var skipFrame = 0
-    private val workerThreadExecutor = Executors.newSingleThreadExecutor()
 
     override fun initialize(config: Config): Int {
         if (this.config != null) {
@@ -174,9 +174,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             // v脸
             recommendFaceBeauty.cheekVIntensity = 0.0
         }
-        workerThreadExecutor.submit {
-            fuRenderer.faceBeauty = recommendFaceBeauty
-        }
+        fuRenderer.faceBeauty = recommendFaceBeauty
         return ErrorCode.ERROR_OK.value
     }
 
@@ -187,15 +185,15 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         val fuRenderer = config?.fuRenderKit ?: return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
 
         isReleased = true
-        mBeautyAsync?.release()
-        mBeautyAsync = null
-        workerThreadExecutor.shutdown()
         textureBufferHelper?.let {
             textureBufferHelper = null
             it.invoke {
                 fuRenderer.releaseEGLContext()
+                mTextureProcessHelper?.release()
+                mTextureProcessHelper = null
                 null
             }
+            it.handler.looper.quit()
             it.dispose()
         }
         statsHelper?.reset()
@@ -272,38 +270,57 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
 
     private fun processBeautySingleTextureAsync(videoFrame: VideoFrame): Int {
         val texBufferHelper = textureBufferHelper ?: return -1
-        if (mBeautyAsync == null) {
-            mBeautyAsync = object : BaseBeautyAsync(texBufferHelper) {
-                override fun process(
-                    videoFrame: AsyncVideoFrame?
-                ): Int {
-                    val frame = videoFrame ?: return -1
-                    val fuRenderKit = config?.fuRenderKit ?: return -1
+        val textureBuffer = videoFrame.buffer as? TextureBuffer ?: return -1
+        return texBufferHelper.invoke {
+            if(isReleased){
+                return@invoke -1
+            }
+            var textureProcessHelper = mTextureProcessHelper
+            if(textureProcessHelper == null){
+                textureProcessHelper = TextureProcessHelper().apply {
+                    mTextureProcessHelper = this
+                    setFilter { frame ->
+                        val fuRenderKit = config?.fuRenderKit ?: return@setFilter -1
 
-                    val input = FURenderInputData(frame.width, frame.height)
-                    input.texture = FURenderInputData.FUTexture(
-                        FUInputTextureEnum.FU_ADM_FLAG_COMMON_TEXTURE,
-                        frame.textureId
-                    )
-                    val isFront = frame.isFront
-                    input.renderConfig.let {
-                        if (isFront) {
-                            it.cameraFacing = CameraFacingEnum.CAMERA_FRONT
-                            it.inputBufferMatrix = FUTransformMatrixEnum.CCROT90
-                            it.inputTextureMatrix = FUTransformMatrixEnum.CCROT90
-                            it.outputMatrix = FUTransformMatrixEnum.CCROT0
-                        } else {
-                            it.cameraFacing = CameraFacingEnum.CAMERA_BACK
-                            it.inputBufferMatrix = FUTransformMatrixEnum.CCROT90_FLIPVERTICAL
-                            it.inputTextureMatrix = FUTransformMatrixEnum.CCROT90_FLIPVERTICAL
-                            it.outputMatrix = FUTransformMatrixEnum.CCROT0
+                        val input = FURenderInputData(frame.width, frame.height)
+                        input.texture = FURenderInputData.FUTexture(
+                            FUInputTextureEnum.FU_ADM_FLAG_COMMON_TEXTURE,
+                            frame.textureId
+                        )
+                        val isFront = frame.isFrontCamera
+                        input.renderConfig.let {
+                            if (isFront) {
+                                it.cameraFacing = CameraFacingEnum.CAMERA_FRONT
+                                it.inputBufferMatrix = FUTransformMatrixEnum.CCROT0
+                                it.inputTextureMatrix = FUTransformMatrixEnum.CCROT0
+                                it.outputMatrix = FUTransformMatrixEnum.CCROT0
+                                it.deviceOrientation = 270
+                            } else {
+                                it.cameraFacing = CameraFacingEnum.CAMERA_BACK
+                                it.inputBufferMatrix = FUTransformMatrixEnum.CCROT0
+                                it.inputTextureMatrix = FUTransformMatrixEnum.CCROT0
+                                it.outputMatrix = FUTransformMatrixEnum.CCROT0
+                                it.deviceOrientation = 270
+                            }
                         }
+                        return@setFilter fuRenderKit.renderWithInput(input).texture?.texId ?: -1
                     }
-                    return fuRenderKit.renderWithInput(input).texture?.texId ?: -1
                 }
             }
+
+            return@invoke textureProcessHelper.process(
+                textureBuffer.textureId,
+                when (textureBuffer.type) {
+                    TextureBuffer.Type.OES -> GLES11Ext.GL_TEXTURE_EXTERNAL_OES
+                    else -> GLES20.GL_TEXTURE_2D
+                },
+                textureBuffer.width,
+                textureBuffer.height,
+                videoFrame.rotation,
+                textureBuffer.transformMatrixArray,
+                videoFrame.sourceType == SourceType.kFrontCamera
+            )
         }
-        return mBeautyAsync?.process(videoFrame) ?: -1
     }
 
     private fun processBeautySingleBuffer(videoFrame: VideoFrame): Int {
@@ -316,6 +333,9 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
 
 
         return texBufferHelper.invoke(Callable {
+            if(isReleased){
+                return@Callable -1
+            }
             val fuRenderKit = config?.fuRenderKit ?: return@Callable -1
             val input = FURenderInputData(width, height)
             input.imageBuffer = FURenderInputData.FUImageBuffer(
@@ -349,6 +369,9 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         val isFront = videoFrame.sourceType == VideoFrame.SourceType.kFrontCamera
 
         return texBufferHelper.invoke(Callable {
+            if(isReleased){
+                return@Callable -1
+            }
             val fuRenderKit = config?.fuRenderKit ?: return@Callable -1
             val input = FURenderInputData(width, height)
             input.texture = FURenderInputData.FUTexture(
@@ -385,6 +408,9 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         val isFront = videoFrame.sourceType == VideoFrame.SourceType.kFrontCamera
 
         return texBufferHelper.invoke(Callable {
+            if(isReleased){
+                return@Callable -1
+            }
             val fuRenderKit = config?.fuRenderKit ?: return@Callable -1
             val input = FURenderInputData(width, height)
             input.texture = FURenderInputData.FUTexture(
