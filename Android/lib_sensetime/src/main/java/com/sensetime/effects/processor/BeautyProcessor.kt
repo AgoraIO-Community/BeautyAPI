@@ -155,6 +155,8 @@ class BeautyProcessor : IBeautyProcessor {
         glFrameBuffer.textureId = processInTextureId
         glFrameBuffer.setSize(width, height)
         glFrameBuffer.resetTransform()
+        glFrameBuffer.setTexMatrix(input.textureMatrix)
+        glFrameBuffer.setFlipV(true)
         glFrameBuffer.process(input.textureId, input.textureType)
 
         val outBuffer = ByteArray(width * height * 4)
@@ -181,7 +183,7 @@ class BeautyProcessor : IBeautyProcessor {
                 STCommonNative.ST_PIX_FMT_RGBA8888,
                 processInTextureId,
                 GLES20.GL_TEXTURE_2D,
-                input.textureMatrix,
+                null,
                 1,
                 width,
                 height,

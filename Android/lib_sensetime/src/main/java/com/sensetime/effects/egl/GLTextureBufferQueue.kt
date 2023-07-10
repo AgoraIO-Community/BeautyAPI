@@ -110,7 +110,7 @@ class GLTextureBufferQueue(
 
     fun dequeue(): TextureOut? {
         val size = textureIdQueue.size
-        var poll = textureIdQueue.poll()
+        val poll = textureIdQueue.poll()
         Log.e(TAG, "TextureIdQueue dequeue index=${poll?.index}, size=$size")
         return poll
     }

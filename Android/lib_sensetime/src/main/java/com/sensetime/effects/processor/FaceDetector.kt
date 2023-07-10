@@ -56,6 +56,7 @@ class FaceDetector(
     private var cacheIndex = 0
     private var cacheAnimalFaceInfo = arrayOfNulls<STAnimalFaceInfo>(cacheSize)
     private val cacheFutureQueue = ConcurrentLinkedQueue<Future<Int>>()
+    private var isDequeBegin = false
 
     fun enableSensor(context: Context, enable: Boolean) {
         if (enable) {
@@ -73,6 +74,7 @@ class FaceDetector(
 
     fun reset() {
         cacheIndex = 0
+        isDequeBegin = false
         var future = cacheFutureQueue.poll()
         while (future != null){
             future.cancel(true)
@@ -110,7 +112,8 @@ class FaceDetector(
 
     fun dequeue(): DetectorOut? {
         val size = cacheFutureQueue.size
-        if(size >= cacheSize){
+        if(isDequeBegin || size >= cacheSize){
+            isDequeBegin = true
             val future = cacheFutureQueue.poll()
             if(future != null){
                 val ret = future.get()
