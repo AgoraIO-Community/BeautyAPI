@@ -46,6 +46,8 @@ interface IBeautyProcessor {
 
     fun triggerScreenTap(isDouble: Boolean)
 
+    fun reset()
+    
     fun release()
 
 }

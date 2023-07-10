@@ -416,7 +416,7 @@ class BeautyProcessor : IBeautyProcessor {
         return finalOutTextureId
     }
 
-    private fun reset() {
+    override fun reset() {
         mFaceDetector.reset()
         glTextureBufferQueue.reset()
         if (beautyOutTextureId == -1) {
