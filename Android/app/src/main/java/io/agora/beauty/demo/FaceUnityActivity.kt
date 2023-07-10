@@ -291,9 +291,10 @@ class FaceUnityActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        mRtcEngine.leaveChannel()
         mFaceUnityApi.release()
         FURenderer.getInstance().release()
-        mRtcEngine.leaveChannel()
+        fuRenderKit.release()
         RtcEngine.destroy()
     }
 
