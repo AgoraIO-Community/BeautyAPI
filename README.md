@@ -12,9 +12,9 @@ following beauty scene API:
 | SenseTime | Android  | Java/Kotlin | [/Android/lib_sensetime](/Android/lib_sensetime)         | 4.2.0           | 8.8.0              |
 | FaceUnity | Android  | Java/Kotlin | [/Android/lib_faceunity](/Android/lib_faceunity)         | 4.2.0           | 8.3.0              |
 | ByteDance | Android  | Java/Kotlin | [/Android/lib_bytedance](/Android/lib_bytedance)         | 4.2.0           | 4.3.0              |
-| SenseTime | iOS      | Swift/OC    | [/iOS/BeautyAPi/SenseBeaufy](/iOS/BeautyAPi/SenseBeaufy) | 4.2.0           | 4.2.0              |
-| FaceUnity | iOS      | Swift/OC    | [/iOS/BeautyAPi/FUBeauty](/iOS/BeautyAPi/FUBeauty)       | 4.2.0           | 4.2.0              |
-| ByteDance | iOS      | Swift/OC    | [/iOS/BeautyAPi/ByteBeaufy](/iOS/BeautyAPi/ByteBeaufy)   | 4.2.0           | 4.2.0              |
+| SenseTime | iOS      | Swift/OC    | [/iOS/BeautyAPi/SenseBeaufy](/iOS/BeautyAPi/SenseBeaufy) | 4.2.0           | 1.9.0.1013         |
+| FaceUnity | iOS      | Swift/OC    | [/iOS/BeautyAPi/FUBeauty](/iOS/BeautyAPi/FUBeauty)       | 4.2.0           | 8.6.0              |
+| ByteDance | iOS      | Swift/OC    | [/iOS/BeautyAPi/ByteBeaufy](/iOS/BeautyAPi/ByteBeaufy)   | 4.2.0           | 4.3.0              |
 
 You can copy the beauty scene API library to your project to realize the beauty function.
 
