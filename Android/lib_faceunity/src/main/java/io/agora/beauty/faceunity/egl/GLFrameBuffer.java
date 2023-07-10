@@ -1,13 +1,12 @@
-package com.sensetime.effects.egl;
+package io.agora.beauty.faceunity.egl;
 
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
-import com.sensetime.effects.egl.program.BaseProgram;
-import com.sensetime.effects.egl.program.GL2DProgram;
-import com.sensetime.effects.egl.program.OESProgram;
-import com.sensetime.effects.utils.GlUtil;
+import io.agora.beauty.faceunity.egl.program.BaseProgram;
+import io.agora.beauty.faceunity.egl.program.GL2DProgram;
+import io.agora.beauty.faceunity.egl.program.OESProgram;
 
 public class GLFrameBuffer {
 
@@ -20,7 +19,7 @@ public class GLFrameBuffer {
     private GL2DProgram mGL2DProgram;
 
     private float[] mMVPMatrix = new float[16];
-    private float[] mTexMatrix = GlUtil.IDENTITY_MATRIX;
+    private float[] mTexMatrix = GLUtils.IDENTITY_MATRIX;
 
     public GLFrameBuffer() {
         Matrix.setIdentityM(mMVPMatrix, 0);
@@ -39,21 +38,21 @@ public class GLFrameBuffer {
     public void setRotation(int rotation) {
         if (mRotation != rotation) {
             mRotation = rotation;
-            mMVPMatrix = GlUtil.createTransformMatrix(rotation, isFlipH, isFlipV);
+            mMVPMatrix = GLUtils.createTransformMatrix(rotation, isFlipH, isFlipV);
         }
     }
 
     public void setFlipV(boolean flipV) {
         if (isFlipV != flipV) {
             isFlipV = flipV;
-            mMVPMatrix = GlUtil.createTransformMatrix(mRotation, isFlipH, flipV);
+            mMVPMatrix = GLUtils.createTransformMatrix(mRotation, isFlipH, flipV);
         }
     }
 
     public void setFlipH(boolean flipH) {
         if (isFlipH != flipH) {
             isFlipH = flipH;
-            mMVPMatrix = GlUtil.createTransformMatrix(mRotation, flipH, isFlipV);
+            mMVPMatrix = GLUtils.createTransformMatrix(mRotation, flipH, isFlipV);
         }
     }
 
@@ -73,12 +72,12 @@ public class GLFrameBuffer {
         if (matrix != null) {
             mTexMatrix = matrix;
         } else {
-            mTexMatrix = GlUtil.IDENTITY_MATRIX;
+            mTexMatrix = GLUtils.IDENTITY_MATRIX;
         }
     }
 
     public void resetTransform(){
-        mTexMatrix = GlUtil.IDENTITY_MATRIX;
+        mTexMatrix = GLUtils.IDENTITY_MATRIX;
         isFlipH = isFlipV = false;
         mRotation = 0;
         Matrix.setIdentityM(mMVPMatrix, 0);
@@ -104,7 +103,7 @@ public class GLFrameBuffer {
         isSizeChanged = false;
 
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, mFramebufferId);
-        GlUtil.checkGlError("glBindFramebuffer");
+        GLUtils.checkGlError("glBindFramebuffer");
         GLES20.glViewport(0, 0, mWidth, mHeight);
         GLES20.glClearColor(1f, 0, 0, 1f);
 
@@ -151,7 +150,7 @@ public class GLFrameBuffer {
     public int createTexture(int width, int height){
         int[] textures = new int[1];
         GLES20.glGenTextures(1, textures, 0);
-        GlUtil.checkGlError("glGenTextures");
+        GLUtils.checkGlError("glGenTextures");
         int textureId = textures[0];
 
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
@@ -191,7 +190,7 @@ public class GLFrameBuffer {
         if(mFramebufferId == -1){
             int[] framebuffers = new int[1];
             GLES20.glGenFramebuffers(1, framebuffers, 0);
-            GlUtil.checkGlError("glGenFramebuffers");
+            GLUtils.checkGlError("glGenFramebuffers");
             mFramebufferId = framebuffers[0];
         }
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, mFramebufferId);

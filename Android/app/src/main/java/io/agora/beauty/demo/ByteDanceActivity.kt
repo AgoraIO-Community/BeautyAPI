@@ -145,6 +145,7 @@ class ByteDanceActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(mBinding.root)
+        window.decorView.keepScreenOn = true
 
         val isCustomCaptureMode =
             intent.getStringExtra(EXTRA_CAPTURE_MODE) == getString(R.string.beauty_capture_custom)
@@ -194,13 +195,22 @@ class ByteDanceActivity : ComponentActivity() {
                     sourceType: Int,
                     videoFrame: VideoFrame?
                 ) : Boolean {
-                    shouldMirror = false
-                    return when(mByteDanceApi.onFrame(videoFrame!!)){
-                        ErrorCode.ERROR_OK.value -> true
-                        ErrorCode.ERROR_FRAME_SKIPPED.value -> false
+                    when(mByteDanceApi.onFrame(videoFrame!!)){
+                        ErrorCode.ERROR_OK.value -> {
+                            shouldMirror = false
+                            return true
+                        }
+                        ErrorCode.ERROR_FRAME_SKIPPED.value ->{
+                            shouldMirror = false
+                            return false
+                        }
                         else -> {
-                            shouldMirror = videoFrame.sourceType == VideoFrame.SourceType.kFrontCamera
-                            true
+                            val mirror = videoFrame.sourceType == VideoFrame.SourceType.kFrontCamera
+                            if(shouldMirror != mirror){
+                                shouldMirror = mirror
+                                return false
+                            }
+                            return true
                         }
                     }
                 }
@@ -251,8 +261,8 @@ class ByteDanceActivity : ComponentActivity() {
             channelProfile = Constants.CHANNEL_PROFILE_LIVE_BROADCASTING
             clientRoleType = Constants.CLIENT_ROLE_BROADCASTER
             publishCameraTrack = true
-            publishMicrophoneTrack = true
-            autoSubscribeAudio = true
+            publishMicrophoneTrack = false
+            autoSubscribeAudio = false
             autoSubscribeVideo = true
         })
 
@@ -297,8 +307,8 @@ class ByteDanceActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        mByteDanceApi.release()
         mRtcEngine.leaveChannel()
+        mByteDanceApi.release()
         RtcEngine.destroy()
     }
 

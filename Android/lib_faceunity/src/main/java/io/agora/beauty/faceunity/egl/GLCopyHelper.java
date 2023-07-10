@@ -1,4 +1,4 @@
-package com.sensetime.effects.egl;
+package io.agora.beauty.faceunity.egl;
 
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;

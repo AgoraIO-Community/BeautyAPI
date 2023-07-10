@@ -65,6 +65,7 @@ class AudienceActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(mBinding.root)
+        window.decorView.keepScreenOn = true
 
         val config = RtcEngineConfig()
         config.mContext = applicationContext

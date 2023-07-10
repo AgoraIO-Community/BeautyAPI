@@ -146,6 +146,7 @@ class SenseTimeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(mBinding.root)
+        window.decorView.keepScreenOn = true
 
         val isCustomCaptureMode =
             intent.getStringExtra(EXTRA_CAPTURE_MODE) == getString(R.string.beauty_capture_custom)
@@ -189,13 +190,22 @@ class SenseTimeActivity : ComponentActivity() {
                     sourceType: Int,
                     videoFrame: VideoFrame?
                 ) : Boolean {
-                    shouldMirror = false
-                    return when(mSenseTimeApi.onFrame(videoFrame!!)){
-                        ErrorCode.ERROR_OK.value -> true
-                        ErrorCode.ERROR_FRAME_SKIPPED.value -> false
+                    when(mSenseTimeApi.onFrame(videoFrame!!)){
+                        ErrorCode.ERROR_OK.value -> {
+                            shouldMirror = false
+                            return true
+                        }
+                        ErrorCode.ERROR_FRAME_SKIPPED.value -> {
+                            shouldMirror = false
+                            return false
+                        }
                         else -> {
-                            shouldMirror = videoFrame.sourceType == VideoFrame.SourceType.kFrontCamera
-                            true
+                            val mirror = videoFrame.sourceType == VideoFrame.SourceType.kFrontCamera
+                            if(shouldMirror != mirror){
+                                shouldMirror = mirror
+                                return false
+                            }
+                            return true
                         }
                     }
                 }
@@ -246,8 +256,8 @@ class SenseTimeActivity : ComponentActivity() {
             channelProfile = Constants.CHANNEL_PROFILE_LIVE_BROADCASTING
             clientRoleType = Constants.CLIENT_ROLE_BROADCASTER
             publishCameraTrack = true
-            publishMicrophoneTrack = true
-            autoSubscribeAudio = true
+            publishMicrophoneTrack = false
+            autoSubscribeAudio = false
             autoSubscribeVideo = true
         })
 
@@ -296,8 +306,8 @@ class SenseTimeActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        mSenseTimeApi.release()
         mRtcEngine.leaveChannel()
+        mSenseTimeApi.release()
         mSTRenderKit.release()
         RtcEngine.destroy()
     }
@@ -308,7 +318,7 @@ class SenseTimeActivity : ComponentActivity() {
                 .toTypedArray()
             val className = split[0]
             val fileName = split[1]
-            val _path = FileUtils.getFilePath(this, className + File.separator + fileName)
+            val _path = FileUtils.getFilePath(this, mSTRenderKit.getResourcePath(className) + File.separator + fileName)
             FileUtils.copyFileIfNeed(this, fileName, mSTRenderKit.getResourcePath(className))
             mSTRenderKit.setMakeupForType(type, _path)
             mSTRenderKit.setMakeupStrength(type, strength)
@@ -322,7 +332,7 @@ class SenseTimeActivity : ComponentActivity() {
             path.split(File.separator.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         val className = split[0]
         val fileName = split[1]
-        val _path = FileUtils.getFilePath(this, className + File.separator + fileName)
+        val _path = FileUtils.getFilePath(this, mSTRenderKit.getResourcePath(className) + File.separator + fileName)
         FileUtils.copyFileIfNeed(this, fileName, mSTRenderKit.getResourcePath(className))
         if (!attach) {
             mSTRenderKit.removeSticker(_path)
@@ -339,7 +349,7 @@ class SenseTimeActivity : ComponentActivity() {
         val filterName = split[1].split("_".toRegex()).dropLastWhile { it.isEmpty() }
             .toTypedArray()[2].split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
             .toTypedArray()[0]
-        val path = FileUtils.getFilePath(this, className + File.separator + fileName)
+        val path = FileUtils.getFilePath(this, mSTRenderKit.getResourcePath(className) + File.separator + fileName)
         FileUtils.copyFileIfNeed(this, fileName, mSTRenderKit.getResourcePath(className))
         mSTRenderKit.setFilterStyle(className, filterName, path)
         mSTRenderKit.setFilterStrength(strength)
