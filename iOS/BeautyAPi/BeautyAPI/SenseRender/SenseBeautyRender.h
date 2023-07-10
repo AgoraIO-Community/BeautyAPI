@@ -16,8 +16,8 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface SenseBeautyRender : NSObject<BeautyRenderDelegate>
-
-#if __has_include(Sensetime)
+@property (nonatomic, assign) BOOL isSuccessLicense;
+#if __has_include("VideoProcessingManager.h")
 @property (nonatomic, strong) VideoProcessingManager *videoProcessing;
 #endif
 

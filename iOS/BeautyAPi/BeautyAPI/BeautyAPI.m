@@ -54,9 +54,6 @@
 
 
 - (int)enable:(BOOL)enable {
-    if (self.config.beautyRender == nil) {
-        return -1;
-    }
     _isEnable = enable;
     return 0;
 }
