@@ -40,6 +40,7 @@ import io.agora.base.VideoFrame.TextureBuffer
 import io.agora.base.internal.video.RendererCommon
 import io.agora.base.internal.video.YuvConverter
 import io.agora.base.internal.video.YuvHelper
+import io.agora.beauty.sensetime.utils.StatsHelper
 import io.agora.rtc2.Constants
 import io.agora.rtc2.gl.EglBaseProvider
 import io.agora.rtc2.video.IVideoFrameObserver

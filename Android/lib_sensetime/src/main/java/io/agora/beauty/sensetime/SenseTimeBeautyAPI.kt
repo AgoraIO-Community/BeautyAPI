@@ -25,8 +25,8 @@
 package io.agora.beauty.sensetime
 
 import android.view.View
-import com.sensetime.effects.STRenderKit
 import io.agora.base.VideoFrame
+import io.agora.beauty.sensetime.utils.STRenderKit
 import io.agora.rtc2.Constants
 import io.agora.rtc2.RtcEngine
 

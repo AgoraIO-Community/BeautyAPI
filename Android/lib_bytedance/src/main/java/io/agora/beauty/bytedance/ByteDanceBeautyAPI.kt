@@ -25,8 +25,8 @@
 package io.agora.beauty.bytedance
 
 import android.view.View
-import com.bytedance.labcv.core.effect.EffectManager
 import io.agora.base.VideoFrame
+import io.agora.beauty.bytedance.utils.EffectManager
 import io.agora.rtc2.Constants
 import io.agora.rtc2.RtcEngine
 

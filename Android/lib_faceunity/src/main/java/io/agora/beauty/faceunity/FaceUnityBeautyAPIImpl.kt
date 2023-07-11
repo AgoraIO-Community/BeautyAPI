@@ -30,7 +30,6 @@ import android.opengl.GLES20
 import android.view.SurfaceView
 import android.view.TextureView
 import android.view.View
-import com.faceunity.FUConfig
 import com.faceunity.core.entity.FUBundleData
 import com.faceunity.core.entity.FURenderInputData
 import com.faceunity.core.enumeration.CameraFacingEnum
@@ -46,7 +45,9 @@ import io.agora.base.VideoFrame.I420Buffer
 import io.agora.base.VideoFrame.SourceType
 import io.agora.base.VideoFrame.TextureBuffer
 import io.agora.base.internal.video.YuvHelper
-import io.agora.beauty.faceunity.egl.TextureProcessHelper
+import io.agora.beauty.faceunity.utils.FUConfig
+import io.agora.beauty.faceunity.utils.StatsHelper
+import io.agora.beauty.faceunity.utils.egl.TextureProcessHelper
 import io.agora.rtc2.Constants
 import io.agora.rtc2.gl.EglBaseProvider
 import io.agora.rtc2.video.IVideoFrameObserver
@@ -373,7 +374,20 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
                     it.outputMatrix = FUTransformMatrixEnum.CCROT0
                 }
             }
-            return@Callable fuRenderKit.renderWithInput(input).texture?.texId ?: -1
+            var outTexId = -1
+            val processHelper = mTextureProcessHelper
+            if(processHelper != null){
+                if(processHelper.size() > 0){
+                    processHelper.reset()
+                    return@Callable -1
+                }
+                processHelper.executeSync {
+                    outTexId = fuRenderKit.renderWithInput(input).texture?.texId ?: -1
+                }
+            }else {
+                outTexId = fuRenderKit.renderWithInput(input).texture?.texId ?: -1
+            }
+            return@Callable outTexId
         })
     }
 

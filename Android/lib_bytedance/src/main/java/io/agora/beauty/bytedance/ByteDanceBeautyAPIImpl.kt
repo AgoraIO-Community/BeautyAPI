@@ -28,7 +28,6 @@ import android.graphics.Matrix
 import android.view.SurfaceView
 import android.view.TextureView
 import android.view.View
-import com.bytedance.labcv.core.util.ImageUtil
 import com.bytedance.labcv.effectsdk.BytedEffectConstants
 import io.agora.base.TextureBufferHelper
 import io.agora.base.VideoFrame
@@ -36,8 +35,9 @@ import io.agora.base.VideoFrame.I420Buffer
 import io.agora.base.VideoFrame.TextureBuffer
 import io.agora.base.internal.video.RendererCommon
 import io.agora.base.internal.video.YuvHelper
-import io.agora.beauty.bytedance.helpers.AgoraImageHelper
-import io.agora.beauty.bytedance.helpers.StatsHelper
+import io.agora.beauty.bytedance.utils.AgoraImageHelper
+import io.agora.beauty.bytedance.utils.ImageUtil
+import io.agora.beauty.bytedance.utils.StatsHelper
 import io.agora.rtc2.Constants
 import io.agora.rtc2.gl.EglBaseProvider
 import io.agora.rtc2.video.IVideoFrameObserver
@@ -63,6 +63,11 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
     private var statsHelper: StatsHelper? = null
     private var skipFrame = 0
     private val workerThreadExecutor = Executors.newSingleThreadExecutor()
+    private var currBeautyProcessType = BeautyProcessType.UNKNOWN
+
+    private enum class BeautyProcessType{
+        UNKNOWN, TEXTURE, I420
+    }
 
     override fun initialize(config: Config): Int {
         if (this.config != null) {
@@ -253,7 +258,8 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
                 invoke {
                     val effectManager = config?.effectManager ?: return@invoke
                     effectManager.init();
-                    imageUtils = ImageUtil()
+                    imageUtils =
+                        ImageUtil()
                     agoraImageHelper = AgoraImageHelper()
                     config?.eventCallback?.onEffectInitialized?.invoke()
                 }
@@ -306,7 +312,10 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
         val agoraImageHelper = agoraImageHelper ?: return -1
         val buffer = videoFrame.buffer as? TextureBuffer ?: return -1
         val isFront = videoFrame.sourceType == VideoFrame.SourceType.kFrontCamera
-
+        if (currBeautyProcessType != BeautyProcessType.TEXTURE) {
+            currBeautyProcessType = BeautyProcessType.TEXTURE
+            return -1
+        }
 
         return texBufferHelper.invoke(Callable {
             val effectManager = config?.effectManager ?: return@Callable -1
@@ -356,6 +365,10 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
         val nv21Buffer = getNV21Buffer(videoFrame) ?: return -1
         val buffer = videoFrame.buffer
         val isFront = videoFrame.sourceType == VideoFrame.SourceType.kFrontCamera
+        if (currBeautyProcessType != BeautyProcessType.I420) {
+            currBeautyProcessType = BeautyProcessType.I420
+            return -1
+        }
 
         return texBufferHelper.invoke(Callable {
             val effectManager = config?.effectManager ?: return@Callable -1

@@ -12,7 +12,6 @@ import com.faceunity.core.faceunity.FURenderKit
 import com.faceunity.core.model.makeup.SimpleMakeup
 import com.faceunity.core.model.prop.Prop
 import com.faceunity.core.model.prop.sticker.Sticker
-import com.faceunity.nama.FURenderer
 import io.agora.base.VideoFrame
 import io.agora.beauty.demo.databinding.BeautyActivityBinding
 import io.agora.beauty.demo.utils.ReflectUtils
@@ -23,6 +22,7 @@ import io.agora.beauty.faceunity.Config
 import io.agora.beauty.faceunity.ErrorCode
 import io.agora.beauty.faceunity.IEventCallback
 import io.agora.beauty.faceunity.createFaceUnityBeautyAPI
+import io.agora.beauty.faceunity.utils.nama.FURenderer
 import io.agora.rtc2.ChannelMediaOptions
 import io.agora.rtc2.Constants
 import io.agora.rtc2.IRtcEngineEventHandler
@@ -145,6 +145,13 @@ class FaceUnityActivity : ComponentActivity() {
                 options.strengthLevel = 0.5f
                 options.skinProtectLevel = 0.5f
                 mRtcEngine.setColorEnhanceOptions(enable, options)
+            }
+            setOnI420ChangeListener { enable ->
+                if(enable){
+                    mFaceUnityApi.setParameters("beauty_mode", "2")
+                }else{
+                    mFaceUnityApi.setParameters("beauty_mode", "0")
+                }
             }
         }
     }

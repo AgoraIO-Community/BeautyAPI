@@ -7,8 +7,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.SurfaceView
 import androidx.activity.ComponentActivity
-import com.sensetime.effects.STRenderKit
-import com.sensetime.effects.utils.FileUtils
 import com.sensetime.stmobile.model.STMobileMakeupType
 import io.agora.base.VideoFrame
 import io.agora.beauty.demo.databinding.BeautyActivityBinding
@@ -20,6 +18,8 @@ import io.agora.beauty.sensetime.Config
 import io.agora.beauty.sensetime.ErrorCode
 import io.agora.beauty.sensetime.IEventCallback
 import io.agora.beauty.sensetime.createSenseTimeBeautyAPI
+import io.agora.beauty.sensetime.utils.STRenderKit
+import io.agora.beauty.sensetime.utils.utils.FileUtils
 import io.agora.rtc2.ChannelMediaOptions
 import io.agora.rtc2.Constants
 import io.agora.rtc2.IRtcEngineEventHandler
@@ -138,6 +138,19 @@ class SenseTimeActivity : ComponentActivity() {
                 options.strengthLevel = 0.5f
                 options.skinProtectLevel = 0.5f
                 mRtcEngine.setColorEnhanceOptions(enable, options)
+            }
+            setOnI420ChangeListener { enable ->
+                if(enable){
+                    mSenseTimeApi.setParameters(
+                        "beauty_mode",
+                        "2"
+                    )
+                }else{
+                    mSenseTimeApi.setParameters(
+                        "beauty_mode",
+                        "0"
+                    )
+                }
             }
         }
     }

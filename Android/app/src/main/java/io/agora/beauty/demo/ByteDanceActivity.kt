@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.SurfaceView
 import androidx.activity.ComponentActivity
-import com.bytedance.labcv.core.effect.EffectManager
 import io.agora.base.VideoFrame
 import io.agora.beauty.bytedance.BeautyPreset
 import io.agora.beauty.bytedance.CaptureMode
@@ -15,7 +14,8 @@ import io.agora.beauty.bytedance.Config
 import io.agora.beauty.bytedance.ErrorCode
 import io.agora.beauty.bytedance.EventCallback
 import io.agora.beauty.bytedance.createByteDanceBeautyAPI
-import io.agora.beauty.bytedance.helpers.AssetsResourcesHelper
+import io.agora.beauty.bytedance.utils.AssetsResourcesHelper
+import io.agora.beauty.bytedance.utils.EffectManager
 import io.agora.beauty.demo.databinding.BeautyActivityBinding
 import io.agora.beauty.demo.utils.ReflectUtils
 import io.agora.rtc2.ChannelMediaOptions
@@ -111,7 +111,11 @@ class ByteDanceActivity : ComponentActivity() {
     private val mEffectManager by lazy {
         val resourceHelper =
             AssetsResourcesHelper(this, "beauty_bytedance")
-        EffectManager(this, resourceHelper, resourceHelper.licensePath)
+        EffectManager(
+            this,
+            resourceHelper,
+            resourceHelper.licensePath
+        )
     }
     private val mByteDanceApi by lazy {
         createByteDanceBeautyAPI()
@@ -137,6 +141,19 @@ class ByteDanceActivity : ComponentActivity() {
                 options.strengthLevel = 0.5f
                 options.skinProtectLevel = 0.5f
                 mRtcEngine.setColorEnhanceOptions(enable, options)
+            }
+            setOnI420ChangeListener {enable ->
+                if(enable){
+                    mByteDanceApi.setParameters(
+                        "beauty_mode",
+                        "2"
+                    )
+                }else{
+                    mByteDanceApi.setParameters(
+                        "beauty_mode",
+                        "0"
+                    )
+                }
             }
         }
     }
