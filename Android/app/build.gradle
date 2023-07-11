@@ -71,12 +71,23 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
     implementation 'com.tencent.bugly:crashreport:4.0.4'
-    implementation "io.agora.rtc:full-sdk:$AGORA_RTC_VERSION"
     if (new File("${rootProject.rootDir}/maven").exists()) {
         def beautyApiVersion = "$LIB_VERSION"
-        implementation "com.github.AgoraIO-Community.BeautyAPI:ByteDance:$beautyApiVersion"
-        implementation "com.github.AgoraIO-Community.BeautyAPI:FaceUnity:$beautyApiVersion"
-        implementation "com.github.AgoraIO-Community.BeautyAPI:SenseTime:$beautyApiVersion"
+        implementation("com.github.AgoraIO-Community.BeautyAPI:ByteDance:$beautyApiVersion"){
+            // exclude group:'io.agora.rtc', module: 'full-sdk'
+            // exclude group:'com.github.AgoraIO-Community.BeautyAPI', module: 'ByteDance-LibEffectAAR'
+        }
+        implementation("com.github.AgoraIO-Community.BeautyAPI:FaceUnity:$beautyApiVersion"){
+            // exclude group:'io.agora.rtc', module: 'full-sdk'
+            // exclude group:'com.faceunity', module: 'core'
+            // exclude group:'com.faceunity', module: 'model'
+        }
+        implementation("com.github.AgoraIO-Community.BeautyAPI:SenseTime:$beautyApiVersion"){
+            // exclude group:'io.agora.rtc', module: 'full-sdk'
+            // exclude group:'com.github.AgoraIO-Community.BeautyAPI', module: 'SenseTime-LibHardwareBuffer'
+            // exclude group:'com.github.AgoraIO-Community.BeautyAPI', module: 'SenseTime-LibSenseArSourceManager'
+            // exclude group:'com.github.AgoraIO-Community.BeautyAPI', module: 'SenseTime-LibSTMobileJNI'
+        }
     } else {
         implementation project(":lib_sensetime")
         implementation project(":lib_faceunity")
