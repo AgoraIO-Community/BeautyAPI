@@ -135,9 +135,9 @@
         android:gravity="center">
 
         <TextView
-            android:layout_width="100dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:text="美颜处理方式" />
+            android:text="美颜处理方式(测试用)" />
 
         <Spinner
             android:id="@+id/spBeautyProcessMode"
