@@ -75,7 +75,6 @@ typedef NS_ENUM(NSInteger, CaptureMode) {
 
 @end
 
-
 @interface BeautyAPI : NSObject
 
 /**

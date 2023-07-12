@@ -13,7 +13,6 @@
 @implementation BeautyConfig
 @end
 
-
 @interface BeautyAPI ()
 
 @property (nonatomic, strong) BeautyConfig *config;
