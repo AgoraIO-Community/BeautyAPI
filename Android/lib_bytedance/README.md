@@ -20,7 +20,8 @@ _English | [中文](README.zh.md)
 | byted_effect_andr/libs/effectAAR-release.aar | libs                    |
 
 2. Copy the following BeautyAPI interface and implementation into the project
-   src/main/java/io/agora/beauty/bytedance/beautyapi
+   
+src/main/java/io/agora/beauty/bytedance/beautyapi
    ├── ByteDanceBeautyAPI.kt
    ├── ByteDanceBeautyAPIImpl.kt
    └── utils

@@ -35,7 +35,8 @@ dependencies {
 
 
 2. Copy the following BeautyAPI interface and implementation into the project
-   src/main/java/io/agora/beauty/faceunity/beautyapi
+   
+src/main/java/io/agora/beauty/faceunity/beautyapi
    ├── FaceUnityBeautyAPI.kt
    ├── FaceUnityBeautyAPIImpl
    └── utils
