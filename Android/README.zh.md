@@ -46,6 +46,8 @@
 | resource/StickerResource.bundle                  | app/src/main/assets/beauty_bytedance           |
 | resource/StickerResource.bundle                  | app/src/main/assets/beauty_bytedance           |
 
+修改app/src/main/java/io/agora/beautyapi/demo/ByteDanceActivity.kt文件里LICENSE_NAME为申请到的证书文件名
+
 ### 配置声网AppID
 
 > PS：这个demo不支持带证书的AppId

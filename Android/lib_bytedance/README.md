@@ -39,7 +39,7 @@ private val mEffectManager by lazy {
     EffectManager(
         this,
         resourceHelper,
-        resourceHelper.licensePath
+        resourceHelper.getLicensePath(LICENSE_NAME)
     )
 }
 

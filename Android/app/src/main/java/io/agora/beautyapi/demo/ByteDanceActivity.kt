@@ -31,6 +31,7 @@ import io.agora.rtc2.video.VideoEncoderConfiguration.FRAME_RATE
 
 class ByteDanceActivity : ComponentActivity() {
     private val TAG = this.javaClass.simpleName
+    private val LICENSE_NAME = "agora_test_20220805_20230815_io.agora.entfull_4.2.3.licbag"
 
     companion object {
         private const val EXTRA_CHANNEL_NAME = "ChannelName"
@@ -114,7 +115,7 @@ class ByteDanceActivity : ComponentActivity() {
         EffectManager(
             this,
             resourceHelper,
-            resourceHelper.licensePath
+            resourceHelper.getLicensePath(LICENSE_NAME)
         )
     }
     private val mByteDanceApi by lazy {

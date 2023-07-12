@@ -105,8 +105,8 @@ public class AssetsResourcesHelper implements EffectResourceProvider {
         return targetPath;
     }
 
-    public String getLicensePath() {
-        return getResourcePathSafely("LicenseBag.bundle" + File.separator + Config.LICENSE_NAME);
+    public String getLicensePath(String licenseName) {
+        return getResourcePathSafely("LicenseBag.bundle" + File.separator + licenseName);
     }
 
     // Copy util methods
