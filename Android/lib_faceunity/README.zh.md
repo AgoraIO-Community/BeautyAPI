@@ -34,8 +34,9 @@ dependencies {
 | 证书authpack.java      | src                             |
 
 2. 复制以下场景化接口及实现到项目里
+> 请保留原有包名目录，以便于代码升级
 ```xml
-src/main/java/io/agora/beauty/faceunity/beautyapi
+src/main/java/io/agora/beautyapi/faceunity
    ├── FaceUnityBeautyAPI.kt
    ├── FaceUnityBeautyAPIImpl
    └── utils

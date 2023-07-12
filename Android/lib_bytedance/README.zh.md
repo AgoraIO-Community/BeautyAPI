@@ -20,8 +20,9 @@
 | byted_effect_andr/libs/effectAAR-release.aar  | libs                            |
 
 2. 复制以下场景化接口及实现到项目里
+> 请保留原有包名目录，以便于代码升级
 ```xml
-src/main/java/io/agora/beauty/bytedance/beautyapi
+src/main/java/io/agora/beautyapi/bytedance
    ├── ByteDanceBeautyAPI.kt
    ├── ByteDanceBeautyAPIImpl.kt
    └── utils
@@ -38,7 +39,7 @@ private val mEffectManager by lazy {
     EffectManager(
         this,
         resourceHelper,
-        resourceHelper.licensePath
+        resourceHelper.getLicensePath(LICENSE_NAME)
     )
 }
 

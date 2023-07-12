@@ -21,8 +21,9 @@
 | SenseME.lic                                                             | assets/beauty_sensetime/license  |
 
 2. 复制以下场景化接口及实现到项目里
+> 请保留原有包名目录，以便于代码升级
 ```xml
-src/main/java/io/agora/beauty/sensetime/beautyapi
+src/main/java/io/agora/beautyapi/sensetime
     ├── SenseTimeBeautyAPI.kt
     ├── SenseTimeBeautyAPIImpl.kt
     └── utils

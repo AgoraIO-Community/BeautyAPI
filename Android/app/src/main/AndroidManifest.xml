@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="io.agora.beauty.demo">
+    package="io.agora.beautyapi.demo">
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -25,12 +25,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AgoraBeautyAPI"
-        android:name=".MApplication"
+        android:name="io.agora.beautyapi.demo.MApplication"
         android:hardwareAccelerated="false"
         android:largeHeap="true"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name="io.agora.beautyapi.demo.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
@@ -43,22 +43,22 @@
         </activity>
 
         <activity
-            android:name=".SenseTimeActivity"
+            android:name="io.agora.beautyapi.demo.SenseTimeActivity"
             android:launchMode="singleTop"
             android:screenOrientation="behind"/>
 
         <activity
-            android:name=".AudienceActivity"
+            android:name="io.agora.beautyapi.demo.AudienceActivity"
             android:launchMode="singleTop"
             android:screenOrientation="behind"/>
 
         <activity
-            android:name=".FaceUnityActivity"
+            android:name="io.agora.beautyapi.demo.FaceUnityActivity"
             android:launchMode="singleTop"
             android:screenOrientation="behind"/>
 
         <activity
-            android:name=".ByteDanceActivity"
+            android:name="io.agora.beautyapi.demo.ByteDanceActivity"
             android:launchMode="singleTop"
             android:screenOrientation="behind"/>
     </application>

@@ -46,6 +46,8 @@
 | resource/StickerResource.bundle                  | app/src/main/assets/beauty_bytedance           |
 | resource/StickerResource.bundle                  | app/src/main/assets/beauty_bytedance           |
 
+修改app/src/main/java/io/agora/beautyapi/demo/ByteDanceActivity.kt文件里LICENSE_NAME为申请到的证书文件名
+
 ### 配置声网AppID
 
 > PS：这个demo不支持带证书的AppId
@@ -71,11 +73,11 @@ AGORA_APP_ID=#YOUR APP ID#
 
 每个美颜可以单独集成到自己的项目，详见对应的集成说明文档
 
-| 美颜  | 集成说明                                         |
-|-----|----------------------------------------------|
-| 商汤  | [lib_sensetime](lib_sensetime/README.zh.md)  |
-| 相芯  | [lib_sensetime](lib_faceunity/README.zh.md)  |
-| 字节  | [lib_sensetime](lib_bytedance/README.zh.md)  |
+| 美颜  | 集成说明                                  |
+|-----|---------------------------------------|
+| 商汤  | [README](lib_sensetime/README.zh.md)  |
+| 相芯  | [README](lib_faceunity/README.zh.md)  |
+| 字节  | [README](lib_bytedance/README.zh.md)  |
 
 ## 联系我们
 

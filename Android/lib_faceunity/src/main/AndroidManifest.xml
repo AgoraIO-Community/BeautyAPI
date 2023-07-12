@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:tools="http://schemas.android.com/tools"
-    package="io.agora.beauty.faceunity">
-    <uses-sdk tools:overrideLibrary="io.agora.beauty.faceunity" />
+    package="io.agora.beautyapi.faceunity">
+    <uses-sdk tools:overrideLibrary="io.agora.beautyapi.faceunity" />
 </manifest>
