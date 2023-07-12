@@ -21,8 +21,9 @@ _English | [中文](README.zh.md)
 | SenseME.lic                                                             | assets/beauty_sensetime/license |
 
 2. Copy the following BeautyAPI interface and implementation into the project
+> Please keep the package name so that we can upgrade the code.
 ```xml
-src/main/java/io/agora/beauty/sensetime/beautyapi
+src/main/java/io/agora/beautyapi/sensetime
     ├── SenseTimeBeautyAPI.kt
     ├── SenseTimeBeautyAPIImpl.kt
     └── utils
