@@ -11,15 +11,15 @@ import com.sensetime.stmobile.model.STMobileMakeupType
 import io.agora.base.VideoFrame
 import io.agora.beauty.demo.databinding.BeautyActivityBinding
 import io.agora.beauty.demo.utils.ReflectUtils
-import io.agora.beauty.sensetime.BeautyPreset
-import io.agora.beauty.sensetime.BeautyStats
-import io.agora.beauty.sensetime.CaptureMode
-import io.agora.beauty.sensetime.Config
-import io.agora.beauty.sensetime.ErrorCode
-import io.agora.beauty.sensetime.IEventCallback
-import io.agora.beauty.sensetime.createSenseTimeBeautyAPI
-import io.agora.beauty.sensetime.utils.STRenderKit
-import io.agora.beauty.sensetime.utils.utils.FileUtils
+import io.agora.beauty.sensetime.beautyapi.BeautyPreset
+import io.agora.beauty.sensetime.beautyapi.BeautyStats
+import io.agora.beauty.sensetime.beautyapi.CaptureMode
+import io.agora.beauty.sensetime.beautyapi.Config
+import io.agora.beauty.sensetime.beautyapi.ErrorCode
+import io.agora.beauty.sensetime.beautyapi.IEventCallback
+import io.agora.beauty.sensetime.beautyapi.createSenseTimeBeautyAPI
+import io.agora.beauty.sensetime.beautyapi.utils.STRenderKit
+import io.agora.beauty.sensetime.beautyapi.utils.utils.FileUtils
 import io.agora.rtc2.ChannelMediaOptions
 import io.agora.rtc2.Constants
 import io.agora.rtc2.IRtcEngineEventHandler
@@ -112,7 +112,10 @@ class SenseTimeActivity : ComponentActivity() {
         }
     }
     private val mSTRenderKit by lazy {
-        STRenderKit(this, "beauty_sensetime")
+        STRenderKit(
+            this,
+            "beauty_sensetime"
+        )
     }
     private val mSenseTimeApi by lazy {
         createSenseTimeBeautyAPI()

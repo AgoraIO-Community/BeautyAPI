@@ -8,14 +8,14 @@ import android.view.LayoutInflater
 import android.view.SurfaceView
 import androidx.activity.ComponentActivity
 import io.agora.base.VideoFrame
-import io.agora.beauty.bytedance.BeautyPreset
-import io.agora.beauty.bytedance.CaptureMode
-import io.agora.beauty.bytedance.Config
-import io.agora.beauty.bytedance.ErrorCode
-import io.agora.beauty.bytedance.EventCallback
-import io.agora.beauty.bytedance.createByteDanceBeautyAPI
-import io.agora.beauty.bytedance.utils.AssetsResourcesHelper
-import io.agora.beauty.bytedance.utils.EffectManager
+import io.agora.beauty.bytedance.beautyapi.BeautyPreset
+import io.agora.beauty.bytedance.beautyapi.CaptureMode
+import io.agora.beauty.bytedance.beautyapi.Config
+import io.agora.beauty.bytedance.beautyapi.ErrorCode
+import io.agora.beauty.bytedance.beautyapi.EventCallback
+import io.agora.beauty.bytedance.beautyapi.createByteDanceBeautyAPI
+import io.agora.beauty.bytedance.beautyapi.utils.AssetsResourcesHelper
+import io.agora.beauty.bytedance.beautyapi.utils.EffectManager
 import io.agora.beauty.demo.databinding.BeautyActivityBinding
 import io.agora.beauty.demo.utils.ReflectUtils
 import io.agora.rtc2.ChannelMediaOptions
@@ -326,6 +326,7 @@ class ByteDanceActivity : ComponentActivity() {
         super.onDestroy()
         mRtcEngine.leaveChannel()
         mByteDanceApi.release()
+        mEffectManager.destroy()
         RtcEngine.destroy()
     }
 
