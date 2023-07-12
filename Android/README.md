@@ -71,11 +71,11 @@ AGORA_APP_ID=#YOUR APP ID#
 
 Each beauty api can be integrated into your project separately, see the below integration documentation for details
 
-| Beauty     | Documentation                             |
-|------------|-------------------------------------------|
-| SenseTime  | [lib_sensetime](lib_sensetime/README.md)  |
-| FaceUnity  | [lib_sensetime](lib_faceunity/README.md)  |
-| ByteDance  | [lib_sensetime](lib_bytedance/README.md)  |
+| Beauty     | Documentation                      |
+|------------|------------------------------------|
+| SenseTime  | [README](lib_sensetime/README.md)  |
+| FaceUnity  | [README](lib_faceunity/README.md)  |
+| ByteDance  | [README](lib_bytedance/README.md)  |
 
 ## Feedback
 
