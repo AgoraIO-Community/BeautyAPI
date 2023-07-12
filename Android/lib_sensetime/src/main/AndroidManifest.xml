@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    package="io.agora.beauty.sensetime">
+    package="io.agora.beautyapi.sensetime">
 
     <uses-sdk tools:overrideLibrary="com.sensetime.hardwarebuffer" />
 

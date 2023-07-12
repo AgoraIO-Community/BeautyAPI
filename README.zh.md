@@ -15,7 +15,12 @@
 | 相芯    | iOS     | Swift/OC    | [/iOS/BeautyAPi/FUBeauty](/iOS/BeautyAPi/FUBeauty)       | 4.2.0      | 8.6.0         |
 | 字节火山  | iOS     | Swift/OC    | [/iOS/BeautyAPi/ByteBeaufy](/iOS/BeautyAPi/ByteBeaufy)   | 4.2.0      | 4.3.0         |
 
-你可以复制美颜场景API库到你的项目里以实现美颜功能。
+你可以参考下面的Demo，以集成美颜场景化API：
+
+| 平台      | Demo                   |
+|---------|------------------------|
+| Android | [Android/app](Android) |
+| iOS     | [iOS/BeautyAPi](iOS)   |
 
 ## 反馈
 

@@ -27,6 +27,17 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:background="#eeeeee"/>
+
+    <Switch
+        android:id="@+id/swI420"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:text="I420开关(测试用)"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
         android:visibility="gone"
         android:background="#eeeeee"/>
 

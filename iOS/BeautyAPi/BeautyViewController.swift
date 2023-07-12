@@ -174,6 +174,8 @@ class BeautyViewController: UIViewController {
         beautyAPI.destory()
     }
 }
+
+//MARK: captureMode为custom时才需要实现下面方法
 extension BeautyViewController: AgoraVideoFrameDelegate {
     func onCapture(_ videoFrame: AgoraOutputVideoFrame, sourceType: AgoraVideoSourceType) -> Bool {
         guard let pixelBuffer = videoFrame.pixelBuffer else { return true }

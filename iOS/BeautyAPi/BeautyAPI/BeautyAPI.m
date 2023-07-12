@@ -7,6 +7,12 @@
 
 #import "BeautyAPI.h"
 
+@implementation BeautyStats
+@end
+
+@implementation BeautyConfig
+@end
+
 @interface BeautyAPI ()
 
 @property (nonatomic, strong) BeautyConfig *config;
