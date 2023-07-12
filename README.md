@@ -16,7 +16,12 @@ following beauty scene API:
 | FaceUnity | iOS      | Swift/OC    | [/iOS/BeautyAPi/FUBeauty](/iOS/BeautyAPi/FUBeauty)       | 4.2.0           | 8.6.0              |
 | ByteDance | iOS      | Swift/OC    | [/iOS/BeautyAPi/ByteBeaufy](/iOS/BeautyAPi/ByteBeaufy)   | 4.2.0           | 4.3.0              |
 
-You can copy the beauty scene API library to your project to realize the beauty function.
+You can refer to flowing demo to lean how to use the beauty api:
+
+| Platform  | Demo                   |
+|-----------|------------------------|
+| Android   | [Android/app](Android) |
+| iOS       | [iOS/BeautyAPi](iOS)   |
 
 ## Feedback
 
