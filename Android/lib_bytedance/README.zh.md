@@ -20,11 +20,12 @@
 | byted_effect_andr/libs/effectAAR-release.aar  | libs                            |
 
 2. 复制以下场景化接口及实现到项目里
-
+```xml
 src/main/java/io/agora/beauty/bytedance/beautyapi
-├── ByteDanceBeautyAPI.kt
-├── ByteDanceBeautyAPIImpl.kt
-└── utils
+   ├── ByteDanceBeautyAPI.kt
+   ├── ByteDanceBeautyAPIImpl.kt
+   └── utils
+```
 
 3. 初始化
 ```kotlin

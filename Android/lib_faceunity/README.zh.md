@@ -34,11 +34,12 @@ dependencies {
 | 证书authpack.java      | src                             |
 
 2. 复制以下场景化接口及实现到项目里
-
+```xml
 src/main/java/io/agora/beauty/faceunity/beautyapi
-├── FaceUnityBeautyAPI.kt
-├── FaceUnityBeautyAPIImpl
-└── utils
+   ├── FaceUnityBeautyAPI.kt
+   ├── FaceUnityBeautyAPIImpl
+   └── utils
+```
 
 3. 初始化
 ```kotlin

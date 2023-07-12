@@ -21,11 +21,12 @@ _English | [中文](README.zh.md)
 | SenseME.lic                                                             | assets/beauty_sensetime/license |
 
 2. Copy the following BeautyAPI interface and implementation into the project
-   
+```xml
 src/main/java/io/agora/beauty/sensetime/beautyapi
-   ├── SenseTimeBeautyAPI.kt
-   ├── SenseTimeBeautyAPIImpl.kt
-   └── utils
+    ├── SenseTimeBeautyAPI.kt
+    ├── SenseTimeBeautyAPIImpl.kt
+    └── utils
+```
 
 3. Initialization
 ```kotlin
