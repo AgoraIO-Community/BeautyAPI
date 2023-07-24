@@ -28,7 +28,7 @@ typedef NS_ENUM(NSInteger, BeautyPresetMode) {
 - (AgoraVideoFormat)getVideoFormatPreference;
 #endif
 
-- (void)destory;
+- (void)destroy;
 
 @optional
 - (void)setBeautyPreset;
@@ -144,7 +144,7 @@ typedef NS_ENUM(NSInteger, CaptureMode) {
  *
  * @return 0: 成功；非0: 见错误码表
  **/
-- (int)destory;
+- (int)destroy;
 
 @end
 

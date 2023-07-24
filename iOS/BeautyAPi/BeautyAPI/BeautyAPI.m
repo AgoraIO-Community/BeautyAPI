@@ -107,14 +107,14 @@
     return 0;
 }
 
-- (int)destory {
+- (int)destroy {
     if (self.config == nil) {
         return -1;
     }
 #if __has_include(<AgoraRtcKit/AgoraRtcKit.h>)
     [self.config.rtcEngine setVideoFrameDelegate:nil];
 #endif
-    [self.config.beautyRender destory];
+    [self.config.beautyRender destroy];
     self.config = nil;
     return 0;
 }

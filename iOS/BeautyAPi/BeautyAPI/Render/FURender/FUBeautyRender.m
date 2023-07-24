@@ -28,7 +28,7 @@
 }
 #endif
 
-- (void)destory {
+- (void)destroy {
 #if __has_include(FURenderMoudle)
     [FURenderKit shareRenderKit].beauty = nil;
     [FURenderKit shareRenderKit].makeup = nil;

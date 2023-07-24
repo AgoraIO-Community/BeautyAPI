@@ -171,7 +171,7 @@ class BeautyViewController: UIViewController {
     
     deinit {
         AgoraRtcEngineKit.destroy()
-        beautyAPI.destory()
+        beautyAPI.destroy()
     }
 }
 

@@ -72,7 +72,7 @@ beautyAPI.setBeautyPreset(.default) // BeautyPreset.CUSTOM：自己实现美颜�
 
 ```swift
 rtcEngine.leaveChannel()
-beautyAPI.destory()
+beautyAPI.destroy()
 AgoraRtcEngineKit.destroy()
 ```
 
