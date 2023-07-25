@@ -57,6 +57,24 @@ typedef NS_ENUM(NSInteger, CaptureMode) {
 
 @end
 
+typedef NS_ENUM(NSInteger, MirrorMode) {
+    /// 本地远端都镜像，前置默认
+    MirrorMode_LOCAL_REMOTE = 0,
+    /// 仅本地镜像，远端不镜像，用于打电话场景，电商直播场景(保证电商直播后面的告示牌文字是正的)；这种模式因为本地远端是反的，所以肯定有一边的文字贴纸方向会是反的
+    MirrorMode_LOCAL_ONLY = 1,
+    /// 仅远端镜像
+    MirrorMode_REMOTE_ONLY= 2,
+    /// 本地远端都不镜像，后置默认
+    MirrorMode_NONE
+};
+
+@interface CameraConfig : NSObject
+// 前置默认镜像
+@property(nonatomic, assign) MirrorMode frontMirror;
+// 后置默认镜像
+@property(nonatomic, assign) MirrorMode backMirror;
+@end
+
 @interface BeautyConfig : NSObject
 #if __has_include(<AgoraRtcKit/AgoraRtcKit.h>)
 // 由外部传入的rtc对象，不可为空
@@ -72,16 +90,12 @@ typedef NS_ENUM(NSInteger, CaptureMode) {
 @property(nonatomic, assign)NSInteger statsDuration;
 // 是否开启统计
 @property(nonatomic, assign)BOOL statsEnable;
+// 配置摄像头镜像
+@property(nonatomic, strong)CameraConfig *cameraConfig;
 
 @end
 
 @interface BeautyAPI : NSObject
-
-/**
- * 是否是前置摄像头
- * 切换摄像头要给此属性赋值,  解决镜像问题
- **/
-@property (nonatomic, assign) BOOL isFrontCamera;
 
 /**
  *  Render
@@ -110,6 +124,27 @@ typedef NS_ENUM(NSInteger, CaptureMode) {
  * 读取美颜开关状态
  **/
 @property (nonatomic, readonly, assign) BOOL isEnable;
+
+/**
+ * 是否是前置摄像头
+ **/
+@property (nonatomic, assign, readonly) BOOL isFrontCamera;
+
+/**
+ * 切换摄像头
+ *
+ *
+ * @return 0: 成功；非0：见错误码
+ **/
+- (int)switchCamera;
+
+/**
+ * 设置摄像头镜像模式，注意前置和后置要单独控制
+ *
+ *
+ * @return 0: 成功；非0：见错误码
+ **/
+- (int)updateCameraConfig: (CameraConfig *)cameraConfig;
 
 /**
     * 本地视图渲染，由内部来处理镜像问题
@@ -145,6 +180,24 @@ typedef NS_ENUM(NSInteger, CaptureMode) {
  * @return 0: 成功；非0: 见错误码表
  **/
 - (int)destroy;
+
+/**
+ * @return 版本号
+ **/
+- (NSString *)getVersion;
+
+@end
+
+typedef NS_ENUM(NSInteger, LogLevel) {
+    LogLevelInfo,
+    LogLevelError,
+    LogLevelDebug
+};
+@interface LogUtil : NSObject
+
++ (void)log:(NSString *)message;
+
++ (void)log:(NSString *)message level:(LogLevel)level;
 
 @end
 

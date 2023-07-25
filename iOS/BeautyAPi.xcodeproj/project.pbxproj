@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		C5DC38DA660712418398BB5E /* Pods_BeautyAPi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A74E98AAF37F5AC2599EC0B /* Pods_BeautyAPi.framework */; };
+		E70ADED02A68E3FB009947CF /* EFGlobalSingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = E70ADECF2A68E3FB009947CF /* EFGlobalSingleton.m */; };
 		E72D78162A25963500C9134C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72D78152A25963500C9134C /* AppDelegate.swift */; };
 		E72D78182A25963500C9134C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72D78172A25963500C9134C /* SceneDelegate.swift */; };
 		E72D781D2A25963500C9134C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E72D781B2A25963500C9134C /* Main.storyboard */; };
@@ -54,6 +55,8 @@
 		0D6108959E288EB21E103A36 /* Pods-BeautyAPi.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BeautyAPi.debug.xcconfig"; path = "Target Support Files/Pods-BeautyAPi/Pods-BeautyAPi.debug.xcconfig"; sourceTree = "<group>"; };
 		9A74E98AAF37F5AC2599EC0B /* Pods_BeautyAPi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BeautyAPi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A646339435DAD37A2AE0A5BC /* Pods-BeautyAPi.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BeautyAPi.release.xcconfig"; path = "Target Support Files/Pods-BeautyAPi/Pods-BeautyAPi.release.xcconfig"; sourceTree = "<group>"; };
+		E70ADECE2A68E3FB009947CF /* EFGlobalSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EFGlobalSingleton.h; sourceTree = "<group>"; };
+		E70ADECF2A68E3FB009947CF /* EFGlobalSingleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EFGlobalSingleton.m; sourceTree = "<group>"; };
 		E72D78122A25963500C9134C /* BeautyAPi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BeautyAPi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E72D78152A25963500C9134C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E72D78172A25963500C9134C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -216,24 +219,26 @@
 			isa = PBXGroup;
 			children = (
 				E72D782A2A25976500C9134C /* EffectsLicense.h */,
-				E72D782B2A25976500C9134C /* EffectsAttribute.m */,
+				E72D78342A25976500C9134C /* EffectsLicense.m */,
 				E72D782C2A25976500C9134C /* EFMotionManager.h */,
+				E72D78392A25976500C9134C /* EFMotionManager.m */,
+				E72D78372A25976500C9134C /* Effects.h */,
 				E72D782D2A25976500C9134C /* Effects.m */,
+				E72D78362A25976500C9134C /* EffectsDetector.h */,
 				E72D782E2A25976500C9134C /* EffectsDetector.m */,
+				E70ADECE2A68E3FB009947CF /* EFGlobalSingleton.h */,
+				E70ADECF2A68E3FB009947CF /* EFGlobalSingleton.m */,
 				E72D782F2A25976500C9134C /* EffectsCommonObject.h */,
+				E72D783B2A25976500C9134C /* EffectsCommonObject.m */,
+				E72D783A2A25976500C9134C /* EffectsAnimal.h */,
 				E72D78302A25976500C9134C /* EffectsAnimal.m */,
+				E72D783D2A25976500C9134C /* EffectsProcess.h */,
 				E72D78312A25976500C9134C /* EffectsProcess.m */,
+				E72D783C2A25976500C9134C /* VideoProcessingManager.h */,
 				E72D78322A25976500C9134C /* VideoProcessingManager.m */,
 				E72D78332A25976500C9134C /* EffectsAttribute.h */,
-				E72D78342A25976500C9134C /* EffectsLicense.m */,
-				E72D78362A25976500C9134C /* EffectsDetector.h */,
-				E72D78372A25976500C9134C /* Effects.h */,
+				E72D782B2A25976500C9134C /* EffectsAttribute.m */,
 				E72D78382A25976500C9134C /* EffectMacro.h */,
-				E72D78392A25976500C9134C /* EFMotionManager.m */,
-				E72D783A2A25976500C9134C /* EffectsAnimal.h */,
-				E72D783B2A25976500C9134C /* EffectsCommonObject.m */,
-				E72D783C2A25976500C9134C /* VideoProcessingManager.h */,
-				E72D783D2A25976500C9134C /* EffectsProcess.h */,
 			);
 			path = SenseBeaufy;
 			sourceTree = "<group>";
@@ -313,8 +318,8 @@
 		E779030F2A57EE58008791AD /* FURender */ = {
 			isa = PBXGroup;
 			children = (
-				E77903102A57EE58008791AD /* FUBeautyRender.m */,
 				E77903112A57EE58008791AD /* FUBeautyRender.h */,
+				E77903102A57EE58008791AD /* FUBeautyRender.m */,
 			);
 			path = FURender;
 			sourceTree = "<group>";
@@ -322,8 +327,8 @@
 		E77903142A57EE58008791AD /* SenseRender */ = {
 			isa = PBXGroup;
 			children = (
-				E77903152A57EE58008791AD /* SenseBeautyRender.h */,
 				E77903162A57EE58008791AD /* SenseBeautyRender.m */,
+				E77903152A57EE58008791AD /* SenseBeautyRender.h */,
 			);
 			path = SenseRender;
 			sourceTree = "<group>";
@@ -331,8 +336,8 @@
 		E77903172A57EE58008791AD /* BytesRender */ = {
 			isa = PBXGroup;
 			children = (
-				E77903182A57EE58008791AD /* BytesBeautyRender.m */,
 				E77903192A57EE58008791AD /* BytesBeautyRender.h */,
+				E77903182A57EE58008791AD /* BytesBeautyRender.m */,
 			);
 			path = BytesRender;
 			sourceTree = "<group>";
@@ -480,6 +485,7 @@
 				E72D787C2A284A1C00C9134C /* BeautyViewController.swift in Sources */,
 				E77902B72A4D636C008791AD /* BELicenseHelper.mm in Sources */,
 				E72D78442A25976500C9134C /* EffectsLicense.m in Sources */,
+				E70ADED02A68E3FB009947CF /* EFGlobalSingleton.m in Sources */,
 				E72D78422A25976500C9134C /* EffectsProcess.m in Sources */,
 				E72D783E2A25976500C9134C /* EffectsAttribute.m in Sources */,
 				E77902C42A4D636C008791AD /* BERender.mm in Sources */,
