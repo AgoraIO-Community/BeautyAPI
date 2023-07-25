@@ -315,7 +315,7 @@ class FaceUnityActivity : ComponentActivity() {
     }
 
     private fun getAuth(): ByteArray{
-        val authpack = Class.forName("io.agora.beauty.demo.authpack")
+        val authpack = Class.forName("io.agora.beautyapi.demo.authpack")
         val aMethod = authpack.getDeclaredMethod("A")
         aMethod.isAccessible = true
         val authValue = aMethod.invoke(null) as? ByteArray
