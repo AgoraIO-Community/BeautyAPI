@@ -34,7 +34,8 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    api "io.agora.rtc:full-sdk:$AGORA_RTC_VERSION"
+    api "$AGORA_RTC_SDK"
+
 
     api 'com.faceunity:core:8.3.0'
     api 'com.faceunity:model:8.3.0'

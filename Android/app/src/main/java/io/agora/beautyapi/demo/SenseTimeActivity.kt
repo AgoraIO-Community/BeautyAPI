@@ -7,7 +7,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.SurfaceView
 import androidx.activity.ComponentActivity
-import com.sensetime.stmobile.model.STMobileMakeupType
+import com.softsugar.stmobile.STCommonNative
+import com.softsugar.stmobile.STMobileAuthentificationNative
+import com.softsugar.stmobile.STMobileEffectNative
+import com.softsugar.stmobile.STMobileEffectParams
+import com.softsugar.stmobile.STMobileHumanActionNative
+import com.softsugar.stmobile.params.STEffectBeautyType
+import com.softsugar.stmobile.params.STHumanActionParamsType
 import io.agora.base.VideoFrame
 import io.agora.beautyapi.demo.databinding.BeautyActivityBinding
 import io.agora.beautyapi.demo.utils.ReflectUtils
@@ -17,9 +23,8 @@ import io.agora.beautyapi.sensetime.CaptureMode
 import io.agora.beautyapi.sensetime.Config
 import io.agora.beautyapi.sensetime.ErrorCode
 import io.agora.beautyapi.sensetime.IEventCallback
+import io.agora.beautyapi.sensetime.STHandlers
 import io.agora.beautyapi.sensetime.createSenseTimeBeautyAPI
-import io.agora.beautyapi.sensetime.utils.STRenderKit
-import io.agora.beautyapi.sensetime.utils.utils.FileUtils
 import io.agora.rtc2.ChannelMediaOptions
 import io.agora.rtc2.Constants
 import io.agora.rtc2.IRtcEngineEventHandler
@@ -31,6 +36,8 @@ import io.agora.rtc2.video.VideoCanvas
 import io.agora.rtc2.video.VideoEncoderConfiguration
 import io.agora.rtc2.video.VideoEncoderConfiguration.FRAME_RATE
 import java.io.File
+import java.util.concurrent.Executors
+
 
 class SenseTimeActivity : ComponentActivity() {
     private val TAG = this.javaClass.simpleName
@@ -111,12 +118,6 @@ class SenseTimeActivity : ComponentActivity() {
             enableExtension("agora_video_filters_clear_vision", "clear_vision", true)
         }
     }
-    private val mSTRenderKit by lazy {
-        STRenderKit(
-            this,
-            "beauty_sensetime"
-        )
-    }
     private val mSenseTimeApi by lazy {
         createSenseTimeBeautyAPI()
     }
@@ -157,6 +158,7 @@ class SenseTimeActivity : ComponentActivity() {
             }
         }
     }
+    private val workerExecutor = Executors.newSingleThreadExecutor()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -167,10 +169,11 @@ class SenseTimeActivity : ComponentActivity() {
         val isCustomCaptureMode =
             intent.getStringExtra(EXTRA_CAPTURE_MODE) == getString(R.string.beauty_capture_custom)
 
+        initBeautySDK()
         mSenseTimeApi.initialize(
             Config(
                 mRtcEngine,
-                mSTRenderKit,
+                STHandlers(mobileEffectNative, humanActionNative),
                 captureMode = if (isCustomCaptureMode) CaptureMode.Custom else CaptureMode.Agora,
                 statsEnable = true,
                 eventCallback = object: IEventCallback{
@@ -295,12 +298,12 @@ class SenseTimeActivity : ComponentActivity() {
             mBinding.ctvMarkup.isChecked = enable
             if (enable) {
                 setMakeUpItem(
-                    STMobileMakeupType.ST_MAKEUP_TYPE_LIP,
+                    STEffectBeautyType.EFFECT_BEAUTY_MAKEUP_LIP,
                     "makeup_lip" + File.separator + "12自然.zip",
                     1f
                 )
             } else {
-                setMakeUpItem(STMobileMakeupType.ST_MAKEUP_TYPE_LIP, null, 0f)
+                setMakeUpItem(STEffectBeautyType.EFFECT_BEAUTY_MAKEUP_LIP)
             }
         }
         mBinding.ctvSticker.setOnClickListener {
@@ -310,66 +313,136 @@ class SenseTimeActivity : ComponentActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        mSTRenderKit.enableSensor(true)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        mSTRenderKit.enableSensor(false)
-    }
-
     override fun onDestroy() {
         super.onDestroy()
+        workerExecutor.shutdown()
         mRtcEngine.leaveChannel()
         mSenseTimeApi.release()
-        mSTRenderKit.release()
+        unInitBeautySDK()
         RtcEngine.destroy()
     }
 
-    private fun setMakeUpItem(type: Int, typePath: String?, strength: Float) {
-        if (typePath != null) {
-            val split = typePath.split(File.separator.toRegex()).dropLastWhile { it.isEmpty() }
-                .toTypedArray()
-            val className = split[0]
-            val fileName = split[1]
-            val _path = FileUtils.getFilePath(this, mSTRenderKit.getResourcePath(className) + File.separator + fileName)
-            FileUtils.copyFileIfNeed(this, fileName, mSTRenderKit.getResourcePath(className))
-            mSTRenderKit.setMakeupForType(type, _path)
-            mSTRenderKit.setMakeupStrength(type, strength)
+    // SenseTime api
+    private val resourcePath = "beauty_sensetime"
+    private val mobileEffectNative = STMobileEffectNative()
+    private val humanActionNative = STMobileHumanActionNative()
+    private val humanActionCreateConfig = 0
+    private val packageMap = mutableMapOf<String, Int>()
+
+    val MODEL_106 = "models/M_SenseME_Face_Video_Template_p_3.9.0.3.model" // 106
+    val MODEL_FACE_EXTRA = "models/M_SenseME_Face_Extra_Advanced_Template_p_2.0.0.model" // 282
+    val MODEL_AVATAR_HELP = "models/M_SenseME_Avatar_Help_p_2.3.7.model" // avatar人脸驱动
+    val MODEL_LIPS_PARSING = "models/M_SenseME_MouthOcclusion_p_1.3.0.1.model" // 嘴唇分割
+    val MODEL_HAND = "models/M_SenseME_Hand_p_6.0.8.1.model" // 手势
+    val MODEL_SEGMENT = "models/M_SenseME_Segment_Figure_p_4.14.1.1.model" // 前后背景分割
+    val MODEL_SEGMENT_HAIR = "models/M_SenseME_Segment_Hair_p_4.4.0.model" // 头发分割
+    val MODEL_FACE_OCCLUSION = "models/M_SenseME_FaceOcclusion_p_1.0.7.1.model" // 妆容遮挡
+    val MODEL_SEGMENT_SKY = "models/M_SenseME_Segment_Sky_p_1.1.0.1.model" // 天空分割
+    val MODEL_SEGMENT_SKIN = "models/M_SenseME_Segment_Skin_p_1.0.1.1.model" // 皮肤分割
+    val MODEL_3DMESH = "models/M_SenseME_3DMesh_Face2396pt_280kpts_Ear_p_1.1.0v2.model" // 3DMesh
+    val MODEL_HEAD_P_EAR = "models/M_SenseME_Ear_p_1.0.1.1.model" // 搭配 mesh 耳朵模型
+    val MODEL_360HEAD_INSTANCE = "models/M_SenseME_3Dmesh_360Head2396pt_p_1.0.0.1.model" // 360度人头mesh
+    val MODEL_FOOT = "models/M_SenseME_Foot_p_2.10.7.model" // 鞋子检测模型
+    val MODEL_PANT = "models/M_SenseME_Segment_Trousers_p_1.1.10.model" // 裤腿的检测
+    val MODEL_WRIST = "models/M_SenseME_Wrist_p_1.4.0.model" // 试表
+    val MODEL_CLOTH = "models/M_SenseME_Segment_Clothes_p_1.0.2.2.model" // 衣服分割
+    val MODEL_HEAD_INSTANCE = "models/M_SenseME_Segment_Head_Instance_p_1.1.0.1.model" // 实例分割版本
+    val MODEL_HEAD_P_INSTANCE = "models/M_SenseME_Head_p_1.3.0.1.model" // 360度人头-头部模型
+    val MODEL_NAIL = "models/M_SenseME_Nail_p_2.4.0.model" // 指甲检测
+
+    private fun initBeautySDK(){
+        checkBeautyLicense()
+        initMobileEffect()
+        initHumanAction()
+    }
+
+    private fun unInitBeautySDK(){
+        mobileEffectNative.destroyInstance()
+        humanActionNative.destroyInstance()
+        packageMap.clear()
+    }
+
+    private fun checkBeautyLicense() {
+        val license = io.agora.beautyapi.demo.utils.FileUtils.getAssetsString(
+            this,
+            "$resourcePath/license/SenseME.lic"
+        )
+        val activeCode = STMobileAuthentificationNative.generateActiveCodeFromBuffer(
+            application,
+            license,
+            license.length
+        )
+        val success = activeCode.isNotEmpty()
+        if (success) {
+            Log.d(TAG, "SenseTime >> checkLicense successfully!")
         } else {
-            mSTRenderKit.removeMakeupByType(type)
+            Log.e(TAG, "SenseTime >> checkLicense failed!")
+        }
+    }
+
+    private fun initMobileEffect(){
+        val result =
+            mobileEffectNative.createInstance(application, STMobileEffectNative.EFFECT_CONFIG_NONE)
+        mobileEffectNative.setParam(STMobileEffectParams.EFFECT_PARAM_QUATERNION_SMOOTH_FRAME, 5f)
+        Log.d(TAG, "SenseTime >> STMobileEffectNative create result : $result")
+    }
+
+    private fun initHumanAction(){
+        val result = humanActionNative.createInstanceFromAssetFile(
+            "$resourcePath/$MODEL_106",
+            humanActionCreateConfig,
+            assets
+        )
+        Log.d(TAG, "SenseTime >> STMobileHumanActionNative create result : $result")
+
+        if(result != 0){
+            return
+        }
+
+        humanActionNative.addSubModelFromAssetFile("$resourcePath/$MODEL_HAND", assets)
+        humanActionNative.addSubModelFromAssetFile("$resourcePath/$MODEL_SEGMENT", assets)
+        humanActionNative.addSubModelFromAssetFile("$resourcePath/$MODEL_FACE_EXTRA", assets)
+        humanActionNative.addSubModelFromAssetFile("$resourcePath/$MODEL_SEGMENT_HAIR", assets)
+        humanActionNative.addSubModelFromAssetFile("$resourcePath/$MODEL_LIPS_PARSING", assets)
+        humanActionNative.addSubModelFromAssetFile("$resourcePath/$MODEL_FACE_OCCLUSION", assets)
+        humanActionNative.addSubModelFromAssetFile("$resourcePath/$MODEL_SEGMENT_SKY", assets)
+        humanActionNative.addSubModelFromAssetFile("$resourcePath/$MODEL_AVATAR_HELP", assets)
+        humanActionNative.addSubModelFromAssetFile("$resourcePath/$MODEL_FOOT", assets)
+        humanActionNative.addSubModelFromAssetFile("$resourcePath/$MODEL_PANT", assets)
+        humanActionNative.addSubModelFromAssetFile("$resourcePath/$MODEL_3DMESH", assets)
+        humanActionNative.addSubModelFromAssetFile("$resourcePath/$MODEL_WRIST", assets)
+        humanActionNative.addSubModelFromAssetFile("$resourcePath/$MODEL_CLOTH", assets)
+        humanActionNative.addSubModelFromAssetFile("$resourcePath/$MODEL_HEAD_INSTANCE", assets)
+        humanActionNative.addSubModelFromAssetFile("$resourcePath/$MODEL_360HEAD_INSTANCE", assets)
+        humanActionNative.addSubModelFromAssetFile("$resourcePath/$MODEL_NAIL", assets)
+
+        // 背景分割羽化程度[0,1](默认值0.35),0 完全不羽化,1羽化程度最高,在strenth较小时,羽化程度基本不变.值越大,前景与背景之间的过度边缘部分越宽.
+        humanActionNative.setParam(STHumanActionParamsType.ST_HUMAN_ACTION_PARAM_BACKGROUND_BLUR_STRENGTH, 0.35f)
+        // 设置face mesh结果输出坐标系,(0: 屏幕坐标系， 1：3d世界坐标系， 2:3d摄像机坐标系,是摄像头透视投影坐标系, 原点在摄像机 默认是0）
+        humanActionNative.setParam(STHumanActionParamsType.ST_HUMAN_ACTION_PARAM_FACE_MESH_OUTPUT_FORMAT, 1.0f)
+        // 设置mesh渲染模式
+        humanActionNative.setParam(STHumanActionParamsType.ST_HUMAN_ACTION_PARAM_MESH_MODE, STCommonNative.MESH_CONFIG.toFloat())
+        // 设置人头实例分割
+        humanActionNative.setParam(STHumanActionParamsType.ST_HUMAN_ACTION_PARAM_HEAD_SEGMENT_INSTANCE, 1.0f)
+    }
+
+    private fun setMakeUpItem(type: Int, path: String = "", strength: Float = 1.0f) {
+        if (path.isNotEmpty()) {
+            mobileEffectNative.setBeautyFromAssetsFile(type, "$resourcePath/$path", assets)
+            mobileEffectNative.setBeautyStrength(type, strength)
+        } else {
+            mobileEffectNative.setBeauty(type, null)
         }
     }
 
     private fun setStickerItem(path: String, attach: Boolean) {
-        val split =
-            path.split(File.separator.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        val className = split[0]
-        val fileName = split[1]
-        val _path = FileUtils.getFilePath(this, mSTRenderKit.getResourcePath(className) + File.separator + fileName)
-        FileUtils.copyFileIfNeed(this, fileName, mSTRenderKit.getResourcePath(className))
-        if (!attach) {
-            mSTRenderKit.removeSticker(_path)
-        } else {
-            mSTRenderKit.changeSticker(_path)
+        if(attach){
+            packageMap[path] = mobileEffectNative.changePackageFromAssetsFile("$resourcePath/$path", assets)
+        }else{
+            packageMap.remove(path)?.let {
+                mobileEffectNative.removeEffect(it)
+            }
         }
     }
-
-    private fun setFilterItem(filterPath: String, strength: Float) {
-        val split =
-            filterPath.split(File.separator.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        val className = split[0]
-        val fileName = split[1]
-        val filterName = split[1].split("_".toRegex()).dropLastWhile { it.isEmpty() }
-            .toTypedArray()[2].split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
-            .toTypedArray()[0]
-        val path = FileUtils.getFilePath(this, mSTRenderKit.getResourcePath(className) + File.separator + fileName)
-        FileUtils.copyFileIfNeed(this, fileName, mSTRenderKit.getResourcePath(className))
-        mSTRenderKit.setFilterStyle(className, filterName, path)
-        mSTRenderKit.setFilterStrength(strength)
-    }
-
 
 }

@@ -168,7 +168,6 @@ class FaceUnityActivity : ComponentActivity() {
 
         val isCustomCaptureMode =
             intent.getStringExtra(EXTRA_CAPTURE_MODE) == getString(R.string.beauty_capture_custom)
-
         mFaceUnityApi.initialize(
             Config(
                 mRtcEngine,

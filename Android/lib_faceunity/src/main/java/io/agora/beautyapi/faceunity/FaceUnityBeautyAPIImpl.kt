@@ -73,6 +73,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
     private var statsHelper: StatsHelper? = null
     private var skipFrame = 0
 
+
     override fun initialize(config: Config): Int {
         if (this.config != null) {
             return ErrorCode.ERROR_HAS_INITIALIZED.value

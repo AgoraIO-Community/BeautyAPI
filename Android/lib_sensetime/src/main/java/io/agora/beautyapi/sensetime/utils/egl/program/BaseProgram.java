@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-import io.agora.beautyapi.sensetime.utils.utils.GlUtil;
+import io.agora.beautyapi.sensetime.utils.egl.GlUtil;
 
 public abstract class BaseProgram {
 

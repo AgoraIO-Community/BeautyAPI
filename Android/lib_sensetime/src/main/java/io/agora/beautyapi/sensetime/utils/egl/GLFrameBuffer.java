@@ -7,7 +7,6 @@ import android.opengl.Matrix;
 import io.agora.beautyapi.sensetime.utils.egl.program.BaseProgram;
 import io.agora.beautyapi.sensetime.utils.egl.program.GL2DProgram;
 import io.agora.beautyapi.sensetime.utils.egl.program.OESProgram;
-import io.agora.beautyapi.sensetime.utils.utils.GlUtil;
 
 public class GLFrameBuffer {
 

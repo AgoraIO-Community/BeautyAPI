@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.agora.beautyapi.sensetime">
 
-    <uses-sdk tools:overrideLibrary="com.sensetime.hardwarebuffer" />
+    <uses-sdk tools:overrideLibrary="com.softsugar.hardwarebuffer" />
 
     <uses-feature
         android:glEsVersion="0x00020000"

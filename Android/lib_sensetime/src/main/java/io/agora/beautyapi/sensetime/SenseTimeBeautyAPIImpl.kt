@@ -31,16 +31,20 @@ import android.os.Build
 import android.view.SurfaceView
 import android.view.TextureView
 import android.view.View
-import com.sensetime.stmobile.STCommonNative
-import com.sensetime.stmobile.params.STEffectBeautyType
+import com.softsugar.stmobile.STCommonNative
+import com.softsugar.stmobile.params.STEffectBeautyType
 import io.agora.base.TextureBufferHelper
 import io.agora.base.VideoFrame
 import io.agora.base.VideoFrame.I420Buffer
+import io.agora.base.VideoFrame.SourceType
 import io.agora.base.VideoFrame.TextureBuffer
 import io.agora.base.internal.video.RendererCommon
 import io.agora.base.internal.video.YuvConverter
 import io.agora.base.internal.video.YuvHelper
 import io.agora.beautyapi.sensetime.utils.StatsHelper
+import io.agora.beautyapi.sensetime.utils.processor.IBeautyProcessor
+import io.agora.beautyapi.sensetime.utils.processor.InputInfo
+import io.agora.beautyapi.sensetime.utils.processor.createBeautyProcessor
 import io.agora.rtc2.Constants
 import io.agora.rtc2.gl.EglBaseProvider
 import io.agora.rtc2.video.IVideoFrameObserver
@@ -62,6 +66,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
     private var statsHelper: StatsHelper? = null
     private var skipFrame = 0
     private val workerThreadExecutor = Executors.newSingleThreadExecutor()
+    private var beautyProcessor: IBeautyProcessor? = null
 
     override fun initialize(config: Config): Int {
         if (this.config != null) {
@@ -127,110 +132,109 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         if (isReleased) {
             return ErrorCode.ERROR_HAS_RELEASED.value
         }
-        val stRenderer = config?.stRenderKit ?: return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
+        val effectNative = config?.stHandlers?.effectNative ?: return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
         val enable = preset == BeautyPreset.DEFAULT
-
         workerThreadExecutor.submit {
             // 锐化
-            stRenderer.setBeautyStrength(
+            effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_TONE_SHARPEN,
                 if(enable) 0.5f else 0.0f
             )
             // 清晰度
-            stRenderer.setBeautyStrength(
+            effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_TONE_CLEAR,
                 if(enable) 1.0f else 0.0f
             )
             // 磨皮
-            stRenderer.setBeautyMode(
+            effectNative.setBeautyMode(
                 STEffectBeautyType.EFFECT_BEAUTY_BASE_FACE_SMOOTH,
                 STEffectBeautyType.SMOOTH2_MODE
             )
-            stRenderer.setBeautyStrength(
+            effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_BASE_FACE_SMOOTH,
                 if(enable) 0.55f else 0.0f
             )
             // 美白
-            stRenderer.setBeautyMode(
+            effectNative.setBeautyMode(
                 STEffectBeautyType.EFFECT_BEAUTY_BASE_WHITTEN,
                 STEffectBeautyType.WHITENING3_MODE
             )
-            stRenderer.setBeautyStrength(
+            effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_BASE_WHITTEN,
                 if(enable) 0.2f else 0.0f
             )
             // 瘦脸
-            stRenderer.setBeautyStrength(
+            effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_PLASTIC_THIN_FACE,
                 if(enable) 0.4f else 0.0f
             )
             // 大眼
-            stRenderer.setBeautyStrength(
+            effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_RESHAPE_ENLARGE_EYE,
                 if(enable) 0.3f else 0.0f
             )
             // 红润
-            stRenderer.setBeautyStrength(
+            effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_BASE_REDDEN,
                 if(enable) 0.0f else 0.0f
             )
             // 瘦颧骨
-            stRenderer.setBeautyStrength(
+            effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_PLASTIC_SHRINK_CHEEKBONE,
                 if(enable) 0.0f else 0.0f
             )
             // 下颌骨
-            stRenderer.setBeautyStrength(
+            effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_PLASTIC_SHRINK_JAWBONE,
                 if(enable) 0.0f else 0.0f
             )
             // 美牙
-            stRenderer.setBeautyStrength(
+            effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_PLASTIC_WHITE_TEETH,
                 if(enable) 0.0f else 0.0f
             )
             // 额头
-            stRenderer.setBeautyStrength(
+            effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_PLASTIC_HAIRLINE_HEIGHT,
                 if(enable) 0.0f else 0.0f
             )
             // 瘦鼻
-            stRenderer.setBeautyStrength(
+            effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_PLASTIC_NARROW_NOSE,
                 if(enable) 0.0f  else 0.0f
             )
             // 嘴形
-            stRenderer.setBeautyStrength(
+            effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_PLASTIC_MOUTH_SIZE,
                 if(enable) 0.0f else 0.0f
             )
             // 下巴
-            stRenderer.setBeautyStrength(
+            effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_PLASTIC_CHIN_LENGTH,
                 if(enable) 0.0f else 0.0f
             )
             // 亮眼
-            stRenderer.setBeautyStrength(
+            effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_PLASTIC_BRIGHT_EYE,
                 if(enable) 0.0f else 0.0f
             )
             // 祛黑眼圈
-            stRenderer.setBeautyStrength(
+            effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_PLASTIC_REMOVE_DARK_CIRCLES,
                 if(enable) 0.0f else 0.0f
             )
             // 祛法令纹
-            stRenderer.setBeautyStrength(
+            effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_PLASTIC_REMOVE_NASOLABIAL_FOLDS,
                 if(enable) 0.0f else 0.0f
             )
             // 饱和度
-            stRenderer.setBeautyStrength(
+            effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_TONE_SATURATION,
                 if(enable) 0.0f else 0.0f
             )
             // 对比度
-            stRenderer.setBeautyStrength(
+            effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_TONE_CONTRAST,
                 if(enable) 0.0f else 0.0f
             )
@@ -248,14 +252,14 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         if (isReleased) {
             return ErrorCode.ERROR_HAS_RELEASED.value
         }
-        val stRenderer = config?.stRenderKit ?: return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
+        config?.stHandlers ?: return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
 
         isReleased = true
         workerThreadExecutor.shutdown()
         textureBufferHelper?.let {
             textureBufferHelper = null
             it.invoke {
-                stRenderer.resetProcessor()
+                beautyProcessor?.release()
                 null
             }
             it.dispose()
@@ -285,8 +289,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         if(enableChange){
             enableChange = false
             textureBufferHelper?.invoke {
-                val stRenderKit = config?.stRenderKit?: return@invoke
-                stRenderKit.resetProcessor()
+                beautyProcessor?.reset()
             }
         }
 
@@ -336,6 +339,16 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         }
     }
 
+    private fun mayCreateBeautyProcess(){
+        val stHandlers = config?.stHandlers ?: return
+
+        if(beautyProcessor == null){
+            beautyProcessor = createBeautyProcessor().apply {
+                initialize(stHandlers.effectNative, stHandlers.humanActionNative)
+            }
+        }
+    }
+
     private fun processBeautySingleTexture(videoFrame: VideoFrame): Int{
         val texBufferHelper = textureBufferHelper ?: return -1
         val buffer = videoFrame.buffer as? TextureBuffer ?: return -1
@@ -344,16 +357,22 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
 
         val matrix = RendererCommon.convertMatrixFromAndroidGraphicsMatrix(buffer.transformMatrix)
         return texBufferHelper.invoke(Callable {
-            val stRenderKit = config?.stRenderKit?: return@Callable -1
-            return@Callable stRenderKit.preProcess(
-                width, height, videoFrame.rotation,
-                buffer.textureId,
-                when (buffer.type) {
-                    TextureBuffer.Type.OES -> GLES11Ext.GL_TEXTURE_EXTERNAL_OES
-                    else -> GLES20.GL_TEXTURE_2D
-                },
-                matrix
-            )
+            mayCreateBeautyProcess()
+            return@Callable beautyProcessor?.process(
+                InputInfo(
+                    width = width,
+                    height = height,
+                    cameraOrientation = videoFrame.rotation,
+                    isFrontCamera = videoFrame.sourceType == SourceType.kFrontCamera,
+                    timestamp = videoFrame.timestampNs,
+                    textureId = buffer.textureId,
+                    textureType = when (buffer.type) {
+                        TextureBuffer.Type.OES -> GLES11Ext.GL_TEXTURE_EXTERNAL_OES
+                        else -> GLES20.GL_TEXTURE_2D
+                    },
+                    textureMatrix = matrix,
+                )
+            )?.textureId ?:  -1
         })
     }
 
@@ -365,11 +384,18 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         val height = buffer.height
 
         return texBufferHelper.invoke(Callable {
-            val stRenderKit = config?.stRenderKit?: return@Callable -1
-            return@Callable stRenderKit.preProcess(
-                width, height, videoFrame.rotation,
-                nv21ByteArray, STCommonNative.ST_PIX_FMT_NV21,
-            )
+            mayCreateBeautyProcess()
+            return@Callable beautyProcessor?.process(
+                InputInfo(
+                    width = width,
+                    height = height,
+                    cameraOrientation = videoFrame.rotation,
+                    isFrontCamera = videoFrame.sourceType == SourceType.kFrontCamera,
+                    timestamp = videoFrame.timestampNs,
+                    bytes = nv21ByteArray,
+                    bytesType = STCommonNative.ST_PIX_FMT_NV21
+                )
+            )?.textureId ?: -1
         })
     }
 
@@ -383,18 +409,25 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         val matrix =
             RendererCommon.convertMatrixFromAndroidGraphicsMatrix(buffer.transformMatrix)
         return texBufferHelper.invoke(Callable {
-            val stRenderKit = config?.stRenderKit?: return@Callable -1
-            return@Callable stRenderKit.preProcess(
-                width, height, videoFrame.rotation,
-                nv21ByteArray, STCommonNative.ST_PIX_FMT_NV21,
-                buffer.textureId,
-                when (buffer.type) {
-                    TextureBuffer.Type.OES -> GLES11Ext.GL_TEXTURE_EXTERNAL_OES
-                    else -> GLES20.GL_TEXTURE_2D
-                },
-                matrix,
-                1 // pbo会缓存一帧
-            )
+            mayCreateBeautyProcess()
+            return@Callable beautyProcessor?.process(
+                InputInfo(
+                    width = width,
+                    height = height,
+                    cameraOrientation = videoFrame.rotation,
+                    isFrontCamera = videoFrame.sourceType == SourceType.kFrontCamera,
+                    timestamp = videoFrame.timestampNs,
+                    bytes = nv21ByteArray,
+                    bytesType = STCommonNative.ST_PIX_FMT_NV21,
+                    textureId = buffer.textureId,
+                    textureType = when (buffer.type) {
+                        TextureBuffer.Type.OES -> GLES11Ext.GL_TEXTURE_EXTERNAL_OES
+                        else -> GLES20.GL_TEXTURE_2D
+                    },
+                    textureMatrix = matrix,
+                    diffBetweenBytesAndTexture = 1
+                )
+            )?.textureId ?: -1
         })
     }
 

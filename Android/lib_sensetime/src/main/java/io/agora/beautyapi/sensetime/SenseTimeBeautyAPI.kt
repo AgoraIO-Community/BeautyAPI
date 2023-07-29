@@ -25,8 +25,9 @@
 package io.agora.beautyapi.sensetime
 
 import android.view.View
+import com.softsugar.stmobile.STMobileEffectNative
+import com.softsugar.stmobile.STMobileHumanActionNative
 import io.agora.base.VideoFrame
-import io.agora.beautyapi.sensetime.utils.STRenderKit
 import io.agora.rtc2.Constants
 import io.agora.rtc2.RtcEngine
 
@@ -53,11 +54,16 @@ data class BeautyStats(
 
 data class Config(
     val rtcEngine: RtcEngine, // 声网Rtc引擎
-    val stRenderKit: STRenderKit, // 美颜SDK处理句柄
+    val stHandlers: STHandlers, // 美颜SDK处理句柄
     val eventCallback: IEventCallback? = null, // 事件回调
     val captureMode: CaptureMode = CaptureMode.Agora, // 处理模式
     val statsDuration: Long = 1000, // 统计区间
     val statsEnable: Boolean = false // 是否开启统计
+)
+
+data class STHandlers(
+    val effectNative: STMobileEffectNative,
+    val humanActionNative: STMobileHumanActionNative
 )
 
 enum class ErrorCode(val value: Int) {
