@@ -24,6 +24,7 @@
 
 package io.agora.beautyapi.bytedance
 
+import android.content.Context
 import android.view.View
 import io.agora.base.VideoFrame
 import io.agora.beautyapi.bytedance.utils.EffectManager
@@ -61,6 +62,7 @@ data class BeautyStats(
 )
 
 data class Config(
+    val context: Context, // Android Context上下文
     val rtcEngine: RtcEngine, // 声网Rtc引擎
     val effectManager: EffectManager, // 美颜SDK处理句柄
     val eventCallback: EventCallback? = null, // 事件回调

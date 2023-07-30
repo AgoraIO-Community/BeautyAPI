@@ -24,7 +24,7 @@
 
 package io.agora.beautyapi.bytedance.utils.timer_record;
 
-import android.util.Log;
+import io.agora.beautyapi.bytedance.utils.LogUtils;
 
 /**
  * Created on 2020-02-07 10:37
@@ -62,11 +62,11 @@ public class LogTimerRecord extends TimerRecord {
 
     @Override
     protected void recordOnce(String tag, long time) {
-        Log.i(TAG, String.format("%s %f", tag, time * 0.000001));
+        LogUtils.i(TAG, String.format("%s %f", tag, time * 0.000001));
     }
 
     @Override
     protected void recordAverage(String tag, double time, int round) {
-        Log.i(TAG, String.format("%s average time is %f ms in %d round", tag, time * 0.000001, round));
+        LogUtils.i(TAG, String.format("%s average time is %f ms in %d round", tag, time * 0.000001, round));
     }
 }

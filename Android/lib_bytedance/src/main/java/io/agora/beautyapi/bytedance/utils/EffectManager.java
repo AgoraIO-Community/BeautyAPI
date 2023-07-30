@@ -59,6 +59,7 @@ import io.agora.beautyapi.bytedance.utils.timer_record.LogTimerRecord;
  */
 
 public class EffectManager {
+    private static final String TAG = "EffectManager";
     private final String mlicensePath;
     protected Context mContext;
     protected RenderManager mRenderManager;
@@ -91,7 +92,7 @@ public class EffectManager {
      */
 
    public int init(){
-        LogUtils.d("Effect SDK version =" + mRenderManager.getSDKVersion());
+        LogUtils.d(TAG, "Effect SDK version =" + mRenderManager.getSDKVersion());
 
 
 
@@ -164,11 +165,11 @@ public class EffectManager {
      */
 
     public int destroy(){
-        LogUtils.d("destroyEffectSDK");
+        LogUtils.d(TAG, "destroyEffectSDK");
         mRenderManager.release();
         mNeedLoadResource = false;
         mExistResourcePath.clear();
-        LogUtils.d("destroyEffectSDK finish");
+        LogUtils.d(TAG, "destroyEffectSDK finish");
         return 0;
 
     }
@@ -434,7 +435,7 @@ public class EffectManager {
         }
         mSavedComposerNodes.add(item);
         String path = mResourceProvider.getComposePath() + node;
-        LogUtils.d("updateComposerNodes node ="+path+" key = "+ key + " intensity ="+intensity);
+        LogUtils.d(TAG, "updateComposerNodes node ="+path+" key = "+ key + " intensity ="+intensity);
 
         return mRenderManager.updateComposerNodes(path, key, intensity) == BEF_RESULT_SUC;
     }
@@ -796,14 +797,14 @@ public class EffectManager {
      */
 
     public void recoverStatus(){
-        LogUtils.d("recover status");
+        LogUtils.d(TAG, "recover status");
         if (!TextUtils.isEmpty(mFilterResource)) {
             mRenderManager.setFilter(mFilterResource);
         }
         if (!TextUtils.isEmpty(mStickerResource)) {
             mRenderManager.setSticker(mStickerResource);
         }
-        LogUtils.d("mSavedComposerNodes size ="+mSavedComposerNodes.size()+"  "+mSavedComposerNodes);
+        LogUtils.d(TAG, "mSavedComposerNodes size ="+mSavedComposerNodes.size()+"  "+mSavedComposerNodes);
 
         if (mSavedComposerNodes.size() > 0) {
             String[] nodes = getSavedComposerNodes(mSavedComposerNodes);
@@ -830,7 +831,7 @@ public class EffectManager {
 
             for (SavedComposerItem item : mSavedComposerNodes) {
                 String nodePath = prefix + item.node;
-                LogUtils.d("updateComposerNodes node ="+nodePath+" key = "+ item.key + " intensity ="+item.intensity);
+                LogUtils.d(TAG, "updateComposerNodes node ="+nodePath+" key = "+ item.key + " intensity ="+item.intensity);
 
                 mRenderManager.updateComposerNodes(nodePath, item.key, item.intensity);
             }
@@ -882,7 +883,7 @@ public class EffectManager {
     protected boolean checkResult(String msg, int ret) {
         if (ret != 0 && ret != -11 && ret != 1) {
             String log = msg + " error: " + ret;
-            LogUtils.e(log);
+            LogUtils.e(TAG, log);
             String toast = RenderManager.formatErrorCode(ret);
             if (toast == null) {
                 toast = log;
@@ -922,7 +923,7 @@ public class EffectManager {
     }
 
     public boolean setUseBuiltinSensor(boolean flag){
-        LogUtils.d("setUseBuiltinSensor "+flag);
+        LogUtils.d(TAG, "setUseBuiltinSensor "+flag);
         return mRenderManager.useBuiltinSensor(flag) == BEF_RESULT_SUC;
     }
 

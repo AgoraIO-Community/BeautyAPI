@@ -170,6 +170,7 @@ class ByteDanceActivity : ComponentActivity() {
 
         mByteDanceApi.initialize(
             Config(
+                applicationContext,
                 mRtcEngine,
                 mEffectManager,
                 captureMode = if (isCustomCaptureMode) CaptureMode.Custom else CaptureMode.Agora,

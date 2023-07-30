@@ -24,11 +24,11 @@
 
 package io.agora.beautyapi.bytedance.utils.timer_record;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import io.agora.beautyapi.bytedance.utils.LogUtils;
 
 /**
  * Created on 2020-02-06 19:24
@@ -83,7 +83,7 @@ public abstract class TimerRecord {
         if (!mEnable) return;
         Long last = mStartTime.get(tag);
         if (last == null) {
-            Log.i(TAG, String.format("call record() with tag %s first", tag));
+            LogUtils.i(TAG, String.format("call record() with tag %s first", tag));
             return;
         }
         long time = System.nanoTime() - last;
