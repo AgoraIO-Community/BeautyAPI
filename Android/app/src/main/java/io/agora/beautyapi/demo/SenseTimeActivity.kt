@@ -173,11 +173,11 @@ class SenseTimeActivity : ComponentActivity() {
             initBeautySDK()
             mSenseTimeApi.initialize(
                 Config(
+                    application,
                     mRtcEngine,
                     STHandlers(mobileEffectNative, humanActionNative),
                     captureMode = if (isCustomCaptureMode) CaptureMode.Custom else CaptureMode.Agora,
                     statsEnable = true,
-                    logPath = getExternalFilesDir(null)?.absolutePath ?: "",
                     eventCallback = object: IEventCallback{
                         override fun onBeautyStats(stats: BeautyStats) {
                             Log.d(TAG, "BeautyStats stats = $stats")

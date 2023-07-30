@@ -92,9 +92,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         statsHelper = StatsHelper(config.statsDuration) {
             this.config?.eventCallback?.onBeautyStats(it)
         }
-        if(config.logPath.isNotEmpty()){
-            LogUtils.setLogFilePath(config.logPath)
-        }
+        LogUtils.setLogFilePath(config.context.getExternalFilesDir("")?.absolutePath ?: "")
         LogUtils.i(TAG, "initialize >> config = $config")
         return ErrorCode.ERROR_OK.value
     }

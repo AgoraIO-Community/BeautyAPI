@@ -24,6 +24,7 @@
 
 package io.agora.beautyapi.faceunity
 
+import android.content.Context
 import android.view.View
 import com.faceunity.core.faceunity.FURenderKit
 import io.agora.base.VideoFrame
@@ -52,6 +53,7 @@ data class BeautyStats(
 )
 
 data class Config(
+    val context: Context, // Android Context 上下文
     val rtcEngine: RtcEngine, // 声网Rtc引擎
     val fuRenderKit: FURenderKit, // 美颜SDK处理句柄
     val eventCallback: IEventCallback? = null, // 事件回调

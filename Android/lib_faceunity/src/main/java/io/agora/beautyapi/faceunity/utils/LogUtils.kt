@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package io.agora.beautyapi.sensetime.utils
+package io.agora.beautyapi.faceunity.utils
 
 import android.util.Log
 import java.io.File
@@ -33,7 +33,7 @@ import java.util.Locale
 import java.util.concurrent.Executors
 
 object LogUtils {
-    private const val beautyType = "SenseTime"
+    private const val beautyType = "FaceUnity"
     private val timeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.ROOT)
     private val logFileName = "agora_beautyapi_${beautyType.lowercase(Locale.ROOT)}_android.log"
     private val workerThread = Executors.newSingleThreadExecutor()

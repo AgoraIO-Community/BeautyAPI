@@ -7,11 +7,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.SurfaceView
 import androidx.activity.ComponentActivity
+import com.faceunity.core.callback.OperateCallback
 import com.faceunity.core.entity.FUBundleData
+import com.faceunity.core.enumeration.FUAITypeEnum
+import com.faceunity.core.faceunity.FUAIKit
+import com.faceunity.core.faceunity.FURenderConfig.OPERATE_SUCCESS_AUTH
 import com.faceunity.core.faceunity.FURenderKit
+import com.faceunity.core.faceunity.FURenderManager
 import com.faceunity.core.model.makeup.SimpleMakeup
 import com.faceunity.core.model.prop.Prop
 import com.faceunity.core.model.prop.sticker.Sticker
+import com.faceunity.core.utils.FULogger
+import com.faceunity.wrapper.faceunity
 import io.agora.base.VideoFrame
 import io.agora.beautyapi.demo.databinding.BeautyActivityBinding
 import io.agora.beautyapi.demo.utils.ReflectUtils
@@ -22,7 +29,6 @@ import io.agora.beautyapi.faceunity.Config
 import io.agora.beautyapi.faceunity.ErrorCode
 import io.agora.beautyapi.faceunity.IEventCallback
 import io.agora.beautyapi.faceunity.createFaceUnityBeautyAPI
-import io.agora.beautyapi.faceunity.utils.nama.FURenderer
 import io.agora.rtc2.ChannelMediaOptions
 import io.agora.rtc2.Constants
 import io.agora.rtc2.IRtcEngineEventHandler
@@ -155,10 +161,7 @@ class FaceUnityActivity : ComponentActivity() {
             }
         }
     }
-    private val fuRenderKit by lazy {
-        FURenderer.getInstance().setup(this, getAuth())
-        FURenderKit.getInstance()
-    }
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -166,10 +169,12 @@ class FaceUnityActivity : ComponentActivity() {
         setContentView(mBinding.root)
         window.decorView.keepScreenOn = true
 
+        initBeauty()
         val isCustomCaptureMode =
             intent.getStringExtra(EXTRA_CAPTURE_MODE) == getString(R.string.beauty_capture_custom)
         mFaceUnityApi.initialize(
             Config(
+                applicationContext,
                 mRtcEngine,
                 fuRenderKit,
                 captureMode = if(isCustomCaptureMode) CaptureMode.Custom else CaptureMode.Agora,
@@ -308,8 +313,7 @@ class FaceUnityActivity : ComponentActivity() {
         super.onDestroy()
         mRtcEngine.leaveChannel()
         mFaceUnityApi.release()
-        FURenderer.getInstance().release()
-        fuRenderKit.release()
+        unInitBeauty()
         RtcEngine.destroy()
     }
 
@@ -320,4 +324,40 @@ class FaceUnityActivity : ComponentActivity() {
         val authValue = aMethod.invoke(null) as? ByteArray
         return authValue ?: ByteArray(0)
     }
+
+
+    // BeautySDK api
+    private val fuRenderKit = FURenderKit.getInstance()
+    private val fuAIKit = FUAIKit.getInstance()
+
+    /* AI道具*/
+    private val BUNDLE_AI_FACE = "model" + File.separator + "ai_face_processor.bundle"
+    private val BUNDLE_AI_HUMAN = "model" + File.separator + "ai_human_processor.bundle"
+
+    private fun initBeauty(){
+        FURenderManager.setKitDebug(FULogger.LogLevel.TRACE)
+        FURenderManager.setCoreDebug(FULogger.LogLevel.ERROR)
+        FURenderManager.registerFURender(applicationContext, getAuth(), object : OperateCallback {
+            override fun onSuccess(code: Int, msg: String) {
+                Log.i(TAG, "FURenderManager onSuccess -- code=$code, msg=$msg")
+                if (code == OPERATE_SUCCESS_AUTH) {
+                    faceunity.fuSetUseTexAsync(1)
+                    fuAIKit.loadAIProcessor(BUNDLE_AI_FACE, FUAITypeEnum.FUAITYPE_FACEPROCESSOR)
+                    fuAIKit.loadAIProcessor(BUNDLE_AI_HUMAN, FUAITypeEnum.FUAITYPE_HUMAN_PROCESSOR)
+                }
+            }
+
+            override fun onFail(errCode: Int, errMsg: String) {
+                Log.e(TAG, "FURenderManager onFail -- code=$errCode, msg=$errMsg")
+            }
+        })
+    }
+
+    private fun unInitBeauty(){
+        fuRenderKit.release()
+        fuAIKit.releaseAllAIProcessor()
+    }
+
+
+
 }

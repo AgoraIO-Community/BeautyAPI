@@ -24,6 +24,7 @@
 
 package io.agora.beautyapi.sensetime
 
+import android.content.Context
 import android.view.View
 import com.softsugar.stmobile.STMobileEffectNative
 import com.softsugar.stmobile.STMobileHumanActionNative
@@ -53,13 +54,13 @@ data class BeautyStats(
 )
 
 data class Config(
+    val context: Context, // Android Context上下文
     val rtcEngine: RtcEngine, // 声网Rtc引擎
     val stHandlers: STHandlers, // 美颜SDK处理句柄
     val eventCallback: IEventCallback? = null, // 事件回调
     val captureMode: CaptureMode = CaptureMode.Agora, // 处理模式
     val statsDuration: Long = 1000, // 统计区间
-    val statsEnable: Boolean = false, // 是否开启统计
-    val logPath: String = "" // 日志路径，空不保存日志
+    val statsEnable: Boolean = false // 是否开启统计
 )
 
 data class STHandlers(
