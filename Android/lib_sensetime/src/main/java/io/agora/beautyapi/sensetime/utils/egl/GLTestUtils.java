@@ -31,12 +31,13 @@ import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
-import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+
+import io.agora.beautyapi.sensetime.utils.LogUtils;
 
 public class GLTestUtils {
     private static final String TAG = "GLUtils";
@@ -60,7 +61,7 @@ public class GLTestUtils {
             GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, textureID, 0);
             GLES20.glFramebufferRenderbuffer(GLES20.GL_FRAMEBUFFER, GLES20.GL_DEPTH_ATTACHMENT, GLES20.GL_RENDERBUFFER, renderId);
             if (GLES20.glCheckFramebufferStatus(GLES20.GL_FRAMEBUFFER) != GLES20.GL_FRAMEBUFFER_COMPLETE) {
-                Log.d(TAG, "Framebuffer error");
+                LogUtils.e(TAG, "Framebuffer error");
             }
 
             ByteBuffer rgbaBuf = ByteBuffer.allocateDirect(width * height * 4);
@@ -77,7 +78,7 @@ public class GLTestUtils {
 
             return bitmap;
         } catch (Exception e) {
-            Log.e(TAG, "", e);
+            LogUtils.e(TAG, "", e);
         }
         return null;
     }
@@ -101,7 +102,7 @@ public class GLTestUtils {
             GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES11Ext.GL_TEXTURE_EXTERNAL_OES, textureID, 0);
             GLES20.glFramebufferRenderbuffer(GLES20.GL_FRAMEBUFFER, GLES20.GL_DEPTH_ATTACHMENT, GLES20.GL_RENDERBUFFER, renderId);
             if (GLES20.glCheckFramebufferStatus(GLES20.GL_FRAMEBUFFER) != GLES20.GL_FRAMEBUFFER_COMPLETE) {
-                Log.d(TAG, "Framebuffer error");
+                LogUtils.e(TAG, "Framebuffer error");
             }
 
             ByteBuffer rgbaBuf = ByteBuffer.allocateDirect(width * height * 4);
@@ -118,7 +119,7 @@ public class GLTestUtils {
 
             return bitmap;
         } catch (Exception e) {
-            Log.e(TAG, "", e);
+            LogUtils.e(TAG, e.toString());
         }
         return null;
     }

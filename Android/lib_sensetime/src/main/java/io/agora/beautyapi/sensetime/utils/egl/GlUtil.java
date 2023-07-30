@@ -29,7 +29,6 @@ import android.graphics.Bitmap;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
 import android.opengl.Matrix;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RawRes;
@@ -45,6 +44,8 @@ import java.util.Objects;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLContext;
+
+import io.agora.beautyapi.sensetime.utils.LogUtils;
 
 public class GlUtil {
     private static final String TAG = "GlUtil";
@@ -83,7 +84,7 @@ public class GlUtil {
         int program = GLES20.glCreateProgram();
         checkGlError("glCreateProgram");
         if (program == 0) {
-            Log.e(TAG, "Could not create program");
+            LogUtils.e(TAG, "Could not create program");
         }
         GLES20.glAttachShader(program, vertexShader);
         checkGlError("glAttachShader");
@@ -93,12 +94,11 @@ public class GlUtil {
         int[] linkStatus = new int[1];
         GLES20.glGetProgramiv(program, GLES20.GL_LINK_STATUS, linkStatus, 0);
         if (linkStatus[0] != GLES20.GL_TRUE) {
-            Log.e(TAG, "Could not link program: ");
-            Log.e(TAG, GLES20.glGetProgramInfoLog(program));
+            LogUtils.e(TAG, "Could not link program: ");
+            LogUtils.e(TAG, GLES20.glGetProgramInfoLog(program));
             GLES20.glDeleteProgram(program);
             program = 0;
         }
-        Log.i(TAG, "linkStatus:" + linkStatus[0]);
         return program;
     }
 
@@ -110,8 +110,8 @@ public class GlUtil {
         int[] compiled = new int[1];
         GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compiled, 0);
         if (compiled[0] == 0) {
-            Log.e(TAG, "Could not compile shader " + shaderType + ":");
-            Log.e(TAG, " " + GLES20.glGetShaderInfoLog(shader));
+            LogUtils.e(TAG, "Could not compile shader " + shaderType + ":");
+            LogUtils.e(TAG, " " + GLES20.glGetShaderInfoLog(shader));
             GLES20.glDeleteShader(shader);
             shader = 0;
         }
@@ -175,7 +175,7 @@ public class GlUtil {
         int error = GLES20.glGetError();
         if (error != GLES20.GL_NO_ERROR) {
             String msg = op + ": glError 0x" + Integer.toHexString(error);
-            Log.e(TAG, msg);
+            LogUtils.e(TAG, msg);
             throw new RuntimeException(msg);
         }
     }

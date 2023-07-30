@@ -26,13 +26,13 @@ package io.agora.beautyapi.sensetime.utils.processor
 
 import android.content.Context
 import android.hardware.Camera
-import android.util.Log
 import android.util.Size
 import com.softsugar.stmobile.STMobileEffectNative
 import com.softsugar.stmobile.STMobileHumanActionNative
 import com.softsugar.stmobile.model.STHumanAction
 import com.softsugar.stmobile.model.STMobileAnimalResult
 import com.softsugar.stmobile.params.STRotateType
+import io.agora.beautyapi.sensetime.utils.LogUtils
 import java.util.concurrent.Callable
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.Executors
@@ -95,10 +95,9 @@ class FaceDetector(
                     return@Callable index
                 })
             )
-            Log.d(TAG, "Detector enqueue cacheIndex: $cacheIndex, queue size: $size")
             cacheIndex = (cacheIndex + 1) % cacheSize
         } else {
-            Log.e(TAG, "Detector queue is full!!")
+            LogUtils.e(TAG, "Detector queue is full!!")
         }
         return size
     }
@@ -111,16 +110,14 @@ class FaceDetector(
             if(future != null){
                 try {
                     val ret = future.get()
-                    Log.d(TAG, "Detector dequeue cacheIndex: $ret, queue size: $size")
                     return DetectorOut(
                         humanActionNative.getNativeHumanActionResultCache(ret)
                     )
                 }catch (e: Exception){
-                    Log.d(TAG, "Detector dequeue timeout: $e")
+                    LogUtils.e(TAG, "Detector dequeue timeout: $e")
                 }
             }
         }
-        Log.d(TAG, "Detector dequeue null, queue size: $size")
         return null
     }
 
@@ -134,8 +131,6 @@ class FaceDetector(
             )
         val deviceOrientation: Int =
             accelerometer?.direction ?: Accelerometer.CLOCKWISE_ANGLE.Deg90.value
-        val startHumanAction = System.currentTimeMillis()
-        //Log.e(TAG, "config: "+Long.toHexString(mDetectConfig) );
         val ret: Int = humanActionNative.nativeHumanActionDetectPtr(
             iN.bytes,
             iN.bytesType,
@@ -145,11 +140,6 @@ class FaceDetector(
             iN.height
         )
 
-        LogUtils.i(
-            TAG,
-            "human action cost time: %d, ret: %d",
-            System.currentTimeMillis() - startHumanAction, ret
-        )
         //nv21数据为横向，相对于预览方向需要旋转处理，前置摄像头还需要镜像
         val rotatedSize = when (iN.orientation) {
             90, 270 -> Size(iN.height, iN.width)
@@ -164,7 +154,6 @@ class FaceDetector(
             iN.orientation,
             deviceOrientation
         )
-        LogUtils.i("processDoubleInput index=$index nativeHumanActionDetect end")
         humanActionNative.updateNativeHumanActionCache(index)
     }
 

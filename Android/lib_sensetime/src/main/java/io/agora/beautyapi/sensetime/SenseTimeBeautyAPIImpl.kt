@@ -41,6 +41,7 @@ import io.agora.base.VideoFrame.TextureBuffer
 import io.agora.base.internal.video.RendererCommon
 import io.agora.base.internal.video.YuvConverter
 import io.agora.base.internal.video.YuvHelper
+import io.agora.beautyapi.sensetime.utils.LogUtils
 import io.agora.beautyapi.sensetime.utils.StatsHelper
 import io.agora.beautyapi.sensetime.utils.processor.IBeautyProcessor
 import io.agora.beautyapi.sensetime.utils.processor.InputInfo
@@ -54,6 +55,7 @@ import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 
 class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
+    private val TAG = "SenseTimeBeautyAPIImpl"
     private var beautyMode = 0 // 0: 自动根据buffer类型切换，1：固定使用OES纹理，2：固定使用i420
 
     private var textureBufferHelper: TextureBufferHelper? = null
@@ -68,8 +70,19 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
     private val workerThreadExecutor = Executors.newSingleThreadExecutor()
     private var beautyProcessor: IBeautyProcessor? = null
 
+    private enum class ProcessSourceType{
+        UNKNOWN,
+        TEXTURE_OES_API26,
+        TEXTURE_2D_API26,
+        TEXTURE_OES,
+        TEXTURE_2D,
+        I420,
+    }
+    private var currProcessSourceType = ProcessSourceType.UNKNOWN
+
     override fun initialize(config: Config): Int {
         if (this.config != null) {
+            LogUtils.e(TAG, "initialize >> The beauty api has been initialized!")
             return ErrorCode.ERROR_HAS_INITIALIZED.value
         }
         this.config = config
@@ -79,29 +92,43 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         statsHelper = StatsHelper(config.statsDuration) {
             this.config?.eventCallback?.onBeautyStats(it)
         }
+        if(config.logPath.isNotEmpty()){
+            LogUtils.setLogFilePath(config.logPath)
+        }
+        LogUtils.i(TAG, "initialize >> config = $config")
         return ErrorCode.ERROR_OK.value
     }
 
     override fun enable(enable: Boolean): Int {
+        LogUtils.i(TAG, "enable >> enable = $enable")
         if (config == null) {
+            LogUtils.e(TAG, "enable >> The beauty api has not been initialized!")
             return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
         }
         if (isReleased) {
+            LogUtils.e(TAG, "enable >> The beauty api has been released!")
             return ErrorCode.ERROR_HAS_RELEASED.value
         }
         if(config?.captureMode == CaptureMode.Custom){
             skipFrame = 2
+            LogUtils.i(TAG, "enable >> skipFrame = $skipFrame")
         }
         if(this.enable != enable){
             this.enable = enable
             this.enableChange = true
+            LogUtils.i(TAG, "enable >> enableChange")
         }
 
         return ErrorCode.ERROR_OK.value
     }
 
     override fun setupLocalVideo(view: View, renderMode: Int): Int {
-        val rtcEngine = config?.rtcEngine ?: return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
+        val rtcEngine = config?.rtcEngine
+        if(rtcEngine == null){
+            LogUtils.e(TAG, "setupLocalVideo >> The beauty api has not been initialized!")
+            return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
+        }
+        LogUtils.i(TAG, "setupLocalVideo >> view=$view, renderMode=$renderMode")
         if(view is TextureView || view is SurfaceView){
             val canvas = VideoCanvas(view, renderMode, 0)
             canvas.mirrorMode = Constants.VIDEO_MIRROR_MODE_DISABLED
@@ -112,11 +139,17 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
     }
 
     override fun onFrame(videoFrame: VideoFrame): Int {
-        val conf = config ?: return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
+        val conf = config
+        if(conf == null){
+            LogUtils.e(TAG, "onFrame >> The beauty api has not been initialized!")
+            return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
+        }
         if (isReleased) {
+            LogUtils.e(TAG, "onFrame >> The beauty api has been released!")
             return ErrorCode.ERROR_HAS_RELEASED.value
         }
         if (conf.captureMode != CaptureMode.Custom) {
+            LogUtils.e(TAG, "onFrame >> The capture mode is not Custom!")
             return ErrorCode.ERROR_PROCESS_NOT_CUSTOM.value
         }
         if (!enable) {
@@ -125,14 +158,21 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         if (processBeauty(videoFrame)) {
             return ErrorCode.ERROR_OK.value
         }
+        LogUtils.i(TAG, "onFrame >> Skip Frame.")
         return ErrorCode.ERROR_FRAME_SKIPPED.value
     }
 
     override fun setBeautyPreset(preset: BeautyPreset): Int {
+        val effectNative = config?.stHandlers?.effectNative
+        if(effectNative == null){
+            LogUtils.e(TAG, "setBeautyPreset >> The beauty api has not been initialized!")
+            return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
+        }
         if (isReleased) {
+            LogUtils.e(TAG, "setBeautyPreset >> The beauty api has been released!")
             return ErrorCode.ERROR_HAS_RELEASED.value
         }
-        val effectNative = config?.stHandlers?.effectNative ?: return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
+        LogUtils.i(TAG, "setBeautyPreset >> preset = $preset")
         val enable = preset == BeautyPreset.DEFAULT
         workerThreadExecutor.submit {
             // 锐化
@@ -249,11 +289,15 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
     }
 
     override fun release(): Int {
+        if(config == null){
+            LogUtils.e(TAG, "release >> The beauty api has not been initialized!")
+            return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
+        }
         if (isReleased) {
+            LogUtils.e(TAG, "setBeautyPreset >> The beauty api has been released!")
             return ErrorCode.ERROR_HAS_RELEASED.value
         }
-        config?.stHandlers ?: return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
-
+        LogUtils.i(TAG, "release")
         isReleased = true
         workerThreadExecutor.shutdown()
         textureBufferHelper?.let {
@@ -271,7 +315,11 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
 
     private fun processBeauty(videoFrame: VideoFrame): Boolean {
         if (!enable || isReleased) {
-            val isFront = videoFrame.sourceType == VideoFrame.SourceType.kFrontCamera
+            if (isReleased) {
+                LogUtils.e(TAG, "processBeauty >> The beauty api has been released!")
+            }
+
+            val isFront = videoFrame.sourceType == SourceType.kFrontCamera
             if (shouldMirror != isFront) {
                 shouldMirror = isFront
                 return false
@@ -283,7 +331,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
             return false
         }
         if(skipFrame > 0){
-            skipFrame --;
+            skipFrame --
             return false
         }
         if(enableChange){
@@ -298,13 +346,14 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
                 "STRender",
                 EglBaseProvider.instance().rootEglBase.eglBaseContext
             )
+            LogUtils.i(TAG, "processBeauty >> create texture buffer, beautyMode=$beautyMode")
         }
 
         val startTime = System.currentTimeMillis()
 
         val processTexId = when(beautyMode){
-            1 -> processBeautySingleTexture(videoFrame)
-            2 -> processBeautySingleBuffer(videoFrame)
+            1 -> processBeautyTextureAPI26(videoFrame)
+            2 -> processBeautyI420(videoFrame)
             else -> processBeautyAuto(videoFrame)
         }
         if(config?.statsEnable == true){
@@ -312,8 +361,8 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
             statsHelper?.once(costTime)
         }
 
-
         if (processTexId < 0) {
+            LogUtils.w(TAG, "processBeauty >> processTexId < 0")
             return false
         }
         val processBuffer: TextureBuffer = textureBufferHelper?.wrapTextureBuffer(
@@ -331,11 +380,11 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         val buffer = videoFrame.buffer
         return if (buffer is TextureBuffer && Build.VERSION.SDK_INT >= 26) {
             // Android 8.0以上使用单纹理输入，内部使用HardwareBuffer转nv21
-            processBeautySingleTexture(videoFrame)
+            processBeautyTextureAPI26(videoFrame)
         } else if(buffer is TextureBuffer){
-            processBeautyDoubleInput(videoFrame)
+            processBeautyTexture(videoFrame)
         } else {
-            processBeautySingleBuffer(videoFrame)
+            processBeautyI420(videoFrame)
         }
     }
 
@@ -349,11 +398,26 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         }
     }
 
-    private fun processBeautySingleTexture(videoFrame: VideoFrame): Int{
+    private fun processBeautyTextureAPI26(videoFrame: VideoFrame): Int{
         val texBufferHelper = textureBufferHelper ?: return -1
         val buffer = videoFrame.buffer as? TextureBuffer ?: return -1
         val width = buffer.width
         val height = buffer.height
+
+        when(buffer.type){
+            TextureBuffer.Type.OES -> {
+                if(currProcessSourceType != ProcessSourceType.TEXTURE_OES_API26){
+                    LogUtils.i(TAG, "processBeautyAuto >> process source type change old=$currProcessSourceType, new=${ProcessSourceType.TEXTURE_OES_API26}")
+                    currProcessSourceType = ProcessSourceType.TEXTURE_OES_API26
+                }
+            }
+            else -> {
+                if(currProcessSourceType != ProcessSourceType.TEXTURE_2D_API26){
+                    LogUtils.i(TAG, "processBeautyAuto >> process source type change old=$currProcessSourceType, new=${ProcessSourceType.TEXTURE_2D_API26}")
+                    currProcessSourceType = ProcessSourceType.TEXTURE_2D_API26
+                }
+            }
+        }
 
         val matrix = RendererCommon.convertMatrixFromAndroidGraphicsMatrix(buffer.transformMatrix)
         return texBufferHelper.invoke(Callable {
@@ -376,12 +440,17 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         })
     }
 
-    private fun processBeautySingleBuffer(videoFrame: VideoFrame): Int{
+    private fun processBeautyI420(videoFrame: VideoFrame): Int{
         val texBufferHelper = textureBufferHelper ?: return -1
         val nv21ByteArray = getNV21Buffer(videoFrame) ?: return -1
         val buffer = videoFrame.buffer
         val width = buffer.width
         val height = buffer.height
+
+        if(currProcessSourceType != ProcessSourceType.I420){
+            LogUtils.i(TAG, "processBeautyAuto >> process source type change old=$currProcessSourceType, new=${ProcessSourceType.I420}")
+            currProcessSourceType = ProcessSourceType.I420
+        }
 
         return texBufferHelper.invoke(Callable {
             mayCreateBeautyProcess()
@@ -399,12 +468,27 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         })
     }
 
-    private fun processBeautyDoubleInput(videoFrame: VideoFrame): Int{
+    private fun processBeautyTexture(videoFrame: VideoFrame): Int{
         val texBufferHelper = textureBufferHelper ?: return -1
         val buffer = videoFrame.buffer as? TextureBuffer ?: return -1
         val nv21ByteArray = getNV21Buffer(videoFrame) ?: return -1
         val width = buffer.width
         val height = buffer.height
+
+        when(buffer.type){
+            TextureBuffer.Type.OES -> {
+                if(currProcessSourceType != ProcessSourceType.TEXTURE_OES){
+                    LogUtils.i(TAG, "processBeautyAuto >> process source type change old=$currProcessSourceType, new=${ProcessSourceType.TEXTURE_OES}")
+                    currProcessSourceType = ProcessSourceType.TEXTURE_OES
+                }
+            }
+            else -> {
+                if(currProcessSourceType != ProcessSourceType.TEXTURE_2D){
+                    LogUtils.i(TAG, "processBeautyAuto >> process source type change old=$currProcessSourceType, new=${ProcessSourceType.TEXTURE_2D}")
+                    currProcessSourceType = ProcessSourceType.TEXTURE_2D
+                }
+            }
+        }
 
         val matrix =
             RendererCommon.convertMatrixFromAndroidGraphicsMatrix(buffer.transformMatrix)

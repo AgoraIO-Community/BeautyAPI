@@ -58,7 +58,8 @@ data class Config(
     val eventCallback: IEventCallback? = null, // 事件回调
     val captureMode: CaptureMode = CaptureMode.Agora, // 处理模式
     val statsDuration: Long = 1000, // 统计区间
-    val statsEnable: Boolean = false // 是否开启统计
+    val statsEnable: Boolean = false, // 是否开启统计
+    val logPath: String = "" // 日志路径，空不保存日志
 )
 
 data class STHandlers(

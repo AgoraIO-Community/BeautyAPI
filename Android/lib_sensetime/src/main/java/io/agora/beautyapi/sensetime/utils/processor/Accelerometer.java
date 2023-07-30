@@ -140,18 +140,14 @@ public class Accelerometer {
                     if (Math.abs(x)> Math.abs(y)) {
                         if (x > 0) {
                             rotation = CLOCKWISE_ANGLE.Deg0;
-                            //Log.d("ROTATION","CLOCKWISE_ANGLE: Deg0");
                         } else {
                             rotation = CLOCKWISE_ANGLE.Deg180;
-                            //Log.d("ROTATION","CLOCKWISE_ANGLE: Deg180");
                         }
                     } else {
                         if (y > 0) {
                             rotation = CLOCKWISE_ANGLE.Deg90;
-                            //Log.d("ROTATION","CLOCKWISE_ANGLE: Deg90");
                         } else {
                             rotation = CLOCKWISE_ANGLE.Deg270;
-                            //Log.d("ROTATION","CLOCKWISE_ANGLE: Deg270");
                         }
                     }
                 }

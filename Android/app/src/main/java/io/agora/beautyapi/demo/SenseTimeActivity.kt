@@ -169,20 +169,31 @@ class SenseTimeActivity : ComponentActivity() {
         val isCustomCaptureMode =
             intent.getStringExtra(EXTRA_CAPTURE_MODE) == getString(R.string.beauty_capture_custom)
 
-        initBeautySDK()
-        mSenseTimeApi.initialize(
-            Config(
-                mRtcEngine,
-                STHandlers(mobileEffectNative, humanActionNative),
-                captureMode = if (isCustomCaptureMode) CaptureMode.Custom else CaptureMode.Agora,
-                statsEnable = true,
-                eventCallback = object: IEventCallback{
-                    override fun onBeautyStats(stats: BeautyStats) {
-                        Log.d(TAG, "BeautyStats stats = $stats")
+        workerExecutor.execute {
+            initBeautySDK()
+            mSenseTimeApi.initialize(
+                Config(
+                    mRtcEngine,
+                    STHandlers(mobileEffectNative, humanActionNative),
+                    captureMode = if (isCustomCaptureMode) CaptureMode.Custom else CaptureMode.Agora,
+                    statsEnable = true,
+                    logPath = getExternalFilesDir(null)?.absolutePath ?: "",
+                    eventCallback = object: IEventCallback{
+                        override fun onBeautyStats(stats: BeautyStats) {
+                            Log.d(TAG, "BeautyStats stats = $stats")
+                        }
                     }
-                }
+                )
             )
-        )
+            if (beautyEnableDefault) {
+                mSenseTimeApi.enable(true)
+            }
+            runOnUiThread {
+                // render local video
+                mSenseTimeApi.setupLocalVideo(mBinding.localVideoView, Constants.RENDER_MODE_FIT)
+            }
+        }
+
 
         when (intent.getStringExtra(EXTRA_PROCESS_MODE)) {
             getString(R.string.beauty_process_auto) -> mSenseTimeApi.setParameters(
@@ -255,20 +266,15 @@ class SenseTimeActivity : ComponentActivity() {
 
                 override fun getObservedFramePosition() = IVideoFrameObserver.POSITION_POST_CAPTURER
             })
+
+
         }
-        if (beautyEnableDefault) {
-            mSenseTimeApi.enable(true)
-        }
+
 
         // Config RtcEngine
         mRtcEngine.addHandler(mRtcHandler)
         mRtcEngine.setVideoEncoderConfiguration(mVideoEncoderConfiguration)
         mRtcEngine.enableVideo()
-
-
-        // render local video
-        mSenseTimeApi.setupLocalVideo(mBinding.localVideoView, Constants.RENDER_MODE_FIT)
-
 
         // join channel
         mRtcEngine.joinChannel(null, mChannelName, 0, ChannelMediaOptions().apply {

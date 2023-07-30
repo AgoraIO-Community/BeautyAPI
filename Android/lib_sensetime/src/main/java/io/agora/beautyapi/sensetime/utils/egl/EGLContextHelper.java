@@ -3,13 +3,14 @@ package io.agora.beautyapi.sensetime.utils.egl;
 import static android.opengl.EGL14.EGL_CONTEXT_CLIENT_VERSION;
 
 import android.opengl.GLDebugHelper;
-import android.util.Log;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
+
+import io.agora.beautyapi.sensetime.utils.LogUtils;
 
 public class EGLContextHelper {
     private static final String DEBUG_TAG = "EGLContextManager";
@@ -40,7 +41,7 @@ public class EGLContextHelper {
         int[] curGLVersion = new int[2];
         mEGL.eglInitialize(mGLDisplay, curGLVersion);
 
-        Log.i(DEBUG_TAG, "GL version = " + curGLVersion[0] + "."
+        LogUtils.i(DEBUG_TAG, "GL version = " + curGLVersion[0] + "."
                 + curGLVersion[1]);
 
         int[] num_config = new int[1];
@@ -133,7 +134,7 @@ public class EGLContextHelper {
         mEGL.eglDestroyContext(mGLDisplay, mGLContext);
         mEGL.eglTerminate(mGLDisplay);
 
-        Log.i(DEBUG_TAG, "GL Cleaned up");
+        LogUtils.i(DEBUG_TAG, "GL Cleaned up");
     }
 
     public boolean eglMakeCurrent(){

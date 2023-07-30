@@ -4,7 +4,6 @@ import android.annotation.TargetApi
 import android.content.Context
 import android.opengl.GLES20
 import android.os.Build
-import android.util.Log
 import com.softsugar.hardwarebuffer.STMobileHardwareBufferNative
 import com.softsugar.stmobile.STCommonNative
 import com.softsugar.stmobile.STMobileColorConvertNative
@@ -17,6 +16,7 @@ import com.softsugar.stmobile.model.STEffectTexture
 import com.softsugar.stmobile.model.STQuaternion
 import com.softsugar.stmobile.params.STEffectParam
 import com.softsugar.stmobile.sticker_module_types.STCustomEvent
+import io.agora.beautyapi.sensetime.utils.LogUtils
 import io.agora.beautyapi.sensetime.utils.egl.GLCopyHelper
 import io.agora.beautyapi.sensetime.utils.egl.GLFrameBuffer
 import io.agora.beautyapi.sensetime.utils.egl.GLTextureBufferQueue
@@ -87,7 +87,7 @@ class BeautyProcessor : IBeautyProcessor {
     }
 
     override fun triggerScreenTap(isDouble: Boolean) {
-        Log.d(
+        LogUtils.d(
             TAG,
             "changeCustomEvent() called:" + mSTMobileEffectNative.customEventNeeded
         )
@@ -308,7 +308,7 @@ class BeautyProcessor : IBeautyProcessor {
                     System.nanoTime()
                 )
             } else {
-                Log.e(TAG, "The face detector out can not found its texture out!")
+                LogUtils.e(TAG, "The face detector out can not found its texture out!")
             }
         }
         mFaceDetector.enqueue(
@@ -392,8 +392,6 @@ class BeautyProcessor : IBeautyProcessor {
             null,
             null
         )
-        LogUtils.i("processDoubleInput render start")
-        val mStartRenderTime = System.currentTimeMillis()
         mSTMobileEffectNative.setParam(
             STEffectParam.EFFECT_PARAM_USE_INPUT_TIMESTAMP,
             1.0f
@@ -402,15 +400,6 @@ class BeautyProcessor : IBeautyProcessor {
             sTEffectRenderInParam,
             stEffectRenderOutParam,
             false
-        )
-        LogUtils.i(
-            TAG,
-            "render cost time total: %d",
-            System.currentTimeMillis() - mStartRenderTime
-        )
-        CostTimeUtils.printAverage(
-            "CostTimeUtils",
-            System.currentTimeMillis() - mStartRenderTime
         )
 
         if (event == mCustomEvent) {
