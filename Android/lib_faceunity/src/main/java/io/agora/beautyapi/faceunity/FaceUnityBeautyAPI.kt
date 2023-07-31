@@ -143,7 +143,7 @@ interface FaceUnityBeautyAPI {
     /**
      * 更新摄像头配置
      */
-    fun updateCameraConfig(cameraConfig: CameraConfig): Int
+    fun updateCameraConfig(config: CameraConfig): Int
 
     /**
      * 是否是前置摄像头

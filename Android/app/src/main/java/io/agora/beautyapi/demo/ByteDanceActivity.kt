@@ -6,13 +6,16 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.SurfaceView
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import io.agora.base.VideoFrame
 import io.agora.beautyapi.bytedance.BeautyPreset
+import io.agora.beautyapi.bytedance.CameraConfig
 import io.agora.beautyapi.bytedance.CaptureMode
 import io.agora.beautyapi.bytedance.Config
 import io.agora.beautyapi.bytedance.ErrorCode
 import io.agora.beautyapi.bytedance.EventCallback
+import io.agora.beautyapi.bytedance.MirrorMode
 import io.agora.beautyapi.bytedance.createByteDanceBeautyAPI
 import io.agora.beautyapi.bytedance.utils.AssetsResourcesHelper
 import io.agora.beautyapi.bytedance.utils.EffectManager
@@ -158,6 +161,7 @@ class ByteDanceActivity : ComponentActivity() {
             }
         }
     }
+    private var cameraConfig = CameraConfig()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -175,6 +179,7 @@ class ByteDanceActivity : ComponentActivity() {
                 mEffectManager,
                 captureMode = if (isCustomCaptureMode) CaptureMode.Custom else CaptureMode.Agora,
                 statsEnable = true,
+                cameraConfig = cameraConfig,
                 eventCallback = EventCallback(
                     onBeautyStats = {stats ->
                         Log.d(TAG, "BeautyStats stats = $stats")
@@ -321,6 +326,33 @@ class ByteDanceActivity : ComponentActivity() {
             }else{
                 mEffectManager.setSticker(null)
             }
+        }
+        mBinding.ivMirror.setOnClickListener {
+            val isFront = mByteDanceApi.isFrontCamera()
+            if(isFront){
+                cameraConfig = CameraConfig(
+                    frontMirror = when (cameraConfig.frontMirror) {
+                        MirrorMode.MIRROR_LOCAL_REMOTE -> MirrorMode.MIRROR_LOCAL_ONLY
+                        MirrorMode.MIRROR_LOCAL_ONLY -> MirrorMode.MIRROR_REMOTE_ONLY
+                        MirrorMode.MIRROR_REMOTE_ONLY -> MirrorMode.MIRROR_NONE
+                        MirrorMode.MIRROR_NONE -> MirrorMode.MIRROR_LOCAL_REMOTE
+                    },
+                    backMirror = cameraConfig.backMirror
+                )
+                Toast.makeText(this, "frontMirror=${cameraConfig.frontMirror}", Toast.LENGTH_SHORT).show()
+            } else {
+                cameraConfig =CameraConfig(
+                    frontMirror = cameraConfig.frontMirror,
+                    backMirror = when (cameraConfig.backMirror) {
+                        MirrorMode.MIRROR_NONE -> MirrorMode.MIRROR_LOCAL_REMOTE
+                        MirrorMode.MIRROR_LOCAL_REMOTE -> MirrorMode.MIRROR_LOCAL_ONLY
+                        MirrorMode.MIRROR_LOCAL_ONLY -> MirrorMode.MIRROR_REMOTE_ONLY
+                        MirrorMode.MIRROR_REMOTE_ONLY -> MirrorMode.MIRROR_NONE
+                    }
+                )
+                Toast.makeText(this, "backMirror=${cameraConfig.backMirror}", Toast.LENGTH_SHORT).show()
+            }
+            mByteDanceApi.updateCameraConfig(cameraConfig)
         }
     }
 

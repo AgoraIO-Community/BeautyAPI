@@ -61,11 +61,15 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
     private var config: Config? = null
     private var enable: Boolean = false
     private var isReleased: Boolean = false
-    private var shouldMirror = true
+    private var captureMirror = true
+    private var renderMirror = true
     private var statsHelper: StatsHelper? = null
     private var skipFrame = 0
     private val workerThreadExecutor = Executors.newSingleThreadExecutor()
     private var currBeautyProcessType = BeautyProcessType.UNKNOWN
+    private var isFrontCamera = true
+    private var cameraConfig = CameraConfig()
+    private var localVideoRenderMode = Constants.RENDER_MODE_HIDDEN
 
     private enum class BeautyProcessType{
         UNKNOWN, TEXTURE_OES, TEXTURE_2D, I420
@@ -235,6 +239,14 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
         }
     }
 
+    override fun updateCameraConfig(config: CameraConfig): Int {
+        LogUtils.i(TAG, "updateCameraConfig >> oldCameraConfig=$cameraConfig, newCameraConfig=$config")
+        cameraConfig = CameraConfig(config.frontMirror, config.backMirror)
+        return ErrorCode.ERROR_OK.value
+    }
+
+    override fun isFrontCamera() = isFrontCamera
+
     override fun release(): Int {
         val conf = config
         if(conf == null){
@@ -268,24 +280,66 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
     }
 
     private fun processBeauty(videoFrame: VideoFrame): Boolean {
-        if (!enable || isReleased) {
-            if (isReleased) {
-                LogUtils.e(TAG, "processBeauty >> The beauty api has been released!")
+        if (isReleased) {
+            LogUtils.e(TAG, "processBeauty >> The beauty api has been released!")
+            return false
+        }
+
+        val cMirror =
+            if (isFrontCamera) {
+                when (cameraConfig.frontMirror) {
+                    MirrorMode.MIRROR_LOCAL_REMOTE -> true
+                    MirrorMode.MIRROR_LOCAL_ONLY -> false
+                    MirrorMode.MIRROR_REMOTE_ONLY -> true
+                    MirrorMode.MIRROR_NONE -> false
+                }
+            } else {
+                when (cameraConfig.backMirror) {
+                    MirrorMode.MIRROR_LOCAL_REMOTE -> true
+                    MirrorMode.MIRROR_LOCAL_ONLY -> false
+                    MirrorMode.MIRROR_REMOTE_ONLY -> true
+                    MirrorMode.MIRROR_NONE -> false
+                }
             }
-            val isFront = videoFrame.sourceType == VideoFrame.SourceType.kFrontCamera
-            if (shouldMirror != isFront) {
-                shouldMirror = isFront
-                return false
+        val rMirror =
+            if (isFrontCamera) {
+                when (cameraConfig.frontMirror) {
+                    MirrorMode.MIRROR_LOCAL_REMOTE -> false
+                    MirrorMode.MIRROR_LOCAL_ONLY -> true
+                    MirrorMode.MIRROR_REMOTE_ONLY -> true
+                    MirrorMode.MIRROR_NONE -> false
+                }
+            } else {
+                when (cameraConfig.backMirror) {
+                    MirrorMode.MIRROR_LOCAL_REMOTE -> false
+                    MirrorMode.MIRROR_LOCAL_ONLY -> true
+                    MirrorMode.MIRROR_REMOTE_ONLY -> true
+                    MirrorMode.MIRROR_NONE -> false
+                }
             }
+        if (captureMirror != cMirror || renderMirror != rMirror) {
+            LogUtils.w(TAG, "processBeauty >> enable=$enable, captureMirror=$captureMirror->$cMirror, renderMirror=$renderMirror->$rMirror")
+            captureMirror = cMirror
+            if(renderMirror != rMirror){
+                renderMirror = rMirror
+                config?.rtcEngine?.setLocalRenderMode(
+                    localVideoRenderMode,
+                    if(renderMirror) Constants.VIDEO_MIRROR_MODE_ENABLED else Constants.VIDEO_MIRROR_MODE_DISABLED
+                )
+            }
+            skipFrame = 2
+            return false
+        }
+
+        val oldIsFrontCamera = isFrontCamera
+        isFrontCamera = videoFrame.sourceType == VideoFrame.SourceType.kFrontCamera
+        if(oldIsFrontCamera != isFrontCamera){
+            LogUtils.w(TAG, "processBeauty >> oldIsFrontCamera=$oldIsFrontCamera, isFrontCamera=$isFrontCamera")
+            return false
+        }
+
+        if(!enable){
             return true
-        }
-        if (shouldMirror) {
-            shouldMirror = false
-            return false
-        }
-        if (skipFrame > 0) {
-            skipFrame--;
-            return false
         }
 
         if (textureBufferHelper == null) {
@@ -295,7 +349,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
             )?.apply {
                 invoke {
                     val effectManager = config?.effectManager ?: return@invoke
-                    effectManager.init();
+                    effectManager.init()
                     imageUtils =
                         ImageUtil()
                     agoraImageHelper = AgoraImageHelper()
@@ -316,9 +370,13 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
             statsHelper?.once(costTime)
         }
 
-
         if (processTexId < 0) {
             LogUtils.w(TAG, "processBeauty >> processTexId < 0")
+            return false
+        }
+
+        if (skipFrame > 0) {
+            skipFrame--
             return false
         }
 
@@ -372,13 +430,15 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
 
         return texBufferHelper.invoke(Callable {
             val effectManager = config?.effectManager ?: return@Callable -1
+            var mirror = isFront
+            if((isFrontCamera && !captureMirror) || (!isFrontCamera && captureMirror)){
+                mirror = !mirror
+            }
 
-
-            // 根据Matrix反算纹理的真实宽高
             val renderMatrix = Matrix()
             renderMatrix.preTranslate(0.5f, 0.5f)
             renderMatrix.preRotate(videoFrame.rotation.toFloat())
-            renderMatrix.preScale(if (isFront) -1.0f else 1.0f, -1.0f)
+            renderMatrix.preScale(if (mirror) -1.0f else 1.0f, -1.0f)
             renderMatrix.preTranslate(-0.5f, -0.5f)
             val finalMatrix = Matrix(buffer.transformMatrix)
             finalMatrix.preConcat(renderMatrix)
@@ -434,10 +494,15 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
             val ySize = width * height
             val yBuffer = ByteBuffer.allocateDirect(ySize)
             yBuffer.put(nv21Buffer, 0, ySize)
-            yBuffer.position(0);
+            yBuffer.position(0)
             val vuBuffer = ByteBuffer.allocateDirect(ySize / 2)
             vuBuffer.put(nv21Buffer, ySize, ySize / 2)
-            vuBuffer.position(0);
+            vuBuffer.position(0)
+
+            var mirror = isFront
+            if((isFrontCamera && !captureMirror) || (!isFrontCamera && captureMirror)){
+                mirror = !mirror
+            }
 
             val dstTexture = imageUtils.prepareTexture(width, height)
             val srcTexture = imageUtils.transferYUVToTexture(
@@ -447,7 +512,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
                 width,
                 ImageUtil.Transition().apply {
                     rotate(videoFrame.rotation.toFloat())
-                    flip(false, isFront)
+                    flip(false, mirror)
                 }
             )
             effectManager.setCameraPosition(isFront)
@@ -494,23 +559,6 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
         return nv21ByteArray
     }
 
-    private fun getI420Buffer(videoFrame: VideoFrame, rotate: Boolean = false): ByteArray? {
-        val buffer = videoFrame.buffer
-        val i420Buffer = buffer as? I420Buffer ?: buffer.toI420() ?: return null
-        val width = i420Buffer.width
-        val height = i420Buffer.height
-        val size = (width * height * 3.0f / 2.0f + 0.5f).toInt()
-
-        val byteArray = ByteArray(size)
-        i420Buffer.dataY.get(byteArray, 0, width * height)
-        i420Buffer.dataV.get(byteArray, width * height, width * height / 4)
-        i420Buffer.dataU.get(byteArray, width * height + width * height / 4, width * height / 4)
-        if (buffer !is I420Buffer) {
-            i420Buffer.release()
-        }
-        return byteArray
-    }
-
     // IVideoFrameObserver implements
 
     override fun onCaptureVideoFrame(sourceType: Int, videoFrame: VideoFrame?): Boolean {
@@ -534,7 +582,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
 
     override fun getRotationApplied() = false
 
-    override fun getMirrorApplied() = shouldMirror
+    override fun getMirrorApplied() = captureMirror && !enable
 
     override fun getObservedFramePosition() = IVideoFrameObserver.POSITION_POST_CAPTURER
 
