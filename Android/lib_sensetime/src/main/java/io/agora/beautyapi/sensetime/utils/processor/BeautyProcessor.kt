@@ -184,6 +184,7 @@ class BeautyProcessor : IBeautyProcessor {
                 width,
                 height,
                 input.isFrontCamera,
+                input.isMirror,
                 input.cameraOrientation,
                 input.timestamp,
             )
@@ -234,6 +235,7 @@ class BeautyProcessor : IBeautyProcessor {
                 input.width,
                 input.height,
                 input.isFrontCamera,
+                input.isMirror,
                 input.cameraOrientation,
                 input.timestamp,
             )
@@ -265,6 +267,7 @@ class BeautyProcessor : IBeautyProcessor {
                     input.height,
                     input.cameraOrientation,
                     input.isFrontCamera,
+                    input.isMirror,
                     input.textureMatrix
                 )
             )
@@ -282,6 +285,7 @@ class BeautyProcessor : IBeautyProcessor {
                     input.height,
                     input.cameraOrientation,
                     input.isFrontCamera,
+                    input.isMirror,
                     input.textureMatrix
                 )
             )
@@ -318,6 +322,7 @@ class BeautyProcessor : IBeautyProcessor {
                 input.width,
                 input.height,
                 input.isFrontCamera,
+                input.isMirror,
                 input.cameraOrientation
             )
         )

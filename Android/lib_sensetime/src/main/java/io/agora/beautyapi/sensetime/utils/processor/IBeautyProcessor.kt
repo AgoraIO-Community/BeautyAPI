@@ -16,6 +16,7 @@ data class InputInfo(
     val width: Int,
     val height: Int,
     val isFrontCamera: Boolean,
+    val isMirror: Boolean,
     val cameraOrientation: Int,
     val timestamp: Long,
 

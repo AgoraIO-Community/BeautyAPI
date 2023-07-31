@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.SurfaceView
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.softsugar.stmobile.STCommonNative
 import com.softsugar.stmobile.STMobileAuthentificationNative
@@ -19,10 +20,12 @@ import io.agora.beautyapi.demo.databinding.BeautyActivityBinding
 import io.agora.beautyapi.demo.utils.ReflectUtils
 import io.agora.beautyapi.sensetime.BeautyPreset
 import io.agora.beautyapi.sensetime.BeautyStats
+import io.agora.beautyapi.sensetime.CameraConfig
 import io.agora.beautyapi.sensetime.CaptureMode
 import io.agora.beautyapi.sensetime.Config
 import io.agora.beautyapi.sensetime.ErrorCode
 import io.agora.beautyapi.sensetime.IEventCallback
+import io.agora.beautyapi.sensetime.MirrorMode
 import io.agora.beautyapi.sensetime.STHandlers
 import io.agora.beautyapi.sensetime.createSenseTimeBeautyAPI
 import io.agora.rtc2.ChannelMediaOptions
@@ -36,7 +39,6 @@ import io.agora.rtc2.video.VideoCanvas
 import io.agora.rtc2.video.VideoEncoderConfiguration
 import io.agora.rtc2.video.VideoEncoderConfiguration.FRAME_RATE
 import java.io.File
-import java.util.concurrent.Executors
 
 
 class SenseTimeActivity : ComponentActivity() {
@@ -158,7 +160,7 @@ class SenseTimeActivity : ComponentActivity() {
             }
         }
     }
-    private val workerExecutor = Executors.newSingleThreadExecutor()
+    private var cameraConfig = CameraConfig()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -169,30 +171,27 @@ class SenseTimeActivity : ComponentActivity() {
         val isCustomCaptureMode =
             intent.getStringExtra(EXTRA_CAPTURE_MODE) == getString(R.string.beauty_capture_custom)
 
-        workerExecutor.execute {
-            initBeautySDK()
-            mSenseTimeApi.initialize(
-                Config(
-                    application,
-                    mRtcEngine,
-                    STHandlers(mobileEffectNative, humanActionNative),
-                    captureMode = if (isCustomCaptureMode) CaptureMode.Custom else CaptureMode.Agora,
-                    statsEnable = true,
-                    eventCallback = object: IEventCallback{
-                        override fun onBeautyStats(stats: BeautyStats) {
-                            Log.d(TAG, "BeautyStats stats = $stats")
-                        }
+        initBeautySDK()
+        mSenseTimeApi.initialize(
+            Config(
+                application,
+                mRtcEngine,
+                STHandlers(mobileEffectNative, humanActionNative),
+                captureMode = if (isCustomCaptureMode) CaptureMode.Custom else CaptureMode.Agora,
+                statsEnable = true,
+                eventCallback = object: IEventCallback{
+                    override fun onBeautyStats(stats: BeautyStats) {
+                        Log.d(TAG, "BeautyStats stats = $stats")
                     }
-                )
+                }
             )
-            if (beautyEnableDefault) {
-                mSenseTimeApi.enable(true)
-            }
-            runOnUiThread {
-                // render local video
-                mSenseTimeApi.setupLocalVideo(mBinding.localVideoView, Constants.RENDER_MODE_FIT)
-            }
+        )
+        if (beautyEnableDefault) {
+            mSenseTimeApi.enable(true)
         }
+        // render local video
+        mSenseTimeApi.setupLocalVideo(mBinding.localVideoView, Constants.RENDER_MODE_FIT)
+
 
 
         when (intent.getStringExtra(EXTRA_PROCESS_MODE)) {
@@ -317,11 +316,37 @@ class SenseTimeActivity : ComponentActivity() {
             mBinding.ctvSticker.isChecked = enable
             setStickerItem("sticker_face_shape" + File.separator + "ShangBanLe.zip", enable)
         }
+        mBinding.ivMirror.setOnClickListener {
+            val isFront = mSenseTimeApi.isFrontCamera()
+            if(isFront){
+                cameraConfig = CameraConfig(
+                    frontMirror = when(cameraConfig.frontMirror){
+                        MirrorMode.MIRROR_LOCAL_REMOTE -> MirrorMode.MIRROR_LOCAL_ONLY
+                        MirrorMode.MIRROR_LOCAL_ONLY -> MirrorMode.MIRROR_REMOTE_ONLY
+                        MirrorMode.MIRROR_REMOTE_ONLY -> MirrorMode.MIRROR_NONE
+                        MirrorMode.MIRROR_NONE -> MirrorMode.MIRROR_LOCAL_REMOTE
+                    },
+                    backMirror = cameraConfig.backMirror
+                )
+                Toast.makeText(this, "frontMirror=${cameraConfig.frontMirror}", Toast.LENGTH_SHORT).show()
+            } else {
+                cameraConfig = CameraConfig(
+                    frontMirror = cameraConfig.frontMirror,
+                    backMirror = when(cameraConfig.backMirror){
+                        MirrorMode.MIRROR_NONE -> MirrorMode.MIRROR_LOCAL_REMOTE
+                        MirrorMode.MIRROR_LOCAL_REMOTE -> MirrorMode.MIRROR_LOCAL_ONLY
+                        MirrorMode.MIRROR_LOCAL_ONLY -> MirrorMode.MIRROR_REMOTE_ONLY
+                        MirrorMode.MIRROR_REMOTE_ONLY -> MirrorMode.MIRROR_NONE
+                    }
+                )
+                Toast.makeText(this, "backMirror=${cameraConfig.backMirror}", Toast.LENGTH_SHORT).show()
+            }
+            mSenseTimeApi.updateCameraConfig(cameraConfig)
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        workerExecutor.shutdown()
         mRtcEngine.leaveChannel()
         mSenseTimeApi.release()
         unInitBeautySDK()

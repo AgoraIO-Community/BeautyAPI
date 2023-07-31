@@ -145,12 +145,16 @@ class FaceDetector(
             90, 270 -> Size(iN.height, iN.width)
             else -> Size(iN.width, iN.height)
         }
+        var mirror = iN.isFront
+        if(iN.isMirror){
+            mirror = !mirror
+        }
         STHumanAction.nativeHumanActionRotateAndMirror(
             humanActionNative,
             humanActionNative.nativeHumanActionResultPtr,
             rotatedSize.width,
             rotatedSize.height,
-            if (iN.isFront) Camera.CameraInfo.CAMERA_FACING_FRONT else Camera.CameraInfo.CAMERA_FACING_BACK,
+            if (mirror) Camera.CameraInfo.CAMERA_FACING_FRONT else Camera.CameraInfo.CAMERA_FACING_BACK,
             iN.orientation,
             deviceOrientation
         )
@@ -191,6 +195,7 @@ class FaceDetector(
         val width: Int,
         val height: Int,
         val isFront: Boolean,
+        val isMirror: Boolean,
         val orientation: Int,
     )
 

@@ -64,11 +64,15 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
     private var enable: Boolean = false
     private var enableChange: Boolean = false
     private var isReleased: Boolean = false
-    private var shouldMirror = true
+    private var captureMirror = true
+    private var renderMirror = false
     private var statsHelper: StatsHelper? = null
     private var skipFrame = 0
     private val workerThreadExecutor = Executors.newSingleThreadExecutor()
     private var beautyProcessor: IBeautyProcessor? = null
+    private var isFrontCamera = true
+    private var cameraConfig = CameraConfig()
+    private var localVideoRenderMode = Constants.RENDER_MODE_HIDDEN
 
     private enum class ProcessSourceType{
         UNKNOWN,
@@ -92,6 +96,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         statsHelper = StatsHelper(config.statsDuration) {
             this.config?.eventCallback?.onBeautyStats(it)
         }
+        cameraConfig = CameraConfig(config.cameraConfig.frontMirror, config.cameraConfig.backMirror)
         LogUtils.setLogFilePath(config.context.getExternalFilesDir("")?.absolutePath ?: "")
         LogUtils.i(TAG, "initialize >> config = $config")
         LogUtils.i(TAG, "initialize >> beauty api version=$VERSION, beauty sdk version=${STCommonNative.getVersion()}")
@@ -128,6 +133,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
             return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
         }
         LogUtils.i(TAG, "setupLocalVideo >> view=$view, renderMode=$renderMode")
+        localVideoRenderMode = renderMode
         if(view is TextureView || view is SurfaceView){
             val canvas = VideoCanvas(view, renderMode, 0)
             canvas.mirrorMode = Constants.VIDEO_MIRROR_MODE_DISABLED
@@ -161,7 +167,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         return ErrorCode.ERROR_FRAME_SKIPPED.value
     }
 
-    override fun setBeautyPreset(preset: BeautyPreset): Int {
+    override fun  setBeautyPreset(preset: BeautyPreset): Int {
         val effectNative = config?.stHandlers?.effectNative
         if(effectNative == null){
             LogUtils.e(TAG, "setBeautyPreset >> The beauty api has not been initialized!")
@@ -281,6 +287,14 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         return ErrorCode.ERROR_OK.value
     }
 
+    override fun updateCameraConfig(config: CameraConfig): Int {
+        LogUtils.i(TAG, "updateCameraConfig >> oldCameraConfig=$cameraConfig, newCameraConfig=$config")
+        cameraConfig = CameraConfig(config.frontMirror, config.backMirror)
+        return ErrorCode.ERROR_OK.value
+    }
+
+    override fun isFrontCamera() = isFrontCamera
+
     override fun setParameters(key: String, value: String) {
         when(key){
             "beauty_mode" -> beautyMode = value.toInt()
@@ -313,31 +327,80 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
     }
 
     private fun processBeauty(videoFrame: VideoFrame): Boolean {
-        if (!enable || isReleased) {
-            if (isReleased) {
-                LogUtils.e(TAG, "processBeauty >> The beauty api has been released!")
-            }
-
-            val isFront = videoFrame.sourceType == SourceType.kFrontCamera
-            if (shouldMirror != isFront) {
-                shouldMirror = isFront
-                return false
-            }
-            return true
-        }
-        if (shouldMirror) {
-            shouldMirror = false
+        if (isReleased) {
+            LogUtils.e(TAG, "processBeauty >> The beauty api has been released!")
             return false
         }
+
+
+        val cMirror =
+            if (isFrontCamera) {
+                when (cameraConfig.frontMirror) {
+                    MirrorMode.MIRROR_LOCAL_REMOTE -> true
+                    MirrorMode.MIRROR_LOCAL_ONLY -> false
+                    MirrorMode.MIRROR_REMOTE_ONLY -> true
+                    MirrorMode.MIRROR_NONE -> false
+                }
+            } else {
+                when (cameraConfig.backMirror) {
+                    MirrorMode.MIRROR_LOCAL_REMOTE -> true
+                    MirrorMode.MIRROR_LOCAL_ONLY -> false
+                    MirrorMode.MIRROR_REMOTE_ONLY -> true
+                    MirrorMode.MIRROR_NONE -> false
+                }
+            }
+        val rMirror =
+            if (isFrontCamera) {
+                when (cameraConfig.frontMirror) {
+                    MirrorMode.MIRROR_LOCAL_REMOTE -> false
+                    MirrorMode.MIRROR_LOCAL_ONLY -> true
+                    MirrorMode.MIRROR_REMOTE_ONLY -> true
+                    MirrorMode.MIRROR_NONE -> false
+                }
+            } else {
+                when (cameraConfig.backMirror) {
+                    MirrorMode.MIRROR_LOCAL_REMOTE -> false
+                    MirrorMode.MIRROR_LOCAL_ONLY -> true
+                    MirrorMode.MIRROR_REMOTE_ONLY -> true
+                    MirrorMode.MIRROR_NONE -> false
+                }
+            }
+        if (captureMirror != cMirror || renderMirror != rMirror) {
+            LogUtils.w(TAG, "processBeauty >> enable=$enable, captureMirror=$captureMirror->$cMirror, renderMirror=$renderMirror->$rMirror")
+            captureMirror = cMirror
+            if(renderMirror != rMirror){
+                renderMirror = rMirror
+                config?.rtcEngine?.setLocalRenderMode(
+                    localVideoRenderMode,
+                    if(renderMirror) Constants.VIDEO_MIRROR_MODE_ENABLED else Constants.VIDEO_MIRROR_MODE_DISABLED
+                )
+            }
+            beautyProcessor?.reset()
+            return false
+        }
+
+        val oldIsFrontCamera = isFrontCamera
+        isFrontCamera = videoFrame.sourceType == SourceType.kFrontCamera
+        if(oldIsFrontCamera != isFrontCamera){
+            LogUtils.w(TAG, "processBeauty >> oldIsFrontCamera=$oldIsFrontCamera, isFrontCamera=$isFrontCamera")
+            return false
+        }
+
         if(skipFrame > 0){
             skipFrame --
+            LogUtils.w(TAG, "processBeauty >> skipFrame=$skipFrame")
             return false
         }
+
         if(enableChange){
             enableChange = false
             textureBufferHelper?.invoke {
                 beautyProcessor?.reset()
             }
+        }
+
+        if(!enable){
+            return false
         }
 
         if (textureBufferHelper == null) {
@@ -426,7 +489,8 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
                     width = width,
                     height = height,
                     cameraOrientation = videoFrame.rotation,
-                    isFrontCamera = videoFrame.sourceType == SourceType.kFrontCamera,
+                    isFrontCamera = isFrontCamera,
+                    isMirror = (isFrontCamera && !captureMirror) || (!isFrontCamera && captureMirror),
                     timestamp = videoFrame.timestampNs,
                     textureId = buffer.textureId,
                     textureType = when (buffer.type) {
@@ -459,6 +523,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
                     height = height,
                     cameraOrientation = videoFrame.rotation,
                     isFrontCamera = videoFrame.sourceType == SourceType.kFrontCamera,
+                    isMirror = (isFrontCamera && !captureMirror) || (!isFrontCamera && captureMirror),
                     timestamp = videoFrame.timestampNs,
                     bytes = nv21ByteArray,
                     bytesType = STCommonNative.ST_PIX_FMT_NV21
@@ -499,6 +564,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
                     height = height,
                     cameraOrientation = videoFrame.rotation,
                     isFrontCamera = videoFrame.sourceType == SourceType.kFrontCamera,
+                    isMirror = (isFrontCamera && !captureMirror) || (!isFrontCamera && captureMirror),
                     timestamp = videoFrame.timestampNs,
                     bytes = nv21ByteArray,
                     bytesType = STCommonNative.ST_PIX_FMT_NV21,
@@ -550,7 +616,10 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         return processBeauty(videoFrame)
     }
 
-    override fun onPreEncodeVideoFrame(sourceType: Int, videoFrame: VideoFrame?) = false
+    override fun onPreEncodeVideoFrame(sourceType: Int, videoFrame: VideoFrame?) : Boolean {
+
+        return true
+    }
 
     override fun onMediaPlayerVideoFrame(videoFrame: VideoFrame?, mediaPlayerId: Int) = false
 
@@ -566,7 +635,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
 
     override fun getRotationApplied() = false
 
-    override fun getMirrorApplied() = shouldMirror
+    override fun getMirrorApplied() = captureMirror && !enable
 
     override fun getObservedFramePosition() = IVideoFrameObserver.POSITION_POST_CAPTURER
 
