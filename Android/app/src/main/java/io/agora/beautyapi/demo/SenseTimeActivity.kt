@@ -213,29 +213,14 @@ class SenseTimeActivity : ComponentActivity() {
 
         if (isCustomCaptureMode) {
             mRtcEngine.registerVideoFrameObserver(object : IVideoFrameObserver {
-                private var shouldMirror = true
 
                 override fun onCaptureVideoFrame(
                     sourceType: Int,
                     videoFrame: VideoFrame?
                 ) : Boolean {
-                    when(mSenseTimeApi.onFrame(videoFrame!!)){
-                        ErrorCode.ERROR_OK.value -> {
-                            shouldMirror = false
-                            return true
-                        }
-                        ErrorCode.ERROR_FRAME_SKIPPED.value -> {
-                            shouldMirror = false
-                            return false
-                        }
-                        else -> {
-                            val mirror = videoFrame.sourceType == VideoFrame.SourceType.kFrontCamera
-                            if(shouldMirror != mirror){
-                                shouldMirror = mirror
-                                return false
-                            }
-                            return true
-                        }
+                    return when(mSenseTimeApi.onFrame(videoFrame!!)){
+                        ErrorCode.ERROR_FRAME_SKIPPED.value -> false
+                        else -> true
                     }
                 }
 
@@ -261,7 +246,7 @@ class SenseTimeActivity : ComponentActivity() {
 
                 override fun getRotationApplied() = false
 
-                override fun getMirrorApplied() = shouldMirror
+                override fun getMirrorApplied() = mSenseTimeApi.getMirrorApplied()
 
                 override fun getObservedFramePosition() = IVideoFrameObserver.POSITION_POST_CAPTURER
             })

@@ -160,6 +160,8 @@ interface ByteDanceBeautyAPI {
      */
     fun isFrontCamera(): Boolean
 
+    fun getMirrorApplied(): Boolean
+
     /**
      * 私参配置，用于不对外api的调用，多用于测试
      */
