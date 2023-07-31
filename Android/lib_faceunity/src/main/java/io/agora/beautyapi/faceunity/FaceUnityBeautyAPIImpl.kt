@@ -69,9 +69,9 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
     private var enable: Boolean = false
     private var enableChange: Boolean = false
     private var isReleased: Boolean = false
-    private var shouldMirror = false
+    private var captureMirror = false
+    private var renderMirror = false
     private val identityMatrix =  Matrix()
-    private var mCameraIsFront = true
     private var mTextureProcessHelper: TextureProcessHelper? = null
     private var statsHelper: StatsHelper? = null
     private var skipFrame = 0
@@ -81,12 +81,13 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         TEXTURE_2D,
         TEXTURE_OES_ASYNC,
         TEXTURE_2D_ASYNC,
-        I420,
-        TEXTURE_OES_I420,
-        TEXTURE_2D_I420,
+        I420
     }
     private var currProcessSourceType = ProcessSourceType.UNKNOWN
     private var deviceLevel = FuDeviceUtils.DEVICEINFO_UNKNOWN
+    private var isFrontCamera = true
+    private var cameraConfig = CameraConfig()
+    private var localVideoRenderMode = Constants.RENDER_MODE_HIDDEN
 
     override fun initialize(config: Config): Int {
         if (this.config != null) {
@@ -135,6 +136,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
         }
         LogUtils.i(TAG, "setupLocalVideo >> view=$view, renderMode=$renderMode")
+        localVideoRenderMode = renderMode
         if (view is TextureView || view is SurfaceView) {
             val canvas = VideoCanvas(view, renderMode, 0)
             canvas.mirrorMode = Constants.VIDEO_MIRROR_MODE_DISABLED
@@ -167,6 +169,14 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         LogUtils.i(TAG, "onFrame >> Skip Frame.")
         return ErrorCode.ERROR_FRAME_SKIPPED.value
     }
+
+    override fun updateCameraConfig(config: CameraConfig): Int {
+        LogUtils.i(TAG, "updateCameraConfig >> oldCameraConfig=$cameraConfig, newCameraConfig=$config")
+        cameraConfig = CameraConfig(config.frontMirror, config.backMirror)
+        return ErrorCode.ERROR_OK.value
+    }
+
+    override fun isFrontCamera() = isFrontCamera
 
     override fun setParameters(key: String, value: String) {
         when(key){
@@ -275,26 +285,78 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
     }
 
     private fun processBeauty(videoFrame: VideoFrame): Boolean {
-        if (!enable || isReleased) {
-            if (isReleased) {
-                LogUtils.e(TAG, "processBeauty >> The beauty api has been released!")
-            }
-            val isFront = videoFrame.sourceType == SourceType.kFrontCamera
-            if (shouldMirror != isFront) {
-                shouldMirror = isFront
-                return false
-            }
-            return true
-        }
-        if (shouldMirror) {
-            shouldMirror = false
-            return false
-        }
-        if(skipFrame > 0){
-            skipFrame --
+        if (isReleased) {
+            LogUtils.e(TAG, "processBeauty >> The beauty api has been released!")
             return false
         }
 
+        val cMirror =
+            if (isFrontCamera) {
+                when (cameraConfig.frontMirror) {
+                    MirrorMode.MIRROR_LOCAL_REMOTE -> true
+                    MirrorMode.MIRROR_LOCAL_ONLY -> false
+                    MirrorMode.MIRROR_REMOTE_ONLY -> true
+                    MirrorMode.MIRROR_NONE -> false
+                }
+            } else {
+                when (cameraConfig.backMirror) {
+                    MirrorMode.MIRROR_LOCAL_REMOTE -> true
+                    MirrorMode.MIRROR_LOCAL_ONLY -> false
+                    MirrorMode.MIRROR_REMOTE_ONLY -> true
+                    MirrorMode.MIRROR_NONE -> false
+                }
+            }
+        val rMirror =
+            if (isFrontCamera) {
+                when (cameraConfig.frontMirror) {
+                    MirrorMode.MIRROR_LOCAL_REMOTE -> false
+                    MirrorMode.MIRROR_LOCAL_ONLY -> true
+                    MirrorMode.MIRROR_REMOTE_ONLY -> true
+                    MirrorMode.MIRROR_NONE -> false
+                }
+            } else {
+                when (cameraConfig.backMirror) {
+                    MirrorMode.MIRROR_LOCAL_REMOTE -> false
+                    MirrorMode.MIRROR_LOCAL_ONLY -> true
+                    MirrorMode.MIRROR_REMOTE_ONLY -> true
+                    MirrorMode.MIRROR_NONE -> false
+                }
+            }
+        if (captureMirror != cMirror || renderMirror != rMirror) {
+            LogUtils.w(TAG, "processBeauty >> enable=$enable, captureMirror=$captureMirror->$cMirror, renderMirror=$renderMirror->$rMirror")
+            captureMirror = cMirror
+            if(renderMirror != rMirror){
+                renderMirror = rMirror
+                config?.rtcEngine?.setLocalRenderMode(
+                    localVideoRenderMode,
+                    if(renderMirror) Constants.VIDEO_MIRROR_MODE_ENABLED else Constants.VIDEO_MIRROR_MODE_DISABLED
+                )
+            }
+            textureBufferHelper?.invoke {
+                mTextureProcessHelper?.reset()
+            }
+            skipFrame = 2
+            return false
+        }
+
+        val oldIsFrontCamera = isFrontCamera
+        isFrontCamera = videoFrame.sourceType == SourceType.kFrontCamera
+        if(oldIsFrontCamera != isFrontCamera){
+            LogUtils.w(TAG, "processBeauty >> oldIsFrontCamera=$oldIsFrontCamera, isFrontCamera=$isFrontCamera")
+            return false
+        }
+
+        if(enableChange){
+            enableChange = false
+            textureBufferHelper?.invoke {
+                mTextureProcessHelper?.reset()
+            }
+            return false
+        }
+
+        if(!enable){
+            return true
+        }
 
         if (textureBufferHelper == null) {
             textureBufferHelper = TextureBufferHelper.create(
@@ -311,22 +373,19 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             else -> processBeautyAuto(videoFrame)
         }
 
-        if (enableChange) {
-            enableChange = false
-        }
         if(config?.statsEnable == true){
             val costTime = System.currentTimeMillis() - startTime
             statsHelper?.once(costTime)
         }
 
-        val isFront = videoFrame.sourceType == SourceType.kFrontCamera
-        if(mCameraIsFront != isFront){
-            mCameraIsFront = isFront
+        if (processTexId <= 0) {
+            LogUtils.w(TAG, "processBeauty >> processTexId <= 0")
             return false
         }
 
-        if (processTexId <= 0) {
-            LogUtils.w(TAG, "processBeauty >> processTexId < 0")
+        if(skipFrame > 0){
+            skipFrame --
+            LogUtils.w(TAG, "processBeauty >> skipFrame=$skipFrame")
             return false
         }
 
@@ -353,13 +412,6 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
     private fun processBeautySingleTextureAsync(videoFrame: VideoFrame): Int {
         val texBufferHelper = textureBufferHelper ?: return -1
         val textureBuffer = videoFrame.buffer as? TextureBuffer ?: return -1
-        if(enableChange){
-            enableChange = false
-            texBufferHelper.invoke {
-                mTextureProcessHelper?.reset()
-            }
-            return -1
-        }
 
         when(textureBuffer.type){
             TextureBuffer.Type.OES -> {
@@ -426,7 +478,8 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
                 textureBuffer.height,
                 videoFrame.rotation,
                 textureBuffer.transformMatrixArray,
-                videoFrame.sourceType == SourceType.kFrontCamera
+                isFrontCamera,
+                (isFrontCamera && !captureMirror) || (!isFrontCamera && captureMirror)
             )
         }
     }
@@ -438,6 +491,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         val width = buffer.width
         val height = buffer.height
         val isFront = videoFrame.sourceType == SourceType.kFrontCamera
+        val mirror = (isFrontCamera && !captureMirror) || (!isFrontCamera && captureMirror)
 
         if(currProcessSourceType != ProcessSourceType.I420){
             LogUtils.i(TAG, "processBeauty >> process source type change old=$currProcessSourceType, new=${ProcessSourceType.I420}")
@@ -457,13 +511,13 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             input.renderConfig.let {
                 if (isFront) {
                     it.cameraFacing = CameraFacingEnum.CAMERA_FRONT
-                    it.inputBufferMatrix = FUTransformMatrixEnum.CCROT90_FLIPHORIZONTAL
-                    it.inputTextureMatrix = FUTransformMatrixEnum.CCROT90_FLIPHORIZONTAL
+                    it.inputBufferMatrix = if(mirror) FUTransformMatrixEnum.CCROT90 else FUTransformMatrixEnum.CCROT90_FLIPHORIZONTAL
+                    it.inputTextureMatrix = if(mirror) FUTransformMatrixEnum.CCROT90 else FUTransformMatrixEnum.CCROT90_FLIPHORIZONTAL
                     it.outputMatrix = FUTransformMatrixEnum.CCROT0
                 } else {
                     it.cameraFacing = CameraFacingEnum.CAMERA_BACK
-                    it.inputBufferMatrix = FUTransformMatrixEnum.CCROT270
-                    it.inputTextureMatrix = FUTransformMatrixEnum.CCROT270
+                    it.inputBufferMatrix = if(mirror) FUTransformMatrixEnum.CCROT90_FLIPVERTICAL else FUTransformMatrixEnum.CCROT270
+                    it.inputTextureMatrix = if(mirror) FUTransformMatrixEnum.CCROT90_FLIPVERTICAL else FUTransformMatrixEnum.CCROT270
                     it.outputMatrix = FUTransformMatrixEnum.CCROT0
                 }
             }
@@ -484,68 +538,12 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         })
     }
 
-    private fun processBeautyDoubleInput(videoFrame: VideoFrame): Int {
-        val texBufferHelper = textureBufferHelper ?: return -1
-        val buffer = videoFrame.buffer as? TextureBuffer ?: return -1
-        val bufferArray = getNV21Buffer(videoFrame) ?: return -1
-
-        val width = buffer.width
-        val height = buffer.height
-        val isFront = videoFrame.sourceType == SourceType.kFrontCamera
-
-        when(buffer.type){
-            TextureBuffer.Type.OES -> {
-                if(currProcessSourceType != ProcessSourceType.TEXTURE_OES_I420){
-                    LogUtils.i(TAG, "processBeauty >> process source type change old=$currProcessSourceType, new=${ProcessSourceType.TEXTURE_OES_I420}")
-                    currProcessSourceType = ProcessSourceType.TEXTURE_OES_I420
-                }
-            }
-            else -> {
-                if(currProcessSourceType != ProcessSourceType.TEXTURE_2D_I420){
-                    LogUtils.i(TAG, "processBeauty >> process source type change old=$currProcessSourceType, new=${ProcessSourceType.TEXTURE_2D_I420}")
-                    currProcessSourceType = ProcessSourceType.TEXTURE_2D_I420
-                }
-            }
-        }
-
-        return texBufferHelper.invoke(Callable {
-            if(isReleased){
-                return@Callable -1
-            }
-            val fuRenderKit = config?.fuRenderKit ?: return@Callable -1
-            val input = FURenderInputData(width, height)
-            input.texture = FURenderInputData.FUTexture(
-                when (buffer.type) {
-                    TextureBuffer.Type.OES -> FUInputTextureEnum.FU_ADM_FLAG_EXTERNAL_OES_TEXTURE
-                    else -> FUInputTextureEnum.FU_ADM_FLAG_COMMON_TEXTURE
-                },
-                buffer.textureId
-            )
-            input.imageBuffer = FURenderInputData.FUImageBuffer(
-                FUInputBufferEnum.FU_FORMAT_NV21_BUFFER,
-                bufferArray
-            )
-            input.renderConfig.let {
-                if (isFront) {
-                    it.inputBufferMatrix = FUTransformMatrixEnum.CCROT90
-                    it.inputTextureMatrix = FUTransformMatrixEnum.CCROT90
-                    it.outputMatrix = FUTransformMatrixEnum.CCROT0_FLIPHORIZONTAL
-                } else {
-                    it.inputBufferMatrix = FUTransformMatrixEnum.CCROT90_FLIPVERTICAL
-                    it.inputTextureMatrix = FUTransformMatrixEnum.CCROT90_FLIPVERTICAL
-                    it.outputMatrix = FUTransformMatrixEnum.CCROT0_FLIPHORIZONTAL
-                }
-            }
-            return@Callable fuRenderKit.renderWithInput(input).texture?.texId ?: -1
-        })
-    }
-
     private fun processBeautySingleTexture(videoFrame: VideoFrame): Int {
         val texBufferHelper = textureBufferHelper ?: return -1
         val buffer = videoFrame.buffer as? TextureBuffer ?: return -1
         val width = buffer.width
         val height = buffer.height
-        val isFront = videoFrame.sourceType == SourceType.kFrontCamera
+        val mirror = (isFrontCamera && !captureMirror) || (!isFrontCamera && captureMirror)
 
         when(buffer.type){
             TextureBuffer.Type.OES -> {
@@ -576,13 +574,13 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
                 buffer.textureId
             )
             input.renderConfig.let {
-                if (isFront) {
-                    it.inputBufferMatrix = FUTransformMatrixEnum.CCROT90
-                    it.inputTextureMatrix = FUTransformMatrixEnum.CCROT90
+                if (isFrontCamera) {
+                    it.inputBufferMatrix = if(mirror) FUTransformMatrixEnum.CCROT90_FLIPHORIZONTAL else FUTransformMatrixEnum.CCROT90
+                    it.inputTextureMatrix = if(mirror) FUTransformMatrixEnum.CCROT90_FLIPHORIZONTAL else FUTransformMatrixEnum.CCROT90
                     it.outputMatrix = FUTransformMatrixEnum.CCROT0_FLIPHORIZONTAL
                 } else {
-                    it.inputBufferMatrix = FUTransformMatrixEnum.CCROT90_FLIPVERTICAL
-                    it.inputTextureMatrix = FUTransformMatrixEnum.CCROT90_FLIPVERTICAL
+                    it.inputBufferMatrix = if(mirror) FUTransformMatrixEnum.CCROT270 else FUTransformMatrixEnum.CCROT90_FLIPVERTICAL
+                    it.inputTextureMatrix = if(mirror) FUTransformMatrixEnum.CCROT270 else FUTransformMatrixEnum.CCROT90_FLIPVERTICAL
                     it.outputMatrix = FUTransformMatrixEnum.CCROT0_FLIPHORIZONTAL
                 }
             }
@@ -641,7 +639,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
 
     override fun getRotationApplied() = false
 
-    override fun getMirrorApplied() = shouldMirror
+    override fun getMirrorApplied() = captureMirror && !enable
 
     override fun getObservedFramePosition() = IVideoFrameObserver.POSITION_POST_CAPTURER
 

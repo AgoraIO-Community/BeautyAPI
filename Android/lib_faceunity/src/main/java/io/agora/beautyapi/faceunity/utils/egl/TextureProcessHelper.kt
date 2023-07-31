@@ -57,7 +57,8 @@ class TextureProcessHelper(
         texId: Int, texType: Int,
         width: Int, height: Int, rotation: Int,
         transform: FloatArray,
-        isFrontCamera: Boolean
+        isFrontCamera: Boolean,
+        isMirror: Boolean
     ): Int {
         if (isReleased) {
             return -1
@@ -87,6 +88,7 @@ class TextureProcessHelper(
                 height,
                 rotation,
                 isFrontCamera,
+                isMirror,
                 transform,
                 frameIndex
             )
@@ -113,6 +115,7 @@ class TextureProcessHelper(
                         frame.height,
                         0,
                         false,
+                        false,
                         null,
                         frame.tag
                     )
@@ -125,6 +128,7 @@ class TextureProcessHelper(
                         frame.width,
                         frame.height,
                         0,
+                        false,
                         false,
                         null,
                         frame.tag

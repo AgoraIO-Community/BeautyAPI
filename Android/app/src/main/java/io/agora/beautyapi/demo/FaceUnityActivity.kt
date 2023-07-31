@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.SurfaceView
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.faceunity.core.callback.OperateCallback
 import com.faceunity.core.entity.FUBundleData
@@ -24,10 +25,12 @@ import io.agora.beautyapi.demo.databinding.BeautyActivityBinding
 import io.agora.beautyapi.demo.utils.ReflectUtils
 import io.agora.beautyapi.faceunity.BeautyPreset
 import io.agora.beautyapi.faceunity.BeautyStats
+import io.agora.beautyapi.faceunity.CameraConfig
 import io.agora.beautyapi.faceunity.CaptureMode
 import io.agora.beautyapi.faceunity.Config
 import io.agora.beautyapi.faceunity.ErrorCode
 import io.agora.beautyapi.faceunity.IEventCallback
+import io.agora.beautyapi.faceunity.MirrorMode
 import io.agora.beautyapi.faceunity.createFaceUnityBeautyAPI
 import io.agora.rtc2.ChannelMediaOptions
 import io.agora.rtc2.Constants
@@ -161,6 +164,7 @@ class FaceUnityActivity : ComponentActivity() {
             }
         }
     }
+    private var cameraConfig = CameraConfig()
 
 
 
@@ -178,6 +182,7 @@ class FaceUnityActivity : ComponentActivity() {
                 mRtcEngine,
                 fuRenderKit,
                 captureMode = if(isCustomCaptureMode) CaptureMode.Custom else CaptureMode.Agora,
+                cameraConfig = this.cameraConfig,
                 statsEnable = true,
                 eventCallback = object: IEventCallback{
                     override fun onBeautyStats(stats: BeautyStats) {
@@ -305,6 +310,33 @@ class FaceUnityActivity : ComponentActivity() {
             } else {
                 fuRenderKit.propContainer.removeAllProp()
             }
+        }
+        mBinding.ivMirror.setOnClickListener {
+            val isFront = mFaceUnityApi.isFrontCamera()
+            if(isFront){
+                cameraConfig = CameraConfig(
+                    frontMirror = when(cameraConfig.frontMirror){
+                        MirrorMode.MIRROR_LOCAL_REMOTE -> MirrorMode.MIRROR_LOCAL_ONLY
+                        MirrorMode.MIRROR_LOCAL_ONLY -> MirrorMode.MIRROR_REMOTE_ONLY
+                        MirrorMode.MIRROR_REMOTE_ONLY -> MirrorMode.MIRROR_NONE
+                        MirrorMode.MIRROR_NONE -> MirrorMode.MIRROR_LOCAL_REMOTE
+                    },
+                    backMirror = cameraConfig.backMirror
+                )
+                Toast.makeText(this, "frontMirror=${cameraConfig.frontMirror}", Toast.LENGTH_SHORT).show()
+            } else {
+                cameraConfig = CameraConfig(
+                    frontMirror = cameraConfig.frontMirror,
+                    backMirror = when(cameraConfig.backMirror){
+                        MirrorMode.MIRROR_NONE -> MirrorMode.MIRROR_LOCAL_REMOTE
+                        MirrorMode.MIRROR_LOCAL_REMOTE -> MirrorMode.MIRROR_LOCAL_ONLY
+                        MirrorMode.MIRROR_LOCAL_ONLY -> MirrorMode.MIRROR_REMOTE_ONLY
+                        MirrorMode.MIRROR_REMOTE_ONLY -> MirrorMode.MIRROR_NONE
+                    }
+                )
+                Toast.makeText(this, "backMirror=${cameraConfig.backMirror}", Toast.LENGTH_SHORT).show()
+            }
+            mFaceUnityApi.updateCameraConfig(cameraConfig)
         }
     }
 

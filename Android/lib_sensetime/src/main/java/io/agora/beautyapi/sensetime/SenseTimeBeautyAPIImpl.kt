@@ -375,7 +375,9 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
                     if(renderMirror) Constants.VIDEO_MIRROR_MODE_ENABLED else Constants.VIDEO_MIRROR_MODE_DISABLED
                 )
             }
-            beautyProcessor?.reset()
+            textureBufferHelper?.invoke {
+                beautyProcessor?.reset()
+            }
             return false
         }
 
@@ -383,12 +385,6 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         isFrontCamera = videoFrame.sourceType == SourceType.kFrontCamera
         if(oldIsFrontCamera != isFrontCamera){
             LogUtils.w(TAG, "processBeauty >> oldIsFrontCamera=$oldIsFrontCamera, isFrontCamera=$isFrontCamera")
-            return false
-        }
-
-        if(skipFrame > 0){
-            skipFrame --
-            LogUtils.w(TAG, "processBeauty >> skipFrame=$skipFrame")
             return false
         }
 
@@ -400,7 +396,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         }
 
         if(!enable){
-            return false
+            return true
         }
 
         if (textureBufferHelper == null) {
@@ -427,6 +423,13 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
             LogUtils.w(TAG, "processBeauty >> processTexId < 0")
             return false
         }
+
+        if(skipFrame > 0){
+            skipFrame --
+            LogUtils.w(TAG, "processBeauty >> skipFrame=$skipFrame")
+            return false
+        }
+
         val processBuffer: TextureBuffer = textureBufferHelper?.wrapTextureBuffer(
             videoFrame.rotatedWidth,
             videoFrame.rotatedHeight,
