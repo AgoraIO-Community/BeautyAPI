@@ -37,6 +37,7 @@ import com.faceunity.core.enumeration.FUInputBufferEnum
 import com.faceunity.core.enumeration.FUInputTextureEnum
 import com.faceunity.core.enumeration.FUTransformMatrixEnum
 import com.faceunity.core.faceunity.FUAIKit
+import com.faceunity.core.faceunity.FURenderKit
 import com.faceunity.core.model.facebeauty.FaceBeauty
 import com.faceunity.core.model.facebeauty.FaceBeautyFilterEnum
 import io.agora.base.TextureBufferHelper
@@ -101,6 +102,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         }
         LogUtils.setLogFilePath(config.context.getExternalFilesDir("")?.absolutePath ?: "")
         LogUtils.i(TAG, "initialize >> config = $config")
+        LogUtils.i(TAG, "initialize >> beauty api version=$VERSION, beauty sdk version=${FURenderKit.getInstance().getVersion()}")
         return ErrorCode.ERROR_OK.value
     }
 

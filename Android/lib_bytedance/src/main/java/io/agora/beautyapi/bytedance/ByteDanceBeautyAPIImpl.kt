@@ -85,6 +85,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
         }
         LogUtils.setLogFilePath(config.context.getExternalFilesDir("")?.absolutePath ?: "")
         LogUtils.i(TAG, "initialize >> config = $config")
+        LogUtils.i(TAG, "initialize >> beauty api version=$VERSION, beauty sdk version=${config.effectManager.version}")
         return ErrorCode.ERROR_OK.value
     }
 

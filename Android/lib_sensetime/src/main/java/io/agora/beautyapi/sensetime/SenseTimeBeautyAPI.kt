@@ -32,6 +32,8 @@ import io.agora.base.VideoFrame
 import io.agora.rtc2.Constants
 import io.agora.rtc2.RtcEngine
 
+const val VERSION = "1.0.2"
+
 enum class CaptureMode{
     Agora, // 使用声网内部的祼数据接口进行处理
     Custom // 自定义模式，需要自己调用onFrame接口将原始视频帧传给BeautyAPI做处理

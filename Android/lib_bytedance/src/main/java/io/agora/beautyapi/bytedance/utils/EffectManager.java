@@ -82,6 +82,10 @@ public class EffectManager {
         mlicensePath = licensePath;
     }
 
+    public String getVersion(){
+        return mRenderManager.getSDKVersion();
+    }
+
     /** {zh} 
      * @brief 初始化特效SDK，确保在gl线程中执行
      * initialize SDK, must run in gl thread
