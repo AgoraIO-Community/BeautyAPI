@@ -104,6 +104,17 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         LogUtils.setLogFilePath(config.context.getExternalFilesDir("")?.absolutePath ?: "")
         LogUtils.i(TAG, "initialize >> config = $config")
         LogUtils.i(TAG, "initialize >> beauty api version=$VERSION, beauty sdk version=${FURenderKit.getInstance().getVersion()}")
+
+        // config face beauty
+        if (deviceLevel == FuDeviceUtils.DEVICEINFO_UNKNOWN) {
+            deviceLevel = FuDeviceUtils.judgeDeviceLevel(config.context)
+            FUAIKit.getInstance().faceProcessorSetFaceLandmarkQuality(deviceLevel)
+            if (deviceLevel > FuDeviceUtils.DEVICE_LEVEL_MID) {
+                FUAIKit.getInstance().fuFaceProcessorSetDetectSmallFace(true)
+            }
+        }
+        LogUtils.i(TAG, "initialize >> FuDeviceUtils deviceLevel=$deviceLevel")
+
         return ErrorCode.ERROR_OK.value
     }
 
@@ -196,14 +207,6 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         }
 
         LogUtils.i(TAG, "setBeautyPreset >> preset = $preset")
-        // config face beauty
-        if (deviceLevel == FuDeviceUtils.DEVICEINFO_UNKNOWN) {
-            deviceLevel = FuDeviceUtils.judgeDeviceLevel(conf.context)
-            FUAIKit.getInstance().faceProcessorSetFaceLandmarkQuality(deviceLevel)
-            if (deviceLevel > FuDeviceUtils.DEVICE_LEVEL_MID) {
-                FUAIKit.getInstance().fuFaceProcessorSetDetectSmallFace(true)
-            }
-        }
 
         val recommendFaceBeauty =
             FaceBeauty(FUBundleData("graphics" + File.separator + "face_beautification.bundle"))
