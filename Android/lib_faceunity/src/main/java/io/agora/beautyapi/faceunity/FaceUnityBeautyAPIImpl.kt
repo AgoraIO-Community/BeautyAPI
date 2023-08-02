@@ -274,7 +274,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         textureBufferHelper?.let {
             textureBufferHelper = null
             it.invoke {
-                fuRenderer.releaseEGLContext()
+                fuRenderer.release()
                 mTextureProcessHelper?.release()
                 mTextureProcessHelper = null
                 null

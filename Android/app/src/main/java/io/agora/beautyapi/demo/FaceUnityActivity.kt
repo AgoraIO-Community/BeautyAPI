@@ -43,6 +43,7 @@ import io.agora.rtc2.video.VideoCanvas
 import io.agora.rtc2.video.VideoEncoderConfiguration
 import io.agora.rtc2.video.VideoEncoderConfiguration.FRAME_RATE
 import java.io.File
+import java.util.concurrent.Executors
 
 class FaceUnityActivity : ComponentActivity() {
     private val TAG = this.javaClass.simpleName
@@ -165,7 +166,7 @@ class FaceUnityActivity : ComponentActivity() {
         }
     }
     private var cameraConfig = CameraConfig()
-
+    private val fuRenderKit = FaceUnityBeautySDK.fuRenderKit
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -173,7 +174,6 @@ class FaceUnityActivity : ComponentActivity() {
         setContentView(mBinding.root)
         window.decorView.keepScreenOn = true
 
-        initBeauty()
         val isCustomCaptureMode =
             intent.getStringExtra(EXTRA_CAPTURE_MODE) == getString(R.string.beauty_capture_custom)
         mFaceUnityApi.initialize(
@@ -328,37 +328,35 @@ class FaceUnityActivity : ComponentActivity() {
         super.onDestroy()
         mRtcEngine.leaveChannel()
         mFaceUnityApi.release()
-        unInitBeauty()
         RtcEngine.destroy()
     }
 
-    private fun getAuth(): ByteArray{
-        val authpack = Class.forName("io.agora.beautyapi.demo.authpack")
-        val aMethod = authpack.getDeclaredMethod("A")
-        aMethod.isAccessible = true
-        val authValue = aMethod.invoke(null) as? ByteArray
-        return authValue ?: ByteArray(0)
-    }
+}
 
+object FaceUnityBeautySDK {
+    private val TAG = "FaceUnityBeautySDK"
 
-    // BeautySDK api
-    private val fuRenderKit = FURenderKit.getInstance()
     private val fuAIKit = FUAIKit.getInstance()
+    val fuRenderKit = FURenderKit.getInstance()
 
     /* AI道具*/
     private val BUNDLE_AI_FACE = "model" + File.separator + "ai_face_processor.bundle"
     private val BUNDLE_AI_HUMAN = "model" + File.separator + "ai_human_processor.bundle"
 
-    private fun initBeauty(){
+    private val workerThread = Executors.newSingleThreadExecutor()
+
+    fun initBeauty(context: Context){
         FURenderManager.setKitDebug(FULogger.LogLevel.TRACE)
         FURenderManager.setCoreDebug(FULogger.LogLevel.ERROR)
-        FURenderManager.registerFURender(applicationContext, getAuth(), object : OperateCallback {
+        FURenderManager.registerFURender(context, getAuth(), object : OperateCallback {
             override fun onSuccess(code: Int, msg: String) {
                 Log.i(TAG, "FURenderManager onSuccess -- code=$code, msg=$msg")
                 if (code == OPERATE_SUCCESS_AUTH) {
                     faceunity.fuSetUseTexAsync(1)
-                    fuAIKit.loadAIProcessor(BUNDLE_AI_FACE, FUAITypeEnum.FUAITYPE_FACEPROCESSOR)
-                    fuAIKit.loadAIProcessor(BUNDLE_AI_HUMAN, FUAITypeEnum.FUAITYPE_HUMAN_PROCESSOR)
+                    workerThread.submit {
+                        fuAIKit.loadAIProcessor(BUNDLE_AI_FACE, FUAITypeEnum.FUAITYPE_FACEPROCESSOR)
+                        fuAIKit.loadAIProcessor(BUNDLE_AI_HUMAN, FUAITypeEnum.FUAITYPE_HUMAN_PROCESSOR)
+                    }
                 }
             }
 
@@ -368,11 +366,16 @@ class FaceUnityActivity : ComponentActivity() {
         })
     }
 
-    private fun unInitBeauty(){
+    fun unInitBeauty(){
         fuRenderKit.release()
         fuAIKit.releaseAllAIProcessor()
     }
 
-
-
+    private fun getAuth(): ByteArray{
+        val authpack = Class.forName("io.agora.beautyapi.demo.authpack")
+        val aMethod = authpack.getDeclaredMethod("A")
+        aMethod.isAccessible = true
+        val authValue = aMethod.invoke(null) as? ByteArray
+        return authValue ?: ByteArray(0)
+    }
 }

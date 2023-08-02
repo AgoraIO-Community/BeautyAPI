@@ -39,6 +39,7 @@ import io.agora.rtc2.video.VideoCanvas
 import io.agora.rtc2.video.VideoEncoderConfiguration
 import io.agora.rtc2.video.VideoEncoderConfiguration.FRAME_RATE
 import java.io.File
+import java.util.concurrent.Executors
 
 
 class SenseTimeActivity : ComponentActivity() {
@@ -171,12 +172,12 @@ class SenseTimeActivity : ComponentActivity() {
         val isCustomCaptureMode =
             intent.getStringExtra(EXTRA_CAPTURE_MODE) == getString(R.string.beauty_capture_custom)
 
-        initBeautySDK()
+        SenseTimeBeautySDK.initMobileEffect(this)
         mSenseTimeApi.initialize(
             Config(
                 application,
                 mRtcEngine,
-                STHandlers(mobileEffectNative, humanActionNative),
+                STHandlers(SenseTimeBeautySDK.mobileEffectNative, SenseTimeBeautySDK.humanActionNative),
                 captureMode = if (isCustomCaptureMode) CaptureMode.Custom else CaptureMode.Agora,
                 statsEnable = true,
                 eventCallback = object: IEventCallback{
@@ -287,19 +288,20 @@ class SenseTimeActivity : ComponentActivity() {
             val enable = !mBinding.ctvMarkup.isChecked
             mBinding.ctvMarkup.isChecked = enable
             if (enable) {
-                setMakeUpItem(
+                SenseTimeBeautySDK.setMakeUpItem(
+                    this,
                     STEffectBeautyType.EFFECT_BEAUTY_MAKEUP_LIP,
                     "makeup_lip" + File.separator + "12自然.zip",
                     1f
                 )
             } else {
-                setMakeUpItem(STEffectBeautyType.EFFECT_BEAUTY_MAKEUP_LIP)
+                SenseTimeBeautySDK.setMakeUpItem(this, STEffectBeautyType.EFFECT_BEAUTY_MAKEUP_LIP)
             }
         }
         mBinding.ctvSticker.setOnClickListener {
             val enable = !mBinding.ctvSticker.isChecked
             mBinding.ctvSticker.isChecked = enable
-            setStickerItem("sticker_face_shape" + File.separator + "ShangBanLe.zip", enable)
+            SenseTimeBeautySDK.setStickerItem(this, "sticker_face_shape" + File.separator + "ShangBanLe.zip", enable)
         }
         mBinding.ivMirror.setOnClickListener {
             val isFront = mSenseTimeApi.isFrontCamera()
@@ -334,57 +336,76 @@ class SenseTimeActivity : ComponentActivity() {
         super.onDestroy()
         mRtcEngine.leaveChannel()
         mSenseTimeApi.release()
-        unInitBeautySDK()
+        SenseTimeBeautySDK.unInitMobileEffect()
         RtcEngine.destroy()
     }
 
-    // SenseTime api
+}
+
+object SenseTimeBeautySDK {
+    private val TAG = "SenseTimeBeautySDK"
+
     private val resourcePath = "beauty_sensetime"
-    private val mobileEffectNative = STMobileEffectNative()
-    private val humanActionNative = STMobileHumanActionNative()
     private val humanActionCreateConfig = 0
     private val packageMap = mutableMapOf<String, Int>()
 
-    val MODEL_106 = "models/M_SenseME_Face_Video_Template_p_3.9.0.3.model" // 106
-    val MODEL_FACE_EXTRA = "models/M_SenseME_Face_Extra_Advanced_Template_p_2.0.0.model" // 282
-    val MODEL_AVATAR_HELP = "models/M_SenseME_Avatar_Help_p_2.3.7.model" // avatar人脸驱动
-    val MODEL_LIPS_PARSING = "models/M_SenseME_MouthOcclusion_p_1.3.0.1.model" // 嘴唇分割
-    val MODEL_HAND = "models/M_SenseME_Hand_p_6.0.8.1.model" // 手势
-    val MODEL_SEGMENT = "models/M_SenseME_Segment_Figure_p_4.14.1.1.model" // 前后背景分割
-    val MODEL_SEGMENT_HAIR = "models/M_SenseME_Segment_Hair_p_4.4.0.model" // 头发分割
-    val MODEL_FACE_OCCLUSION = "models/M_SenseME_FaceOcclusion_p_1.0.7.1.model" // 妆容遮挡
-    val MODEL_SEGMENT_SKY = "models/M_SenseME_Segment_Sky_p_1.1.0.1.model" // 天空分割
-    val MODEL_SEGMENT_SKIN = "models/M_SenseME_Segment_Skin_p_1.0.1.1.model" // 皮肤分割
-    val MODEL_3DMESH = "models/M_SenseME_3DMesh_Face2396pt_280kpts_Ear_p_1.1.0v2.model" // 3DMesh
-    val MODEL_HEAD_P_EAR = "models/M_SenseME_Ear_p_1.0.1.1.model" // 搭配 mesh 耳朵模型
-    val MODEL_360HEAD_INSTANCE = "models/M_SenseME_3Dmesh_360Head2396pt_p_1.0.0.1.model" // 360度人头mesh
-    val MODEL_FOOT = "models/M_SenseME_Foot_p_2.10.7.model" // 鞋子检测模型
-    val MODEL_PANT = "models/M_SenseME_Segment_Trousers_p_1.1.10.model" // 裤腿的检测
-    val MODEL_WRIST = "models/M_SenseME_Wrist_p_1.4.0.model" // 试表
-    val MODEL_CLOTH = "models/M_SenseME_Segment_Clothes_p_1.0.2.2.model" // 衣服分割
-    val MODEL_HEAD_INSTANCE = "models/M_SenseME_Segment_Head_Instance_p_1.1.0.1.model" // 实例分割版本
-    val MODEL_HEAD_P_INSTANCE = "models/M_SenseME_Head_p_1.3.0.1.model" // 360度人头-头部模型
-    val MODEL_NAIL = "models/M_SenseME_Nail_p_2.4.0.model" // 指甲检测
+    private val MODEL_106 = "models/M_SenseME_Face_Video_Template_p_3.9.0.3.model" // 106
+    private val MODEL_FACE_EXTRA = "models/M_SenseME_Face_Extra_Advanced_Template_p_2.0.0.model" // 282
+    private val MODEL_AVATAR_HELP = "models/M_SenseME_Avatar_Help_p_2.3.7.model" // avatar人脸驱动
+    private val MODEL_LIPS_PARSING = "models/M_SenseME_MouthOcclusion_p_1.3.0.1.model" // 嘴唇分割
+    private val MODEL_HAND = "models/M_SenseME_Hand_p_6.0.8.1.model" // 手势
+    private val MODEL_SEGMENT = "models/M_SenseME_Segment_Figure_p_4.14.1.1.model" // 前后背景分割
+    private val MODEL_SEGMENT_HAIR = "models/M_SenseME_Segment_Hair_p_4.4.0.model" // 头发分割
+    private val MODEL_FACE_OCCLUSION = "models/M_SenseME_FaceOcclusion_p_1.0.7.1.model" // 妆容遮挡
+    private val MODEL_SEGMENT_SKY = "models/M_SenseME_Segment_Sky_p_1.1.0.1.model" // 天空分割
+    private val MODEL_SEGMENT_SKIN = "models/M_SenseME_Segment_Skin_p_1.0.1.1.model" // 皮肤分割
+    private val MODEL_3DMESH = "models/M_SenseME_3DMesh_Face2396pt_280kpts_Ear_p_1.1.0v2.model" // 3DMesh
+    private val MODEL_HEAD_P_EAR = "models/M_SenseME_Ear_p_1.0.1.1.model" // 搭配 mesh 耳朵模型
+    private val MODEL_360HEAD_INSTANCE = "models/M_SenseME_3Dmesh_360Head2396pt_p_1.0.0.1.model" // 360度人头mesh
+    private val MODEL_FOOT = "models/M_SenseME_Foot_p_2.10.7.model" // 鞋子检测模型
+    private val MODEL_PANT = "models/M_SenseME_Segment_Trousers_p_1.1.10.model" // 裤腿的检测
+    private val MODEL_WRIST = "models/M_SenseME_Wrist_p_1.4.0.model" // 试表
+    private val MODEL_CLOTH = "models/M_SenseME_Segment_Clothes_p_1.0.2.2.model" // 衣服分割
+    private val MODEL_HEAD_INSTANCE = "models/M_SenseME_Segment_Head_Instance_p_1.1.0.1.model" // 实例分割版本
+    private val MODEL_HEAD_P_INSTANCE = "models/M_SenseME_Head_p_1.3.0.1.model" // 360度人头-头部模型
+    private val MODEL_NAIL = "models/M_SenseME_Nail_p_2.4.0.model" // 指甲检测
 
-    private fun initBeautySDK(){
-        checkBeautyLicense()
-        initMobileEffect()
-        initHumanAction()
+    private val workerThread = Executors.newSingleThreadExecutor()
+
+    val mobileEffectNative = STMobileEffectNative()
+    val humanActionNative = STMobileHumanActionNative()
+
+
+    fun initBeautySDK(context: Context){
+        workerThread.submit {
+            checkLicense(context)
+            initHumanAction(context)
+        }
     }
 
-    private fun unInitBeautySDK(){
-        mobileEffectNative.destroyInstance()
+    fun unInitBeautySDK(){
         humanActionNative.destroyInstance()
         packageMap.clear()
     }
 
-    private fun checkBeautyLicense() {
+    fun initMobileEffect(context: Context){
+        val result =
+            mobileEffectNative.createInstance(context, STMobileEffectNative.EFFECT_CONFIG_NONE)
+        mobileEffectNative.setParam(STMobileEffectParams.EFFECT_PARAM_QUATERNION_SMOOTH_FRAME, 5f)
+        Log.d(TAG, "SenseTime >> STMobileEffectNative create result : $result")
+    }
+
+    fun unInitMobileEffect(){
+        mobileEffectNative.destroyInstance()
+    }
+
+    private fun checkLicense(context: Context) {
         val license = io.agora.beautyapi.demo.utils.FileUtils.getAssetsString(
-            this,
+            context,
             "$resourcePath/license/SenseME.lic"
         )
         val activeCode = STMobileAuthentificationNative.generateActiveCodeFromBuffer(
-            application,
+            context,
             license,
             license.length
         )
@@ -396,14 +417,8 @@ class SenseTimeActivity : ComponentActivity() {
         }
     }
 
-    private fun initMobileEffect(){
-        val result =
-            mobileEffectNative.createInstance(application, STMobileEffectNative.EFFECT_CONFIG_NONE)
-        mobileEffectNative.setParam(STMobileEffectParams.EFFECT_PARAM_QUATERNION_SMOOTH_FRAME, 5f)
-        Log.d(TAG, "SenseTime >> STMobileEffectNative create result : $result")
-    }
-
-    private fun initHumanAction(){
+    private fun initHumanAction(context: Context){
+        val assets = context.assets
         val result = humanActionNative.createInstanceFromAssetFile(
             "$resourcePath/$MODEL_106",
             humanActionCreateConfig,
@@ -442,8 +457,9 @@ class SenseTimeActivity : ComponentActivity() {
         humanActionNative.setParam(STHumanActionParamsType.ST_HUMAN_ACTION_PARAM_HEAD_SEGMENT_INSTANCE, 1.0f)
     }
 
-    private fun setMakeUpItem(type: Int, path: String = "", strength: Float = 1.0f) {
+    fun setMakeUpItem(context: Context, type: Int, path: String = "", strength: Float = 1.0f) {
         if (path.isNotEmpty()) {
+            val assets = context.assets
             mobileEffectNative.setBeautyFromAssetsFile(type, "$resourcePath/$path", assets)
             mobileEffectNative.setBeautyStrength(type, strength)
         } else {
@@ -451,8 +467,9 @@ class SenseTimeActivity : ComponentActivity() {
         }
     }
 
-    private fun setStickerItem(path: String, attach: Boolean) {
+    fun setStickerItem(context: Context, path: String, attach: Boolean) {
         if(attach){
+            val assets = context.assets
             packageMap[path] = mobileEffectNative.changePackageFromAssetsFile("$resourcePath/$path", assets)
         }else{
             packageMap.remove(path)?.let {
