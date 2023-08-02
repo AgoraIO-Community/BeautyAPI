@@ -79,6 +79,7 @@
 
 - (int)switchCamera {
     _isFrontCamera = !_isFrontCamera;
+    [self setupMirror];
     return [self.config.rtcEngine switchCamera];
 }
 

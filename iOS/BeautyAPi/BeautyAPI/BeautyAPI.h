@@ -147,15 +147,22 @@ typedef NS_ENUM(NSInteger, MirrorMode) {
 - (int)updateCameraConfig: (CameraConfig *)cameraConfig;
 
 /**
-    * 本地视图渲染，由内部来处理镜像问题
-    *
-    * @param view 渲染视图
-    * @param renderMode 渲染缩放模式
-    * @return 0: 成功, 非0: 见错误码
-    **/
+ * 本地视图渲染，由内部来处理镜像问题
+ *
+ * @param view 渲染视图
+ * @param renderMode 渲染缩放模式
+ * @return 0: 成功, 非0: 见错误码
+ **/
 #if __has_include(<AgoraRtcKit/AgoraRtcKit.h>)
 - (int)setupLocalVideo: (UIView *)view renderMode: (AgoraVideoRenderMode)renderMode;
 #endif
+
+/**
+ * 镜像处理方法，当useCustom为true时才需要调用
+ *
+ * @return 采集时是否需要镜像
+ **/
+- (BOOL)getMirrorApplied;
 /**
  * 美颜处理方法，当useCustom为true时才需要调用，否则会报错
  *

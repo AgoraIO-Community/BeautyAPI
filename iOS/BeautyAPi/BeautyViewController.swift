@@ -222,7 +222,7 @@ extension BeautyViewController: AgoraVideoFrameDelegate {
     }
     
     func getMirrorApplied() -> Bool {
-        beautyAPI.isFrontCamera
+        beautyAPI.getMirrorApplied()
     }
     
     func getRotationApplied() -> Bool {
