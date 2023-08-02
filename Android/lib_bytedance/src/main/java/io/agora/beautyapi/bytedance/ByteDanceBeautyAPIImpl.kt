@@ -50,9 +50,7 @@ import java.util.concurrent.Executors
 class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
     private val TAG = "ByteDanceBeautyAPIImpl"
     private var beautyMode = 0 // 0: 自动根据buffer类型切换，1：固定使用OES纹理，2：固定使用i420
-    private val BEAUTY_NODE = "beauty_Android_lite"
-    private val BEAUTY_4ITEMS_NODE = "beauty_4Items"
-    private val RESHARP_LITE_NODE = "reshape_lite"
+
 
     private var textureBufferHelper: TextureBufferHelper? = null
     private var imageUtils: ImageUtil? = null
@@ -89,7 +87,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
         }
         LogUtils.setLogFilePath(config.context.getExternalFilesDir("")?.absolutePath ?: "")
         LogUtils.i(TAG, "initialize >> config = $config")
-        LogUtils.i(TAG, "initialize >> beauty api version=$VERSION, beauty sdk version=${config.effectManager.version}")
+        LogUtils.i(TAG, "initialize >> beauty api version=$VERSION, beauty sdk version=${config.renderManager.sdkVersion}")
         return ErrorCode.ERROR_OK.value
     }
 
@@ -151,7 +149,12 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
         return ErrorCode.ERROR_FRAME_SKIPPED.value
     }
 
-    override fun setBeautyPreset(preset: BeautyPreset): Int {
+    override fun setBeautyPreset(
+        preset: BeautyPreset,
+        beautyNodePath: String,
+        beauty4ItemNodePath: String,
+        reSharpNodePath: String
+    ): Int {
         val conf = config
         if(conf == null){
             LogUtils.e(TAG, "setBeautyPreset >> The beauty api has not been initialized!")
@@ -163,69 +166,62 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
         }
 
         LogUtils.i(TAG, "setBeautyPreset >> preset = $preset")
-        val effectManager =
-            config?.effectManager ?: return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
+        val renderManager =
+            config?.renderManager ?: return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
         val enable = preset == BeautyPreset.DEFAULT
 
-        effectManager.appendComposeNodes(
-            arrayOf(
-                BEAUTY_NODE,
-                RESHARP_LITE_NODE,
-                BEAUTY_4ITEMS_NODE
-            )
-        )
-        effectManager.updateComposerNodeIntensity(
-            BEAUTY_NODE,
+        renderManager.updateComposerNodes(
+            beautyNodePath,
             "smooth",
             if (enable) 0.3f else 0f
         )// 磨皮
-        effectManager.updateComposerNodeIntensity(
-            BEAUTY_NODE,
+        renderManager.updateComposerNodes(
+            beautyNodePath,
             "whiten",
             if (enable) 0.5f else 0f
         )// 美白
-        effectManager.updateComposerNodeIntensity(
-            RESHARP_LITE_NODE,
+        renderManager.updateComposerNodes(
+            reSharpNodePath,
             "Internal_Deform_Overall",
             if (enable) 0.15f else 0f
         )//瘦脸
-        effectManager.updateComposerNodeIntensity(
-            RESHARP_LITE_NODE,
+        renderManager.updateComposerNodes(
+            reSharpNodePath,
             "Internal_Deform_Zoom_Cheekbone",
             if (enable) 0.3f else 0f
         )//瘦颧骨
-        effectManager.updateComposerNodeIntensity(
-            RESHARP_LITE_NODE,
+        renderManager.updateComposerNodes(
+            reSharpNodePath,
             "Internal_Deform_Zoom_Jawbone",
             if (enable) 0.46f else 0f
         )//下颌骨
-        effectManager.updateComposerNodeIntensity(
-            RESHARP_LITE_NODE,
+        renderManager.updateComposerNodes(
+            reSharpNodePath,
             "Internal_Deform_Eye",
             if (enable) 0.15f else 0f
         )//大眼
-        effectManager.updateComposerNodeIntensity(
-            BEAUTY_4ITEMS_NODE,
+        renderManager.updateComposerNodes(
+            beauty4ItemNodePath,
             "BEF_BEAUTY_WHITEN_TEETH",
             if (enable) 0.2f else 0f
         )//美牙
-        effectManager.updateComposerNodeIntensity(
-            RESHARP_LITE_NODE,
+        renderManager.updateComposerNodes(
+            reSharpNodePath,
             "Internal_Deform_Forehead",
             if (enable) 0.4f else 0f
         )//额头
-        effectManager.updateComposerNodeIntensity(
-            RESHARP_LITE_NODE,
+        renderManager.updateComposerNodes(
+            reSharpNodePath,
             "Internal_Deform_Nose",
             if (enable) 0.15f else 0f
         )//瘦鼻
-        effectManager.updateComposerNodeIntensity(
-            RESHARP_LITE_NODE,
+        renderManager.updateComposerNodes(
+            reSharpNodePath,
             "Internal_Deform_ZoomMouth",
             if (enable) 0.16f else 0f
         )//嘴形
-        effectManager.updateComposerNodeIntensity(
-            RESHARP_LITE_NODE,
+        renderManager.updateComposerNodes(
+            reSharpNodePath,
             "Internal_Deform_Chin",
             if (enable) 0.46f else 0f
         )//下巴
@@ -258,7 +254,6 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
             return ErrorCode.ERROR_HAS_RELEASED.value
         }
         LogUtils.i(TAG, "release")
-        val effectManager = conf.effectManager
         isReleased = true
         workerThreadExecutor.shutdown()
         textureBufferHelper?.let {
@@ -268,7 +263,6 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
                 agoraImageHelper?.release()
                 imageUtils = null
                 agoraImageHelper = null
-                effectManager.destroy()
                 config?.eventCallback?.onEffectDestroyed?.invoke()
                 null
             }
@@ -348,10 +342,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
                 EglBaseProvider.instance().rootEglBase.eglBaseContext
             )?.apply {
                 invoke {
-                    val effectManager = config?.effectManager ?: return@invoke
-                    effectManager.init()
-                    imageUtils =
-                        ImageUtil()
+                    imageUtils = ImageUtil()
                     agoraImageHelper = AgoraImageHelper()
                     config?.eventCallback?.onEffectInitialized?.invoke()
                 }
@@ -429,7 +420,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
         }
 
         return texBufferHelper.invoke(Callable {
-            val effectManager = config?.effectManager ?: return@Callable -1
+            val renderManager = config?.renderManager ?: return@Callable -1
             var mirror = isFront
             if((isFrontCamera && !captureMirror) || (!isFrontCamera && captureMirror)){
                 mirror = !mirror
@@ -456,8 +447,8 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
                 height,
                 transform
             )
-            effectManager.setCameraPosition(isFront)
-            val success = effectManager.process(
+            renderManager.setCameraPostion(isFront)
+            val success = renderManager.processTexture(
                 srcTexture,
                 dstTexture,
                 width,
@@ -486,7 +477,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
         }
 
         return texBufferHelper.invoke(Callable {
-            val effectManager = config?.effectManager ?: return@Callable -1
+            val renderManager = config?.renderManager ?: return@Callable -1
 
             val width = buffer.height
             val height = buffer.width
@@ -515,8 +506,8 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
                     flip(false, mirror)
                 }
             )
-            effectManager.setCameraPosition(isFront)
-            val success = effectManager.process(
+            renderManager.setCameraPostion(isFront)
+            val success = renderManager.processTexture(
                 srcTexture,
                 dstTexture,
                 width,

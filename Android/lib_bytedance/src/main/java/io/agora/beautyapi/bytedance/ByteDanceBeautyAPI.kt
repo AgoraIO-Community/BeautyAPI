@@ -26,8 +26,8 @@ package io.agora.beautyapi.bytedance
 
 import android.content.Context
 import android.view.View
+import com.bytedance.labcv.effectsdk.RenderManager
 import io.agora.base.VideoFrame
-import io.agora.beautyapi.bytedance.utils.EffectManager
 import io.agora.rtc2.Constants
 import io.agora.rtc2.RtcEngine
 
@@ -81,7 +81,7 @@ data class CameraConfig(
 data class Config(
     val context: Context, // Android Context上下文
     val rtcEngine: RtcEngine, // 声网Rtc引擎
-    val effectManager: EffectManager, // 美颜SDK处理句柄
+    val renderManager: RenderManager, // 美颜SDK处理句柄
     val eventCallback: EventCallback? = null, // 事件回调
     val captureMode: CaptureMode = CaptureMode.Agora, // 处理模式
     val statsDuration: Long = 1000, // 统计区间
@@ -147,7 +147,12 @@ interface ByteDanceBeautyAPI {
      *
      * @return 见ErrorCode
      */
-    fun setBeautyPreset(preset: BeautyPreset = BeautyPreset.DEFAULT): Int
+    fun setBeautyPreset(
+        preset: BeautyPreset = BeautyPreset.DEFAULT,
+        beautyNodePath: String,
+        beauty4ItemNodePath: String,
+        reSharpNodePath: String
+    ): Int
 
     /**
      * 更新摄像头配置

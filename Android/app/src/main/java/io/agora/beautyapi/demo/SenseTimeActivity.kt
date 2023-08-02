@@ -383,11 +383,6 @@ object SenseTimeBeautySDK {
         }
     }
 
-    fun unInitBeautySDK(){
-        humanActionNative.destroyInstance()
-        packageMap.clear()
-    }
-
     fun initMobileEffect(context: Context){
         val result =
             mobileEffectNative.createInstance(context, STMobileEffectNative.EFFECT_CONFIG_NONE)

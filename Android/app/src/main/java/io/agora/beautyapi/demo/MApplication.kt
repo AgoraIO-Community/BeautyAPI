@@ -32,8 +32,9 @@ class MApplication: Application() {
     override fun onCreate() {
         super.onCreate()
 
-        FaceUnityBeautySDK.initBeauty(this)
         SenseTimeBeautySDK.initBeautySDK(this)
+        FaceUnityBeautySDK.initBeauty(this)
+        ByteDanceBeautySDK.initBeautySDK(this)
 
         CrashReport.initCrashReport(this, "96866f635f", true, CrashReport.UserStrategy(this).apply {
             isEnableCatchAnrTrace = true

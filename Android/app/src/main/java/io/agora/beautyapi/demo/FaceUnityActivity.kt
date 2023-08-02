@@ -366,11 +366,6 @@ object FaceUnityBeautySDK {
         })
     }
 
-    fun unInitBeauty(){
-        fuRenderKit.release()
-        fuAIKit.releaseAllAIProcessor()
-    }
-
     private fun getAuth(): ByteArray{
         val authpack = Class.forName("io.agora.beautyapi.demo.authpack")
         val aMethod = authpack.getDeclaredMethod("A")

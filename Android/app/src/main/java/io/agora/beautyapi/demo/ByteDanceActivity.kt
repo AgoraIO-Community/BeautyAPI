@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.SurfaceView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import com.bytedance.labcv.effectsdk.RenderManager
 import io.agora.base.VideoFrame
 import io.agora.beautyapi.bytedance.BeautyPreset
 import io.agora.beautyapi.bytedance.CameraConfig
@@ -17,9 +18,8 @@ import io.agora.beautyapi.bytedance.ErrorCode
 import io.agora.beautyapi.bytedance.EventCallback
 import io.agora.beautyapi.bytedance.MirrorMode
 import io.agora.beautyapi.bytedance.createByteDanceBeautyAPI
-import io.agora.beautyapi.bytedance.utils.AssetsResourcesHelper
-import io.agora.beautyapi.bytedance.utils.EffectManager
 import io.agora.beautyapi.demo.databinding.BeautyActivityBinding
+import io.agora.beautyapi.demo.utils.FileUtils
 import io.agora.beautyapi.demo.utils.ReflectUtils
 import io.agora.rtc2.ChannelMediaOptions
 import io.agora.rtc2.Constants
@@ -31,10 +31,10 @@ import io.agora.rtc2.video.IVideoFrameObserver
 import io.agora.rtc2.video.VideoCanvas
 import io.agora.rtc2.video.VideoEncoderConfiguration
 import io.agora.rtc2.video.VideoEncoderConfiguration.FRAME_RATE
+import java.util.concurrent.Executors
 
 class ByteDanceActivity : ComponentActivity() {
     private val TAG = this.javaClass.simpleName
-    private val LICENSE_NAME = "agora_test_20220805_20230815_io.agora.entfull_4.2.3.licbag"
 
     companion object {
         private const val EXTRA_CHANNEL_NAME = "ChannelName"
@@ -112,15 +112,6 @@ class ByteDanceActivity : ComponentActivity() {
             enableExtension("agora_video_filters_clear_vision", "clear_vision", true)
         }
     }
-    private val mEffectManager by lazy {
-        val resourceHelper =
-            AssetsResourcesHelper(this, "beauty_bytedance")
-        EffectManager(
-            this,
-            resourceHelper,
-            resourceHelper.getLicensePath(LICENSE_NAME)
-        )
-    }
     private val mByteDanceApi by lazy {
         createByteDanceBeautyAPI()
     }
@@ -162,6 +153,7 @@ class ByteDanceActivity : ComponentActivity() {
         }
     }
     private var cameraConfig = CameraConfig()
+    private val renderManager = ByteDanceBeautySDK.renderManager
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -176,7 +168,7 @@ class ByteDanceActivity : ComponentActivity() {
             Config(
                 applicationContext,
                 mRtcEngine,
-                mEffectManager,
+                renderManager,
                 captureMode = if (isCustomCaptureMode) CaptureMode.Custom else CaptureMode.Agora,
                 statsEnable = true,
                 cameraConfig = cameraConfig,
@@ -185,9 +177,11 @@ class ByteDanceActivity : ComponentActivity() {
                         Log.d(TAG, "BeautyStats stats = $stats")
                     },
                     onEffectInitialized = {
+                        ByteDanceBeautySDK.initEffect(applicationContext)
                         Log.d(TAG, "onEffectInitialized")
                     },
                     onEffectDestroyed = {
+                        ByteDanceBeautySDK.unInitEffect()
                         Log.d(TAG, "onEffectInitialized")
                     }
                 )
@@ -284,19 +278,27 @@ class ByteDanceActivity : ComponentActivity() {
         mBinding.ctvFaceBeauty.setOnClickListener {
             val enable = !mBinding.ctvFaceBeauty.isChecked
             mBinding.ctvFaceBeauty.isChecked = enable
-            mByteDanceApi.setBeautyPreset(if (enable) BeautyPreset.DEFAULT else BeautyPreset.CUSTOM)
+            mByteDanceApi.setBeautyPreset(
+                if (enable) BeautyPreset.DEFAULT else BeautyPreset.CUSTOM,
+                ByteDanceBeautySDK.beautyNodePath,
+                ByteDanceBeautySDK.beauty4ItemsNodePath,
+                ByteDanceBeautySDK.reSharpNodePath
+            )
         }
         mBinding.ctvMarkup.setOnClickListener {
             val enable = !mBinding.ctvMarkup.isChecked
             mBinding.ctvMarkup.isChecked = enable
-            mEffectManager.appendComposeNodes(arrayOf("style_makeup/tianmei"))
-            mEffectManager.updateComposerNodeIntensity(
-                "style_makeup/tianmei",
+
+            val tianmeiNode = ByteDanceBeautySDK.makeupTianmeiNodePath
+            renderManager.appendComposerNodes(arrayOf(tianmeiNode))
+            renderManager.loadResourceWithTimeout(-1)
+            renderManager.updateComposerNodes(
+                tianmeiNode,
                 "Filter_ALL",
                 if (enable) 0.5f else 0f
             )
-            mEffectManager.updateComposerNodeIntensity(
-                "style_makeup/tianmei",
+            renderManager.updateComposerNodes(
+                tianmeiNode,
                 "Makeup_ALL",
                 if (enable) 0.5f else 0f
             )
@@ -305,9 +307,9 @@ class ByteDanceActivity : ComponentActivity() {
             val enable = !mBinding.ctvSticker.isChecked
             mBinding.ctvSticker.isChecked = enable
             if(enable){
-                mEffectManager.setSticker("wochaotian")
+                renderManager.setSticker("${ByteDanceBeautySDK.stickerPath}/wochaotian")
             }else{
-                mEffectManager.setSticker(null)
+                renderManager.setSticker(null)
             }
         }
         mBinding.ivMirror.setOnClickListener {
@@ -343,9 +345,90 @@ class ByteDanceActivity : ComponentActivity() {
         super.onDestroy()
         mRtcEngine.leaveChannel()
         mByteDanceApi.release()
-        mEffectManager.destroy()
         RtcEngine.destroy()
     }
 
 
+}
+
+object ByteDanceBeautySDK {
+    private val TAG = "ByteDanceBeautySDK"
+
+    private val LICENSE_NAME = "agora_test_20220805_20230815_io.agora.entfull_4.2.3.licbag"
+    private val workerThread = Executors.newSingleThreadExecutor()
+
+    val renderManager = RenderManager()
+    var licensePath = ""
+    var modelsPath = ""
+    var beautyNodePath = ""
+    var beauty4ItemsNodePath = ""
+    var reSharpNodePath = ""
+    var makeupTianmeiNodePath = ""
+    var stickerPath = ""
+
+
+
+    fun initBeautySDK(context: Context){
+        val storagePath = context.getExternalFilesDir("")?.absolutePath ?: return
+        val assetsPath = "beauty_bytedance"
+
+        workerThread.execute {
+            // copy license
+            licensePath = "$storagePath/beauty_bytedance/LicenseBag.bundle/$LICENSE_NAME"
+            FileUtils.copyAssets(context, "$assetsPath/LicenseBag.bundle/$LICENSE_NAME", licensePath)
+
+            // copy models
+            modelsPath = "$storagePath/beauty_bytedance/ModelResource.bundle"
+            FileUtils.copyAssets(context, "$assetsPath/ModelResource.bundle", modelsPath)
+
+            // copy beauty node
+            beautyNodePath = "$storagePath/beauty_bytedance/ComposeMakeup.bundle/ComposeMakeup/beauty_Android_lite"
+            FileUtils.copyAssets(context, "$assetsPath/ComposeMakeup.bundle/ComposeMakeup/beauty_Android_lite", beautyNodePath)
+
+            // copy beauty 4items node
+            beauty4ItemsNodePath = "$storagePath/beauty_bytedance/ComposeMakeup.bundle/ComposeMakeup/beauty_4Items"
+            FileUtils.copyAssets(context, "$assetsPath/ComposeMakeup.bundle/ComposeMakeup/beauty_4Items", beauty4ItemsNodePath)
+
+            // copy resharp node
+            reSharpNodePath = "$storagePath/beauty_bytedance/ComposeMakeup.bundle/ComposeMakeup/reshape_lite"
+            FileUtils.copyAssets(context, "$assetsPath/ComposeMakeup.bundle/ComposeMakeup/reshape_lite", reSharpNodePath)
+
+            // copy makeup node
+            makeupTianmeiNodePath = "$storagePath/beauty_bytedance/ComposeMakeup.bundle/ComposeMakeup/style_makeup/tianmei"
+            FileUtils.copyAssets(context, "$assetsPath/ComposeMakeup.bundle/ComposeMakeup/style_makeup/tianmei", makeupTianmeiNodePath)
+
+            // copy stickers
+            stickerPath = "$storagePath/beauty_bytedance/StickerResource.bundle/stickers"
+            FileUtils.copyAssets(context, "$assetsPath/StickerResource.bundle/stickers", stickerPath)
+        }
+    }
+
+    // GL Thread
+    fun initEffect(context: Context){
+        val ret = renderManager.init(
+            context,
+            modelsPath, licensePath, false, false, 0
+        )
+        if(!checkResult("RenderManager init ", ret)){
+            return
+        }
+        renderManager.useBuiltinSensor(true)
+        renderManager.set3Buffer(false)
+        renderManager.appendComposerNodes(arrayOf(beautyNodePath, beauty4ItemsNodePath, reSharpNodePath))
+        renderManager.loadResourceWithTimeout(-1)
+    }
+
+    // GL Thread
+    fun unInitEffect(){
+        renderManager.release()
+    }
+
+    private fun checkResult(msg: String, ret: Int): Boolean {
+        if (ret != 0 && ret != -11 && ret != 1) {
+            val log = "$msg error: $ret"
+            Log.e(TAG, log)
+            return false
+        }
+        return true
+    }
 }
