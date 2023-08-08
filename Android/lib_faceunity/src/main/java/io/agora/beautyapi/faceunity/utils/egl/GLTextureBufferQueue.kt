@@ -93,18 +93,19 @@ class GLTextureBufferQueue(
             glFrameBuffer.setRotation(iN.rotation)
             if (iN.transform != null) {
                 glFrameBuffer.setTexMatrix(iN.transform)
-                var flipH = !iN.isFrontCamera
-                if(iN.isMirror){
-                    flipH = !flipH
-                }
-                glFrameBuffer.setFlipH(flipH)
-            } else {
                 var flipH = iN.isFrontCamera
                 if(iN.isMirror){
                     flipH = !flipH
                 }
                 glFrameBuffer.setFlipH(flipH)
+            } else {
+                var flipH = !iN.isFrontCamera
+                if(iN.isMirror){
+                    flipH = !flipH
+                }
+                glFrameBuffer.setFlipH(flipH)
             }
+            glFrameBuffer.setFlipV(iN.flipV)
             glFrameBuffer.process(iN.textureId, iN.textureType)
             GLES20.glFinish()
             out.index = cacheIndex
@@ -158,6 +159,7 @@ class GLTextureBufferQueue(
         val width: Int,
         val height: Int,
         val rotation: Int,
+        val flipV: Boolean,
         val isFrontCamera: Boolean,
         val isMirror: Boolean,
         val transform: FloatArray?,

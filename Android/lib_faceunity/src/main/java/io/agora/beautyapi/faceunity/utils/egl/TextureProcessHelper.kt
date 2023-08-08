@@ -87,6 +87,7 @@ class TextureProcessHelper(
                 width,
                 height,
                 rotation,
+                true,
                 isFrontCamera,
                 isMirror,
                 transform,
@@ -116,6 +117,7 @@ class TextureProcessHelper(
                         0,
                         false,
                         false,
+                        true,
                         null,
                         frame.tag
                     )
@@ -130,6 +132,7 @@ class TextureProcessHelper(
                         0,
                         false,
                         false,
+                        true,
                         null,
                         frame.tag
                     )
