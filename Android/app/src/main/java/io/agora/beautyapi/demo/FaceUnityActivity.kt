@@ -93,6 +93,8 @@ class FaceUnityActivity : ComponentActivity() {
                 if (mBinding.remoteVideoView.tag == null) {
                     mBinding.remoteVideoView.tag = uid
                     val renderView = SurfaceView(this@FaceUnityActivity)
+                    renderView.setZOrderMediaOverlay(true)
+                    renderView.setZOrderOnTop(true)
                     mBinding.remoteVideoView.addView(renderView)
                     mRtcEngine.setupRemoteVideo(
                         VideoCanvas(

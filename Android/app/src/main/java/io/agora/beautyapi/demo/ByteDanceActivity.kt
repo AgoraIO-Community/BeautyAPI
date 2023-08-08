@@ -81,6 +81,8 @@ class ByteDanceActivity : ComponentActivity() {
                 if (mBinding.remoteVideoView.tag == null) {
                     mBinding.remoteVideoView.tag = uid
                     val renderView = SurfaceView(this@ByteDanceActivity)
+                    renderView.setZOrderMediaOverlay(true)
+                    renderView.setZOrderOnTop(true)
                     mBinding.remoteVideoView.addView(renderView)
                     mRtcEngine.setupRemoteVideo(
                         VideoCanvas(
