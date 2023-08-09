@@ -165,43 +165,44 @@ class PermissionHelp(val activity: ComponentActivity) {
         force: Boolean,
         unGranted: () -> Unit
     ) {
-        when {
-            ContextCompat.checkSelfPermission(
-                activity,
-                perm
-            ) == PackageManager.PERMISSION_GRANTED -> {
-                // You can use the API that requires the permission.
-                granted.invoke()
-            }
+            when {
+                ContextCompat.checkSelfPermission(
+                    activity,
+                    perm
+                ) == PackageManager.PERMISSION_GRANTED -> {
+                    // You can use the API that requires the permission.
+                    granted.invoke()
+                }
 
-            activity.shouldShowRequestPermissionRationale(perm) -> {
-                // In an educational UI, explain to the user why your app requires this
-                // permission for a specific feature to behave as expected, and what
-                // features are disabled if it's declined. In this UI, include a
-                // "cancel" or "no thanks" button that lets the user continue
-                // using your app without granting the permission.
-                // showInContextUI(...)
-                if (force) {
-                    launchAppSetting(
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                        activity.shouldShowRequestPermissionRationale(perm) -> {
+                    // In an educational UI, explain to the user why your app requires this
+                    // permission for a specific feature to behave as expected, and what
+                    // features are disabled if it's declined. In this UI, include a
+                    // "cancel" or "no thanks" button that lets the user continue
+                    // using your app without granting the permission.
+                    // showInContextUI(...)
+                    if (force) {
+                        launchAppSetting(
+                            perm,
+                            granted,
+                            unGranted
+                        )
+                    } else {
+                        unGranted.invoke()
+                    }
+                }
+
+                else -> {
+                    // You can directly ask for the permission.
+                    // The registered ActivityResultCallback gets the result of this request.
+                    launchPermissionRequest(
                         perm,
                         granted,
                         unGranted
                     )
-                } else {
-                    unGranted.invoke()
                 }
             }
-
-            else -> {
-                // You can directly ask for the permission.
-                // The registered ActivityResultCallback gets the result of this request.
-                launchPermissionRequest(
-                    perm,
-                    granted,
-                    unGranted
-                )
-            }
-        }
     }
 
     private fun launchPermissionRequest(
