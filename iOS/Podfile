@@ -1,10 +1,10 @@
 # Uncomment the next line to define a global platform for your project
-source 'https://github.com/CocoaPods/Specs.git'
+#source 'https://github.com/CocoaPods/Specs.git'
 #source 'https://mirrors.tuna.tsinghua.edu.cn/git/CocoaPods/Specs.git'
  platform :ios, '11.0'
 
-plugin 'cocoapods-pod-sign'
-skip_pod_bundle_sign # 用来跳过Xcode对bundle资源的签名
+#plugin 'cocoapods-pod-sign'
+#skip_pod_bundle_sign # 用来跳过Xcode对bundle资源的签名
 
 target 'BeautyAPi' do
   # Comment the next line if you don't want to use dynamic frameworks
