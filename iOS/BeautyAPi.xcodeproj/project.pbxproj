@@ -327,8 +327,8 @@
 		E77903142A57EE58008791AD /* SenseRender */ = {
 			isa = PBXGroup;
 			children = (
-				E77903162A57EE58008791AD /* SenseBeautyRender.m */,
 				E77903152A57EE58008791AD /* SenseBeautyRender.h */,
+				E77903162A57EE58008791AD /* SenseBeautyRender.m */,
 			);
 			path = SenseRender;
 			sourceTree = "<group>";
