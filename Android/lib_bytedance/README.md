@@ -29,38 +29,39 @@ src/main/java/io/agora/beautyapi/bytedance
 ```
 
 3. Initialization
+
+> Before initialization, you need to copy the resources required by the ByteDanceBeauty SDK to the sdcard, and create a RenderManager instance in advance and pass it to ByteDanceBeautyAPI.
+> For the initialization and destruction of renderManager, it needs to be called in the GL thread. Here, ByteDanceBeautyAPI provides two callbacks, onEffectInitialized and onEffectDestroyed.
+
 ```kotlin
 private val mByteDanceApi by lazy {
-    createByteDanceBeautyAPI()
+  createByteDanceBeautyAPI()
 }
-private val mEffectManager by lazy {
-    val resourceHelper =
-        AssetsResourcesHelper(this, "beauty_bytedance")
-    EffectManager(
-        this,
-        resourceHelper,
-        resourceHelper.getLicensePath(LICENSE_NAME)
-    )
-}
-
 mByteDanceApi.initialize(
-    Config(
-        mRtcEngine,
-        mEffectManager,
-        captureMode = CaptureMode.Agora,
-        statsEnable = BuildConfig.BUILD,
-        eventCallback = EventCallback(
-            onBeautyStats = {stats ->
-                Log.d(TAG, "BeautyStats stats = $stats")
-            },
-            onEffectInitialized = {
-                Log.d(TAG, "onEffectInitialized")
-            },
-            onEffectDestroyed = {
-                Log.d(TAG, "onEffectInitialized")
-            }
-        )
-    ))
+  Config(
+    applicationContext,
+    mRtcEngine,
+    renderManager,
+    captureMode = if (isCustomCaptureMode) CaptureMode.Custom else CaptureMode.Agora,
+    statsEnable = true,
+    cameraConfig = CameraConfig(),
+    eventCallback = EventCallback(
+      onBeautyStats = {stats ->
+        Log.d(TAG, "BeautyStats stats = $stats")
+      },
+      onEffectInitialized = {
+        // Callback in the GL thread, used to initialize the Bytebeauty SDK
+        ByteDanceBeautySDK.initEffect(applicationContext)
+        Log.d(TAG, "onEffectInitialized")
+      },
+      onEffectDestroyed = {
+        // Callback in the GL thread, used to destroy the Bytebeauty SDK
+        ByteDanceBeautySDK.unInitEffect()
+        Log.d(TAG, "onEffectInitialized")
+      }
+    )
+  )
+)
 ```
 
 4. Beauty On/Off (default off)
@@ -78,7 +79,16 @@ mByteDanceApi.setupLocalVideo(mBinding.localVideoView, Constants.RENDER_MODE_FIT
 mByteDanceApi.setBeautyPreset(BeautyPreset.DEFAULT) // BeautyPreset.CUSTOM：Close Recommended Beauty
 ```
 
-7. Destroy BeautyAPI
+7. Update Camera Config
+```kotlin
+val cameraConfig = CameraConfig(
+    frontMirror = MirrorMode.MIRROR_LOCAL_REMOTE,
+    backMirror = MirrorMode.MIRROR_NONE
+)
+mByteDanceApi.updateCameraConfig(cameraConfig)
+```
+
+8. Destroy BeautyAPI
 ```kotlin
 mRtcEngine.leaveChannel()
 // Must release beauty api after leaveChannel
@@ -97,6 +107,7 @@ mByteDanceApi.initialize(
         mEffectManager,
         captureMode = CaptureMode.Custom,
         statsEnable = BuildConfig.BUILD,
+        cameraConfig = CameraConfig(),
         eventCallback = EventCallback(
             onBeautyStats = {stats ->
                 Log.d(TAG, "BeautyStats stats = $stats")
@@ -113,28 +124,14 @@ mByteDanceApi.initialize(
 2. Pass external video frame to BeautyAPI by onFrame interface.
 ```kotlin
 override fun onCaptureVideoFrame(
-    sourceType: Int,
-    videoFrame: VideoFrame?
-) : Boolean {
-    when(mByteDanceApi.onFrame(videoFrame!!)){
-        ErrorCode.ERROR_OK.value -> {
-            shouldMirror = false
-            return true
-        }
-        ErrorCode.ERROR_FRAME_SKIPPED.value ->{
-            shouldMirror = false
-            return false
-        }
-        else -> {
-            val mirror = videoFrame.sourceType == VideoFrame.SourceType.kFrontCamera
-            if(shouldMirror != mirror){
-                shouldMirror = mirror
-                return false
-            }
-            return true
-        }
-    }
+  sourceType: Int,
+  videoFrame: VideoFrame?
+) = when (mByteDanceApi.onFrame(videoFrame!!)) {
+  ErrorCode.ERROR_FRAME_SKIPPED.value -> false
+  else -> true
 }
+
+override fun getMirrorApplied() = mByteDanceApi.getMirrorApplied()
 ```
 
 ## Feedback

@@ -30,18 +30,23 @@ src/main/java/io/agora/beautyapi/sensetime
 ```
 
 3. 初始化
+
+> 在初始化之前，需要先初始化商汤美颜SDK，并获取到初始化好的STMobileEffectNative和STMobileHumanActionNative实例。
+> 其中STMobileHumanActionNative人脸识别句柄可以全局使用，STMobileEffectNative效果句柄只能在一个GL环境里使用，即切换GL环境时需要重新创建。
+
 ```kotlin
-private val mSTRenderKit by lazy {
-    STRenderKit(this, "beauty_sensetime")
-}
 private val mSenseTimeApi by lazy {
     createSenseTimeBeautyAPI()
 }
 
 mSenseTimeApi.initialize(
     Config(
+        application,
         mRtcEngine,
-        mSTRenderKit,
+        STHandlers(
+            SenseTimeBeautySDK.mobileEffectNative,
+            SenseTimeBeautySDK.humanActionNative
+        ),
         captureMode = CaptureMode.Agora,
         statsEnable = BuildConfig.DEBUG,
         eventCallback = object: IEventCallback{
@@ -49,7 +54,8 @@ mSenseTimeApi.initialize(
                 Log.d(TAG, "BeautyStats stats = $stats")
             }
         }
-    ))
+    )
+)
 ```
 
 4. 美颜开关(默认关)
@@ -67,10 +73,22 @@ mSenseTimeApi.setupLocalVideo(mBinding.localVideoView, Constants.RENDER_MODE_FIT
 mSenseTimeApi.setBeautyPreset(BeautyPreset.DEFAULT) // BeautyPreset.CUSTOM：关闭推荐美颜参数
 ```
 
-7. 销毁美颜
+7. 更新镜像配置
+```kotlin
+val cameraConfig = CameraConfig(
+    frontMirror = MirrorMode.MIRROR_LOCAL_REMOTE,
+    backMirror = MirrorMode.MIRROR_NONE
+)
+mSenseTimeApi.updateCameraConfig(cameraConfig)
+```
+
+
+8. 销毁美颜
+
+> 调用时机必须在leaveChannel/stopPreview之后，RtcEngine.destroy之前！
+
 ```kotlin
 mRtcEngine.leaveChannel()
-// 必须在leaveChannel后销毁
 mSenseTimeApi.release()
 mSTRenderKit.release()
 ```
@@ -98,26 +116,12 @@ mSenseTimeApi.initialize(
 override fun onCaptureVideoFrame(
     sourceType: Int,
     videoFrame: VideoFrame?
-) : Boolean {
-    when(mSenseTimeApi.onFrame(videoFrame!!)){
-        ErrorCode.ERROR_OK.value -> {
-            shouldMirror = false
-            return true
-        }
-        ErrorCode.ERROR_FRAME_SKIPPED.value -> {
-            shouldMirror = false
-            return false
-        }
-        else -> {
-            val mirror = videoFrame.sourceType == VideoFrame.SourceType.kFrontCamera
-            if(shouldMirror != mirror){
-                shouldMirror = mirror
-                return false
-            }
-            return true
-        }
-    }
+) = when(mSenseTimeApi.onFrame(videoFrame!!)){
+    ErrorCode.ERROR_FRAME_SKIPPED.value -> false
+    else -> true
 }
+
+override fun getMirrorApplied() = mSenseTimeApi.getMirrorApplied()
 ```
 
 ## 联系我们

@@ -29,11 +29,11 @@ _English | [中文](README.zh.md)
 2. FaceUnity
    Put the FaceUnity beauty resources into the corresponding path
 
-| FaceUnity Beauty Resources          | Location                                             |
-|-------------------------------------|------------------------------------------------------|
-| makeup resource(e.g. naicha.bundle) | app/src/main/assets/beauty_faceunity/makeup          |
-| sticker resource(e.g. fashi.bundle) | app/src/main/assets/beauty_faceunity/sticker         |
-| authpack.java                       | app/src/main/java/io/agora/beauty/demo/authpack.java |
+| FaceUnity Beauty Resources          | Location                                                |
+|-------------------------------------|---------------------------------------------------------|
+| makeup resource(e.g. naicha.bundle) | app/src/main/assets/beauty_faceunity/makeup             |
+| sticker resource(e.g. fashi.bundle) | app/src/main/assets/beauty_faceunity/sticker            |
+| authpack.java                       | app/src/main/java/io/agora/beautyapi/demo/authpack.java |
 
 3. ByteDance
    Unzip the ByteDance beauty resource and copy the following files/directories to the corresponding path

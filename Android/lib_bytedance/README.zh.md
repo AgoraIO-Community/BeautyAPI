@@ -29,38 +29,39 @@ src/main/java/io/agora/beautyapi/bytedance
 ```
 
 3. 初始化
+
+> 初始化前需要先复制字节美颜SDK所需的资源到sdcard上，并提前创建好RenderManager实例传给ByteDanceBeautyAPI。
+> 对于renderManager的初始化和销毁，需要放在GL线程里去调用，这里ByteDanceBeautyAPI分别提供了两个回调onEffectInitialized和onEffectDestroyed。
+
 ```kotlin
 private val mByteDanceApi by lazy {
     createByteDanceBeautyAPI()
 }
-private val mEffectManager by lazy {
-    val resourceHelper =
-        AssetsResourcesHelper(this, "beauty_bytedance")
-    EffectManager(
-        this,
-        resourceHelper,
-        resourceHelper.getLicensePath(LICENSE_NAME)
-    )
-}
-
 mByteDanceApi.initialize(
     Config(
+        applicationContext,
         mRtcEngine,
-        mEffectManager,
-        captureMode = CaptureMode.Agora,
-        statsEnable = BuildConfig.BUILD,
+        renderManager,
+        captureMode = if (isCustomCaptureMode) CaptureMode.Custom else CaptureMode.Agora,
+        statsEnable = true,
+        cameraConfig = CameraConfig(),
         eventCallback = EventCallback(
             onBeautyStats = {stats ->
                 Log.d(TAG, "BeautyStats stats = $stats")
             },
             onEffectInitialized = {
+                // 在GL线程里回调，用于初始化字节美颜SDK
+                ByteDanceBeautySDK.initEffect(applicationContext)
                 Log.d(TAG, "onEffectInitialized")
             },
             onEffectDestroyed = {
+                // 在GL线程里回调，用于销毁字节美颜SDK
+                ByteDanceBeautySDK.unInitEffect()
                 Log.d(TAG, "onEffectInitialized")
             }
         )
-    ))
+    )
+)
 ```
 
 4. 美颜开关(默认关)
@@ -78,7 +79,16 @@ mByteDanceApi.setupLocalVideo(mBinding.localVideoView, Constants.RENDER_MODE_FIT
 mByteDanceApi.setBeautyPreset(BeautyPreset.DEFAULT) // BeautyPreset.CUSTOM：关闭推荐美颜参数
 ```
 
-7. 销毁美颜
+7. 更新镜像配置
+```kotlin
+val cameraConfig = CameraConfig(
+    frontMirror = MirrorMode.MIRROR_LOCAL_REMOTE,
+    backMirror = MirrorMode.MIRROR_NONE
+)
+mByteDanceApi.updateCameraConfig(cameraConfig)
+```
+
+8. 销毁美颜
 ```kotlin
 mRtcEngine.leaveChannel()
 // 必须在leaveChannel后销毁
@@ -115,26 +125,12 @@ mByteDanceApi.initialize(
 override fun onCaptureVideoFrame(
     sourceType: Int,
     videoFrame: VideoFrame?
-) : Boolean {
-    when(mByteDanceApi.onFrame(videoFrame!!)){
-        ErrorCode.ERROR_OK.value -> {
-            shouldMirror = false
-            return true
-        }
-        ErrorCode.ERROR_FRAME_SKIPPED.value ->{
-            shouldMirror = false
-            return false
-        }
-        else -> {
-            val mirror = videoFrame.sourceType == VideoFrame.SourceType.kFrontCamera
-            if(shouldMirror != mirror){
-                shouldMirror = mirror
-                return false
-            }
-            return true
-        }
-    }
+) = when (mByteDanceApi.onFrame(videoFrame!!)) {
+    ErrorCode.ERROR_FRAME_SKIPPED.value -> false
+    else -> true
 }
+
+override fun getMirrorApplied() = mByteDanceApi.getMirrorApplied()
 ```
 
 ## 联系我们

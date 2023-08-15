@@ -30,26 +30,32 @@ src/main/java/io/agora/beautyapi/sensetime
 ```
 
 3. Initialization
+
+> Before initialization, you need to initialize the SenseTime Beauty SDK first, and obtain the initialized STMobileEffectNative and STMobileHumanActionNative instances.
+> Among them, the STMobileHumanActionNative face recognition handle can be used globally, and the STMobileEffectNative effect handle can only be used in one GL environment, that is, it needs to be recreated when switching the GL environment.
+
 ```kotlin
-private val mSTRenderKit by lazy {
-    STRenderKit(this, "beauty_sensetime")
-}
 private val mSenseTimeApi by lazy {
-    createSenseTimeBeautyAPI()
+  createSenseTimeBeautyAPI()
 }
 
 mSenseTimeApi.initialize(
-    Config(
-        mRtcEngine,
-        mSTRenderKit,
-        captureMode = CaptureMode.Agora,
-        statsEnable = BuildConfig.DEBUG,
-        eventCallback = object: IEventCallback{
-            override fun onBeautyStats(stats: BeautyStats) {
-                Log.d(TAG, "BeautyStats stats = $stats")
-            }
-        }
-    ))
+  Config(
+    application,
+    mRtcEngine,
+    STHandlers(
+      SenseTimeBeautySDK.mobileEffectNative,
+      SenseTimeBeautySDK.humanActionNative
+    ),
+    captureMode = CaptureMode.Agora,
+    statsEnable = BuildConfig.DEBUG,
+    eventCallback = object: IEventCallback{
+      override fun onBeautyStats(stats: BeautyStats) {
+        Log.d(TAG, "BeautyStats stats = $stats")
+      }
+    }
+  )
+)
 ```
 
 4. Beauty On/Off (default off)
@@ -67,7 +73,19 @@ mSenseTimeApi.setupLocalVideo(mBinding.localVideoView, Constants.RENDER_MODE_FIT
 mSenseTimeApi.setBeautyPreset(BeautyPreset.DEFAULT) // BeautyPreset.CUSTOM：Close Recommended Beauty
 ```
 
-7. Destroy BeautyAPI
+7. Update Camera Config
+```kotlin
+val cameraConfig = CameraConfig(
+    frontMirror = MirrorMode.MIRROR_LOCAL_REMOTE,
+    backMirror = MirrorMode.MIRROR_NONE
+)
+mSenseTimeApi.updateCameraConfig(cameraConfig)
+```
+
+8. Destroy BeautyAPI
+
+> The calling time must be after leaveChannel/stopPreview and before RtcEngine.destroy!
+
 ```kotlin
 mRtcEngine.leaveChannel()
 // Must release beauty api after leaveChannel
@@ -98,26 +116,12 @@ mSenseTimeApi.initialize(
 override fun onCaptureVideoFrame(
     sourceType: Int,
     videoFrame: VideoFrame?
-) : Boolean {
-    when(mSenseTimeApi.onFrame(videoFrame!!)){
-        ErrorCode.ERROR_OK.value -> {
-            shouldMirror = false
-            return true
-        }
-        ErrorCode.ERROR_FRAME_SKIPPED.value -> {
-            shouldMirror = false
-            return false
-        }
-        else -> {
-            val mirror = videoFrame.sourceType == VideoFrame.SourceType.kFrontCamera
-            if(shouldMirror != mirror){
-                shouldMirror = mirror
-                return false
-            }
-            return true
-        }
-    }
+)  = when(mSenseTimeApi.onFrame(videoFrame!!)){
+  ErrorCode.ERROR_FRAME_SKIPPED.value -> false
+  else -> true
 }
+
+override fun getMirrorApplied() = mSenseTimeApi.getMirrorApplied()
 ```
 
 ## Feedback

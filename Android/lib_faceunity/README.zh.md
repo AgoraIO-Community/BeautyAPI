@@ -43,27 +43,29 @@ src/main/java/io/agora/beautyapi/faceunity
 ```
 
 3. 初始化
+
+> 在初始化之前，需要先初始化相芯美颜sdk，并获取到FURenderKit实例。
+
 ```kotlin
 private val mFaceUnityApi by lazy {
     createFaceUnityBeautyAPI()
 }
-private val mFuRenderKit by lazy {
-    FURenderer.getInstance().setup(this, authpack.A())
-    FURenderKit.getInstance()
-}
 
 mFaceUnityApi.initialize(
     Config(
+        applicationContext,
         mRtcEngine,
-        mFuRenderKit,
+        fuRenderKit,
         captureMode = CaptureMode.Agora,
-        statsEnable = true,
+        cameraConfig = CameraConfig(),
+        statsEnable = BuildConfig.DEBUG,
         eventCallback = object: IEventCallback{
             override fun onBeautyStats(stats: BeautyStats) {
                 Log.d(TAG, "BeautyStats stats = $stats")
             }
         }
-    ))
+    )
+)
 ```
 
 4. 美颜开关(默认关)
@@ -81,7 +83,20 @@ mFaceUnityApi.setupLocalVideo(mBinding.localVideoView, Constants.RENDER_MODE_FIT
 mFaceUnityApi.setBeautyPreset(BeautyPreset.DEFAULT) // BeautyPreset.CUSTOM：关闭推荐美颜参数
 ```
 
-7. 销毁美颜
+7. 更新镜像配置
+```kotlin
+val cameraConfig = CameraConfig(
+    frontMirror = MirrorMode.MIRROR_LOCAL_REMOTE,
+    backMirror = MirrorMode.MIRROR_NONE
+)
+mFaceUnityApi.updateCameraConfig(cameraConfig)
+```
+
+
+8. 销毁美颜
+
+> 调用时机必须在leaveChannel/stopPreview之后，RtcEngine.destroy之前！
+
 ```kotlin
 mRtcEngine.leaveChannel()
 // 必须在leaveChannel后销毁
@@ -113,26 +128,12 @@ mFaceUnityApi.initialize(
 override fun onCaptureVideoFrame(
     sourceType: Int,
     videoFrame: VideoFrame?
-) : Boolean{
-    when(mFaceUnityApi.onFrame(videoFrame!!)){
-        ErrorCode.ERROR_OK.value -> {
-            shouldMirror = false
-            return true
-        }
-        ErrorCode.ERROR_FRAME_SKIPPED.value ->{
-            shouldMirror = false
-            return false
-        }
-        else -> {
-            val mirror = videoFrame.sourceType == VideoFrame.SourceType.kFrontCamera
-            if(shouldMirror != mirror){
-                shouldMirror = mirror
-                return false
-            }
-            return true
-        }
-    }
+)  = when (mFaceUnityApi.onFrame(videoFrame!!)) {
+    ErrorCode.ERROR_FRAME_SKIPPED.value -> false
+    else -> true
 }
+
+override fun getMirrorApplied() = mFaceUnityApi.getMirrorApplied()
 ```
 
 ## 联系我们

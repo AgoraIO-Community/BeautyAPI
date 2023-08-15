@@ -29,11 +29,11 @@
 2. 相芯美颜
 将相芯美颜资源放入对应路径下
 
-| 美颜资源                 | 项目路径                                                  |
-|----------------------|-------------------------------------------------------|
-| 美妆资源(如naicha.bundle) | app/src/main/assets/beauty_faceunity/makeup           |
-| 贴纸资源(如fashi.bundle)  | app/src/main/assets/beauty_faceunity/sticker          |
-| 证书authpack.java      | app/src/main/java/io/agora/beauty/demo/authpack.java  |
+| 美颜资源                 | 项目路径                                                    |
+|----------------------|---------------------------------------------------------|
+| 美妆资源(如naicha.bundle) | app/src/main/assets/beauty_faceunity/makeup             |
+| 贴纸资源(如fashi.bundle)  | app/src/main/assets/beauty_faceunity/sticker            |
+| 证书authpack.java      | app/src/main/java/io/agora/beautyapi/demo/authpack.java |
 
 3. 字节/火山美颜
 解压字节/火山美颜资源并复制以下文件/目录到对应路径下
