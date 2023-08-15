@@ -24,6 +24,7 @@
 
 package io.agora.beautyapi.sensetime
 
+import android.annotation.TargetApi
 import android.graphics.Matrix
 import android.opengl.GLES11Ext
 import android.opengl.GLES20
@@ -410,7 +411,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         val startTime = System.currentTimeMillis()
 
         val processTexId = when(beautyMode){
-            1 -> processBeautyTextureAPI26(videoFrame)
+            1 -> processBeautyTexture(videoFrame)
             2 -> processBeautyI420(videoFrame)
             else -> processBeautyAuto(videoFrame)
         }
@@ -443,10 +444,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
 
     private fun processBeautyAuto(videoFrame: VideoFrame): Int {
         val buffer = videoFrame.buffer
-        return if (buffer is TextureBuffer && Build.VERSION.SDK_INT >= 26) {
-            // Android 8.0以上使用单纹理输入，内部使用HardwareBuffer转nv21
-            processBeautyTextureAPI26(videoFrame)
-        } else if(buffer is TextureBuffer){
+        return if(buffer is TextureBuffer){
             processBeautyTexture(videoFrame)
         } else {
             processBeautyI420(videoFrame)
@@ -463,6 +461,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         }
     }
 
+    @TargetApi(26)
     private fun processBeautyTextureAPI26(videoFrame: VideoFrame): Int{
         val texBufferHelper = textureBufferHelper ?: return -1
         val buffer = videoFrame.buffer as? TextureBuffer ?: return -1
@@ -536,6 +535,10 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
     }
 
     private fun processBeautyTexture(videoFrame: VideoFrame): Int{
+        if (Build.VERSION.SDK_INT >= 26) {
+            // Android 8.0以上使用单纹理输入，内部使用HardwareBuffer转nv21
+            return processBeautyTextureAPI26(videoFrame)
+        }
         val texBufferHelper = textureBufferHelper ?: return -1
         val buffer = videoFrame.buffer as? TextureBuffer ?: return -1
         val nv21ByteArray = getNV21Buffer(videoFrame) ?: return -1
