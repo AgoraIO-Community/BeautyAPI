@@ -279,7 +279,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
                 mTextureProcessHelper = null
                 null
             }
-            it.handler.looper.quit()
+            // it.handler.looper.quit()
             it.dispose()
         }
         statsHelper?.reset()
