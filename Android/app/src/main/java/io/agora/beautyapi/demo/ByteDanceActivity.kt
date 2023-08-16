@@ -22,6 +22,7 @@ import io.agora.beautyapi.bytedance.createByteDanceBeautyAPI
 import io.agora.beautyapi.demo.databinding.BeautyActivityBinding
 import io.agora.beautyapi.demo.utils.FileUtils
 import io.agora.beautyapi.demo.utils.ReflectUtils
+import io.agora.beautyapi.demo.widget.BeautyDialog
 import io.agora.rtc2.ChannelMediaOptions
 import io.agora.rtc2.Constants
 import io.agora.rtc2.IRtcEngineEventHandler
@@ -158,7 +159,257 @@ class ByteDanceActivity : ComponentActivity() {
     private var cameraConfig = CameraConfig()
     private val renderManager = ByteDanceBeautySDK.renderManager
 
+    private val mBeautyDialog by lazy {
+        BeautyDialog(this).apply {
+            isEnable = beautyEnableDefault
+            onEnableChanged = { enable ->
+                mByteDanceApi.enable(enable)
+            }
+            groupList = listOf(
+                BeautyDialog.GroupInfo(
+                    R.string.beauty_group_beauty,
+                    0,
+                    listOf(
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_none,
+                            R.mipmap.ic_beauty_none,
+                            0f
+                        ) { dialog, _ ->
+                            dialog.isTopLayoutVisible = false
+                            ByteDanceBeautySDK.setBeauty(
+                                smooth = 0.0f,
+                                whiten = 0.0f,
+                                thinFace = 0.0f,
+                                enlargeEye = 0.0f,
+                                redden = 0.0f,
+                                shrinkCheekbone = 0.0f,
+                                shrinkJawbone = 0.0f,
+                                whiteTeeth = 0.0f,
+                                hairlineHeight = 0.0f,
+                                narrowNose = 0.0f,
+                                mouthSize = 0.0f,
+                                chinLength = 0.0f,
+                                brightEye = 0.0f,
+                                darkCircles = 0.0f,
+                                nasolabialFolds = 0.0f,
+                            )
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_beauty_smooth,
+                            R.mipmap.ic_beauty_face_mopi,
+                            0f
+                        ) { dialog, value ->
+                            dialog.isTopLayoutVisible = true
+                            ByteDanceBeautySDK.setBeauty(smooth = value)
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_beauty_whiten,
+                            R.mipmap.ic_beauty_face_meibai,
+                            0f
+                        ) { dialog, value ->
+                            dialog.isTopLayoutVisible = true
+                            ByteDanceBeautySDK.setBeauty(whiten = value)
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_beauty_redden,
+                            R.mipmap.ic_beauty_face_redden,
+                            0f
+                        ) { dialog, value ->
+                            dialog.isTopLayoutVisible = true
+                            ByteDanceBeautySDK.setBeauty(redden = value)
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_beauty_overall,
+                            R.mipmap.ic_beauty_face_shoulian,
+                            0f
+                        ) { dialog, value ->
+                            dialog.isTopLayoutVisible = true
+                            ByteDanceBeautySDK.setBeauty(thinFace = value)
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_beauty_cheekbone,
+                            R.mipmap.ic_beauty_face_shouquangu,
+                            0f
+                        ) { dialog, value ->
+                            dialog.isTopLayoutVisible = true
+                            ByteDanceBeautySDK.setBeauty(shrinkCheekbone = value)
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_beauty_eye,
+                            R.mipmap.ic_beauty_face_eye,
+                            0f
+                        ) { dialog, value ->
+                            dialog.isTopLayoutVisible = true
+                            ByteDanceBeautySDK.setBeauty(enlargeEye = value)
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_beauty_nose,
+                            R.mipmap.ic_beauty_face_shoubi,
+                            0f
+                        ) { dialog, value ->
+                            dialog.isTopLayoutVisible = true
+                            ByteDanceBeautySDK.setBeauty(narrowNose = value)
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_beauty_chin,
+                            R.mipmap.ic_beauty_face_xiaba,
+                            0f
+                        ) { dialog, value ->
+                            dialog.isTopLayoutVisible = true
+                            ByteDanceBeautySDK.setBeauty(chinLength = value)
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_beauty_jawbone,
+                            R.mipmap.ic_beauty_face_xiahegu,
+                            0f
+                        ) { dialog, value ->
+                            dialog.isTopLayoutVisible = true
+                            ByteDanceBeautySDK.setBeauty(shrinkJawbone = value)
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_beauty_forehead,
+                            R.mipmap.ic_beauty_face_etou,
+                            0f
+                        ) { dialog, value ->
+                            dialog.isTopLayoutVisible = true
+                            ByteDanceBeautySDK.setBeauty(hairlineHeight = value)
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_beauty_mouth,
+                            R.mipmap.ic_beauty_face_zuixing,
+                            0f
+                        ) { dialog, value ->
+                            dialog.isTopLayoutVisible = true
+                            ByteDanceBeautySDK.setBeauty(mouthSize = value)
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_beauty_teeth,
+                            R.mipmap.ic_beauty_face_meiya,
+                            0f
+                        ) { dialog, value ->
+                            dialog.isTopLayoutVisible = true
+                            ByteDanceBeautySDK.setBeauty(whiteTeeth = value)
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_beauty_bright_eye,
+                            R.mipmap.ic_beauty_face_bright_eye,
+                            0f
+                        ) { dialog, value ->
+                            dialog.isTopLayoutVisible = true
+                            ByteDanceBeautySDK.setBeauty(brightEye = value)
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_beauty_remove_dark_circles,
+                            R.mipmap.ic_beauty_face_remove_dark_circles,
+                            0f
+                        ) { dialog, value ->
+                            dialog.isTopLayoutVisible = true
+                            ByteDanceBeautySDK.setBeauty(darkCircles = value)
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_beauty_remove_nasolabial_folds,
+                            R.mipmap.ic_beauty_face_remove_nasolabial_folds,
+                            0f
+                        ) { dialog, value ->
+                            dialog.isTopLayoutVisible = true
+                            ByteDanceBeautySDK.setBeauty(nasolabialFolds = value)
+                        },
+                    )
+                ),
+                BeautyDialog.GroupInfo(
+                    R.string.beauty_group_effect,
+                    0,
+                    listOf(
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_none,
+                            R.mipmap.ic_beauty_none,
+                            0f
+                        ) { dialog, _ ->
+                            dialog.isTopLayoutVisible = false
+                            renderManager.removeComposerNodes(arrayOf(
+                                ByteDanceBeautySDK.makeupTianmeiNodePath,
+                                ByteDanceBeautySDK.makeupYuanQiNodePath
+                            ))
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_effect_tianmei,
+                            R.mipmap.ic_beauty_effect_tianmei,
+                            0f
+                        ) { dialog, value ->
+                            dialog.isTopLayoutVisible = true
 
+                            val tianmeiNode = ByteDanceBeautySDK.makeupTianmeiNodePath
+                            renderManager.appendComposerNodes(arrayOf(tianmeiNode))
+                            renderManager.loadResourceWithTimeout(-1)
+                            renderManager.updateComposerNodes(
+                                tianmeiNode,
+                                "Filter_ALL",
+                                value
+                            )
+                            renderManager.updateComposerNodes(
+                                tianmeiNode,
+                                "Makeup_ALL",
+                                value
+                            )
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_effect_yuanqi,
+                            R.mipmap.ic_beauty_effect_yuanqi,
+                            0f
+                        ) { dialog, value ->
+                            dialog.isTopLayoutVisible = true
+
+                            val yuanqiNode = ByteDanceBeautySDK.makeupYuanQiNodePath
+                            renderManager.appendComposerNodes(arrayOf(yuanqiNode))
+                            renderManager.loadResourceWithTimeout(-1)
+                            renderManager.updateComposerNodes(
+                                yuanqiNode,
+                                "Filter_ALL",
+                                value
+                            )
+                            renderManager.updateComposerNodes(
+                                yuanqiNode,
+                                "Makeup_ALL",
+                                value
+                            )
+
+                        },
+                    )
+                ),
+                BeautyDialog.GroupInfo(
+                    R.string.beauty_group_sticker,
+                    0,
+                    listOf(
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_none,
+                            R.mipmap.ic_beauty_none,
+                            0f
+                        ) { dialog, _ ->
+                            dialog.isTopLayoutVisible = false
+                            renderManager.setSticker(null)
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_sticker_huahua,
+                            R.mipmap.ic_beauty_filter_naiyou,
+                            0f
+                        ) { dialog, _ ->
+                            dialog.isTopLayoutVisible = true
+                            renderManager.setSticker("${ByteDanceBeautySDK.stickerPath}/huahua")
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_sticker_wochaotian,
+                            R.mipmap.ic_beauty_filter_naiyou,
+                            0f
+                        ) { dialog, _ ->
+                            dialog.isTopLayoutVisible = true
+                            renderManager.setSticker("${ByteDanceBeautySDK.stickerPath}/wochaotian")
+                        },
+                    )
+                )
+            )
+        }
+    }
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(mBinding.root)
@@ -279,6 +530,9 @@ class ByteDanceActivity : ComponentActivity() {
         mBinding.ivSetting.setOnClickListener {
             mSettingDialog.show()
         }
+        mBinding.ivBeauty.setOnClickListener {
+            mBeautyDialog.show()
+        }
         mBinding.ctvFaceBeauty.setOnClickListener {
             val enable = !mBinding.ctvFaceBeauty.isChecked
             mBinding.ctvFaceBeauty.isChecked = enable
@@ -368,6 +622,7 @@ object ByteDanceBeautySDK {
     var beauty4ItemsNodePath = ""
     var reSharpNodePath = ""
     var makeupTianmeiNodePath = ""
+    var makeupYuanQiNodePath = ""
     var stickerPath = ""
 
 
@@ -400,6 +655,10 @@ object ByteDanceBeautySDK {
             // copy makeup node
             makeupTianmeiNodePath = "$storagePath/beauty_bytedance/ComposeMakeup.bundle/ComposeMakeup/style_makeup/tianmei"
             FileUtils.copyAssets(context, "$assetsPath/ComposeMakeup.bundle/ComposeMakeup/style_makeup/tianmei", makeupTianmeiNodePath)
+
+            // copy makeup node
+            makeupYuanQiNodePath = "$storagePath/beauty_bytedance/ComposeMakeup.bundle/ComposeMakeup/style_makeup/yuanqi"
+            FileUtils.copyAssets(context, "$assetsPath/ComposeMakeup.bundle/ComposeMakeup/style_makeup/yuanqi", makeupYuanQiNodePath)
 
             // copy stickers
             stickerPath = "$storagePath/beauty_bytedance/StickerResource.bundle/stickers"
@@ -434,5 +693,71 @@ object ByteDanceBeautySDK {
             return false
         }
         return true
+    }
+
+    fun setBeauty(
+        smooth: Float? = null,
+        whiten: Float? = null,
+        thinFace: Float? = null,
+        enlargeEye: Float? = null,
+        redden: Float? = null,
+        shrinkCheekbone: Float? = null,
+        shrinkJawbone: Float? = null,
+        whiteTeeth: Float? = null,
+        hairlineHeight: Float? = null,
+        narrowNose: Float? = null,
+        mouthSize: Float? = null,
+        chinLength: Float? = null,
+        brightEye: Float? = null,
+        darkCircles: Float? = null,
+        nasolabialFolds: Float? = null,
+    ){
+        // 磨皮
+        smooth?.let { renderManager.updateComposerNodes(beautyNodePath, "smooth", it) }
+
+        // 美白
+        whiten?.let { renderManager.updateComposerNodes(beautyNodePath, "whiten", it) }
+
+        // 红润
+        redden?.let { renderManager.updateComposerNodes(beautyNodePath, "sharp", it) }
+
+
+        // 瘦脸
+        thinFace?.let { renderManager.updateComposerNodes(reSharpNodePath, "Internal_Deform_Overall", it) }
+
+        // 大眼
+        enlargeEye?.let { renderManager.updateComposerNodes(reSharpNodePath, "Internal_Deform_Eye", it) }
+
+
+        // 瘦颧骨
+        shrinkCheekbone?.let { renderManager.updateComposerNodes(reSharpNodePath, "Internal_Deform_Zoom_Cheekbone", it) }
+
+        // 下颌骨
+        shrinkJawbone?.let { renderManager.updateComposerNodes(reSharpNodePath, "Internal_Deform_Zoom_Jawbone", it) }
+
+        // 美牙
+        whiteTeeth?.let { renderManager.updateComposerNodes(reSharpNodePath, "BEF_BEAUTY_WHITEN_TEETH", it) }
+
+        // 额头
+        hairlineHeight?.let { renderManager.updateComposerNodes(reSharpNodePath, "Internal_Deform_Forehead", it) }
+
+        // 瘦鼻
+        narrowNose?.let { renderManager.updateComposerNodes(reSharpNodePath, "Internal_Deform_Nose", it) }
+
+        // 嘴形
+        mouthSize?.let { renderManager.updateComposerNodes(reSharpNodePath, "Internal_Deform_ZoomMouth", it) }
+
+        // 下巴
+        chinLength?.let { renderManager.updateComposerNodes(reSharpNodePath, "Internal_Deform_Chin", it) }
+
+        // 亮眼
+        brightEye?.let { renderManager.updateComposerNodes(beauty4ItemsNodePath, "BEF_BEAUTY_BRIGHTEN_EYE", it) }
+
+        // 祛黑眼圈
+        darkCircles?.let { renderManager.updateComposerNodes(beauty4ItemsNodePath, "BEF_BEAUTY_REMOVE_POUCH", it) }
+
+        // 祛法令纹
+        nasolabialFolds?.let { renderManager.updateComposerNodes(beauty4ItemsNodePath, "BEF_BEAUTY_SMILES_FOLDS", it) }
+
     }
 }
