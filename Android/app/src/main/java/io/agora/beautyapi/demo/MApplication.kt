@@ -31,6 +31,11 @@ class MApplication: Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        SenseTimeBeautySDK.initBeautySDK(this)
+        FaceUnityBeautySDK.initBeauty(this)
+        ByteDanceBeautySDK.initBeautySDK(this)
+
         CrashReport.initCrashReport(this, "96866f635f", true, CrashReport.UserStrategy(this).apply {
             isEnableCatchAnrTrace = true
             isEnableANRCrashMonitor = true
@@ -39,4 +44,5 @@ class MApplication: Application() {
             isEnableNativeCrashMonitor = true
         })
     }
+
 }

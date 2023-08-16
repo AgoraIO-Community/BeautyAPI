@@ -9,12 +9,12 @@ following beauty scene API:
 
 | Beauty    | Platform | Language    | Location                                                 | RTC SDK Version | Beauty SDK Version |
 |-----------|----------|-------------|----------------------------------------------------------|-----------------|--------------------|
-| SenseTime | Android  | Java/Kotlin | [/Android/lib_sensetime](/Android/lib_sensetime)         | 4.2.0           | 8.8.0              |
-| FaceUnity | Android  | Java/Kotlin | [/Android/lib_faceunity](/Android/lib_faceunity)         | 4.2.0           | 8.3.0              |
-| ByteDance | Android  | Java/Kotlin | [/Android/lib_bytedance](/Android/lib_bytedance)         | 4.2.0           | 4.3.0              |
-| SenseTime | iOS      | Swift/OC    | [/iOS/BeautyAPi/SenseBeaufy](/iOS/BeautyAPi/SenseBeaufy) | 4.2.0           | 1.9.0.1013         |
-| FaceUnity | iOS      | Swift/OC    | [/iOS/BeautyAPi/FUBeauty](/iOS/BeautyAPi/FUBeauty)       | 4.2.0           | 8.6.0              |
-| ByteDance | iOS      | Swift/OC    | [/iOS/BeautyAPi/ByteBeaufy](/iOS/BeautyAPi/ByteBeaufy)   | 4.2.0           | 4.3.0              |
+| SenseTime | Android  | Java/Kotlin | [/Android/lib_sensetime](/Android/lib_sensetime)         | 4.2.2           | 9.3.1              |
+| FaceUnity | Android  | Java/Kotlin | [/Android/lib_faceunity](/Android/lib_faceunity)         | 4.2.2           | 8.3.0              |
+| ByteDance | Android  | Java/Kotlin | [/Android/lib_bytedance](/Android/lib_bytedance)         | 4.2.2           | 4.3.0              |
+| SenseTime | iOS      | Swift/OC    | [/iOS/BeautyAPi/SenseBeaufy](/iOS/BeautyAPi/SenseBeaufy) | 4.2.2           | 9.3.1              |
+| FaceUnity | iOS      | Swift/OC    | [/iOS/BeautyAPi/FUBeauty](/iOS/BeautyAPi/FUBeauty)       | 4.2.2           | 8.6.0              |
+| ByteDance | iOS      | Swift/OC    | [/iOS/BeautyAPi/ByteBeaufy](/iOS/BeautyAPi/ByteBeaufy)   | 4.2.2           | 4.3.0              |
 
 You can refer to following demo to lean how to use the beauty api:
 

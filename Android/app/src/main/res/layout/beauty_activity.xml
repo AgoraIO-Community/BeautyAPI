@@ -33,6 +33,17 @@
         android:src="@drawable/ic_settings"/>
 
     <ImageView
+        android:id="@+id/ivMirror"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_button"
+        android:padding="12dp"
+        android:layout_margin="12dp"
+        app:layout_constraintEnd_toStartOf="@id/ivCamera"
+        app:layout_constraintBottom_toTopOf="@id/llBeautyOptions"
+        android:src="@drawable/ic_mirror"/>
+
+    <ImageView
         android:id="@+id/ivCamera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

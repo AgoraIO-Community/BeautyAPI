@@ -21,6 +21,17 @@
                                 <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OfY-lS-tVB">
+                                <rect key="frame" x="132" y="716" width="123" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="uqi-Mr-Nfh"/>
+                                </constraints>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="local_remote"/>
+                                <connections>
+                                    <action selector="onClickCameraMirrorButton:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="wkG-kW-gcb"/>
+                                </connections>
+                            </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7FH-Co-zPY">
                                 <rect key="frame" x="263" y="716" width="50" height="50"/>
                                 <constraints>
@@ -116,15 +127,18 @@
                             <constraint firstItem="4T7-Zc-wja" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" constant="30" id="9aw-1W-7s3"/>
                             <constraint firstItem="gkN-NE-DbW" firstAttribute="leading" secondItem="7FH-Co-zPY" secondAttribute="trailing" constant="10" id="MaV-CL-q52"/>
                             <constraint firstItem="mCZ-rv-Eti" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="Rbu-Kl-I3V"/>
+                            <constraint firstItem="KfK-QW-zxR" firstAttribute="top" secondItem="OfY-lS-tVB" secondAttribute="bottom" constant="11" id="bii-L1-lQP"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="4T7-Zc-wja" secondAttribute="trailing" constant="20" id="dt6-3z-RPM"/>
                             <constraint firstAttribute="bottom" secondItem="KfK-QW-zxR" secondAttribute="bottom" id="gGP-gX-o98"/>
                             <constraint firstItem="KfK-QW-zxR" firstAttribute="top" secondItem="gkN-NE-DbW" secondAttribute="bottom" constant="11" id="tdO-3E-R7o"/>
                             <constraint firstItem="KfK-QW-zxR" firstAttribute="top" secondItem="7FH-Co-zPY" secondAttribute="bottom" constant="11" id="tuR-nB-aj4"/>
+                            <constraint firstItem="7FH-Co-zPY" firstAttribute="leading" secondItem="OfY-lS-tVB" secondAttribute="trailing" constant="8" symbolic="YES" id="u4I-yM-oyF"/>
                             <constraint firstItem="KfK-QW-zxR" firstAttribute="trailing" secondItem="vDu-zF-Fre" secondAttribute="trailing" id="vNN-oZ-gDr"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="cameraButton" destination="7FH-Co-zPY" id="iAN-lc-7PC"/>
+                        <outlet property="cameraMirror" destination="OfY-lS-tVB" id="FaH-Y2-8O2"/>
                         <outlet property="localView" destination="mCZ-rv-Eti" id="CCq-kq-0d9"/>
                         <outlet property="remoteView" destination="4T7-Zc-wja" id="T21-xO-ySI"/>
                         <outlet property="settingButton" destination="gkN-NE-DbW" id="1qr-hw-F5z"/>

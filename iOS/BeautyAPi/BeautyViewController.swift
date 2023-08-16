@@ -13,6 +13,7 @@ class BeautyViewController: UIViewController {
     @IBOutlet weak var settingButton: UIButton!
     @IBOutlet weak var cameraButton: UIButton!
     @IBOutlet weak var toolContainerView: UIView!
+    @IBOutlet weak var cameraMirror: UIButton!
     
     private lazy var rtcEngine: AgoraRtcEngineKit = {
         let config = AgoraRtcEngineConfig()
@@ -27,6 +28,12 @@ class BeautyViewController: UIViewController {
     }()
     
     private lazy var beautyAPI = BeautyAPI()
+    private lazy var cameraConfig: CameraConfig = {
+        let cameraConfig = CameraConfig()
+        cameraConfig.frontMirror = .LOCAL_REMOTE
+        cameraConfig.backMirror = .NONE
+        return cameraConfig;
+    }()
     private lazy var fuRender = FUBeautyRender()
     private lazy var senseRender = SenseBeautyRender()
     private lazy var bytesRender = BytesBeautyRender()
@@ -51,8 +58,9 @@ class BeautyViewController: UIViewController {
     }
     
     @IBAction func onClickSwitchCameraButton(_ sender: Any) {
-        rtcEngine.switchCamera()
-        beautyAPI.isFrontCamera = !beautyAPI.isFrontCamera
+        beautyAPI.switchCamera()
+        let title = Configs.mirrorTypes.first(where: { beautyAPI.isFrontCamera ? $0.value == cameraConfig.frontMirror : $0.value == cameraConfig.backMirror })?.key
+        cameraMirror.setTitle(title, for: .normal)
     }
     @IBAction func onClickSettingButton(_ sender: Any) {
         let settingView = CLSettingCellView()
@@ -89,6 +97,22 @@ class BeautyViewController: UIViewController {
         beautyAPI.beautyRender?.setSticker?(sender.isSelected)
     }
     
+    @IBAction func onClickCameraMirrorButton(_ sender: UIButton) {
+        let pickerView = PickerView()
+        pickerView.dataArray = Configs.mirrorTypes.map({ $0.key })
+        pickerView.pickerViewSelectedValueClosure = { [weak self] value in
+            guard let self = self else { return }
+            sender.setTitle(value, for: .normal)
+            if self.beautyAPI.isFrontCamera {
+                self.cameraConfig.frontMirror = Configs.mirrorTypes[value] ?? .LOCAL_REMOTE
+            } else {
+                self.cameraConfig.backMirror = Configs.mirrorTypes[value] ?? .NONE
+            }
+            self.beautyAPI.update(self.cameraConfig)
+        }
+        pickerView.show()
+    }
+    
     private func setupBeautyAPI() {
         // 设置encode编码需要在初始化BeatuyAPI之前
         updateVideoEncodeConfig()
@@ -96,6 +120,8 @@ class BeautyViewController: UIViewController {
         let config = BeautyConfig()
         config.rtcEngine = rtcEngine
         config.captureMode = capture == "Custom" ? .custom : .agora
+        config.cameraConfig = cameraConfig
+        
         switch beautyType {
         case "sensetime":
             config.beautyRender = senseRender
@@ -167,11 +193,12 @@ class BeautyViewController: UIViewController {
         cameraButton.isHidden = !isBroascast
         settingButton.isHidden = !isBroascast
         toolContainerView.isHidden = !isBroascast
+        cameraMirror.isHidden = !isBroascast
     }
     
     deinit {
         AgoraRtcEngineKit.destroy()
-        beautyAPI.destory()
+        beautyAPI.destroy()
     }
 }
 
@@ -195,7 +222,7 @@ extension BeautyViewController: AgoraVideoFrameDelegate {
     }
     
     func getMirrorApplied() -> Bool {
-        beautyAPI.isFrontCamera
+        beautyAPI.getMirrorApplied()
     }
     
     func getRotationApplied() -> Bool {

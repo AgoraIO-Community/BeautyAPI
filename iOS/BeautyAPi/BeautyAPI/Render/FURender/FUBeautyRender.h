@@ -8,8 +8,10 @@
 #define FURenderMoudle <FURenderKit/FURenderKit.h>
 
 #import <Foundation/Foundation.h>
-#if __has_include("FUManager.h") && __has_include(<FURenderKit/FURenderKit.h>)
+#if __has_include("FUManager.h")
 #import "FUManager.h"
+#endif
+#if __has_include(<FURenderKit/FURenderKit.h>)
 #import <FURenderKit/FURenderKit.h>
 #endif
 

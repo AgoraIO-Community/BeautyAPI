@@ -42,7 +42,7 @@
     return _bytesNodes;
 }
 
-- (void)destory { 
+- (void)destroy { 
 #if __has_include(BytesMoudle)
     _frameProcessor = nil;
     _imageUtils = nil;

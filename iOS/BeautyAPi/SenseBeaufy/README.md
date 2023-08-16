@@ -75,7 +75,7 @@ beautyAPI.setBeautyPreset(.default)
 
 ```swift
 rtcEngine.leaveChannel()
-beautyAPI.destory()
+beautyAPI.destroy()
 AgoraRtcEngineKit.destroy()
 ```
 

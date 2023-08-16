@@ -1,5 +1,6 @@
 package io.agora.beautyapi.demo
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -21,6 +22,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(mBinding.root)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         mBinding.etChannelName.setText((java.util.Random().nextInt(100) + 1000).toString())
         mBinding.spResolution.setSelection(2)
