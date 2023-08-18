@@ -501,6 +501,12 @@ class ByteDanceActivity : ComponentActivity() {
         if (beautyEnableDefault) {
             mByteDanceApi.enable(true)
         }
+        mByteDanceApi.setBeautyPreset(
+            BeautyPreset.DEFAULT,
+            ByteDanceBeautySDK.beautyNodePath,
+            ByteDanceBeautySDK.beauty4ItemsNodePath,
+            ByteDanceBeautySDK.reSharpNodePath
+        )
 
         // Config RtcEngine
         mRtcEngine.addHandler(mRtcHandler)
@@ -509,7 +515,7 @@ class ByteDanceActivity : ComponentActivity() {
 
 
         // render local video
-        mByteDanceApi.setupLocalVideo(mBinding.localVideoView, Constants.RENDER_MODE_FIT)
+        mByteDanceApi.setupLocalVideo(mBinding.localVideoView, Constants.RENDER_MODE_HIDDEN)
 
 
         // join channel
@@ -612,7 +618,7 @@ class ByteDanceActivity : ComponentActivity() {
 object ByteDanceBeautySDK {
     private val TAG = "ByteDanceBeautySDK"
 
-    private val LICENSE_NAME = "agora_test_20220805_20230815_io.agora.entfull_4.2.3.licbag"
+    private val LICENSE_NAME = "Agora_test_20230815_20231115_io.agora.test.entfull_4.5.0_599.licbag"
     private val workerThread = Executors.newSingleThreadExecutor()
 
     val renderManager = RenderManager()

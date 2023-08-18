@@ -479,7 +479,7 @@ class FaceUnityActivity : ComponentActivity() {
         if (beautyEnableDefault) {
             mFaceUnityApi.enable(true)
         }
-
+        mFaceUnityApi.setBeautyPreset(BeautyPreset.DEFAULT)
         // Config RtcEngine
         mRtcEngine.addHandler(mRtcHandler)
         mRtcEngine.setVideoEncoderConfiguration(mVideoEncoderConfiguration)
@@ -487,7 +487,7 @@ class FaceUnityActivity : ComponentActivity() {
 
 
         // render local video
-        mFaceUnityApi.setupLocalVideo(mBinding.localVideoView, Constants.RENDER_MODE_FIT)
+        mFaceUnityApi.setupLocalVideo(mBinding.localVideoView, Constants.RENDER_MODE_HIDDEN)
 
 
         // join channel

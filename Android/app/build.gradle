@@ -10,7 +10,7 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "io.agora.entfull"
+        applicationId "io.agora.test.entfull"
         minSdkVersion 21
         targetSdkVersion 31
         versionCode 3

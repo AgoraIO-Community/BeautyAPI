@@ -486,8 +486,9 @@ class SenseTimeActivity : ComponentActivity() {
         if (beautyEnableDefault) {
             mSenseTimeApi.enable(true)
         }
+        mSenseTimeApi.setBeautyPreset(BeautyPreset.DEFAULT)
         // render local video
-        mSenseTimeApi.setupLocalVideo(mBinding.localVideoView, Constants.RENDER_MODE_FIT)
+        mSenseTimeApi.setupLocalVideo(mBinding.localVideoView, Constants.RENDER_MODE_HIDDEN)
 
         when (intent.getStringExtra(EXTRA_PROCESS_MODE)) {
             getString(R.string.beauty_process_auto) -> mSenseTimeApi.setParameters(
