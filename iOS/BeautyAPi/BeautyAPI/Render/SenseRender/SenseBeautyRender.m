@@ -66,6 +66,9 @@
             [weakSelf.timer invalidate];
             weakSelf.timer = nil;
         }
+        if (weakSelf.licenseEventCallback) {
+            weakSelf.licenseEventCallback(weakSelf.isSuccessLicense);
+        }
     }];
     [[NSRunLoop mainRunLoop]addTimer:self.timer forMode:NSRunLoopCommonModes];
 }
@@ -104,6 +107,21 @@
 }
 
 - (void)setBeautyPreset { 
+    if (self.isSuccessLicense == NO) {
+        __weak SenseBeautyRender *weakSelf = self;
+        self.licenseEventCallback = ^(BOOL isSuccess) {
+            if (isSuccess) {
+                [weakSelf setBeautyDefault];
+            }
+        };
+        return;
+    }
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        [self setBeautyDefault];
+    });
+}
+
+- (void)setBeautyDefault {
 #if __has_include(Sensetime)
     for (NSString *key in [self sensetimeDefault].allKeys) {
         int type = key.intValue;

@@ -13,7 +13,6 @@ class ViewController: UIViewController {
     @IBOutlet weak var fpsButton: UIButton!
     @IBOutlet weak var roleButton: UIButton!
     @IBOutlet weak var captureButton: UIButton!
-    private var beautyType: String = "sensetime"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,9 +63,16 @@ class ViewController: UIViewController {
     @IBAction func onClickChoseBeautyType(_ sender: UIButton) {
         let pickerView = PickerView()
         pickerView.dataArray = Configs.beautyTypes
-        pickerView.pickerViewSelectedValueClosure = { [weak self] value in
+        pickerView.pickerViewSelectedValueClosure = { value in
             sender.setTitle(value, for: .normal)
-            self?.beautyType = value
+            switch value {
+            case "sensetime":
+                BeautyModel.beautyType = .sense
+            case "fu":
+                BeautyModel.beautyType = .fu
+            default:
+                BeautyModel.beautyType = .byte
+            }
         }
         pickerView.show()
     }
@@ -84,7 +90,6 @@ class ViewController: UIViewController {
         newViewController.channleName = textFiled.text
         newViewController.capture = captureButton.titleLabel?.text
         newViewController.role = roleButton.titleLabel?.text
-        newViewController.beautyType = beautyType
         navigationController?.pushViewController(newViewController, animated: true)
     }
 }

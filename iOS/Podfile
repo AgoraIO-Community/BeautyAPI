@@ -16,6 +16,9 @@ target 'BeautyAPi' do
   pod 'SenseLib', :path => 'sense.podspec'
   pod 'fuLib', :path => 'fu.podspec'
   pod 'bytedEffect', :path => 'bytedEffect.podspec'
+  
+  #滚动视图
+  pod 'JXCategoryView', '1.6.1'
 
 end
 

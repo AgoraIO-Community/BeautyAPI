@@ -27,16 +27,9 @@ class BeautyViewController: UIViewController {
         return rtc
     }()
     
-    private lazy var beautyAPI = BeautyAPI()
-    private lazy var cameraConfig: CameraConfig = {
-        let cameraConfig = CameraConfig()
-        cameraConfig.frontMirror = .LOCAL_REMOTE
-        cameraConfig.backMirror = .NONE
-        return cameraConfig;
-    }()
-    private lazy var fuRender = FUBeautyRender()
-    private lazy var senseRender = SenseBeautyRender()
-    private lazy var bytesRender = BytesBeautyRender()
+    private var beautyAPI: BeautyAPI?
+    
+    private lazy var beautyVC = BeautyBaseVC()
     
     private var isBroascast: Bool {
         role == "Broascast"
@@ -46,7 +39,6 @@ class BeautyViewController: UIViewController {
     public var fps: String?
     public var role: String?
     public var capture: String?
-    public var beautyType: String = "sensetime"
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,43 +50,25 @@ class BeautyViewController: UIViewController {
     }
     
     @IBAction func onClickSwitchCameraButton(_ sender: Any) {
+        guard let beautyAPI = beautyAPI else { return }
         beautyAPI.switchCamera()
+        let cameraConfig = BeautyManager.shareManager.cameraConfig
         let title = Configs.mirrorTypes.first(where: { beautyAPI.isFrontCamera ? $0.value == cameraConfig.frontMirror : $0.value == cameraConfig.backMirror })?.key
         cameraMirror.setTitle(title, for: .normal)
     }
     @IBAction func onClickSettingButton(_ sender: Any) {
         let settingView = CLSettingCellView()
         settingView.title(title: "设置")
-            .switchCell(title: "美颜开关", isOn: beautyAPI.isEnable)
+            .switchCell(title: "美颜开关", isOn: beautyAPI?.isEnable ?? false)
             .config()
         settingView.show()
         settingView.didSwitchValueChangeClosure = { [weak self] _, isOn in
             guard let self = self else { return }
-            self.beautyAPI.enable(isOn)
+            self.beautyAPI?.enable(isOn)
         }
     }
     @IBAction func onClickBeautyButton(_ sender: UIButton) {
-        sender.isSelected = !sender.isSelected
-        sender.setTitleColor(sender.isSelected ? .orange : .systemPink, for: sender.isSelected ? .selected : .normal)
-        sender.backgroundColor = sender.isSelected ? .systemBlue : .clear
-        if sender.isSelected {
-            beautyAPI.setBeautyPreset(.default)
-        } else {
-            beautyAPI.beautyRender?.reset?()
-        }
-    }
-    @IBAction func onClickStyleButton(_ sender: UIButton) {
-        sender.isSelected = !sender.isSelected
-        sender.setTitleColor(sender.isSelected ? .orange : .systemPink, for: sender.isSelected ? .selected : .normal)
-        sender.backgroundColor = sender.isSelected ? .systemBlue : .clear
-        beautyAPI.beautyRender?.setMakeup?(sender.isSelected)
-
-    }
-    @IBAction func onClickStickerButton(_ sender: UIButton) {
-        sender.isSelected = !sender.isSelected
-        sender.setTitleColor(sender.isSelected ? .orange : .systemPink, for: sender.isSelected ? .selected : .normal)
-        sender.backgroundColor = sender.isSelected ? .systemBlue : .clear
-        beautyAPI.beautyRender?.setSticker?(sender.isSelected)
+        present(beautyVC, animated: true)
     }
     
     @IBAction func onClickCameraMirrorButton(_ sender: UIButton) {
@@ -103,12 +77,13 @@ class BeautyViewController: UIViewController {
         pickerView.pickerViewSelectedValueClosure = { [weak self] value in
             guard let self = self else { return }
             sender.setTitle(value, for: .normal)
-            if self.beautyAPI.isFrontCamera {
-                self.cameraConfig.frontMirror = Configs.mirrorTypes[value] ?? .LOCAL_REMOTE
+            let cameraConfig = BeautyManager.shareManager.cameraConfig
+            if self.beautyAPI?.isFrontCamera ?? false {
+                cameraConfig.frontMirror = Configs.mirrorTypes[value] ?? .LOCAL_REMOTE
             } else {
-                self.cameraConfig.backMirror = Configs.mirrorTypes[value] ?? .NONE
+                cameraConfig.backMirror = Configs.mirrorTypes[value] ?? .NONE
             }
-            self.beautyAPI.update(self.cameraConfig)
+            self.beautyAPI?.update(cameraConfig)
         }
         pickerView.show()
     }
@@ -117,36 +92,18 @@ class BeautyViewController: UIViewController {
         // 设置encode编码需要在初始化BeatuyAPI之前
         updateVideoEncodeConfig()
         
-        let config = BeautyConfig()
-        config.rtcEngine = rtcEngine
-        config.captureMode = capture == "Custom" ? .custom : .agora
-        config.cameraConfig = cameraConfig
-        
-        switch beautyType {
-        case "sensetime":
-            config.beautyRender = senseRender
-        case "fu":
-            config.beautyRender = fuRender
-        default:
-            config.beautyRender = bytesRender
-        }
-        config.statsEnable = false
-        config.statsDuration = 1
-        config.eventCallback = { stats in
-            print("min == \(stats.minCostMs)")
-            print("max == \(stats.maxCostMs)")
-            print("averageCostMs == \(stats.averageCostMs)")
-        }
-        let result = beautyAPI.initialize(config)
-        if result != 0 {
-            print("initialize error == \(result)")
-        }
-        beautyAPI.enable(true)
+        beautyAPI = BeautyManager.shareManager.initBeautyAPI(rtcEngine: rtcEngine,
+                                                             captureMode: capture == "Custom" ? .custom : .agora)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        beautyAPI?.setBeautyPreset(.default)
     }
     
     private func setupRTC() {
         if isBroascast {
-            beautyAPI.setupLocalVideo(localView, renderMode: .hidden)
+            beautyAPI?.setupLocalVideo(localView, renderMode: .hidden)
             rtcEngine.startPreview()
         }
         
@@ -161,7 +118,10 @@ class BeautyViewController: UIViewController {
         mediaOption.autoSubscribeVideo = true
         mediaOption.publishCameraTrack = mediaOption.clientRoleType == .broadcaster
         mediaOption.publishMicrophoneTrack = mediaOption.clientRoleType == .broadcaster
-        let result = rtcEngine.joinChannel(byToken: nil, channelId: channleName ?? "", uid: 0, mediaOptions: mediaOption)
+        let result = rtcEngine.joinChannel(byToken: nil,
+                                           channelId: channleName ?? "",
+                                           uid: 0,
+                                           mediaOptions: mediaOption)
         if result != 0 {
             print("join failed")
         }
@@ -198,7 +158,8 @@ class BeautyViewController: UIViewController {
     
     deinit {
         AgoraRtcEngineKit.destroy()
-        beautyAPI.destroy()
+        beautyAPI?.destroy()
+        BeautyManager.shareManager.destroy()
     }
 }
 
@@ -206,7 +167,7 @@ class BeautyViewController: UIViewController {
 extension BeautyViewController: AgoraVideoFrameDelegate {
     func onCapture(_ videoFrame: AgoraOutputVideoFrame, sourceType: AgoraVideoSourceType) -> Bool {
         guard let pixelBuffer = videoFrame.pixelBuffer else { return true }
-        beautyAPI.onFrame(pixelBuffer) { pixelBuffer in
+        beautyAPI?.onFrame(pixelBuffer) { pixelBuffer in
             videoFrame.pixelBuffer = pixelBuffer
         }
         
@@ -222,7 +183,7 @@ extension BeautyViewController: AgoraVideoFrameDelegate {
     }
     
     func getMirrorApplied() -> Bool {
-        beautyAPI.getMirrorApplied()
+        beautyAPI?.getMirrorApplied() ?? false
     }
     
     func getRotationApplied() -> Bool {

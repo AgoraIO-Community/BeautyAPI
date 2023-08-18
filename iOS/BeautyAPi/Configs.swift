@@ -17,7 +17,10 @@ enum Configs {
     static let roles: [String] = ["Broascast", "Audience"]
     static let captures: [String] = ["Agora", "Custom"]
     static let beautyTypes: [String] = ["sensetime", "fu", "bytes"]
-    static let mirrorTypes: [String: MirrorMode] = ["local_remote": .LOCAL_REMOTE, "local_only" : .LOCAL_ONLY, "remote_only": .REMOTE_ONLY, "none": .NONE]
+    static let mirrorTypes: [String: MirrorMode] = ["local_remote": .LOCAL_REMOTE,
+                                                    "local_only" : .LOCAL_ONLY,
+                                                    "remote_only": .REMOTE_ONLY,
+                                                    "none": .NONE]
 }
 
 

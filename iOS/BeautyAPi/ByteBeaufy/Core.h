@@ -1,6 +1,6 @@
 #import "macro.h"
 
-#define LICENSE_NAME ((const char *)"labcv_test_20220210_20230210_com.bytedance.labcv.demo_4.2.1.licbag")
+#define LICENSE_NAME ((const char *)"Agora_test_20230815_20231115_io.agora.test.entfull_4.5.0_599.licbag")
 #define ONLINE_LICENSE_KEY ((const char *)"jiaoyang_test")
 #define ONLINE_LICENSE_SECRET ((const char *)"04273924-9a77-11eb-94da-0c42a1b32a30")
 
