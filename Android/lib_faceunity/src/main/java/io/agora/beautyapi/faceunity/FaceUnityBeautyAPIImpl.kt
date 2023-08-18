@@ -60,6 +60,8 @@ import java.util.concurrent.Callable
 
 class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
     private val TAG = "FaceUnityBeautyAPIImpl"
+    private val reportId = "scenarioAPI"
+    private val reportCategory = "beauty_android_$VERSION"
     private var beautyMode = 0 // 0: 自动根据buffer类型切换，1：固定使用OES纹理，2：固定使用i420，3: 单纹理异步模式(自创)
 
     private var textureBufferHelper: TextureBufferHelper? = null
@@ -114,7 +116,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             }
         }
         LogUtils.i(TAG, "initialize >> FuDeviceUtils deviceLevel=$deviceLevel")
-
+        config.rtcEngine.sendCustomReportMessage(reportId, reportCategory, "initialize", "config=$config, deviceLevel=$deviceLevel", 0)
         return ErrorCode.ERROR_OK.value
     }
 
@@ -132,6 +134,8 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             skipFrame = 2
             LogUtils.i(TAG, "enable >> skipFrame = $skipFrame")
         }
+        config?.rtcEngine?.sendCustomReportMessage(reportId, reportCategory, "enable", "enable=$enable", 0)
+
         if(this.enable != enable){
             this.enable = enable
             enableChange = true
@@ -148,6 +152,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         }
         LogUtils.i(TAG, "setupLocalVideo >> view=$view, renderMode=$renderMode")
         localVideoRenderMode = renderMode
+        rtcEngine.sendCustomReportMessage(reportId, reportCategory, "enable", "view=$view, renderMode=$renderMode", 0)
         if (view is TextureView || view is SurfaceView) {
             val canvas = VideoCanvas(view, renderMode, 0)
             canvas.mirrorMode = Constants.VIDEO_MIRROR_MODE_DISABLED
@@ -184,6 +189,8 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
     override fun updateCameraConfig(config: CameraConfig): Int {
         LogUtils.i(TAG, "updateCameraConfig >> oldCameraConfig=$cameraConfig, newCameraConfig=$config")
         cameraConfig = CameraConfig(config.frontMirror, config.backMirror)
+        this.config?.rtcEngine?.sendCustomReportMessage(reportId, reportCategory, "updateCameraConfig", "config=$config", 0)
+
         return ErrorCode.ERROR_OK.value
     }
 
@@ -207,6 +214,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         }
 
         LogUtils.i(TAG, "setBeautyPreset >> preset = $preset")
+        config?.rtcEngine?.sendCustomReportMessage(reportId, reportCategory, "enable", "preset=$preset", 0)
 
         val recommendFaceBeauty =
             FaceBeauty(FUBundleData("graphics" + File.separator + "face_beautification.bundle"))
@@ -270,6 +278,8 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             return ErrorCode.ERROR_HAS_RELEASED.value
         }
         LogUtils.i(TAG, "release")
+        config?.rtcEngine?.sendCustomReportMessage(reportId, reportCategory, "release", "", 0)
+
         isReleased = true
         textureBufferHelper?.let {
             textureBufferHelper = null
@@ -279,7 +289,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
                 mTextureProcessHelper = null
                 null
             }
-            it.handler.looper.quit()
+            // it.handler.looper.quit()
             it.dispose()
         }
         statsHelper?.reset()

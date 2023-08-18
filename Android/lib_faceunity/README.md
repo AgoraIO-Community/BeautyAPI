@@ -35,7 +35,9 @@ dependencies {
 
 
 2. Copy the following BeautyAPI interface and implementation into the project
+
 > Please keep the package name so that we can upgrade the code.
+
 ```xml
 src/main/java/io/agora/beautyapi/faceunity
    ├── FaceUnityBeautyAPI.kt
@@ -43,30 +45,30 @@ src/main/java/io/agora/beautyapi/faceunity
    └── utils
 ```
 
-
-
 3. Initialization
+
+> Before initialization, you need to initialize the FaceUnity beauty sdk and get the FURenderKit instance.
+
 ```kotlin
 private val mFaceUnityApi by lazy {
-    createFaceUnityBeautyAPI()
-}
-private val mFuRenderKit by lazy {
-    FURenderer.getInstance().setup(this, authpack.A())
-    FURenderKit.getInstance()
+  createFaceUnityBeautyAPI()
 }
 
 mFaceUnityApi.initialize(
-    Config(
-        mRtcEngine,
-        mFuRenderKit,
-        captureMode = CaptureMode.Agora,
-        statsEnable = true,
-        eventCallback = object: IEventCallback{
-            override fun onBeautyStats(stats: BeautyStats) {
-                Log.d(TAG, "BeautyStats stats = $stats")
-            }
-        }
-    ))
+  Config(
+    applicationContext,
+    mRtcEngine,
+    fuRenderKit,
+    captureMode = CaptureMode.Agora,
+    cameraConfig = CameraConfig(),
+    statsEnable = BuildConfig.DEBUG,
+    eventCallback = object: IEventCallback{
+      override fun onBeautyStats(stats: BeautyStats) {
+        Log.d(TAG, "BeautyStats stats = $stats")
+      }
+    }
+  )
+)
 ```
 
 4. Beauty On/Off (default off)
@@ -84,7 +86,20 @@ mFaceUnityApi.setupLocalVideo(mBinding.localVideoView, Constants.RENDER_MODE_FIT
 mFaceUnityApi.setBeautyPreset(BeautyPreset.DEFAULT) // BeautyPreset.CUSTOM：Close Recommended Beauty
 ```
 
-7. Destroy BeautyAPI
+7. Update Camera Config
+```kotlin
+val cameraConfig = CameraConfig(
+    frontMirror = MirrorMode.MIRROR_LOCAL_REMOTE,
+    backMirror = MirrorMode.MIRROR_NONE
+)
+mFuRenderKit.updateCameraConfig(cameraConfig)
+```
+
+
+8. Destroy BeautyAPI
+
+> The calling time must be after leaveChannel/stopPreview and before RtcEngine.destroy!
+
 ```kotlin
 mRtcEngine.leaveChannel()
 // Must release beauty api after leaveChannel
@@ -114,28 +129,14 @@ mFaceUnityApi.initialize(
 2. Pass external video frame to BeautyAPI by onFrame interface.
 ```kotlin
 override fun onCaptureVideoFrame(
-    sourceType: Int,
-    videoFrame: VideoFrame?
-) : Boolean{
-    when(mFaceUnityApi.onFrame(videoFrame!!)){
-        ErrorCode.ERROR_OK.value -> {
-            shouldMirror = false
-            return true
-        }
-        ErrorCode.ERROR_FRAME_SKIPPED.value ->{
-            shouldMirror = false
-            return false
-        }
-        else -> {
-            val mirror = videoFrame.sourceType == VideoFrame.SourceType.kFrontCamera
-            if(shouldMirror != mirror){
-                shouldMirror = mirror
-                return false
-            }
-            return true
-        }
-    }
+  sourceType: Int,
+  videoFrame: VideoFrame?
+)  = when (mFaceUnityApi.onFrame(videoFrame!!)) {
+  ErrorCode.ERROR_FRAME_SKIPPED.value -> false
+  else -> true
 }
+
+override fun getMirrorApplied() = mFaceUnityApi.getMirrorApplied()
 ```
 
 ## Feedback
