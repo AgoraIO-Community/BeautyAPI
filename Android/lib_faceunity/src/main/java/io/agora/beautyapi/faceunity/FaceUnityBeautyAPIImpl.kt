@@ -476,7 +476,9 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
                         if (isReleased) {
                             return@setFilter -1
                         }
-                        return@setFilter fuRenderKit.renderWithInput(input).texture?.texId ?: -1
+                        return@setFilter textureBufferHelper?.invoke {
+                            return@invoke fuRenderKit.renderWithInput(input).texture?.texId ?: -1
+                        } ?: -1
                     }
                 }
             }
@@ -534,20 +536,14 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
                     it.outputMatrix = FUTransformMatrixEnum.CCROT0
                 }
             }
-            var outTexId = -1
-            val processHelper = mTextureProcessHelper
-            if(processHelper != null){
-                if(processHelper.size() > 0){
-                    processHelper.reset()
+
+            mTextureProcessHelper?.let {
+                if(it.size() > 0){
+                    it.reset()
                     return@Callable -1
                 }
-                processHelper.executeSync {
-                    outTexId = fuRenderKit.renderWithInput(input).texture?.texId ?: -1
-                }
-            }else {
-                outTexId = fuRenderKit.renderWithInput(input).texture?.texId ?: -1
             }
-            return@Callable outTexId
+            return@Callable fuRenderKit.renderWithInput(input).texture?.texId ?: -1
         })
     }
 
@@ -595,6 +591,12 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
                     it.inputBufferMatrix = if(mirror) FUTransformMatrixEnum.CCROT270 else FUTransformMatrixEnum.CCROT90_FLIPVERTICAL
                     it.inputTextureMatrix = if(mirror) FUTransformMatrixEnum.CCROT270 else FUTransformMatrixEnum.CCROT90_FLIPVERTICAL
                     it.outputMatrix = FUTransformMatrixEnum.CCROT0_FLIPHORIZONTAL
+                }
+            }
+            mTextureProcessHelper?.let {
+                if(it.size() > 0){
+                    it.reset()
+                    return@Callable -1
                 }
             }
             return@Callable fuRenderKit.renderWithInput(input).texture?.texId ?: -1
