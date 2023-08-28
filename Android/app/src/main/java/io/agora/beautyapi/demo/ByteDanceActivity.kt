@@ -1,5 +1,6 @@
 package io.agora.beautyapi.demo
 
+import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -330,6 +331,8 @@ class ByteDanceActivity : ComponentActivity() {
                                 ByteDanceBeautySDK.makeupTianmeiNodePath,
                                 ByteDanceBeautySDK.makeupYuanQiNodePath
                             ))
+                            ByteDanceBeautySDK.makeupTianmeiNodePath = ""
+                            ByteDanceBeautySDK.makeupYuanQiNodePath = ""
                         },
                         BeautyDialog.ItemInfo(
                             R.string.beauty_item_effect_tianmei,
@@ -339,8 +342,6 @@ class ByteDanceActivity : ComponentActivity() {
                             dialog.isTopLayoutVisible = true
 
                             val tianmeiNode = ByteDanceBeautySDK.makeupTianmeiNodePath
-                            renderManager.appendComposerNodes(arrayOf(tianmeiNode))
-                            renderManager.loadResourceWithTimeout(-1)
                             renderManager.updateComposerNodes(
                                 tianmeiNode,
                                 "Filter_ALL",
@@ -360,8 +361,6 @@ class ByteDanceActivity : ComponentActivity() {
                             dialog.isTopLayoutVisible = true
 
                             val yuanqiNode = ByteDanceBeautySDK.makeupYuanQiNodePath
-                            renderManager.appendComposerNodes(arrayOf(yuanqiNode))
-                            renderManager.loadResourceWithTimeout(-1)
                             renderManager.updateComposerNodes(
                                 yuanqiNode,
                                 "Filter_ALL",
@@ -394,6 +393,7 @@ class ByteDanceActivity : ComponentActivity() {
                             0f
                         ) { dialog, _ ->
                             dialog.isTopLayoutVisible = true
+                            dialog.isTopSliderVisible = false
                             renderManager.setSticker("${ByteDanceBeautySDK.stickerPath}/huahua")
                         },
                         BeautyDialog.ItemInfo(
@@ -402,6 +402,7 @@ class ByteDanceActivity : ComponentActivity() {
                             0f
                         ) { dialog, _ ->
                             dialog.isTopLayoutVisible = true
+                            dialog.isTopSliderVisible = false
                             renderManager.setSticker("${ByteDanceBeautySDK.stickerPath}/wochaotian")
                         },
                     )
@@ -620,6 +621,9 @@ object ByteDanceBeautySDK {
 
     private val LICENSE_NAME = "Agora_test_20230815_20231115_io.agora.test.entfull_4.5.0_599.licbag"
     private val workerThread = Executors.newSingleThreadExecutor()
+    private var context: Application?  = null
+    private var storagePath  = ""
+    private var assetsPath  = ""
 
     val renderManager = RenderManager()
     var licensePath = ""
@@ -627,15 +631,36 @@ object ByteDanceBeautySDK {
     var beautyNodePath = ""
     var beauty4ItemsNodePath = ""
     var reSharpNodePath = ""
-    var makeupTianmeiNodePath = ""
-    var makeupYuanQiNodePath = ""
     var stickerPath = ""
 
 
+    var makeupTianmeiNodePath = ""
+        get() {
+            if(field.isEmpty()){
+                // copy makeup node
+                field = "$storagePath/beauty_bytedance/ComposeMakeup.bundle/ComposeMakeup/style_makeup/tianmei"
+                FileUtils.copyAssets(context!!, "$assetsPath/ComposeMakeup.bundle/ComposeMakeup/style_makeup/tianmei", field)
+                renderManager.appendComposerNodes(arrayOf(field))
+                renderManager.loadResourceWithTimeout(-1)
+            }
+            return field
+        }
+    var makeupYuanQiNodePath = ""
+        get() {
+            if(field.isEmpty()){
+                // copy makeup node
+                field = "$storagePath/beauty_bytedance/ComposeMakeup.bundle/ComposeMakeup/style_makeup/yuanqi"
+                FileUtils.copyAssets(context!!, "$assetsPath/ComposeMakeup.bundle/ComposeMakeup/style_makeup/yuanqi", field)
+                renderManager.appendComposerNodes(arrayOf(field))
+                renderManager.loadResourceWithTimeout(-1)
+            }
+            return field
+        }
 
     fun initBeautySDK(context: Context){
-        val storagePath = context.getExternalFilesDir("")?.absolutePath ?: return
-        val assetsPath = "beauty_bytedance"
+        this.context = context.applicationContext as? Application
+        storagePath = context.getExternalFilesDir("")?.absolutePath ?: return
+        assetsPath = "beauty_bytedance"
 
         workerThread.execute {
             // copy license
@@ -658,13 +683,6 @@ object ByteDanceBeautySDK {
             reSharpNodePath = "$storagePath/beauty_bytedance/ComposeMakeup.bundle/ComposeMakeup/reshape_lite"
             FileUtils.copyAssets(context, "$assetsPath/ComposeMakeup.bundle/ComposeMakeup/reshape_lite", reSharpNodePath)
 
-            // copy makeup node
-            makeupTianmeiNodePath = "$storagePath/beauty_bytedance/ComposeMakeup.bundle/ComposeMakeup/style_makeup/tianmei"
-            FileUtils.copyAssets(context, "$assetsPath/ComposeMakeup.bundle/ComposeMakeup/style_makeup/tianmei", makeupTianmeiNodePath)
-
-            // copy makeup node
-            makeupYuanQiNodePath = "$storagePath/beauty_bytedance/ComposeMakeup.bundle/ComposeMakeup/style_makeup/yuanqi"
-            FileUtils.copyAssets(context, "$assetsPath/ComposeMakeup.bundle/ComposeMakeup/style_makeup/yuanqi", makeupYuanQiNodePath)
 
             // copy stickers
             stickerPath = "$storagePath/beauty_bytedance/StickerResource.bundle/stickers"

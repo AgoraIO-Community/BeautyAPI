@@ -442,6 +442,7 @@ class SenseTimeActivity : ComponentActivity() {
                             0f
                         ) { dialog, _ ->
                             dialog.isTopLayoutVisible = true
+                            dialog.isTopSliderVisible = false
                             SenseTimeBeautySDK.setStickerItem(this@SenseTimeActivity, "sticker_face_shape" + File.separator + "ShangBanLe.zip", true)
                         },
                         BeautyDialog.ItemInfo(
@@ -450,6 +451,7 @@ class SenseTimeActivity : ComponentActivity() {
                             0f
                         ) { dialog, _ ->
                             dialog.isTopLayoutVisible = true
+                            dialog.isTopSliderVisible = false
                             SenseTimeBeautySDK.setStickerItem(this@SenseTimeActivity, "sticker_face_shape" + File.separator + "chunjie.zip", true)
                         },
                     )

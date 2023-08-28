@@ -388,6 +388,7 @@ class FaceUnityActivity : ComponentActivity() {
                             0f
                         ) { dialog, _ ->
                             dialog.isTopLayoutVisible = true
+                            dialog.isTopSliderVisible = false
 
                             fuRenderKit.propContainer.removeAllProp()
                             val prop: Prop = Sticker(FUBundleData("beauty_faceunity/sticker/fu_zh_fenshu.bundle"))
@@ -399,6 +400,7 @@ class FaceUnityActivity : ComponentActivity() {
                             0f
                         ) { dialog, _ ->
                             dialog.isTopLayoutVisible = true
+                            dialog.isTopSliderVisible = false
 
                             fuRenderKit.propContainer.removeAllProp()
                             val prop: Prop = Sticker(FUBundleData("beauty_faceunity/sticker/fashi.bundle"))
