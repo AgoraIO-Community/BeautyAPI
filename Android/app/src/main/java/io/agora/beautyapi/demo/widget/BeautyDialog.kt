@@ -26,6 +26,7 @@ package io.agora.beautyapi.demo.widget
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -73,6 +74,15 @@ class BeautyDialog constructor(context: Context) : BottomDarkDialog(context) {
         set(value) {
             field = value
             mTopBinding.root.isVisible = value
+            mTopBinding.slider.isVisible = value
+            mTopBinding.tvStrength.isVisible = value
+        }
+
+    var isTopSliderVisible = false
+        set(value) {
+            field = value
+            mTopBinding.slider.visibility = if(field) View.VISIBLE else View.INVISIBLE
+            mTopBinding.tvStrength.visibility = if(field) View.VISIBLE else View.INVISIBLE
         }
 
     private val mTopBinding by lazy {
