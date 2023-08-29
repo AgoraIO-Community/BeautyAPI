@@ -17,7 +17,6 @@ class BeautyMenuItemVC: UIViewController {
         layout.scrollDirection = .horizontal
         layout.minimumInteritemSpacing = 15
         layout.sectionInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-        layout.itemSize = CGSize(width: 48, height: 70)
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
         collectionView.register(BeautyMenuItemCell.self, forCellWithReuseIdentifier: NSStringFromClass(BeautyMenuItemCell.self))
@@ -154,6 +153,20 @@ extension BeautyMenuItemVC: UICollectionViewDelegateFlowLayout, UICollectionView
             return
         }
         selectedItemClosure?(model.value, model.path == nil)
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        switch type {
+        case .beauty:
+            let model = dataArray[indexPath.item]
+            let nsString = (model.name ?? "") as NSString
+            let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 11)]
+            let size = nsString.size(withAttributes: attributes as [NSAttributedString.Key : Any])
+            let w = size.width < 52 ? 52 : size.width
+            return CGSize(width: w, height: 70)
+
+        default:
+            return CGSize(width: 52, height: 70)
+        }
     }
 }
 

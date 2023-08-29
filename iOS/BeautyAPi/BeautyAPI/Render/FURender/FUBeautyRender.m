@@ -13,6 +13,7 @@
 #if __has_include(FURenderMoudle)
 /// 当前的贴纸
 @property (nonatomic, strong) FUSticker *currentSticker;
+@property (nonatomic, strong) FUAnimoji *currentAnimoji;
 #endif
 
 @end
@@ -68,13 +69,21 @@
         beauty.colorLevel = value;
     } else if ([key isEqualToString:@"thin"]) {
         beauty.cheekThinning = value;
+    } else if ([key isEqualToString:@"rosy"]) {
+        beauty.redLevel = value;
+    } else if ([key isEqualToString:@"contouring"]) {
+        beauty.faceThreed = value;
     } else if ([key isEqualToString:@"cheekNarrow"]) {
         beauty.cheekNarrow = value;
+    } else if ([key isEqualToString:@"cheekShort"]) {
+        beauty.cheekShort = value;
     } else if ([key isEqualToString:@"cheekSmall"]) {
         beauty.cheekSmall = value;
     } else if ([key isEqualToString:@"cheek"]) {
         beauty.intensityCheekbones = value;
-    } else if ([key isEqualToString:@"chin"]) {
+    } else if ([key isEqualToString:@"cheekV"]) {
+        beauty.cheekV = value;
+    }  else if ([key isEqualToString:@"chin"]) {
         beauty.intensityChin = value;
     } else if ([key isEqualToString:@"forehead"]) {
         beauty.intensityForehead = value;
@@ -108,8 +117,20 @@
         beauty.intensityMouth = value;
     } else if ([key isEqualToString:@"lipThick"]) {
         beauty.intensityLipThick = value;
+    } else if ([key isEqualToString:@"intensityEyeHeight"]) {
+        beauty.intensityEyeHeight = value;
+    } else if ([key isEqualToString:@"intensityCanthus"]) {
+        beauty.intensityCanthus = value;
     } else if ([key isEqualToString:@"toothWhiten"]) {
         beauty.toothWhiten = value;
+    } else if ([key isEqualToString:@"intensityEyeRotate"]) {
+        beauty.intensityEyeRotate = value;
+    } else if ([key isEqualToString:@"intensitySmile"]) {
+        beauty.intensitySmile = value;
+    } else if ([key isEqualToString:@"intensityBrowSpace"]) {
+        beauty.intensityBrowSpace = value;
+    } else if ([key isEqualToString:@"sharpen"]) {
+        beauty.sharpen = value;
     }
     [FURenderKit shareRenderKit].beauty = beauty;
 #endif
@@ -119,14 +140,38 @@
 #if __has_include(FURenderMoudle)
     NSBundle *bundle = [BundleUtil bundleWithBundleName:@"FURenderKit" podName:@"fuLib"];
     NSString *makeupPath = [bundle pathForResource:path ofType:@"bundle"];
-    FUMakeup *makeup = [[FUMakeup alloc] initWithPath:makeupPath name:@"face_makeup"];
-    NSString *stylePath = [bundle pathForResource:[NSString stringWithFormat:@"makeup/%@", key] ofType:@"bundle"];
+    FUMakeup *makeup = [FURenderKit shareRenderKit].makeup;
+    if (makeup == nil) {
+        makeup = [[FUMakeup alloc] initWithPath:makeupPath name:@"face_makeup"];
+        makeup.isMakeupOn = YES;
+        [FURenderKit shareRenderKit].makeup = makeup;
+        [FURenderKit shareRenderKit].makeup.enable = YES;
+    }
+    NSString *stylePath = [bundle pathForResource:key ofType:@"bundle"];
     FUItem *makupItem = [[FUItem alloc] initWithPath:stylePath name:key];
-    makeup.isMakeupOn = YES;
-    [FURenderKit shareRenderKit].makeup = makeup;
-    [FURenderKit shareRenderKit].makeup.enable = YES;
     [makeup updateMakeupPackage:makupItem needCleanSubItem:NO];
-    makeup.intensity = 0.7;
+    makeup.intensity = value;
+#endif
+}
+
+- (void)setAnimojiWithPath:(NSString *)path {
+#if __has_include(FURenderMoudle)
+    if (self.currentSticker) {
+        [[FURenderKit shareRenderKit].stickerContainer removeSticker:self.currentSticker completion:nil];
+        self.currentSticker = nil;
+    }
+    NSBundle *bundle = [BundleUtil bundleWithBundleName:@"FURenderKit" podName:@"fuLib"];
+    NSString *makeupPath = [bundle pathForResource:[NSString stringWithFormat:@"Animoji/%@",path] ofType:@"bundle"];
+    FUAnimoji *animoji = [[FUAnimoji alloc] initWithPath:makeupPath name:@"animoji"];
+    if (self.currentAnimoji) {
+        [[FURenderKit shareRenderKit].stickerContainer replaceSticker:self.currentAnimoji withSticker:animoji completion:^{
+            self.currentAnimoji = animoji;
+        }];
+    } else {
+        [[FURenderKit shareRenderKit].stickerContainer addSticker:animoji completion:^{
+            self.currentAnimoji = animoji;
+        }];
+    }
 #endif
 }
 
@@ -135,6 +180,10 @@
     NSString *stickerPath = [bundle pathForResource:[NSString stringWithFormat:@"sticker/%@", path] ofType:@"bundle"];
     FUSticker *sticker = [[FUSticker alloc] initWithPath:stickerPath name:@"sticker"];
 #if __has_include(FURenderMoudle)
+    if (self.currentAnimoji) {
+        [[FURenderKit shareRenderKit].stickerContainer removeSticker:self.currentAnimoji completion:nil];
+        self.currentAnimoji = nil;
+    }
     if (self.currentSticker) {
         [[FURenderKit shareRenderKit].stickerContainer replaceSticker:self.currentSticker withSticker:sticker completion:nil];
     } else {
@@ -160,6 +209,7 @@
 - (void)resetSticker {
 #if __has_include(FURenderMoudle)
     [[FURenderKit shareRenderKit].stickerContainer removeAllSticks];
+    self.currentAnimoji = nil;
     self.currentSticker = nil;
 #endif
 }

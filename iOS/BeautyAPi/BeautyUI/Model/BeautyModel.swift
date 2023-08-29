@@ -314,7 +314,7 @@ class BeautyModel: BeautyBaseModel {
         } else if beautyType == .fu {
             model = BeautyModel()
             model.path = "graphics/face_makeup"
-            model.key = "xinggan"
+            model.key = "makeup/xinggan"
             model.value = 0.5
             model.name = "show_beauty_item_effect_sexy".beauty_localized
             model.icon = "meiyan_fgz_cwei"
@@ -322,7 +322,7 @@ class BeautyModel: BeautyBaseModel {
             
             model = BeautyModel()
             model.path = "graphics/face_makeup"
-            model.key = "tianmei"
+            model.key = "makeup/tianmei"
             model.value = 0.5
             model.name = "show_beauty_item_effect_sweet".beauty_localized
             model.icon = "meiyan_fgz_cwei"
