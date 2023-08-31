@@ -34,10 +34,7 @@
     [FURenderKit shareRenderKit].beauty = nil;
     [FURenderKit shareRenderKit].makeup = nil;
     [[FURenderKit shareRenderKit].stickerContainer removeAllSticks];
-    dispatch_queue_t referQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
-    dispatch_async(referQueue, ^{
-        [FURenderKit destroy];
-    });
+    [FURenderKit destroy];
     _fuManager = nil;
 #endif
 }
