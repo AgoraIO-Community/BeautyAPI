@@ -49,6 +49,8 @@ import java.util.concurrent.Executors
 
 class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
     private val TAG = "ByteDanceBeautyAPIImpl"
+    private val reportId = "scenarioAPI"
+    private val reportCategory = "beauty_android_$VERSION"
     private var beautyMode = 0 // 0: 自动根据buffer类型切换，1：固定使用OES纹理，2：固定使用i420
 
 
@@ -88,6 +90,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
         LogUtils.setLogFilePath(config.context.getExternalFilesDir("")?.absolutePath ?: "")
         LogUtils.i(TAG, "initialize >> config = $config")
         LogUtils.i(TAG, "initialize >> beauty api version=$VERSION, beauty sdk version=${config.renderManager.sdkVersion}")
+        config.rtcEngine.sendCustomReportMessage(reportId, reportCategory, "initialize", "$config", 0)
         return ErrorCode.ERROR_OK.value
     }
 
@@ -106,6 +109,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
             LogUtils.i(TAG, "enable >> skipFrame = $skipFrame")
         }
         this.enable = enable
+        config?.rtcEngine?.sendCustomReportMessage(reportId, reportCategory, "enable", "$enable", 0)
         return ErrorCode.ERROR_OK.value
     }
 
@@ -116,6 +120,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
             return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
         }
         LogUtils.i(TAG, "setupLocalVideo >> view=$view, renderMode=$renderMode")
+        rtcEngine.sendCustomReportMessage(reportId, reportCategory, "enable", "view=$view, renderMode=$renderMode", 0)
         if (view is TextureView || view is SurfaceView) {
             val canvas = VideoCanvas(view, renderMode, 0)
             canvas.mirrorMode = Constants.VIDEO_MIRROR_MODE_DISABLED
@@ -166,6 +171,8 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
         }
 
         LogUtils.i(TAG, "setBeautyPreset >> preset = $preset")
+        conf.rtcEngine.sendCustomReportMessage(reportId, reportCategory, "enable", "preset=$preset, beautyNodePath=$beautyNodePath, beauty4ItemNodePath=$beauty4ItemNodePath, reSharpNodePath=$reSharpNodePath", 0)
+
         val renderManager =
             config?.renderManager ?: return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
         val enable = preset == BeautyPreset.DEFAULT
@@ -238,6 +245,8 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
     override fun updateCameraConfig(config: CameraConfig): Int {
         LogUtils.i(TAG, "updateCameraConfig >> oldCameraConfig=$cameraConfig, newCameraConfig=$config")
         cameraConfig = CameraConfig(config.frontMirror, config.backMirror)
+        this.config?.rtcEngine?.sendCustomReportMessage(reportId, reportCategory, "updateCameraConfig", "config=$config", 0)
+
         return ErrorCode.ERROR_OK.value
     }
 
@@ -253,6 +262,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
             LogUtils.e(TAG, "setBeautyPreset >> The beauty api has been released!")
             return ErrorCode.ERROR_HAS_RELEASED.value
         }
+        conf.rtcEngine.sendCustomReportMessage(reportId, reportCategory, "release", "", 0)
         LogUtils.i(TAG, "release")
         isReleased = true
         workerThreadExecutor.shutdown()

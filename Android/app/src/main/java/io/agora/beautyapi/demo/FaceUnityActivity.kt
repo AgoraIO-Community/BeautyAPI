@@ -16,6 +16,7 @@ import com.faceunity.core.faceunity.FUAIKit
 import com.faceunity.core.faceunity.FURenderConfig.OPERATE_SUCCESS_AUTH
 import com.faceunity.core.faceunity.FURenderKit
 import com.faceunity.core.faceunity.FURenderManager
+import com.faceunity.core.model.facebeauty.FaceBeauty
 import com.faceunity.core.model.makeup.SimpleMakeup
 import com.faceunity.core.model.prop.Prop
 import com.faceunity.core.model.prop.sticker.Sticker
@@ -24,6 +25,7 @@ import com.faceunity.wrapper.faceunity
 import io.agora.base.VideoFrame
 import io.agora.beautyapi.demo.databinding.BeautyActivityBinding
 import io.agora.beautyapi.demo.utils.ReflectUtils
+import io.agora.beautyapi.demo.widget.BeautyDialog
 import io.agora.beautyapi.faceunity.BeautyPreset
 import io.agora.beautyapi.faceunity.BeautyStats
 import io.agora.beautyapi.faceunity.CameraConfig
@@ -81,6 +83,23 @@ class FaceUnityActivity : ComponentActivity() {
     private val mChannelName by lazy {
         intent.getStringExtra(EXTRA_CHANNEL_NAME)
     }
+    private val mFaceUnityApi by lazy {
+        createFaceUnityBeautyAPI()
+    }
+    private val mVideoEncoderConfiguration by lazy {
+        VideoEncoderConfiguration(
+            ReflectUtils.getStaticFiledValue(
+                VideoEncoderConfiguration::class.java,
+                intent.getStringExtra(EXTRA_RESOLUTION)
+            ),
+            ReflectUtils.getStaticFiledValue(
+                FRAME_RATE::class.java,
+                intent.getStringExtra(EXTRA_FRAME_RATE)
+            ),
+            0,
+            VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_FIXED_PORTRAIT
+        )
+    }
     private val mRtcHandler = object : IRtcEngineEventHandler() {
         override fun onError(err: Int) {
             super.onError(err)
@@ -129,23 +148,6 @@ class FaceUnityActivity : ComponentActivity() {
             enableExtension("agora_video_filters_clear_vision", "clear_vision", true)
         }
     }
-    private val mFaceUnityApi by lazy {
-        createFaceUnityBeautyAPI()
-    }
-    private val mVideoEncoderConfiguration by lazy {
-        VideoEncoderConfiguration(
-            ReflectUtils.getStaticFiledValue(
-                VideoEncoderConfiguration::class.java,
-                intent.getStringExtra(EXTRA_RESOLUTION)
-            ),
-            ReflectUtils.getStaticFiledValue(
-                FRAME_RATE::class.java,
-                intent.getStringExtra(EXTRA_FRAME_RATE)
-            ),
-            0,
-            VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_FIXED_PORTRAIT
-        )
-    }
     private val beautyEnableDefault = true
     private val mSettingDialog by lazy {
         SettingsDialog(this).apply {
@@ -171,6 +173,244 @@ class FaceUnityActivity : ComponentActivity() {
     private var cameraConfig = CameraConfig()
     private val fuRenderKit = FaceUnityBeautySDK.fuRenderKit
 
+    private val mBeautyDialog by lazy {
+        BeautyDialog(this).apply {
+            isEnable = beautyEnableDefault
+            onEnableChanged = { enable ->
+                mFaceUnityApi.enable(enable)
+            }
+            groupList = listOf(
+                BeautyDialog.GroupInfo(
+                    R.string.beauty_group_beauty,
+                    0,
+                    listOf(
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_none,
+                            R.mipmap.ic_beauty_none,
+                            0f
+                        ) { dialog, _ ->
+                            dialog.isTopLayoutVisible = false
+                            FaceUnityBeautySDK.setBeauty(
+                                smooth = 0.0,
+                                whiten = 0.0,
+                                thinFace = 0.0,
+                                enlargeEye = 0.0,
+                                redden = 0.0,
+                                shrinkCheekbone = 0.0,
+                                shrinkJawbone = 0.0,
+                                whiteTeeth = 0.0,
+                                hairlineHeight = 0.0,
+                                narrowNose = 0.0,
+                                mouthSize = 0.0,
+                                chinLength = 0.0,
+                                brightEye = 0.0,
+                                darkCircles = 0.0,
+                                nasolabialFolds = 0.0,
+                            )
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_beauty_smooth,
+                            R.mipmap.ic_beauty_face_mopi,
+                            0f
+                        ) { dialog, value ->
+                            dialog.isTopLayoutVisible = true
+                            FaceUnityBeautySDK.setBeauty(smooth = value.toDouble())
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_beauty_whiten,
+                            R.mipmap.ic_beauty_face_meibai,
+                            0f
+                        ) { dialog, value ->
+                            dialog.isTopLayoutVisible = true
+                            FaceUnityBeautySDK.setBeauty(whiten = value.toDouble())
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_beauty_redden,
+                            R.mipmap.ic_beauty_face_redden,
+                            0f
+                        ) { dialog, value ->
+                            dialog.isTopLayoutVisible = true
+                            FaceUnityBeautySDK.setBeauty(redden = value.toDouble())
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_beauty_overall,
+                            R.mipmap.ic_beauty_face_shoulian,
+                            0f
+                        ) { dialog, value ->
+                            dialog.isTopLayoutVisible = true
+                            FaceUnityBeautySDK.setBeauty(thinFace = value.toDouble())
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_beauty_cheekbone,
+                            R.mipmap.ic_beauty_face_shouquangu,
+                            0f
+                        ) { dialog, value ->
+                            dialog.isTopLayoutVisible = true
+                            FaceUnityBeautySDK.setBeauty(shrinkCheekbone = value.toDouble())
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_beauty_eye,
+                            R.mipmap.ic_beauty_face_eye,
+                            0f
+                        ) { dialog, value ->
+                            dialog.isTopLayoutVisible = true
+                            FaceUnityBeautySDK.setBeauty(enlargeEye = value.toDouble())
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_beauty_nose,
+                            R.mipmap.ic_beauty_face_shoubi,
+                            0f
+                        ) { dialog, value ->
+                            dialog.isTopLayoutVisible = true
+                            FaceUnityBeautySDK.setBeauty(narrowNose = value.toDouble())
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_beauty_chin,
+                            R.mipmap.ic_beauty_face_xiaba,
+                            0f
+                        ) { dialog, value ->
+                            dialog.isTopLayoutVisible = true
+                            FaceUnityBeautySDK.setBeauty(chinLength = value.toDouble())
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_beauty_jawbone,
+                            R.mipmap.ic_beauty_face_xiahegu,
+                            0f
+                        ) { dialog, value ->
+                            dialog.isTopLayoutVisible = true
+                            FaceUnityBeautySDK.setBeauty(shrinkJawbone = value.toDouble())
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_beauty_forehead,
+                            R.mipmap.ic_beauty_face_etou,
+                            0f
+                        ) { dialog, value ->
+                            dialog.isTopLayoutVisible = true
+                            FaceUnityBeautySDK.setBeauty(hairlineHeight = value.toDouble())
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_beauty_mouth,
+                            R.mipmap.ic_beauty_face_zuixing,
+                            0f
+                        ) { dialog, value ->
+                            dialog.isTopLayoutVisible = true
+                            FaceUnityBeautySDK.setBeauty(mouthSize = value.toDouble())
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_beauty_teeth,
+                            R.mipmap.ic_beauty_face_meiya,
+                            0f
+                        ) { dialog, value ->
+                            dialog.isTopLayoutVisible = true
+                            FaceUnityBeautySDK.setBeauty(whiteTeeth = value.toDouble())
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_beauty_bright_eye,
+                            R.mipmap.ic_beauty_face_bright_eye,
+                            0f
+                        ) { dialog, value ->
+                            dialog.isTopLayoutVisible = true
+                            FaceUnityBeautySDK.setBeauty(brightEye = value.toDouble())
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_beauty_remove_dark_circles,
+                            R.mipmap.ic_beauty_face_remove_dark_circles,
+                            0f
+                        ) { dialog, value ->
+                            dialog.isTopLayoutVisible = true
+                            FaceUnityBeautySDK.setBeauty(darkCircles = value.toDouble())
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_beauty_remove_nasolabial_folds,
+                            R.mipmap.ic_beauty_face_remove_nasolabial_folds,
+                            0f
+                        ) { dialog, value ->
+                            dialog.isTopLayoutVisible = true
+                            FaceUnityBeautySDK.setBeauty(nasolabialFolds = value.toDouble())
+                        },
+                    )
+                ),
+                BeautyDialog.GroupInfo(
+                    R.string.beauty_group_effect,
+                    0,
+                    listOf(
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_none,
+                            R.mipmap.ic_beauty_none,
+                            0f
+                        ) { dialog, _ ->
+                            dialog.isTopLayoutVisible = false
+                            fuRenderKit.makeup = null
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_effect_tianmei,
+                            R.mipmap.ic_beauty_effect_tianmei,
+                            0f
+                        ) { dialog, value ->
+                            dialog.isTopLayoutVisible = true
+
+                            val makeup =
+                                SimpleMakeup(FUBundleData("graphics" + File.separator + "face_makeup.bundle"))
+                            makeup.setCombinedConfig(FUBundleData("beauty_faceunity/makeup/naicha.bundle"))
+                            makeup.makeupIntensity = value.toDouble()
+                            fuRenderKit.makeup = makeup
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_effect_yuanqi,
+                            R.mipmap.ic_beauty_effect_yuanqi,
+                            0f
+                        ) { dialog, value ->
+                            dialog.isTopLayoutVisible = true
+
+                            val makeup =
+                                SimpleMakeup(FUBundleData("graphics" + File.separator + "face_makeup.bundle"))
+                            makeup.setCombinedConfig(FUBundleData("beauty_faceunity/makeup/dousha.bundle"))
+                            makeup.makeupIntensity = value.toDouble()
+                            fuRenderKit.makeup = makeup
+                        },
+                    )
+                ),
+                BeautyDialog.GroupInfo(
+                    R.string.beauty_group_sticker,
+                    0,
+                    listOf(
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_none,
+                            R.mipmap.ic_beauty_none,
+                            0f
+                        ) { dialog, _ ->
+                            dialog.isTopLayoutVisible = false
+                            fuRenderKit.propContainer.removeAllProp()
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_sticker_huahua,
+                            R.mipmap.ic_beauty_filter_naiyou,
+                            0f
+                        ) { dialog, _ ->
+                            dialog.isTopLayoutVisible = true
+                            dialog.isTopSliderVisible = false
+
+                            fuRenderKit.propContainer.removeAllProp()
+                            val prop: Prop = Sticker(FUBundleData("beauty_faceunity/sticker/fu_zh_fenshu.bundle"))
+                            fuRenderKit.propContainer.addProp(prop)
+                        },
+                        BeautyDialog.ItemInfo(
+                            R.string.beauty_item_sticker_wochaotian,
+                            R.mipmap.ic_beauty_filter_naiyou,
+                            0f
+                        ) { dialog, _ ->
+                            dialog.isTopLayoutVisible = true
+                            dialog.isTopSliderVisible = false
+
+                            fuRenderKit.propContainer.removeAllProp()
+                            val prop: Prop = Sticker(FUBundleData("beauty_faceunity/sticker/fashi.bundle"))
+                            fuRenderKit.propContainer.addProp(prop)
+                        },
+                    )
+                )
+            )
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -241,7 +481,7 @@ class FaceUnityActivity : ComponentActivity() {
         if (beautyEnableDefault) {
             mFaceUnityApi.enable(true)
         }
-
+        mFaceUnityApi.setBeautyPreset(BeautyPreset.DEFAULT)
         // Config RtcEngine
         mRtcEngine.addHandler(mRtcHandler)
         mRtcEngine.setVideoEncoderConfiguration(mVideoEncoderConfiguration)
@@ -249,7 +489,7 @@ class FaceUnityActivity : ComponentActivity() {
 
 
         // render local video
-        mFaceUnityApi.setupLocalVideo(mBinding.localVideoView, Constants.RENDER_MODE_FIT)
+        mFaceUnityApi.setupLocalVideo(mBinding.localVideoView, Constants.RENDER_MODE_HIDDEN)
 
 
         // join channel
@@ -269,6 +509,9 @@ class FaceUnityActivity : ComponentActivity() {
         }
         mBinding.ivSetting.setOnClickListener {
             mSettingDialog.show()
+        }
+        mBinding.ivBeauty.setOnClickListener {
+            mBeautyDialog.show()
         }
         mBinding.ctvFaceBeauty.setOnClickListener {
             val enable = !mBinding.ctvFaceBeauty.isChecked
@@ -376,5 +619,72 @@ object FaceUnityBeautySDK {
         aMethod.isAccessible = true
         val authValue = aMethod.invoke(null) as? ByteArray
         return authValue ?: ByteArray(0)
+    }
+
+    fun setBeauty(
+        smooth: Double? = null,
+        whiten: Double? = null,
+        thinFace: Double? = null,
+        enlargeEye: Double? = null,
+        redden: Double? = null,
+        shrinkCheekbone: Double? = null,
+        shrinkJawbone: Double? = null,
+        whiteTeeth: Double? = null,
+        hairlineHeight: Double? = null,
+        narrowNose: Double? = null,
+        mouthSize: Double? = null,
+        chinLength: Double? = null,
+        brightEye: Double? = null,
+        darkCircles: Double? = null,
+        nasolabialFolds: Double? = null,
+    ){
+        if(fuRenderKit.faceBeauty == null){
+            fuRenderKit.faceBeauty = FaceBeauty(FUBundleData("graphics" + File.separator + "face_beautification.bundle"))
+        }
+        // 磨皮
+        smooth?.let { fuRenderKit.faceBeauty?.blurIntensity = it * 6 }
+
+        // 美白
+        whiten?.let { fuRenderKit.faceBeauty?.colorIntensity = it * 2 }
+
+        // 瘦脸
+        thinFace?.let { fuRenderKit.faceBeauty?.cheekThinningIntensity = it }
+
+        // 大眼
+        enlargeEye?.let { fuRenderKit.faceBeauty?.eyeEnlargingIntensity = it }
+
+        // 红润
+        redden?.let { fuRenderKit.faceBeauty?.redIntensity = it * 2 }
+
+        // 瘦颧骨
+        shrinkCheekbone?.let { fuRenderKit.faceBeauty?.cheekBonesIntensity = it }
+
+        // 下颌骨
+        shrinkJawbone?.let { fuRenderKit.faceBeauty?.lowerJawIntensity = it }
+
+        // 美牙
+        whiteTeeth?.let {fuRenderKit.faceBeauty?.toothIntensity = it}
+
+        // 额头
+        hairlineHeight?.let { fuRenderKit.faceBeauty?.forHeadIntensity = it }
+
+        // 瘦鼻
+        narrowNose?.let {fuRenderKit.faceBeauty?.noseIntensity = it }
+
+        // 嘴形
+        mouthSize?.let { fuRenderKit.faceBeauty?.mouthIntensity = it }
+
+        // 下巴
+        chinLength?.let {fuRenderKit.faceBeauty?.chinIntensity = it}
+
+        // 亮眼
+        brightEye?.let {fuRenderKit.faceBeauty?.eyeBrightIntensity = it}
+
+        // 祛黑眼圈
+        darkCircles?.let { fuRenderKit.faceBeauty?.removePouchIntensity = it }
+
+        // 祛法令纹
+        nasolabialFolds?.let {fuRenderKit.faceBeauty?.removeLawPatternIntensity = it}
+
     }
 }

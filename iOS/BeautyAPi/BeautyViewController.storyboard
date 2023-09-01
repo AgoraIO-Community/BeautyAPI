@@ -21,41 +21,6 @@
                                 <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OfY-lS-tVB">
-                                <rect key="frame" x="132" y="716" width="123" height="50"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="50" id="uqi-Mr-Nfh"/>
-                                </constraints>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" title="local_remote"/>
-                                <connections>
-                                    <action selector="onClickCameraMirrorButton:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="wkG-kW-gcb"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7FH-Co-zPY">
-                                <rect key="frame" x="263" y="716" width="50" height="50"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="50" id="MXI-q0-QRr"/>
-                                    <constraint firstAttribute="height" constant="50" id="YkR-Yb-e75"/>
-                                </constraints>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" title="Button"/>
-                                <connections>
-                                    <action selector="onClickSwitchCameraButton:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="JF4-LQ-JTx"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gkN-NE-DbW">
-                                <rect key="frame" x="323" y="716" width="50" height="50"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="50" id="5Is-Ye-k76"/>
-                                    <constraint firstAttribute="height" constant="50" id="b5n-87-SSL"/>
-                                </constraints>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" title="Button"/>
-                                <connections>
-                                    <action selector="onClickSettingButton:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="EXL-P1-oDZ"/>
-                                </connections>
-                            </button>
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4T7-Zc-wja">
                                 <rect key="frame" x="240" y="89" width="133" height="188"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -71,7 +36,7 @@
                                         <rect key="frame" x="0.0" y="0.0" width="393" height="75"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Tlp-9r-vPD">
-                                                <rect key="frame" x="0.0" y="0.0" width="124.33333333333333" height="75"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="90.666666666666671" height="75"/>
                                                 <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <state key="normal" title="Button"/>
                                                 <buttonConfiguration key="configuration" style="plain" title="美颜">
@@ -81,26 +46,28 @@
                                                     <action selector="onClickBeautyButton:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="32i-Nb-hFH"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4zU-Gd-Fcv">
-                                                <rect key="frame" x="134.33333333333334" y="0.0" width="124.33333333333334" height="75"/>
-                                                <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OfY-lS-tVB">
+                                                <rect key="frame" x="100.66666666666669" y="0.0" width="91" height="75"/>
                                                 <state key="normal" title="Button"/>
-                                                <buttonConfiguration key="configuration" style="plain" title="美妆">
-                                                    <color key="baseForegroundColor" systemColor="systemPinkColor"/>
-                                                </buttonConfiguration>
+                                                <buttonConfiguration key="configuration" style="plain" title="local_remote"/>
                                                 <connections>
-                                                    <action selector="onClickStyleButton:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="9Yc-uq-lf5"/>
+                                                    <action selector="onClickCameraMirrorButton:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="wkG-kW-gcb"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TMg-nB-4ZI">
-                                                <rect key="frame" x="268.66666666666669" y="0.0" width="124.33333333333331" height="75"/>
-                                                <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7FH-Co-zPY">
+                                                <rect key="frame" x="201.66666666666666" y="0.0" width="90.666666666666657" height="75"/>
                                                 <state key="normal" title="Button"/>
-                                                <buttonConfiguration key="configuration" style="plain" title="贴纸">
-                                                    <color key="baseForegroundColor" systemColor="systemPinkColor"/>
-                                                </buttonConfiguration>
+                                                <buttonConfiguration key="configuration" style="plain" title="Button"/>
                                                 <connections>
-                                                    <action selector="onClickStickerButton:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="5iv-4S-5Uk"/>
+                                                    <action selector="onClickSwitchCameraButton:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="JF4-LQ-JTx"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gkN-NE-DbW">
+                                                <rect key="frame" x="302.33333333333331" y="0.0" width="90.666666666666686" height="75"/>
+                                                <state key="normal" title="Button"/>
+                                                <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                                                <connections>
+                                                    <action selector="onClickSettingButton:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="EXL-P1-oDZ"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -123,16 +90,10 @@
                             <constraint firstItem="KfK-QW-zxR" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="3J7-9h-Xsa"/>
                             <constraint firstItem="mCZ-rv-Eti" firstAttribute="trailing" secondItem="vDu-zF-Fre" secondAttribute="trailing" id="3Jg-zj-nZ5"/>
                             <constraint firstItem="mCZ-rv-Eti" firstAttribute="top" secondItem="5EZ-qb-Rvc" secondAttribute="top" id="6WN-0d-bUW"/>
-                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="gkN-NE-DbW" secondAttribute="trailing" constant="20" id="6dm-8g-4b4"/>
                             <constraint firstItem="4T7-Zc-wja" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" constant="30" id="9aw-1W-7s3"/>
-                            <constraint firstItem="gkN-NE-DbW" firstAttribute="leading" secondItem="7FH-Co-zPY" secondAttribute="trailing" constant="10" id="MaV-CL-q52"/>
                             <constraint firstItem="mCZ-rv-Eti" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="Rbu-Kl-I3V"/>
-                            <constraint firstItem="KfK-QW-zxR" firstAttribute="top" secondItem="OfY-lS-tVB" secondAttribute="bottom" constant="11" id="bii-L1-lQP"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="4T7-Zc-wja" secondAttribute="trailing" constant="20" id="dt6-3z-RPM"/>
                             <constraint firstAttribute="bottom" secondItem="KfK-QW-zxR" secondAttribute="bottom" id="gGP-gX-o98"/>
-                            <constraint firstItem="KfK-QW-zxR" firstAttribute="top" secondItem="gkN-NE-DbW" secondAttribute="bottom" constant="11" id="tdO-3E-R7o"/>
-                            <constraint firstItem="KfK-QW-zxR" firstAttribute="top" secondItem="7FH-Co-zPY" secondAttribute="bottom" constant="11" id="tuR-nB-aj4"/>
-                            <constraint firstItem="7FH-Co-zPY" firstAttribute="leading" secondItem="OfY-lS-tVB" secondAttribute="trailing" constant="8" symbolic="YES" id="u4I-yM-oyF"/>
                             <constraint firstItem="KfK-QW-zxR" firstAttribute="trailing" secondItem="vDu-zF-Fre" secondAttribute="trailing" id="vNN-oZ-gDr"/>
                         </constraints>
                     </view>
