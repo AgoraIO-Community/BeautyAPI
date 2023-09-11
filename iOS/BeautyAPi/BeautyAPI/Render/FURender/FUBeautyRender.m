@@ -175,8 +175,8 @@
 - (void)setStickerWithPath:(NSString *)path {
     NSBundle *bundle = [BundleUtil bundleWithBundleName:@"FURenderKit" podName:@"fuLib"];
     NSString *stickerPath = [bundle pathForResource:[NSString stringWithFormat:@"sticker/%@", path] ofType:@"bundle"];
-    FUSticker *sticker = [[FUSticker alloc] initWithPath:stickerPath name:@"sticker"];
 #if __has_include(FURenderMoudle)
+    FUSticker *sticker = [[FUSticker alloc] initWithPath:stickerPath name:@"sticker"];
     if (self.currentAnimoji) {
         [[FURenderKit shareRenderKit].stickerContainer removeSticker:self.currentAnimoji completion:nil];
         self.currentAnimoji = nil;
