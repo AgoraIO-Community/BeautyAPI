@@ -25,7 +25,7 @@
 package io.agora.beautyapi.bytedance.utils.opengl;
 
 
-import com.bytedance.labcv.effectsdk.BytedEffectConstants;
+import com.effectsar.labcv.effectsdk.EffectsSDKEffectConstants;
 
 public class ProgramManager {
 
@@ -36,7 +36,7 @@ public class ProgramManager {
     private ProgramTexture2d mProgramTexture2D;
     private ProgramTextureOES mProgramTextureOES;
 
-    public  Program getProgram(BytedEffectConstants.TextureFormat srcTetxureFormat){
+    public  Program getProgram(EffectsSDKEffectConstants.TextureFormat srcTetxureFormat){
         switch (srcTetxureFormat){
             case Texure2D:
                 if (null == mProgramTexture2D){

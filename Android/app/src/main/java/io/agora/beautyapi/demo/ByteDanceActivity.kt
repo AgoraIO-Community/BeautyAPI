@@ -10,7 +10,7 @@ import android.view.LayoutInflater
 import android.view.SurfaceView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import com.bytedance.labcv.effectsdk.RenderManager
+import com.effectsar.labcv.effectsdk.RenderManager
 import io.agora.base.VideoFrame
 import io.agora.beautyapi.bytedance.BeautyPreset
 import io.agora.beautyapi.bytedance.CameraConfig
