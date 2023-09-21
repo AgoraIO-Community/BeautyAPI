@@ -13,7 +13,7 @@ _English | [中文](README.zh.md)
 |----------------------------------------------|-------------------------|
 | BytedEffects/app/Resource                       | iOS/ByteEffectLib/Resource           |
 | byted_effect_ios_static/iossample\_static/libeffect-sdk.a                    | iOS/ByteEffectLib/ibeffect-sdk.a           |
-| byted_effect_ios_static/iossample\_static/include/BytedEffectSDK                    | iOS/ByteEffectLib/BytedEffectSDK           |
+| byted_effect_ios_static/iossample_static/effect-sdk.framework                    | iOS/ByteEffectLib/effect-sdk.framework           |
 
 2.Configuration dependency library
 ```podfile
