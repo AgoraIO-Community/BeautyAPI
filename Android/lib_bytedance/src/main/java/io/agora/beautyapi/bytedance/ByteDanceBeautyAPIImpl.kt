@@ -28,7 +28,8 @@ import android.graphics.Matrix
 import android.view.SurfaceView
 import android.view.TextureView
 import android.view.View
-import com.bytedance.labcv.effectsdk.BytedEffectConstants
+import com.effectsar.labcv.effectsdk.EffectsSDKEffectConstants
+import com.effectsar.labcv.effectsdk.RenderManager
 import io.agora.base.TextureBufferHelper
 import io.agora.base.VideoFrame
 import io.agora.base.VideoFrame.I420Buffer
@@ -89,7 +90,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
         }
         LogUtils.setLogFilePath(config.context.getExternalFilesDir("")?.absolutePath ?: "")
         LogUtils.i(TAG, "initialize >> config = $config")
-        LogUtils.i(TAG, "initialize >> beauty api version=$VERSION, beauty sdk version=${config.renderManager.sdkVersion}")
+        LogUtils.i(TAG, "initialize >> beauty api version=$VERSION, beauty sdk version=${RenderManager.getSDKVersion()}")
         config.rtcEngine.sendCustomReportMessage(reportId, reportCategory, "initialize", "$config", 0)
         return ErrorCode.ERROR_OK.value
     }
@@ -463,7 +464,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
                 dstTexture,
                 width,
                 height,
-                BytedEffectConstants.Rotation.CLOCKWISE_ROTATE_90,
+                EffectsSDKEffectConstants.Rotation.CLOCKWISE_ROTATE_0,
                 videoFrame.timestampNs
             )
             if (!success) {
@@ -522,7 +523,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
                 dstTexture,
                 width,
                 height,
-                BytedEffectConstants.Rotation.CLOCKWISE_ROTATE_0,
+                EffectsSDKEffectConstants.Rotation.CLOCKWISE_ROTATE_0,
                 videoFrame.timestampNs
             )
             return@Callable if (success) {
