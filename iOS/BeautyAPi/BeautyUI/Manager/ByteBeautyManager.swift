@@ -8,11 +8,10 @@
 import UIKit
 
 class ByteBeautyManager {
-    
     public lazy var render = BytesBeautyRender()
     
-    private var processor: BEFrameProcessor {
-        return render.frameProcessor
+    private var processor: BEEffectManager {
+        return render.effectManager
     }
     
     private var beautyNodes = ["/beauty_IOS_lite", "/reshape_lite", "/beauty_4Items"] {
@@ -44,7 +43,7 @@ class ByteBeautyManager {
         }
         processor.updateComposerNodeIntensity(path,
                                               key: key,
-                                              intensity: value)
+                                              intensity: Float(value))
     }
     
     func setStyle(path: String?, key: String?, value: CGFloat) {
@@ -57,7 +56,7 @@ class ByteBeautyManager {
         }
         processor.updateComposerNodeIntensity(path,
                                               key: key,
-                                              intensity: value)
+                                              intensity: Float(value))
         stylePath = path
     }
     
