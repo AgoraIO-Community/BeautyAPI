@@ -3,12 +3,14 @@ package io.agora.beautyapi.demo
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.SurfaceView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.faceunity.core.callback.OperateCallback
 import com.faceunity.core.entity.FUBundleData
 import com.faceunity.core.enumeration.FUAITypeEnum
@@ -97,7 +99,7 @@ class FaceUnityActivity : ComponentActivity() {
                 intent.getStringExtra(EXTRA_FRAME_RATE)
             ),
             0,
-            VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_FIXED_PORTRAIT
+            VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_ADAPTIVE
         )
     }
     private val mRtcHandler = object : IRtcEngineEventHandler() {
@@ -416,7 +418,6 @@ class FaceUnityActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(mBinding.root)
         window.decorView.keepScreenOn = true
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         val isCustomCaptureMode =
             intent.getStringExtra(EXTRA_CAPTURE_MODE) == getString(R.string.beauty_capture_custom)
@@ -570,6 +571,20 @@ class FaceUnityActivity : ComponentActivity() {
         }
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        if (newConfig.orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            (mBinding.remoteVideoView.layoutParams as? ConstraintLayout.LayoutParams)?.let {
+                it.dimensionRatio = "9:16"
+                mBinding.remoteVideoView.layoutParams = it
+            }
+        } else {
+            (mBinding.remoteVideoView.layoutParams as? ConstraintLayout.LayoutParams)?.let {
+                it.dimensionRatio = "16:9"
+                mBinding.remoteVideoView.layoutParams = it
+            }
+        }
+    }
 
     override fun onDestroy() {
         super.onDestroy()

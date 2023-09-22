@@ -531,6 +531,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         val height = buffer.height
         val isFront = videoFrame.sourceType == SourceType.kFrontCamera
         val mirror = (isFrontCamera && !captureMirror) || (!isFrontCamera && captureMirror)
+        val rotation = videoFrame.rotation
 
         return texBufferHelper.invoke(Callable {
             if(isReleased){
@@ -545,13 +546,71 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             input.renderConfig.let {
                 if (isFront) {
                     it.cameraFacing = CameraFacingEnum.CAMERA_FRONT
-                    it.inputBufferMatrix = if(mirror) FUTransformMatrixEnum.CCROT90 else FUTransformMatrixEnum.CCROT90_FLIPHORIZONTAL
-                    it.inputTextureMatrix = if(mirror) FUTransformMatrixEnum.CCROT90 else FUTransformMatrixEnum.CCROT90_FLIPHORIZONTAL
+                    it.inputBufferMatrix = if(mirror) {
+                        when (rotation) {
+                            0 ->  FUTransformMatrixEnum.CCROT0
+                            180 -> FUTransformMatrixEnum.CCROT180
+                            else -> FUTransformMatrixEnum.CCROT90
+                        }
+                    } else {
+                        when (rotation) {
+                            0 -> FUTransformMatrixEnum.CCROT0_FLIPHORIZONTAL
+                            180 -> FUTransformMatrixEnum.CCROT0_FLIPVERTICAL
+                            else -> FUTransformMatrixEnum.CCROT90_FLIPHORIZONTAL
+                        }
+                    }
+                    it.inputTextureMatrix = if(mirror) {
+                        when (rotation) {
+                            0 -> FUTransformMatrixEnum.CCROT0
+                            180 -> FUTransformMatrixEnum.CCROT180
+                            else -> FUTransformMatrixEnum.CCROT90
+                        }
+                    } else {
+                        when (rotation) {
+                            0 -> FUTransformMatrixEnum.CCROT0_FLIPHORIZONTAL
+                            180 -> FUTransformMatrixEnum.CCROT0_FLIPVERTICAL
+                            else -> FUTransformMatrixEnum.CCROT90_FLIPHORIZONTAL
+                        }
+                    }
+                    it.deviceOrientation = when(rotation){
+                        0 -> 270
+                        180 -> 90
+                        else -> 0
+                    }
                     it.outputMatrix = FUTransformMatrixEnum.CCROT0
                 } else {
                     it.cameraFacing = CameraFacingEnum.CAMERA_BACK
-                    it.inputBufferMatrix = if(mirror) FUTransformMatrixEnum.CCROT90_FLIPVERTICAL else FUTransformMatrixEnum.CCROT270
-                    it.inputTextureMatrix = if(mirror) FUTransformMatrixEnum.CCROT90_FLIPVERTICAL else FUTransformMatrixEnum.CCROT270
+                    it.inputBufferMatrix = if(mirror) {
+                        when (rotation) {
+                            0 ->  FUTransformMatrixEnum.CCROT0_FLIPHORIZONTAL
+                            180 -> FUTransformMatrixEnum.CCROT0_FLIPVERTICAL
+                            else -> FUTransformMatrixEnum.CCROT90_FLIPVERTICAL
+                        }
+                    } else {
+                        when (rotation) {
+                            0 -> FUTransformMatrixEnum.CCROT0
+                            180 -> FUTransformMatrixEnum.CCROT180
+                            else -> FUTransformMatrixEnum.CCROT270
+                        }
+                    }
+                    it.inputTextureMatrix = if(mirror) {
+                        when (rotation) {
+                            0 -> FUTransformMatrixEnum.CCROT0_FLIPHORIZONTAL
+                            180 -> FUTransformMatrixEnum.CCROT0_FLIPVERTICAL
+                            else -> FUTransformMatrixEnum.CCROT90_FLIPVERTICAL
+                        }
+                    } else {
+                        when (rotation) {
+                            0 -> FUTransformMatrixEnum.CCROT0
+                            180 -> FUTransformMatrixEnum.CCROT180
+                            else -> FUTransformMatrixEnum.CCROT270
+                        }
+                    }
+                    it.deviceOrientation = when(rotation){
+                        0 -> 270
+                        180 -> 90
+                        else -> 0
+                    }
                     it.outputMatrix = FUTransformMatrixEnum.CCROT0
                 }
             }

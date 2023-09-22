@@ -4,12 +4,14 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.SurfaceView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.effectsar.labcv.effectsdk.RenderManager
 import io.agora.base.VideoFrame
 import io.agora.beautyapi.bytedance.BeautyPreset
@@ -126,7 +128,7 @@ class ByteDanceActivity : ComponentActivity() {
                 VideoEncoderConfiguration::class.java, intent.getStringExtra(EXTRA_RESOLUTION)
             ), ReflectUtils.getStaticFiledValue(
                 FRAME_RATE::class.java, intent.getStringExtra(EXTRA_FRAME_RATE)
-            ), 0, VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_FIXED_PORTRAIT
+            ), 0, VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_ADAPTIVE
         )
     }
     private val beautyEnableDefault = true
@@ -415,7 +417,6 @@ class ByteDanceActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(mBinding.root)
         window.decorView.keepScreenOn = true
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         val isCustomCaptureMode =
             intent.getStringExtra(EXTRA_CAPTURE_MODE) == getString(R.string.beauty_capture_custom)
@@ -603,6 +604,21 @@ class ByteDanceActivity : ComponentActivity() {
                 Toast.makeText(this, "backMirror=${cameraConfig.backMirror}", Toast.LENGTH_SHORT).show()
             }
             mByteDanceApi.updateCameraConfig(cameraConfig)
+        }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        if (newConfig.orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            (mBinding.remoteVideoView.layoutParams as? ConstraintLayout.LayoutParams)?.let {
+                it.dimensionRatio = "9:16"
+                mBinding.remoteVideoView.layoutParams = it
+            }
+        } else {
+            (mBinding.remoteVideoView.layoutParams as? ConstraintLayout.LayoutParams)?.let {
+                it.dimensionRatio = "16:9"
+                mBinding.remoteVideoView.layoutParams = it
+            }
         }
     }
 

@@ -43,6 +43,7 @@ class BeautyProcessor : IBeautyProcessor {
     private var mCustomEvent = 0
     private var mInputWidth = 0
     private var mInputHeight = 0
+    private var mInputOrientation = 0
     private var isLastFrontCamera = false
 
     @Volatile
@@ -249,9 +250,10 @@ class BeautyProcessor : IBeautyProcessor {
         if (input.bytes == null || input.textureId == null) {
             return null
         }
-        if (mInputWidth != input.width || mInputHeight != input.height || isLastFrontCamera != input.isFrontCamera) {
+        if (mInputWidth != input.width || mInputHeight != input.height || mInputOrientation != input.cameraOrientation || isLastFrontCamera != input.isFrontCamera) {
             mInputWidth = input.width
             mInputHeight = input.height
+            mInputOrientation = input.cameraOrientation
             isLastFrontCamera = input.isFrontCamera
             reset()
             return null
