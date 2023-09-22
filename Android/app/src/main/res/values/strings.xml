@@ -56,4 +56,5 @@
     <string name="beauty_item_sticker_huahua">花花</string>
     <string name="beauty_item_sticker_wochaotian">我超甜</string>
 
+    <string name="remote_video_default_dimension_ratio" translatable="false">9:16</string>
 </resources>
