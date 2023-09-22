@@ -136,12 +136,11 @@
     if (isSelected) {
         NSString *path = [[NSBundle mainBundle] pathForResource:@"qise.zip" ofType:nil];
         __weak SenseBeautyRender *weakself = self;
-        [self.videoProcessing.effectsProcess addStickerWithPath:path callBack:^(st_result_t state, int sticker, uint64_t action) {
-            [weakself.videoProcessing.effectsProcess setPackageId:sticker groupType:EFFECT_BEAUTY_GROUP_MAKEUP strength:0.5];
+        [self.videoProcessing addStylePath:path groupId:0 strength:0.5 callBack:^(int sticker) {
             weakself.stickerId = sticker;
         }];
     } else {
-        [self.videoProcessing.effectsProcess removeSticker:self.stickerId];
+        [self.videoProcessing removeStickerId:self.stickerId];
         self.stickerId = 0;
     }
 #endif
