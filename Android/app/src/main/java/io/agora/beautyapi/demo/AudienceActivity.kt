@@ -26,10 +26,13 @@ package io.agora.beautyapi.demo
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.SurfaceView
 import androidx.activity.ComponentActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import io.agora.beautyapi.demo.databinding.AudienceActivityBinding
 import io.agora.rtc2.ChannelMediaOptions
 import io.agora.rtc2.Constants
@@ -134,6 +137,21 @@ class AudienceActivity : ComponentActivity() {
         options.autoSubscribeAudio = true
         rtcEngine.joinChannel("", mChannelName, 0, options)
 
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        if (newConfig.orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            (mBinding.remoteVideoView.layoutParams as? ConstraintLayout.LayoutParams)?.let {
+                it.dimensionRatio = "9:16"
+                mBinding.remoteVideoView.layoutParams = it
+            }
+        } else {
+            (mBinding.remoteVideoView.layoutParams as? ConstraintLayout.LayoutParams)?.let {
+                it.dimensionRatio = "16:9"
+                mBinding.remoteVideoView.layoutParams = it
+            }
+        }
     }
 
     override fun onDestroy() {

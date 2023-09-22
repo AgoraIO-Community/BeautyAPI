@@ -435,7 +435,6 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
 
         if (processTexId < 0) {
             LogUtils.w(TAG, "processBeauty >> processTexId < 0")
-            return false
         }
 
         if(skipFrame > 0){

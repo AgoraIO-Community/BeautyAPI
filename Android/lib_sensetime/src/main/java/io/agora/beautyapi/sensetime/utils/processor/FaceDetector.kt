@@ -149,15 +149,26 @@ class FaceDetector(
         if(iN.isMirror){
             mirror = !mirror
         }
-        STHumanAction.nativeHumanActionRotateAndMirror(
-            humanActionNative,
-            humanActionNative.nativeHumanActionResultPtr,
-            rotatedSize.width,
-            rotatedSize.height,
-            if (mirror) Camera.CameraInfo.CAMERA_FACING_FRONT else Camera.CameraInfo.CAMERA_FACING_BACK,
-            iN.orientation,
-            deviceOrientation
-        )
+        if (iN.orientation == 0 || iN.orientation == 180) {
+            if (mirror) {
+                humanActionNative.nativeHumanActionMirrorPtr(rotatedSize.width)
+            }
+            if(iN.orientation == 180){
+                humanActionNative.nativeHumanActionRotatePtr(rotatedSize.width, rotatedSize.height, STRotateType.ST_CLOCKWISE_ROTATE_180, false)
+            }
+        } else {
+            STHumanAction.nativeHumanActionRotateAndMirror(
+                humanActionNative,
+                humanActionNative.nativeHumanActionResultPtr,
+                rotatedSize.width,
+                rotatedSize.height,
+                if (mirror) Camera.CameraInfo.CAMERA_FACING_FRONT else Camera.CameraInfo.CAMERA_FACING_BACK,
+                iN.orientation,
+                deviceOrientation
+            )
+        }
+
+
         humanActionNative.updateNativeHumanActionCache(index)
     }
 

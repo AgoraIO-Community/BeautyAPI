@@ -437,6 +437,9 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
                 mirror = !mirror
             }
 
+            val width = videoFrame.rotatedWidth
+            val height = videoFrame.rotatedHeight
+
             val renderMatrix = Matrix()
             renderMatrix.preTranslate(0.5f, 0.5f)
             renderMatrix.preRotate(videoFrame.rotation.toFloat())
@@ -448,8 +451,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
             val transform =
                 RendererCommon.convertMatrixFromAndroidGraphicsMatrix(finalMatrix)
 
-            val width = buffer.height
-            val height = buffer.width
+
             val dstTexture = imageUtils.prepareTexture(width, height)
             val srcTexture = agoraImageHelper.transformTexture(
                 buffer.textureId,
@@ -490,8 +492,8 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
         return texBufferHelper.invoke(Callable {
             val renderManager = config?.renderManager ?: return@Callable -1
 
-            val width = buffer.height
-            val height = buffer.width
+            val width = videoFrame.rotatedWidth
+            val height = videoFrame.rotatedHeight
 
             val ySize = width * height
             val yBuffer = ByteBuffer.allocateDirect(ySize)
@@ -505,16 +507,19 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
             if((isFrontCamera && !captureMirror) || (!isFrontCamera && captureMirror)){
                 mirror = !mirror
             }
-
+            val isScreenLandscape = videoFrame.rotation % 180 == 0
             val dstTexture = imageUtils.prepareTexture(width, height)
             val srcTexture = imageUtils.transferYUVToTexture(
                 yBuffer,
                 vuBuffer,
-                height,
-                width,
+                if (isScreenLandscape) width else height,
+                if (isScreenLandscape) height else width,
                 ImageUtil.Transition().apply {
                     rotate(videoFrame.rotation.toFloat())
-                    flip(false, mirror)
+                    flip(
+                        if (isScreenLandscape) mirror else false,
+                        if (isScreenLandscape) false else mirror
+                    )
                 }
             )
             renderManager.setCameraPostion(isFront)
