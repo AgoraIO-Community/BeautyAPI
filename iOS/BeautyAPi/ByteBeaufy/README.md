@@ -1,4 +1,4 @@
-# 字节/火山美颜场景化API
+# ByteDance BeautyAPI
 
 _English | [中文](README.zh.md)
 
