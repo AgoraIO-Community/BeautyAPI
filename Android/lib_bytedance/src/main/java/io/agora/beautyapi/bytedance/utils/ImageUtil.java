@@ -32,7 +32,7 @@ import android.opengl.GLES20;
 import android.opengl.Matrix;
 import android.widget.ImageView;
 
-import com.bytedance.labcv.effectsdk.BytedEffectConstants;
+import com.effectsar.labcv.effectsdk.EffectsSDKEffectConstants;
 
 import java.nio.ByteBuffer;
 
@@ -379,10 +379,10 @@ public class ImageUtil {
      * @brief  texture to texture
      */
 
-    public  int transferTextureToTexture(int inputTexture, BytedEffectConstants.TextureFormat inputTextureFormat,
-                                 BytedEffectConstants.TextureFormat outputTextureFormat,
+    public  int transferTextureToTexture(int inputTexture, EffectsSDKEffectConstants.TextureFormat inputTextureFormat,
+                                         EffectsSDKEffectConstants.TextureFormat outputTextureFormat,
                                  int width, int height, Transition transition) {
-            if (outputTextureFormat != BytedEffectConstants.TextureFormat.Texure2D){
+            if (outputTextureFormat != EffectsSDKEffectConstants.TextureFormat.Texure2D){
                 LogUtils.e(TAG, "the inputTexture is not supported,please use Texure2D as output texture format");
                 return  GlUtil.NO_TEXTURE;
             }
@@ -427,9 +427,9 @@ public class ImageUtil {
      * @brief  texture turn buffer
      */
 
-    public ByteBuffer transferTextureToBuffer(int texture, BytedEffectConstants.TextureFormat inputTextureFormat,
-                                       BytedEffectConstants.PixlFormat outputFormat, int width, int height, float ratio){
-        if (outputFormat != BytedEffectConstants.PixlFormat.RGBA8888){
+    public ByteBuffer transferTextureToBuffer(int texture, EffectsSDKEffectConstants.TextureFormat inputTextureFormat,
+                                              EffectsSDKEffectConstants.PixlFormat outputFormat, int width, int height, float ratio){
+        if (outputFormat != EffectsSDKEffectConstants.PixlFormat.RGBA8888){
             LogUtils.e(TAG, "the outputFormat is not supported,please use RGBA8888 as output texture format");
             return  null;
         }
@@ -444,14 +444,14 @@ public class ImageUtil {
 
     }
 
-    public Bitmap transferTextureToBitmap(int texture, BytedEffectConstants.TextureFormat inputTextureFormat,
+    public Bitmap transferTextureToBitmap(int texture, EffectsSDKEffectConstants.TextureFormat inputTextureFormat,
                                           int width, int height) {
-        ByteBuffer buffer = transferTextureToBuffer(texture, inputTextureFormat, BytedEffectConstants.PixlFormat.RGBA8888,
+        ByteBuffer buffer = transferTextureToBuffer(texture, inputTextureFormat, EffectsSDKEffectConstants.PixlFormat.RGBA8888,
                 width, height, 1);
         if (buffer == null) {
             return null;
         }
-        return transferBufferToBitmap(buffer, BytedEffectConstants.PixlFormat.RGBA8888, width, height);
+        return transferBufferToBitmap(buffer, EffectsSDKEffectConstants.PixlFormat.RGBA8888, width, height);
     }
 
     /** {zh} 
@@ -472,15 +472,15 @@ public class ImageUtil {
      * @brief buffer  turn texture
      */
 
-    public int transferBufferToTexture(ByteBuffer buffer, BytedEffectConstants.PixlFormat inputFormat,
-                                BytedEffectConstants.TextureFormat outputFormat, int width, int height){
+    public int transferBufferToTexture(ByteBuffer buffer, EffectsSDKEffectConstants.PixlFormat inputFormat,
+                                EffectsSDKEffectConstants.TextureFormat outputFormat, int width, int height){
 
-        if (inputFormat != BytedEffectConstants.PixlFormat.RGBA8888){
+        if (inputFormat != EffectsSDKEffectConstants.PixlFormat.RGBA8888){
             LogUtils.e(TAG, "inputFormat support RGBA8888 only");
             return GlUtil.NO_TEXTURE;
         }
 
-        if (outputFormat != BytedEffectConstants.TextureFormat.Texure2D){
+        if (outputFormat != EffectsSDKEffectConstants.TextureFormat.Texure2D){
             LogUtils.e(TAG, "outputFormat support Texure2D only");
             return GlUtil.NO_TEXTURE;
         }
@@ -539,8 +539,8 @@ public class ImageUtil {
      * @brief buffer  to buffer
      */
 
-    public ByteBuffer transferBufferToBuffer(ByteBuffer buffer, BytedEffectConstants.PixlFormat inputFormat,
-                                      BytedEffectConstants.PixlFormat outputFormat, int width, int height){
+    public ByteBuffer transferBufferToBuffer(ByteBuffer buffer, EffectsSDKEffectConstants.PixlFormat inputFormat,
+                                      EffectsSDKEffectConstants.PixlFormat outputFormat, int width, int height){
         return null;
 
     }
@@ -561,7 +561,7 @@ public class ImageUtil {
      * @brief buffer  turn bitmap
      */
 
-    public Bitmap transferBufferToBitmap(ByteBuffer buffer, BytedEffectConstants.PixlFormat format,
+    public Bitmap transferBufferToBitmap(ByteBuffer buffer, EffectsSDKEffectConstants.PixlFormat format,
                                   int width, int height){
         Bitmap mCameraBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 
@@ -589,7 +589,7 @@ public class ImageUtil {
      * @param mMVPMatrix  rotation matrix
      */
 
-    public void drawFrameOnScreen(int textureId,BytedEffectConstants.TextureFormat srcTetxureFormat,int surfaceWidth, int surfaceHeight, float[]mMVPMatrix) {
+    public void drawFrameOnScreen(int textureId,EffectsSDKEffectConstants.TextureFormat srcTetxureFormat,int surfaceWidth, int surfaceHeight, float[]mMVPMatrix) {
         if (null == mProgramManager) {
             mProgramManager = new ProgramManager();
         }
