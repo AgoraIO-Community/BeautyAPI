@@ -71,6 +71,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
     private var isFrontCamera = true
     private var cameraConfig = CameraConfig()
     private var localVideoRenderMode = Constants.RENDER_MODE_HIDDEN
+    private var penddingPresetRun : (()->Unit)? = null
 
     private enum class BeautyProcessType{
         UNKNOWN, TEXTURE_OES, TEXTURE_2D, I420
@@ -169,6 +170,13 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
         if (isReleased) {
             LogUtils.e(TAG, "setBeautyPreset >> The beauty api has been released!")
             return ErrorCode.ERROR_HAS_RELEASED.value
+        }
+        val initialized = textureBufferHelper != null
+        if(!initialized){
+            penddingPresetRun = {
+                setBeautyPreset(preset, beautyNodePath, beauty4ItemNodePath, reSharpNodePath)
+            }
+            return ErrorCode.ERROR_OK.value
         }
 
         LogUtils.i(TAG, "setBeautyPreset >> preset = $preset")
@@ -281,6 +289,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
         }
         statsHelper?.reset()
         statsHelper = null
+        penddingPresetRun = null
         return ErrorCode.ERROR_OK.value
     }
 
@@ -351,12 +360,13 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
             textureBufferHelper = TextureBufferHelper.create(
                 "ByteDanceRender",
                 EglBaseProvider.instance().rootEglBase.eglBaseContext
-            )?.apply {
-                invoke {
-                    imageUtils = ImageUtil()
-                    agoraImageHelper = AgoraImageHelper()
-                    config?.eventCallback?.onEffectInitialized?.invoke()
-                }
+            )
+            textureBufferHelper?.invoke {
+                imageUtils = ImageUtil()
+                agoraImageHelper = AgoraImageHelper()
+                config?.eventCallback?.onEffectInitialized?.invoke()
+                penddingPresetRun?.invoke()
+                penddingPresetRun = null
             }
             LogUtils.i(TAG, "processBeauty >> create texture buffer, beautyMode=$beautyMode")
         }
