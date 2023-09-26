@@ -175,7 +175,7 @@ extension BeautyViewController: AgoraVideoFrameDelegate {
     }
     
     func getVideoFormatPreference() -> AgoraVideoFormat {
-        .cvPixelNV12
+        beautyAPI?.beautyRender?.getVideoFormatPreference() ?? .cvPixelNV12
     }
     
     func getVideoFrameProcessMode() -> AgoraVideoFrameProcessMode {
