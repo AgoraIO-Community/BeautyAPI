@@ -175,9 +175,6 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             LogUtils.e(TAG, "onFrame >> The capture mode is not Custom!")
             return ErrorCode.ERROR_PROCESS_NOT_CUSTOM.value
         }
-        if (!enable) {
-            return ErrorCode.ERROR_PROCESS_DISABLE.value
-        }
         if (processBeauty(videoFrame)) {
             return ErrorCode.ERROR_OK.value
         }
