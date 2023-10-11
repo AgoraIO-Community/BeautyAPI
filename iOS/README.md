@@ -20,9 +20,10 @@ _English | [中文](README.zh.md)
 
 | SenseTime Beauty SDK                                                 | Location                                                 |
 |----------------------------------------------------------------------|----------------------------------------------------------|
-| SenseMe/remoteSourcesLib                                                       | iOS/SenseLib/remoteSourcesLib              |
-| SenseMe/st\_mobil\_sdk | iOS/SenseLib/st\_mobile\_sdk  |
-|SenseMe/st\_mobil\_sdk/license/SENSEME.lic                                                          | iOS/SenseLib/SENSEME.lic |
+| SenseAR_Effects__*/models | iOS/SenseLib/st\_mobile\_sdk/models  |
+| SenseAR_Effects__*/include | iOS/SenseLib/st\_mobile\_sdk/include  |
+| SenseAR_Effects__*/libs/ios\_os-universal | iOS/SenseLib/st\_mobile\_sdk/ios\_os-universal  |
+|SenseAR_Effects__*/license/SENSEME.lic                                                          | iOS/SenseLib/SENSEME.lic |
 
 2. FaceUnity
    Put the FaceUnity beauty resources into the corresponding path

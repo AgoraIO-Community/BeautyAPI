@@ -20,9 +20,10 @@
 
 | 商汤SDK文件/目录                                                           | 项目路径                                                     |
 |----------------------------------------------------------------------|----------------------------------------------------------|
-| SenseMe/remoteSourcesLib                                                       | iOS/SenseLib/remoteSourcesLib              |
-| SenseMe/st\_mobil\_sdk | iOS/SenseLib/st\_mobile\_sdk  |
-|SenseMe/st\_mobil\_sdk/license/SENSEME.lic                                                          | iOS/SenseLib/SENSEME.lic |
+| SenseAR_Effects__*/models | iOS/SenseLib/st\_mobile\_sdk/models  |
+| SenseAR_Effects__*/include | iOS/SenseLib/st\_mobile\_sdk/include  |
+| SenseAR_Effects__*/libs/ios\_os-universal | iOS/SenseLib/st\_mobile\_sdk/ios\_os-universal  |
+|SenseAR_Effects__*/license/SENSEME.lic                                                          | iOS/SenseLib/SENSEME.lic |
 
 2. 相芯美颜
 将相芯美颜资源放入对应路径下
