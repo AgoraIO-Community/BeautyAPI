@@ -149,7 +149,6 @@ class BeautyDialog constructor(context: Context) : BottomDarkDialog(context) {
                             groupItem.selectedIndex = position
                             notifyItemChanged(oSelectedIndex)
                             notifyItemChanged(groupItem.selectedIndex)
-                            bindSlider(itemInfo)
                         }
                         holder.binding.tvName.setText(itemInfo.name)
                     }
