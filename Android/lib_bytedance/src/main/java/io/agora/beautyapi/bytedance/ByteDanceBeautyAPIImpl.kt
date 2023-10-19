@@ -169,6 +169,13 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
             LogUtils.e(TAG, "setBeautyPreset >> The beauty api has been released!")
             return ErrorCode.ERROR_HAS_RELEASED.value
         }
+        val initialized = textureBufferHelper != null
+        if(!initialized){
+            penddingPresetRun = {
+                setBeautyPreset(preset, beautyNodePath, beauty4ItemNodePath, reSharpNodePath)
+            }
+            return ErrorCode.ERROR_OK.value
+        }
 
         LogUtils.i(TAG, "setBeautyPreset >> preset = $preset")
         conf.rtcEngine.sendCustomReportMessage(reportId, reportCategory, "enable", "preset=$preset, beautyNodePath=$beautyNodePath, beauty4ItemNodePath=$beauty4ItemNodePath, reSharpNodePath=$reSharpNodePath", 0)

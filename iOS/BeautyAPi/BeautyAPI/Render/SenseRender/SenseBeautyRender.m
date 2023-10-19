@@ -86,7 +86,7 @@
     if (self.isSuccessLicense) {
         return [self.videoProcessing videoProcessHandler:pixelBuffer];
     }
-    return nil;
+    return pixelBuffer;
 #endif
     return pixelBuffer;
 }
