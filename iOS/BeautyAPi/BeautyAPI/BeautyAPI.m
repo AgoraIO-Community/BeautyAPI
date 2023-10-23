@@ -7,7 +7,7 @@
 
 #import "BeautyAPI.h"
 
-static NSString *const beautyAPIVnersio = @"1.0.3";
+static NSString *const beautyAPIVersion = @"1.0.4";
 
 @implementation BeautyStats
 @end
@@ -222,7 +222,7 @@ static NSString *const beautyAPIVnersio = @"1.0.3";
 }
 
 - (NSString *)getVersion {
-    return beautyAPIVnersio;
+    return beautyAPIVersion;
 }
 
 #pragma mark - VideoFrameDelegate
