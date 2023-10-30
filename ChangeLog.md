@@ -1,5 +1,10 @@
 # Beauty API Change Log
 
+## 1.0.4.1
+1. Android 修复Video Frame Observer没有释放的问题
+2. Android 添加 runOnProcessThread api 用于在美颜处理线程里做一些操作，如美颜效果设置等
+3. Android 修复商汤在开关美颜时会黑一下的问题
+
 ## 1.0.4
 1. 适配火山美颜4.6.0版本
 2. 适配相芯美颜8.7.0版本

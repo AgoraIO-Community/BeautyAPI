@@ -174,6 +174,10 @@ class FaceUnityActivity : ComponentActivity() {
     }
     private var cameraConfig = CameraConfig()
     private val fuRenderKit = FaceUnityBeautySDK.fuRenderKit
+    private val isCustomCaptureMode by lazy {
+        intent.getStringExtra(EXTRA_CAPTURE_MODE) == getString(R.string.beauty_capture_custom)
+    }
+
 
     private val mBeautyDialog by lazy {
         BeautyDialog(this).apply {
@@ -419,8 +423,7 @@ class FaceUnityActivity : ComponentActivity() {
         setContentView(mBinding.root)
         window.decorView.keepScreenOn = true
 
-        val isCustomCaptureMode =
-            intent.getStringExtra(EXTRA_CAPTURE_MODE) == getString(R.string.beauty_capture_custom)
+
         mFaceUnityApi.initialize(
             Config(
                 applicationContext,
@@ -589,6 +592,10 @@ class FaceUnityActivity : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         mRtcEngine.leaveChannel()
+        mRtcEngine.stopPreview()
+        if (isCustomCaptureMode) {
+            mRtcEngine.registerVideoFrameObserver(null)
+        }
         mFaceUnityApi.release()
         RtcEngine.destroy()
     }

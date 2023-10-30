@@ -171,7 +171,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
         }
         val initialized = textureBufferHelper != null
         if(!initialized){
-            penddingPresetRun = {
+            runOnProcessThread {
                 setBeautyPreset(preset, beautyNodePath, beauty4ItemNodePath, reSharpNodePath)
             }
             return ErrorCode.ERROR_OK.value
@@ -251,15 +251,19 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
     }
 
     override fun runOnProcessThread(run: () -> Unit) {
-        synchronized(pendingProcessRunList){
-            if(config == null){
-                LogUtils.e(TAG, "runOnProcessThread >> The beauty api has not been initialized!")
-                return
-            }
-            if (isReleased) {
-                LogUtils.e(TAG, "runOnProcessThread >> The beauty api has been released!")
-                return
-            }
+        if (config == null) {
+            LogUtils.e(TAG, "runOnProcessThread >> The beauty api has not been initialized!")
+            return
+        }
+        if (isReleased) {
+            LogUtils.e(TAG, "runOnProcessThread >> The beauty api has been released!")
+            return
+        }
+        if (textureBufferHelper?.handler?.looper?.thread == Thread.currentThread()) {
+            run.invoke()
+        } else if (textureBufferHelper != null) {
+            textureBufferHelper?.handler?.post(run)
+        } else {
             pendingProcessRunList.add(run)
         }
     }
@@ -284,12 +288,16 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
             LogUtils.e(TAG, "setBeautyPreset >> The beauty api has been released!")
             return ErrorCode.ERROR_HAS_RELEASED.value
         }
+        if (conf.captureMode == CaptureMode.Agora) {
+            conf.rtcEngine.registerVideoFrameObserver(null)
+        }
         conf.rtcEngine.sendCustomReportMessage(reportId, reportCategory, "release", "", 0)
         LogUtils.i(TAG, "release")
         isReleased = true
         workerThreadExecutor.shutdown()
         textureBufferHelper?.let {
             textureBufferHelper = null
+            it.handler.removeCallbacksAndMessages(null)
             it.invoke {
                 imageUtils?.release()
                 agoraImageHelper?.release()
@@ -302,9 +310,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
         }
         statsHelper?.reset()
         statsHelper = null
-        synchronized(pendingProcessRunList){
-            pendingProcessRunList.clear()
-        }
+        pendingProcessRunList.clear()
         return ErrorCode.ERROR_OK.value
     }
 
@@ -380,17 +386,15 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
                 imageUtils = ImageUtil()
                 agoraImageHelper = AgoraImageHelper()
                 config?.eventCallback?.onEffectInitialized?.invoke()
-            }
-            LogUtils.i(TAG, "processBeauty >> create texture buffer, beautyMode=$beautyMode")
-        }
-        textureBufferHelper?.invoke {
-            synchronized(pendingProcessRunList){
-                val iterator = pendingProcessRunList.iterator()
-                while (iterator.hasNext()){
-                    iterator.next().invoke()
-                    iterator.remove()
+                synchronized(pendingProcessRunList){
+                    val iterator = pendingProcessRunList.iterator()
+                    while (iterator.hasNext()){
+                        iterator.next().invoke()
+                        iterator.remove()
+                    }
                 }
             }
+            LogUtils.i(TAG, "processBeauty >> create texture buffer, beautyMode=$beautyMode")
         }
 
         val startTime = System.currentTimeMillis()
@@ -513,7 +517,6 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
         val texBufferHelper = textureBufferHelper ?: return -1
         val imageUtils = imageUtils ?: return -1
         val nv21Buffer = getNV21Buffer(videoFrame) ?: return -1
-        val buffer = videoFrame.buffer
         val isFront = videoFrame.sourceType == VideoFrame.SourceType.kFrontCamera
 
         if (currBeautyProcessType != BeautyProcessType.I420) {
@@ -572,7 +575,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
         })
     }
 
-    private fun getNV21Buffer(videoFrame: VideoFrame, rotate: Boolean = false): ByteArray? {
+    private fun getNV21Buffer(videoFrame: VideoFrame): ByteArray? {
         val buffer = videoFrame.buffer
         val i420Buffer = buffer as? I420Buffer ?: buffer.toI420()
         val width = i420Buffer.width
