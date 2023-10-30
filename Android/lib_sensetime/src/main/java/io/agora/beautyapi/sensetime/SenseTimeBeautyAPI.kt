@@ -157,7 +157,20 @@ interface SenseTimeBeautyAPI {
      */
     fun isFrontCamera(): Boolean
 
+    /**
+     * 获取镜像状态
+     *
+     * @return 镜像状态，true: 镜像，false：非镜像
+     */
     fun getMirrorApplied(): Boolean
+
+
+    /**
+     * 在处理线程里执行操作
+     *
+     * @param run 操作run
+     */
+    fun runOnProcessThread(run: ()->Unit)
 
     /**
      * 私参配置，用于不对外api的调用，多用于测试

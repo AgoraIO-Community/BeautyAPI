@@ -45,6 +45,7 @@ import io.agora.rtc2.gl.EglBaseProvider
 import io.agora.rtc2.video.IVideoFrameObserver
 import io.agora.rtc2.video.VideoCanvas
 import java.nio.ByteBuffer
+import java.util.Collections
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 
@@ -71,7 +72,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
     private var isFrontCamera = true
     private var cameraConfig = CameraConfig()
     private var localVideoRenderMode = Constants.RENDER_MODE_HIDDEN
-    private var penddingPresetRun : (()->Unit)? = null
+    private val pendingProcessRunList = Collections.synchronizedList(mutableListOf<()->Unit>())
 
     private enum class BeautyProcessType{
         UNKNOWN, TEXTURE_OES, TEXTURE_2D, I420
@@ -170,7 +171,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
         }
         val initialized = textureBufferHelper != null
         if(!initialized){
-            penddingPresetRun = {
+            runOnProcessThread {
                 setBeautyPreset(preset, beautyNodePath, beauty4ItemNodePath, reSharpNodePath)
             }
             return ErrorCode.ERROR_OK.value
@@ -179,72 +180,91 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
         LogUtils.i(TAG, "setBeautyPreset >> preset = $preset")
         conf.rtcEngine.sendCustomReportMessage(reportId, reportCategory, "enable", "preset=$preset, beautyNodePath=$beautyNodePath, beauty4ItemNodePath=$beauty4ItemNodePath, reSharpNodePath=$reSharpNodePath", 0)
 
-        val renderManager =
-            config?.renderManager ?: return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
-        val enable = preset == BeautyPreset.DEFAULT
+        runOnProcessThread {
+            val renderManager =
+                config?.renderManager ?: return@runOnProcessThread
 
-        renderManager.updateComposerNodes(
-            beautyNodePath,
-            "smooth",
-            if (enable) 0.3f else 0f
-        )// 磨皮
-        renderManager.updateComposerNodes(
-            beautyNodePath,
-            "whiten",
-            if (enable) 0.5f else 0f
-        )// 美白
-        renderManager.updateComposerNodes(
-            reSharpNodePath,
-            "Internal_Deform_Overall",
-            if (enable) 0.15f else 0f
-        )//瘦脸
-        renderManager.updateComposerNodes(
-            reSharpNodePath,
-            "Internal_Deform_Zoom_Cheekbone",
-            if (enable) 0.3f else 0f
-        )//瘦颧骨
-        renderManager.updateComposerNodes(
-            reSharpNodePath,
-            "Internal_Deform_Zoom_Jawbone",
-            if (enable) 0.46f else 0f
-        )//下颌骨
-        renderManager.updateComposerNodes(
-            reSharpNodePath,
-            "Internal_Deform_Eye",
-            if (enable) 0.15f else 0f
-        )//大眼
-        renderManager.updateComposerNodes(
-            beauty4ItemNodePath,
-            "BEF_BEAUTY_WHITEN_TEETH",
-            if (enable) 0.2f else 0f
-        )//美牙
-        renderManager.updateComposerNodes(
-            reSharpNodePath,
-            "Internal_Deform_Forehead",
-            if (enable) 0.4f else 0f
-        )//额头
-        renderManager.updateComposerNodes(
-            reSharpNodePath,
-            "Internal_Deform_Nose",
-            if (enable) 0.15f else 0f
-        )//瘦鼻
-        renderManager.updateComposerNodes(
-            reSharpNodePath,
-            "Internal_Deform_ZoomMouth",
-            if (enable) 0.16f else 0f
-        )//嘴形
-        renderManager.updateComposerNodes(
-            reSharpNodePath,
-            "Internal_Deform_Chin",
-            if (enable) 0.46f else 0f
-        )//下巴
-
+            val enable = preset == BeautyPreset.DEFAULT
+            renderManager.updateComposerNodes(
+                beautyNodePath,
+                "smooth",
+                if (enable) 0.3f else 0f
+            )// 磨皮
+            renderManager.updateComposerNodes(
+                beautyNodePath,
+                "whiten",
+                if (enable) 0.5f else 0f
+            )// 美白
+            renderManager.updateComposerNodes(
+                reSharpNodePath,
+                "Internal_Deform_Overall",
+                if (enable) 0.15f else 0f
+            )//瘦脸
+            renderManager.updateComposerNodes(
+                reSharpNodePath,
+                "Internal_Deform_Zoom_Cheekbone",
+                if (enable) 0.3f else 0f
+            )//瘦颧骨
+            renderManager.updateComposerNodes(
+                reSharpNodePath,
+                "Internal_Deform_Zoom_Jawbone",
+                if (enable) 0.46f else 0f
+            )//下颌骨
+            renderManager.updateComposerNodes(
+                reSharpNodePath,
+                "Internal_Deform_Eye",
+                if (enable) 0.15f else 0f
+            )//大眼
+            renderManager.updateComposerNodes(
+                beauty4ItemNodePath,
+                "BEF_BEAUTY_WHITEN_TEETH",
+                if (enable) 0.2f else 0f
+            )//美牙
+            renderManager.updateComposerNodes(
+                reSharpNodePath,
+                "Internal_Deform_Forehead",
+                if (enable) 0.4f else 0f
+            )//额头
+            renderManager.updateComposerNodes(
+                reSharpNodePath,
+                "Internal_Deform_Nose",
+                if (enable) 0.15f else 0f
+            )//瘦鼻
+            renderManager.updateComposerNodes(
+                reSharpNodePath,
+                "Internal_Deform_ZoomMouth",
+                if (enable) 0.16f else 0f
+            )//嘴形
+            renderManager.updateComposerNodes(
+                reSharpNodePath,
+                "Internal_Deform_Chin",
+                if (enable) 0.46f else 0f
+            )//下巴
+        }
         return ErrorCode.ERROR_OK.value
     }
 
     override fun setParameters(key: String, value: String) {
         when (key) {
             "beauty_mode" -> beautyMode = value.toInt()
+        }
+    }
+
+    override fun runOnProcessThread(run: () -> Unit) {
+        if (config == null) {
+            LogUtils.e(TAG, "runOnProcessThread >> The beauty api has not been initialized!")
+            return
+        }
+        if (isReleased) {
+            LogUtils.e(TAG, "runOnProcessThread >> The beauty api has been released!")
+            return
+        }
+        if (textureBufferHelper?.handler?.looper?.thread == Thread.currentThread()) {
+            run.invoke()
+        } else if (textureBufferHelper != null) {
+            textureBufferHelper?.handler?.post(run)
+        } else {
+            pendingProcessRunList.add(run)
         }
     }
 
@@ -268,12 +288,16 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
             LogUtils.e(TAG, "setBeautyPreset >> The beauty api has been released!")
             return ErrorCode.ERROR_HAS_RELEASED.value
         }
+        if (conf.captureMode == CaptureMode.Agora) {
+            conf.rtcEngine.registerVideoFrameObserver(null)
+        }
         conf.rtcEngine.sendCustomReportMessage(reportId, reportCategory, "release", "", 0)
         LogUtils.i(TAG, "release")
         isReleased = true
         workerThreadExecutor.shutdown()
         textureBufferHelper?.let {
             textureBufferHelper = null
+            it.handler.removeCallbacksAndMessages(null)
             it.invoke {
                 imageUtils?.release()
                 agoraImageHelper?.release()
@@ -286,7 +310,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
         }
         statsHelper?.reset()
         statsHelper = null
-        penddingPresetRun = null
+        pendingProcessRunList.clear()
         return ErrorCode.ERROR_OK.value
     }
 
@@ -362,11 +386,17 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
                 imageUtils = ImageUtil()
                 agoraImageHelper = AgoraImageHelper()
                 config?.eventCallback?.onEffectInitialized?.invoke()
-                penddingPresetRun?.invoke()
-                penddingPresetRun = null
+                synchronized(pendingProcessRunList){
+                    val iterator = pendingProcessRunList.iterator()
+                    while (iterator.hasNext()){
+                        iterator.next().invoke()
+                        iterator.remove()
+                    }
+                }
             }
             LogUtils.i(TAG, "processBeauty >> create texture buffer, beautyMode=$beautyMode")
         }
+
         val startTime = System.currentTimeMillis()
 
         val processTexId = when (beautyMode) {
@@ -487,7 +517,6 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
         val texBufferHelper = textureBufferHelper ?: return -1
         val imageUtils = imageUtils ?: return -1
         val nv21Buffer = getNV21Buffer(videoFrame) ?: return -1
-        val buffer = videoFrame.buffer
         val isFront = videoFrame.sourceType == VideoFrame.SourceType.kFrontCamera
 
         if (currBeautyProcessType != BeautyProcessType.I420) {
@@ -546,7 +575,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
         })
     }
 
-    private fun getNV21Buffer(videoFrame: VideoFrame, rotate: Boolean = false): ByteArray? {
+    private fun getNV21Buffer(videoFrame: VideoFrame): ByteArray? {
         val buffer = videoFrame.buffer
         val i420Buffer = buffer as? I420Buffer ?: buffer.toI420()
         val width = i420Buffer.width

@@ -43,7 +43,6 @@ import io.agora.rtc2.video.VideoCanvas
 import io.agora.rtc2.video.VideoEncoderConfiguration
 import io.agora.rtc2.video.VideoEncoderConfiguration.FRAME_RATE
 import java.io.File
-import java.util.concurrent.Executors
 
 
 class SenseTimeActivity : ComponentActivity() {
@@ -147,6 +146,10 @@ class SenseTimeActivity : ComponentActivity() {
                 FRAME_RATE::class.java, intent.getStringExtra(EXTRA_FRAME_RATE)
             ), 0, VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_ADAPTIVE
         )
+    }
+
+    private val isCustomCaptureMode by lazy {
+        intent.getStringExtra(EXTRA_CAPTURE_MODE) == getString(R.string.beauty_capture_custom)
     }
 
     private val mSettingDialog by lazy {
@@ -469,9 +472,6 @@ class SenseTimeActivity : ComponentActivity() {
         //requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         window.decorView.keepScreenOn = true
 
-        val isCustomCaptureMode =
-            intent.getStringExtra(EXTRA_CAPTURE_MODE) == getString(R.string.beauty_capture_custom)
-
         SenseTimeBeautySDK.initMobileEffect(this)
         mSenseTimeApi.initialize(
             Config(
@@ -652,6 +652,10 @@ class SenseTimeActivity : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         mRtcEngine.leaveChannel()
+        mRtcEngine.stopPreview()
+        if (isCustomCaptureMode) {
+            mRtcEngine.registerVideoFrameObserver(null)
+        }
         mSenseTimeApi.release()
         SenseTimeBeautySDK.unInitMobileEffect()
         RtcEngine.destroy()
@@ -687,17 +691,14 @@ object SenseTimeBeautySDK {
     private val MODEL_HEAD_P_INSTANCE = "models/M_SenseME_Head_p_1.3.0.1.model" // 360度人头-头部模型
     private val MODEL_NAIL = "models/M_SenseME_Nail_p_2.4.0.model" // 指甲检测
 
-    private val workerThread = Executors.newSingleThreadExecutor()
 
     val mobileEffectNative = STMobileEffectNative()
     val humanActionNative = STMobileHumanActionNative()
 
 
     fun initBeautySDK(context: Context){
-        workerThread.submit {
-            checkLicense(context)
-            initHumanAction(context)
-        }
+        checkLicense(context)
+        initHumanAction(context)
     }
 
     fun initMobileEffect(context: Context){

@@ -89,11 +89,18 @@ mByteDanceApi.updateCameraConfig(cameraConfig)
 ```
 
 8. 销毁美颜
+
+> 调用时机必须在leaveChannel/stopPreview/registerVideoFrameObserver(null)之后，RtcEngine.destroy之前！
+
 ```kotlin
 mRtcEngine.leaveChannel()
-// 必须在leaveChannel后销毁
+mRtcEngine.stopPreview()
+if (isCustomCaptureMode) {
+    // 如果使用Custom采集模式并注册过裸数据回调，需要调用registerVideoFrameObserver将observer置空
+    mRtcEngine.registerVideoFrameObserver(null)
+}
 mByteDanceApi.release()
-mEffectManager.destroy()
+RtcEngine.destroy()
 ```
 
 ## 自定义采集模式

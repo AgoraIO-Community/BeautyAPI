@@ -173,6 +173,13 @@ interface ByteDanceBeautyAPI {
     fun setParameters(key: String, value: String)
 
     /**
+     * 在处理线程里执行操作
+     *
+     * @param run 操作run
+     */
+    fun runOnProcessThread(run: ()->Unit)
+
+    /**
      * 释放资源，一旦释放后这个实例将无法使用
      *
      * @return 见ErrorCode

@@ -89,11 +89,18 @@ mByteDanceApi.updateCameraConfig(cameraConfig)
 ```
 
 8. Destroy BeautyAPI
+
+> The calling time must be after leaveChannel/stopPreview/registerVideoFrameObserver(null) and before RtcEngine.destroy!
+
 ```kotlin
 mRtcEngine.leaveChannel()
-// Must release beauty api after leaveChannel
+mRtcEngine.stopPreview()
+if (isCustomCaptureMode) {
+  // If you use custom capture mode and have registered video frame observer, register video frame observer to null here!
+  mRtcEngine.registerVideoFrameObserver(null)
+}
 mByteDanceApi.release()
-mEffectManager.destroy()
+RtcEngine.destroy()
 ```
 
 ## Custom Capture Mode
