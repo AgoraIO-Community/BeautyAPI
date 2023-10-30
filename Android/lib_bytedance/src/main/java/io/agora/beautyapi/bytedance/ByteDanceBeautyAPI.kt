@@ -177,7 +177,7 @@ interface ByteDanceBeautyAPI {
      *
      * @param run 操作run
      */
-    fun runOnProcessThread(run: ()->Unit);
+    fun runOnProcessThread(run: ()->Unit)
 
     /**
      * 释放资源，一旦释放后这个实例将无法使用
