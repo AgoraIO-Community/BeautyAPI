@@ -11,7 +11,7 @@
 
 相芯SDK文件/目录         | 项目路径                                                  |
 |----------------------|-------------------------------------------------------| 
-| FaceUnity/Lib/Resources | iOS/FULib         |
+| FULiveDemo/Resources | iOS/FULib         |
 | 证书authpack.h      | iOS/BeautyAPi/FUBeauty/authpack.h  |
 
 2.配置依赖库

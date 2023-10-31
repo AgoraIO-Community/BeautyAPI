@@ -313,7 +313,7 @@ class BeautyModel: BeautyBaseModel {
             
         } else if beautyType == .fu {
             model = BeautyModel()
-            model.path = "graphics/face_makeup"
+            model.path = "face_makeup"
             model.key = "makeup/xinggan"
             model.value = 0.5
             model.name = "show_beauty_item_effect_sexy".beauty_localized
@@ -321,7 +321,7 @@ class BeautyModel: BeautyBaseModel {
             dataArray.append(model)
             
             model = BeautyModel()
-            model.path = "graphics/face_makeup"
+            model.path = "face_makeup"
             model.key = "makeup/tianmei"
             model.value = 0.5
             model.name = "show_beauty_item_effect_sweet".beauty_localized

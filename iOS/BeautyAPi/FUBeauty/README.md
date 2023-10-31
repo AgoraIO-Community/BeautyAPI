@@ -13,7 +13,7 @@ FaceUnity Configuration
 
 | FaceUnity Beauty Resources          | Location                        |
 |-------------------------------------|---------------------------------|
-| FaceUnity/Lib/Resources | iOS/FULib         |
+| FULiveDemo/Resources | iOS/FULib         |
 | authpack.h      | iOS/BeautyAPi/FUBeauty/authpack.h  |
 
 2.Config Dependencies
