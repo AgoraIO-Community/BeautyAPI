@@ -30,7 +30,7 @@ _English | [中文](README.zh.md)
 
 | FaceUnity Beauty          | Location                                             |
 |-------------------------------------|------------------------------------------------------|
-| FaceUnity/Lib/Resources | iOS/FULib         |
+| FULiveDemo/Resources | iOS/FULib         |
 | authpack.h      | iOS/BeautyAPi/FUBeauty/authpack.h  |
 
 3. ByteDance

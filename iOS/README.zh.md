@@ -30,7 +30,7 @@
 
 相芯SDK文件/目录         | 项目路径                                                  |
 |----------------------|-------------------------------------------------------| 
-| FaceUnity/Lib/Resources | iOS/FULib         |
+| FULiveDemo/Resources | iOS/FULib         |
 | 证书authpack.h      | iOS/BeautyAPi/FUBeauty/authpack.h  |
 
 3. 字节/火山美颜
