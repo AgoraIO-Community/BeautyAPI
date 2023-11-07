@@ -11,6 +11,7 @@
 @interface BytesBeautyRender ()
 
 @property (nonatomic, strong) NSMutableArray *bytesNodes;
+@property (nonatomic, weak) BEPixelBufferGLTexture *outTexture;
 
 @end
 
@@ -45,12 +46,14 @@
     return _bytesNodes;
 }
 
-- (void)destroy { 
+- (void)destroy {
 #if __has_include(BytesMoudle)
-    [_effectManager destroyTask];
     [_effectManager cleanPipeline];
+    [_effectManager destroyTask];
     _effectManager = nil;
     _imageUtils = nil;
+    [self.outTexture destroy];
+    self.outTexture = nil;
 #endif
 }
 
@@ -73,7 +76,7 @@
                                                                   height:texture.height
                                                                   format:pixelBufferInfo.format
                                                             withPipeline:self.effectManager.usePipeline];
-    
+    self.outTexture = outTexture;
     int ret = [self.effectManager processTexture:texture.texture
                                    outputTexture:outTexture.texture
                                            width:pixelBufferInfo.width
@@ -117,7 +120,7 @@
 }
 #endif
 
-- (void)reset { 
+- (void)reset {
 #if __has_include(BytesMoudle)
     [self.effectManager updateComposerNodeIntensity:@"/beauty_IOS_lite" key:@"whiten" intensity:0];
     [self.effectManager updateComposerNodeIntensity:@"/beauty_IOS_lite" key:@"smooth" intensity:0];
@@ -133,7 +136,7 @@
 #endif
 }
 
-- (void)setBeautyPreset { 
+- (void)setBeautyPreset {
 #if __has_include(BytesMoudle)
     [self.effectManager updateComposerNodeIntensity:@"/beauty_IOS_lite" key:@"whiten" intensity:0.2];
     [self.effectManager updateComposerNodeIntensity:@"/beauty_IOS_lite" key:@"smooth" intensity:0.3];
@@ -149,7 +152,7 @@
 #endif
 }
 
-- (void)setMakeup:(BOOL)isSelected { 
+- (void)setMakeup:(BOOL)isSelected {
 #if __has_include(BytesMoudle)
     if (isSelected) {
         if (![self.bytesNodes containsObject:@"/style_makeup/qise"]) {
@@ -167,7 +170,7 @@
 #endif
 }
 
-- (void)setSticker:(BOOL)isSelected { 
+- (void)setSticker:(BOOL)isSelected {
 #if __has_include(BytesMoudle)
     if (isSelected) {
         [self.effectManager setStickerPath:@"matting_bg"];
