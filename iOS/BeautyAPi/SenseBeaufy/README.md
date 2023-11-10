@@ -11,7 +11,6 @@ _English | [中文](README.zh.md)
 
 | SenseTime SDK                                                           | Location                        |
 |-------------------------------------------------------------------------|---------------------------------|
-| SenseMe/remoteSourcesLib                                                       | iOS/SenseLib/remoteSourcesLib              |
 | SenseMe/st\_mobil\_sdk | iOS/SenseLib/st\_mobile\_sdk  |
 |SenseMe/st\_mobil\_sdk/license/SENSEME.lic                                                          | iOS/SenseLib/SENSEME.lic ||
 
@@ -127,4 +126,4 @@ If you have any problems or suggestions regarding the sample projects, feel free
 
 ## License
 
-The sample projects are under the MIT license.
+The sample projects are under the MIT license.BeautyAPi/SenseBeaufy/README.md

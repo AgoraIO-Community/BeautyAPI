@@ -11,7 +11,6 @@
 
 | 商汤SDK文件/目录                                                              | 项目目录                             |
 |-------------------------------------------------------------------------|----------------------------------|
-| SenseMe/remoteSourcesLib                                                       | iOS/SenseLib/remoteSourcesLib              |
 | SenseMe/st\_mobil\_sdk | iOS/SenseLib/st\_mobile\_sdk  |
 |SenseMe/st\_mobil\_sdk/license/SENSEME.lic                                                          | iOS/SenseLib/SENSEME.lic |
 
