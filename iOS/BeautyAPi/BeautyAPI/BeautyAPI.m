@@ -79,6 +79,7 @@ static NSString *const beautyAPIVersion = @"1.0.4";
             }
         };
         [self rtcReportWithEvent:@"initialize" label:dict];
+        [self setupMirror];
 #else
         [LogUtil log:@"rtc 未导入" level:(LogLevelError)];
         return -1;
@@ -97,20 +98,19 @@ static NSString *const beautyAPIVersion = @"1.0.4";
     return [self.config.rtcEngine switchCamera];
 }
 
-- (AgoraVideoMirrorMode)setupMirror {
-    AgoraVideoMirrorMode mode = AgoraVideoMirrorModeDisabled;
-    if (self.isFrontCamera) {
-        if (self.config.cameraConfig.frontMirror == MirrorMode_LOCAL_ONLY || self.config.cameraConfig.frontMirror == MirrorMode_REMOTE_ONLY) {
-            mode = AgoraVideoMirrorModeEnabled;
-        }
-    } else {
-        if (self.config.cameraConfig.backMirror ==  MirrorMode_REMOTE_ONLY || self.config.cameraConfig.backMirror == MirrorMode_LOCAL_ONLY) {
-            mode = AgoraVideoMirrorModeEnabled;
-        }
+- (void)setupMirror {
+    int mirror = 0;
+    if (self.isFrontCamera && self.config.cameraConfig.frontMirror == MirrorMode_LOCAL_ONLY) {
+        mirror = 2;
+    } else if (!self.isFrontCamera && self.config.cameraConfig.backMirror == MirrorMode_LOCAL_ONLY) {
+        mirror = 1;
     }
-    [self.config.rtcEngine setParameters:[NSString stringWithFormat:@"{\"rtc.camera_capture_mirror_mode\":%d}", mode == AgoraVideoMirrorModeEnabled ? 1 : 0]];
-    [LogUtil log:[NSString stringWithFormat:@"AgoraVideoMirrorMode == %ld isFrontCamera == %d", mode, self.isFrontCamera]];
-    return mode;
+    NSString *jsonString = [NSString stringWithFormat:@"{\"rtc.camera_capture_mirror_mode\":%d}", mirror];
+    [self.config.rtcEngine setParameters:jsonString];
+    NSDictionary *dict = @{@"setupMirror": @(mirror), @"isFrontCamera": @(self.isFrontCamera)};
+    [self rtcReportWithEvent:@"setupMirror" label:dict];
+    
+    [LogUtil log:[NSString stringWithFormat:@"AgoraVideoMirrorMode == %d isFrontCamera == %d", mirror, self.isFrontCamera]];
 }
 
 - (int)updateCameraConfig:(CameraConfig *)cameraConfig {
@@ -158,7 +158,7 @@ static NSString *const beautyAPIVersion = @"1.0.4";
 - (int)setupLocalVideo:(UIView *)view renderMode:(AgoraVideoRenderMode)renderMode {
     self.renderMode = renderMode;
     AgoraRtcVideoCanvas *localCanvas = [[AgoraRtcVideoCanvas alloc] init];
-    localCanvas.mirrorMode = [self setupMirror];
+    localCanvas.mirrorMode = AgoraVideoMirrorModeDisabled;
     localCanvas.view = view;
     localCanvas.renderMode = renderMode;
     localCanvas.uid = 0;
@@ -227,6 +227,9 @@ static NSString *const beautyAPIVersion = @"1.0.4";
 
 #pragma mark - VideoFrameDelegate
 #if __has_include(<AgoraRtcKit/AgoraRtcKit.h>)
+- (BOOL)onCaptureVideoFrame:(AgoraOutputVideoFrame *)videoFrame {
+    return [self onCaptureVideoFrame:videoFrame sourceType:(AgoraVideoSourceTypeCamera)];
+}
 - (BOOL)onCaptureVideoFrame:(AgoraOutputVideoFrame *)videoFrame sourceType:(AgoraVideoSourceType)sourceType {
     if (!self.isEnable) { return YES; }
     CFTimeInterval startTime = CACurrentMediaTime();
@@ -273,9 +276,9 @@ static NSString *const beautyAPIVersion = @"1.0.4";
 
 - (BOOL)getMirrorApplied{
     if (self.isFrontCamera) {
-        return self.config.cameraConfig.frontMirror == MirrorMode_REMOTE_ONLY || self.config.cameraConfig.frontMirror == MirrorMode_LOCAL_REMOTE;
+        return self.config.cameraConfig.frontMirror == MirrorMode_REMOTE_ONLY || self.config.cameraConfig.frontMirror == MirrorMode_LOCAL_ONLY;
     }
-    return self.config.cameraConfig.backMirror == MirrorMode_REMOTE_ONLY || self.config.cameraConfig.backMirror == MirrorMode_LOCAL_REMOTE;
+    return self.config.cameraConfig.backMirror == MirrorMode_LOCAL_ONLY || self.config.cameraConfig.backMirror == MirrorMode_REMOTE_ONLY;
 }
 
 - (BOOL)getRotationApplied {
@@ -283,7 +286,7 @@ static NSString *const beautyAPIVersion = @"1.0.4";
 }
 
 - (AgoraVideoFramePosition)getObservedFramePosition {
-    return AgoraVideoFramePositionPostCapture;
+    return AgoraVideoFramePositionPostCapture | AgoraVideoFramePositionPreEncoder;
 }
 #endif
 
