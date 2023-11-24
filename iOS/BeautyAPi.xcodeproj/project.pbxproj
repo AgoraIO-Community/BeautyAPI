@@ -58,6 +58,13 @@
 		E779031E2A57EE58008791AD /* BytesBeautyRender.m in Sources */ = {isa = PBXBuildFile; fileRef = E77903182A57EE58008791AD /* BytesBeautyRender.m */; };
 		E78A5D0B2ABBEC9F00132189 /* BETimeRecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = E78A5D092ABBEC9F00132189 /* BETimeRecoder.m */; };
 		E78A5D0F2ABC32F500132189 /* BEGLUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E78A5D0D2ABC32F500132189 /* BEGLUtils.m */; };
+		E7E682112B0E0148006F67C8 /* CosmosBeautyRender.m in Sources */ = {isa = PBXBuildFile; fileRef = E7E682102B0E0148006F67C8 /* CosmosBeautyRender.m */; };
+		E7E682152B0E01A9006F67C8 /* CEBeautyRender.m in Sources */ = {isa = PBXBuildFile; fileRef = E7E682132B0E01A9006F67C8 /* CEBeautyRender.m */; };
+		E7E682172B0E07F1006F67C8 /* CosmosBeautyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7E682162B0E07F1006F67C8 /* CosmosBeautyManager.swift */; };
+		E7E682352B0F46EF006F67C8 /* BeautyModel+Sense.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7E682342B0F46EF006F67C8 /* BeautyModel+Sense.swift */; };
+		E7E682372B0F4868006F67C8 /* BeautyModel+FU.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7E682362B0F4868006F67C8 /* BeautyModel+FU.swift */; };
+		E7E682392B0F48AA006F67C8 /* BeautyModel+Bytes.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7E682382B0F48AA006F67C8 /* BeautyModel+Bytes.swift */; };
+		E7E6823B2B0F4B68006F67C8 /* BeautyModel+Cosmos.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7E6823A2B0F4B68006F67C8 /* BeautyModel+Cosmos.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -148,6 +155,15 @@
 		E78A5D0C2ABBECF900132189 /* Config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Config.h; sourceTree = "<group>"; };
 		E78A5D0D2ABC32F500132189 /* BEGLUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEGLUtils.m; sourceTree = "<group>"; };
 		E78A5D0E2ABC32F500132189 /* BEGLUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEGLUtils.h; sourceTree = "<group>"; };
+		E7E6820F2B0E0148006F67C8 /* CosmosBeautyRender.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CosmosBeautyRender.h; sourceTree = "<group>"; };
+		E7E682102B0E0148006F67C8 /* CosmosBeautyRender.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CosmosBeautyRender.m; sourceTree = "<group>"; };
+		E7E682132B0E01A9006F67C8 /* CEBeautyRender.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CEBeautyRender.m; sourceTree = "<group>"; };
+		E7E682142B0E01A9006F67C8 /* CEBeautyRender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CEBeautyRender.h; sourceTree = "<group>"; };
+		E7E682162B0E07F1006F67C8 /* CosmosBeautyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CosmosBeautyManager.swift; sourceTree = "<group>"; };
+		E7E682342B0F46EF006F67C8 /* BeautyModel+Sense.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BeautyModel+Sense.swift"; sourceTree = "<group>"; };
+		E7E682362B0F4868006F67C8 /* BeautyModel+FU.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BeautyModel+FU.swift"; sourceTree = "<group>"; };
+		E7E682382B0F48AA006F67C8 /* BeautyModel+Bytes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BeautyModel+Bytes.swift"; sourceTree = "<group>"; };
+		E7E6823A2B0F4B68006F67C8 /* BeautyModel+Cosmos.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BeautyModel+Cosmos.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -183,6 +199,7 @@
 		E70ADE422A5E50BE009947CF /* Render */ = {
 			isa = PBXGroup;
 			children = (
+				E7E6820C2B0E0113006F67C8 /* CosmosRender */,
 				E779030F2A57EE58008791AD /* FURender */,
 				E77903142A57EE58008791AD /* SenseRender */,
 				E77903172A57EE58008791AD /* BytesRender */,
@@ -220,6 +237,7 @@
 				E72D78292A25976500C9134C /* SenseBeaufy */,
 				E732E91F2A31A786004403AF /* FUBeauty */,
 				E77902992A4D636C008791AD /* ByteBeaufy */,
+				E7E682122B0E0190006F67C8 /* CosmosBeauty */,
 				E72D78152A25963500C9134C /* AppDelegate.swift */,
 				E72D78172A25963500C9134C /* SceneDelegate.swift */,
 				E72D78192A25963500C9134C /* ViewController.swift */,
@@ -290,6 +308,10 @@
 			isa = PBXGroup;
 			children = (
 				E72F62622A8A0FF900C963D2 /* BeautyModel.swift */,
+				E7E682342B0F46EF006F67C8 /* BeautyModel+Sense.swift */,
+				E7E682362B0F4868006F67C8 /* BeautyModel+FU.swift */,
+				E7E682382B0F48AA006F67C8 /* BeautyModel+Bytes.swift */,
+				E7E6823A2B0F4B68006F67C8 /* BeautyModel+Cosmos.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -301,6 +323,7 @@
 				E72F626C2A8A2E6A00C963D2 /* FUBeautyManager.swift */,
 				E72F626D2A8A2E6A00C963D2 /* SenseBeautyManager.swift */,
 				E72F62722A8A2F0700C963D2 /* BeautyManager.swift */,
+				E7E682162B0E07F1006F67C8 /* CosmosBeautyManager.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -397,6 +420,24 @@
 				E77903182A57EE58008791AD /* BytesBeautyRender.m */,
 			);
 			path = BytesRender;
+			sourceTree = "<group>";
+		};
+		E7E6820C2B0E0113006F67C8 /* CosmosRender */ = {
+			isa = PBXGroup;
+			children = (
+				E7E6820F2B0E0148006F67C8 /* CosmosBeautyRender.h */,
+				E7E682102B0E0148006F67C8 /* CosmosBeautyRender.m */,
+			);
+			path = CosmosRender;
+			sourceTree = "<group>";
+		};
+		E7E682122B0E0190006F67C8 /* CosmosBeauty */ = {
+			isa = PBXGroup;
+			children = (
+				E7E682142B0E01A9006F67C8 /* CEBeautyRender.h */,
+				E7E682132B0E01A9006F67C8 /* CEBeautyRender.m */,
+			);
+			path = CosmosBeauty;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -535,6 +576,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E72D786B2A27313F00C9134C /* ViewController.swift in Sources */,
+				E7E682112B0E0148006F67C8 /* CosmosBeautyRender.m in Sources */,
 				E779031D2A57EE58008791AD /* SenseBeautyRender.m in Sources */,
 				E72D78892A2897E200C9134C /* Configs.swift in Sources */,
 				E72D78402A25976500C9134C /* EffectsDetector.m in Sources */,
@@ -551,13 +593,16 @@
 				E77902F82A57C067008791AD /* FUManager.m in Sources */,
 				E77902C32A4D636C008791AD /* BEImageUtils.m in Sources */,
 				E72F62732A8A2F0700C963D2 /* BeautyManager.swift in Sources */,
+				E7E682352B0F46EF006F67C8 /* BeautyModel+Sense.swift in Sources */,
 				E779031B2A57EE58008791AD /* FUBeautyRender.m in Sources */,
 				E72D78812A286F1600C9134C /* PickerView.swift in Sources */,
 				E72D78832A286F2900C9134C /* AlertManager.swift in Sources */,
+				E7E682372B0F4868006F67C8 /* BeautyModel+FU.swift in Sources */,
 				E77902C12A4D636C008791AD /* BEHttpRequestProvider.mm in Sources */,
 				E72F62612A8A0FDD00C963D2 /* BeautyMenuItemCell.swift in Sources */,
 				E779031C2A57EE58008791AD /* BeautyAPI.m in Sources */,
 				E72F62692A8A11D100C963D2 /* UIImage+Show.swift in Sources */,
+				E7E682392B0F48AA006F67C8 /* BeautyModel+Bytes.swift in Sources */,
 				E72D78432A25976500C9134C /* VideoProcessingManager.m in Sources */,
 				E77902C02A4D636C008791AD /* BEGLTexture.m in Sources */,
 				E77902B82A4D636C008791AD /* BEOpenGLRenderHelper.m in Sources */,
@@ -578,7 +623,10 @@
 				E72D78572A259E9C00C9134C /* KeyCenter.swift in Sources */,
 				E72F62712A8A2E6A00C963D2 /* ByteBeautyManager.swift in Sources */,
 				E72F62702A8A2E6A00C963D2 /* SenseBeautyManager.swift in Sources */,
+				E7E682172B0E07F1006F67C8 /* CosmosBeautyManager.swift in Sources */,
+				E7E6823B2B0F4B68006F67C8 /* BeautyModel+Cosmos.swift in Sources */,
 				E72F62672A8A114D00C963D2 /* String+Localizable.swift in Sources */,
+				E7E682152B0E01A9006F67C8 /* CEBeautyRender.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

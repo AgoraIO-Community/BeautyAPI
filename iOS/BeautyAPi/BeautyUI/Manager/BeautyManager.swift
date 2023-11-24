@@ -47,6 +47,9 @@ class BeautyManager: NSObject {
             
         case .fu:
             config.beautyRender = FUBeautyManager.shareManager.render
+            
+        case .cosmos:
+            config.beautyRender = CosmosBeautyManager.shareManager.render
         }
         config.statsEnable = false
         config.statsDuration = 1
@@ -73,6 +76,9 @@ class BeautyManager: NSObject {
             
         case .fu:
             FUBeautyManager.shareManager.setBeauty(path: path, key: key, value: value)
+            
+        case .cosmos:
+            CosmosBeautyManager.shareManager.setBeauty(path: path, key: key, value: value)
         }
     }
     
@@ -85,6 +91,9 @@ class BeautyManager: NSObject {
             SenseBeautyManager.shareManager.setStyle(path: path, key: key, value: value)
         case .fu:
             FUBeautyManager.shareManager.setStyle(path: path, key: key, value: value)
+            
+        case .cosmos:
+            CosmosBeautyManager.shareManager.setStyle(path: path, key: key, value: value)
         }
     }
     
@@ -99,8 +108,10 @@ class BeautyManager: NSObject {
             
         case .fu:
             FUBeautyManager.shareManager.setFilter(path: path, value: value)
+            
+        case .cosmos:
+            CosmosBeautyManager.shareManager.setFilter(path: path, value: value)
         }
-        
     }
     
     func setSticker(path: String?, datas: [BeautyModel]) {
@@ -113,6 +124,9 @@ class BeautyManager: NSObject {
             
         case .fu:
             FUBeautyManager.shareManager.setSticker(path: path)
+            
+        case .cosmos:
+            CosmosBeautyManager.shareManager.setSticker(path: path)
         }
     }
     
@@ -126,6 +140,9 @@ class BeautyManager: NSObject {
             
         case .fu:
             FUBeautyManager.shareManager.reset(datas: datas)
+            
+        case .cosmos:
+            CosmosBeautyManager.shareManager.reset(datas: datas)
         }
     }
     
@@ -139,6 +156,9 @@ class BeautyManager: NSObject {
             
         case .fu:
             FUBeautyManager.shareManager.resetStyle(datas: datas)
+            
+        case .cosmos:
+            CosmosBeautyManager.shareManager.resetStyle(datas: datas)
         }
     }
     
@@ -152,6 +172,9 @@ class BeautyManager: NSObject {
             
         case .fu:
             FUBeautyManager.shareManager.resetFilter(datas: datas)
+            
+        case .cosmos:
+            CosmosBeautyManager.shareManager.resetFilter(datas: datas)
         }
     }
     
@@ -165,6 +188,9 @@ class BeautyManager: NSObject {
             
         case .fu:
             FUBeautyManager.shareManager.resetSticker(datas: datas)
+            
+        case .cosmos:
+            CosmosBeautyManager.shareManager.resetSticker(datas: datas)
         }
     }
     
@@ -178,6 +204,9 @@ class BeautyManager: NSObject {
             
         case .fu:
             FUBeautyManager.shareManager.destroy()
+            
+        case .cosmos:
+            CosmosBeautyManager.shareManager.destroy()
         }
         BeautyManager._sharedManager = nil
     }

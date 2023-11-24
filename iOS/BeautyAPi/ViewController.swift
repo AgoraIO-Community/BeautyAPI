@@ -70,6 +70,8 @@ class ViewController: UIViewController {
                 BeautyModel.beautyType = .sense
             case "fu":
                 BeautyModel.beautyType = .fu
+            case "cosmos":
+                BeautyModel.beautyType = .cosmos
             default:
                 BeautyModel.beautyType = .byte
             }
