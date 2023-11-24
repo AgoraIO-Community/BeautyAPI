@@ -90,6 +90,15 @@ class MainActivity : ComponentActivity() {
                     mBinding.spBeautyCaptureMode.selectedItem.toString(),
                     mBinding.spBeautyProcessMode.selectedItem.toString()
                 )
+
+                getString(R.string.beauty_cosmos) -> CosmosActivity.launch(
+                    this,
+                    mBinding.etChannelName.text.toString(),
+                    mBinding.spResolution.selectedItem.toString(),
+                    mBinding.spFrameRate.selectedItem.toString(),
+                    mBinding.spBeautyCaptureMode.selectedItem.toString(),
+                    mBinding.spBeautyProcessMode.selectedItem.toString()
+                )
             }
         } else {
             AudienceActivity.launch(this, mBinding.etChannelName.text.toString())
