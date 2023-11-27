@@ -1,25 +1,36 @@
-# SenseTime BeautyAPI
+# ByteDance BeautyAPI
 
 _English | [中文](README.zh.md)
 
 ## Prerequisites
 - Agora RTC SDK has been integrated in the project
-- Contact SenseTime customer service to get SenseTime's beauty SDK, beauty resources and license
+- Contact ByteDance customer service to get ByteDance's beauty SDK, beauty resources and license
 
 ## Quick Start
-1.Unzip the SenseTime SDK and configure the following .a libraries, resource files, and certificates to the corresponding directory of the project        
+1.Unzip the ByteDance SDK and configure the following framework libraries, resource files, and certificates to the corresponding directory of the project
 
-| SenseTime SDK                                                           | Location                        |
-|-------------------------------------------------------------------------|---------------------------------|
-| SenseMe/st\_mobil\_sdk | iOS/SenseLib/st\_mobile\_sdk  |
-|SenseMe/st\_mobil\_sdk/license/SENSEME.lic                                                          | iOS/SenseLib/SENSEME.lic ||
+| Cosmos SDK(Must)                                | Location                |
+|----------------------------------------------|-------------------------|
+| iOS-Release-xxx/libs/CosmosEffect-xxx                       | iOS/CosmosEffect           |
+| iOS/CosmosEffect/cv.bundle    | iOS/CosmosEffect/Frameworks/Resources/cv.bundle          |
+
+##### If you need to add stickers and other resources, they must be placed in the Resource directory
+| Cosmos Resource(Option)                                 | Location                           |
+|-----------------------------------------------|---------------------------------|
+| iOS-Release-xxx/sample/BeautyKit/BeuautyUI/makeup.bundle(<span style="color:red;">makeup</span>)                      | iOS/CosmosEffect/Frameworks/Resources/makeup.bundle          |
+| iOS-Release-xxx/sample/BeautyKit/Resources.bundle(<span style="color:red;">sticker</span>)   | iOS/CosmosEffect/Frameworks/Resources/Resources.bundle         
+
 
 2.Configuration dependency library
 ```podfile
-	pod 'SenseLib', :path => 'sense.podspec'
+	pod 'CosmosEffect', :path => './CosmosEffect'
 ```
 
-3.Configuration Bundle Identifier
+3.Configuration license and Bundle Identifier
+
+- BeautyAPI
+  - CosmosBeauty
+    - CEBeautyRender.m
     
 - BeautyAPI
   - Signing&Capabilities
@@ -30,19 +41,19 @@ _English | [中文](README.zh.md)
 ```
 BeautyAPI
     ├── BeautyAPI.{h,m}
-    └── Render/SenseRender
+    └── Render/CosmosRender
 ```
 
 5.Initialization
 
 ```swift
 private lazy var beautyAPI = BeautyAPI()
-private lazy var senseRender = SenseBeautyRender()
+private lazy var cosmosRender = CosmosBeautyRender()
 
 let config = BeautyConfig()
 config.rtcEngine = rtcEngine
 config.captureMode = .agora
-config.beautyRender = senseRender
+config.beautyRender = cosmosRender
 config.statsEnable = false
 config.statsDuration = 1
 config.eventCallback = { stats in
@@ -93,7 +104,7 @@ The BeautyAPI also supports external video frames for processing. The implementa
 let config = BeautyConfig()
 config.rtcEngine = rtcEngine
 config.captureMode = .custom
-config.beautyRender = senseRender
+config.beautyRender = cosmosRender
 config.statsEnable = false
 config.statsDuration = 1
 config.eventCallback = { stats in
@@ -132,4 +143,4 @@ If you have any problems or suggestions regarding the sample projects, feel free
 
 ## License
 
-The sample projects are under the MIT license.BeautyAPi/SenseBeaufy/README.md
+The sample projects are under the MIT license.

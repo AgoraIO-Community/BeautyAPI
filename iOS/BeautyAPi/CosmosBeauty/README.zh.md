@@ -1,48 +1,60 @@
-# 商汤美颜场景化API
+# 宇宙美颜场景化API
 
 [English](README.md) | 中文
 
 ## 前提条件
 - 项目里已经集成了Agora RTC SDK
-- 联系商汤客服拿到商汤的美颜SDK
+- 联系宇宙客服拿到宇宙美颜SDK及其资源文件
 
 ## 快速集成
-1.解压商汤SDK并将以下.a库、资源文件、证书配置到项目对应目录下
+1.解压宇宙SDK并将以下framework库、资源文件、证书配置到项目对应目录下
 
-| 商汤SDK文件/目录                                                              | 项目目录                             |
-|-------------------------------------------------------------------------|----------------------------------|
-| SenseMe/st\_mobil\_sdk | iOS/SenseLib/st\_mobile\_sdk  |
-|SenseMe/st\_mobil\_sdk/license/SENSEME.lic                                                          | iOS/SenseLib/SENSEME.lic |
+| 宇宙SDK文件/目录(必须)                                | 项目目录                            |
+|-----------------------------------------------|---------------------------------|
+| iOS-Release-xxx/libs/CosmosEffect-xxx                       | iOS/CosmosEffect           |
+| iOS/CosmosEffect/cv.bundle    | iOS/CosmosEffect/Frameworks/Resources/cv.bundle          |
+
+
+##### 如需添加贴纸及其它资源,都需放在Resource目录下
+| 宇宙资源目录(可选)                                 | 项目目录                            |
+|-----------------------------------------------|---------------------------------|
+| iOS-Release-xxx/sample/BeautyKit/BeuautyUI/makeup.bundle(<span style="color:red;">风格妆</span>)                      | iOS/CosmosEffect/Frameworks/Resources/makeup.bundle          |
+| iOS-Release-xxx/sample/BeautyKit/Resources.bundle(<span style="color:red;">贴纸</span>)   | iOS/CosmosEffect/Frameworks/Resources/Resources.bundle         
 
 2.配置依赖库
+
 ```podfile
-	pod 'SenseLib', :path => 'sense.podspec'
+	pod 'CosmosEffect', :path => './CosmosEffect'
 ```
 
-3.配置Bundle Identifier
+3.配置license和Bundle Identifier
+
+- BeautyAPI
+  - CosmosBeauty
+    - CEBeautyRender.m
     
 - BeautyAPI
   - Signing&Capabilities
     - Bundle Identifier
+    
 
 4.复制以下场景化接口及实现到项目里
-
 ```
 BeautyAPI
     ├── BeautyAPI.{h,m}
-    └── Render/FURender
+    └── Render/CosmosRender
 ```
 
 5.初始化
 
 ```swift
 private lazy var beautyAPI = BeautyAPI()
-private lazy var senseRender = SenseBeautyRender()
+private lazy var cosmosRender = CosmosBeautyRender()
 
 let config = BeautyConfig()
 config.rtcEngine = rtcEngine
 config.captureMode = .agora
-config.beautyRender = senseRender
+config.beautyRender = cosmosRender
 config.statsEnable = false
 config.statsDuration = 1
 config.eventCallback = { stats in
@@ -91,7 +103,7 @@ AgoraRtcEngineKit.destroy()
 let config = BeautyConfig()
 config.rtcEngine = rtcEngine
 config.captureMode = .custom
-config.beautyRender = senseRender
+config.beautyRender = cosmosRender
 config.statsEnable = false
 config.statsDuration = 1
 config.eventCallback = { stats in
