@@ -247,7 +247,7 @@ class CosmosActivity : ComponentActivity() {
                         ) { dialog, value ->
                             dialog.isTopLayoutVisible = true
                             CosmosBeautyWrapSDK.beautyModule?.setValue(
-                                SimpleBeautyType.THIN_FACE,
+                                SimpleBeautyType.FACE_WIDTH,
                                 value
                             )
                         },
