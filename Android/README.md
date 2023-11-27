@@ -48,6 +48,16 @@ _English | [中文](README.zh.md)
 
 Modify the LICENSE_NAME in the app/src/main/java/io/agora/beautyapi/demo/ByteDanceActivity.kt file to the name of the applied certificate file.
 
+4. Cosmos
+   Unzip the Cosmos beauty resource and copy the following files/directories to the corresponding path
+
+| ByteDance Beauty Resources                | Location                                         |
+|-------------------------------------------|--------------------------------------------------|
+| sample/app/src/main/assets/model-all.zip  | app/src/main/assets/beauty_cosmos/model-all.zip  |
+| sample/app/src/main/assets/cosmos.zip     | app/src/main/assets/beauty_cosmos/cosmos.zip     |
+
+Modify the LICENSE in the app/src/main/java/io/agora/beautyapi/demo/CosmosActivity.kt file to the applied license code.
+
 ### Agora AppID Configuration
 
 > PS：This demo does not support AppId with certificate
@@ -62,7 +72,7 @@ Modify the LICENSE_NAME in the app/src/main/java/io/agora/beautyapi/demo/ByteDan
 ```xml
 AGORA_APP_ID=#YOUR APP ID#
 ```
-
+[README.zh.md](..%2FREADME.zh.md)
 ### Run Project
 
 1. Edit the app/build.gradle file, change applicationId to your application id using to apply to beauty SDK.
@@ -73,11 +83,12 @@ AGORA_APP_ID=#YOUR APP ID#
 
 Each beauty api can be integrated into your project separately, see the below integration documentation for details
 
-| Beauty     | Documentation                      |
-|------------|------------------------------------|
-| SenseTime  | [README](lib_sensetime/README.md)  |
-| FaceUnity  | [README](lib_faceunity/README.md)  |
-| ByteDance  | [README](lib_bytedance/README.md)  |
+| Beauty    | Documentation                     |
+|-----------|-----------------------------------|
+| SenseTime | [README](lib_sensetime/README.md) |
+| FaceUnity | [README](lib_faceunity/README.md) |
+| ByteDance | [README](lib_bytedance/README.md) |
+| Cosmos    | [README](lib_cosmos/README.md)    |
 
 ## Feedback
 

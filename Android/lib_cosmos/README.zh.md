@@ -5,59 +5,44 @@
 ## 前提条件
 - 项目使用Kotlin插件
 - 项目里已经集成了Agora RTC SDK
-- 联系字节客服拿到字节/火山的美颜SDK及其资源文件
+- 联系字节客服拿到宇宙的美颜SDK及其资源文件
 
 ## 快速集成
-1. (可选)解压字节/火山SDK并将以下aar库、资源文件、证书配置到项目对应目录下
+1. (可选)解压宇宙美颜SDK并将以下aar库、资源文件、证书配置到项目对应目录下
 
-| 字节/火山SDK文件/目录                                 | 项目目录                            |
-|-----------------------------------------------|---------------------------------|
-| resource/LicenseBag.bundle                    | assets/beauty_bytedance         |
-| resource/ModelResource.bundle                 | assets/beauty_bytedance         |
-| resource/ComposeMakeup.bundle                 | assets/beauty_bytedance         |
-| resource/StickerResource.bundle               | assets/beauty_bytedance         |
-| resource/StickerResource.bundle               | assets/beauty_bytedance         |
-| byted_effect_andr/libs/effectAAR-release.aar  | libs                            |
+| 字节/火山SDK文件/目录                                 | 项目目录                                            |
+|-----------------------------------------------|-------------------------------------------------|
+| sample/app/src/main/assets/model-all.zip      | app/src/main/assets/beauty_cosmos/model-all.zip |
+| sample/app/src/main/assets/cosmos.zip         | app/src/main/assets/beauty_cosmos/cosmos.zip    |
+| sample/app/libs/beautysdk-3.7.0-20230301.aar  | libs                                            |
 
 2. 复制以下场景化接口及实现到项目里
 > 请保留原有包名目录，以便于代码升级
 ```xml
-src/main/java/io/agora/beautyapi/bytedance
-   ├── ByteDanceBeautyAPI.kt
-   ├── ByteDanceBeautyAPIImpl.kt
+src/main/java/io/agora/beautyapi/cosmos
+   ├── CosmosBeautyAPI.kt
+   ├── CosmosBeautyAPIImpl.kt
    └── utils
 ```
 
 3. 初始化
 
-> 初始化前需要先复制字节美颜SDK所需的资源到sdcard上，并提前创建好RenderManager实例传给ByteDanceBeautyAPI。
-> 对于renderManager的初始化和销毁，需要放在GL线程里去调用，这里ByteDanceBeautyAPI分别提供了两个回调onEffectInitialized和onEffectDestroyed。
+> 初始化前需要先复制字节美颜SDK所需的资源model-all.zip、cosmos.zip到sdcard上，并解压到对应目录，然后进行授权认证并renderModuleManager实例传给ByteDanceBeautyAPI。
 
 ```kotlin
-private val mByteDanceApi by lazy {
-    createByteDanceBeautyAPI()
+private val mCosmosApi by lazy {
+    createCosmosBeautyAPI()
 }
-mByteDanceApi.initialize(
+mCosmosApi.initialize(
     Config(
-        applicationContext,
+        application,
         mRtcEngine,
-        renderManager,
-        captureMode = if (isCustomCaptureMode) CaptureMode.Custom else CaptureMode.Agora,
+        CosmosBeautyWrapSDK.renderModuleManager!!,
+        captureMode = CaptureMode.Agora,
         statsEnable = true,
-        cameraConfig = CameraConfig(),
         eventCallback = EventCallback(
-            onBeautyStats = {stats ->
-                Log.d(TAG, "BeautyStats stats = $stats")
-            },
-            onEffectInitialized = {
-                // 在GL线程里回调，用于初始化字节美颜SDK
-                ByteDanceBeautySDK.initEffect(applicationContext)
-                Log.d(TAG, "onEffectInitialized")
-            },
-            onEffectDestroyed = {
-                // 在GL线程里回调，用于销毁字节美颜SDK
-                ByteDanceBeautySDK.unInitEffect()
-                Log.d(TAG, "onEffectInitialized")
+            onBeautyStats = { stats ->
+                Log.d(TAG, "onBeautyStats >> $stats")
             }
         )
     )
@@ -66,17 +51,17 @@ mByteDanceApi.initialize(
 
 4. 美颜开关(默认关)
 ```kotlin
-mByteDanceApi.enable(true)
+mCosmosApi.enable(true)
 ```
 
 5. 本地渲染
 ```kotlin
-mByteDanceApi.setupLocalVideo(mBinding.localVideoView, Constants.RENDER_MODE_FIT)
+mCosmosApi.setupLocalVideo(mBinding.localVideoView, Constants.RENDER_MODE_FIT)
 ```
 
 6. 设置推荐美颜参数
 ```kotlin
-mByteDanceApi.setBeautyPreset(BeautyPreset.DEFAULT) // BeautyPreset.CUSTOM：关闭推荐美颜参数
+mCosmosApi.setBeautyPreset(BeautyPreset.DEFAULT) // BeautyPreset.CUSTOM：关闭推荐美颜参数
 ```
 
 7. 更新镜像配置
@@ -85,7 +70,7 @@ val cameraConfig = CameraConfig(
     frontMirror = MirrorMode.MIRROR_LOCAL_REMOTE,
     backMirror = MirrorMode.MIRROR_NONE
 )
-mByteDanceApi.updateCameraConfig(cameraConfig)
+mCosmosApi.updateCameraConfig(cameraConfig)
 ```
 
 8. 销毁美颜
@@ -99,7 +84,7 @@ if (isCustomCaptureMode) {
     // 如果使用Custom采集模式并注册过裸数据回调，需要调用registerVideoFrameObserver将observer置空
     mRtcEngine.registerVideoFrameObserver(null)
 }
-mByteDanceApi.release()
+mCosmosApi.release()
 RtcEngine.destroy()
 ```
 
@@ -108,36 +93,32 @@ RtcEngine.destroy()
 
 1. 初始化时配置captureMode为CaptureMode.Custom
 ```kotlin
-mByteDanceApi.initialize(
+mCosmosApi.initialize(
     Config(
+        application,
         mRtcEngine,
-        mEffectManager,
+        CosmosBeautyWrapSDK.renderModuleManager!!,
         captureMode = CaptureMode.Custom,
-        statsEnable = BuildConfig.BUILD,
+        statsEnable = true,
         eventCallback = EventCallback(
-            onBeautyStats = {stats ->
-                Log.d(TAG, "BeautyStats stats = $stats")
-            },
-            onEffectInitialized = {
-                Log.d(TAG, "onEffectInitialized")
-            },
-            onEffectDestroyed = {
-                Log.d(TAG, "onEffectInitialized")
+            onBeautyStats = { stats ->
+                Log.d(TAG, "onBeautyStats >> $stats")
             }
         )
-    ))
+    )
+)
 ```
 2. 将外部数据帧通过onFrame接口传入，处理成功会替换VideoFrame的buffer数据，即videoFrame参数既为输入也为输出
 ```kotlin
 override fun onCaptureVideoFrame(
     sourceType: Int,
     videoFrame: VideoFrame?
-) = when (mByteDanceApi.onFrame(videoFrame!!)) {
+) = when (mCosmosApi.onFrame(videoFrame!!)) {
     ErrorCode.ERROR_FRAME_SKIPPED.value -> false
     else -> true
 }
 
-override fun getMirrorApplied() = mByteDanceApi.getMirrorApplied()
+override fun getMirrorApplied() = mCosmosApi.getMirrorApplied()
 ```
 
 ## 联系我们

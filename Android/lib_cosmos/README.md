@@ -5,59 +5,44 @@ _English | [中文](README.zh.md)
 ## Prerequisites
 - The project has apply the Kotlin plugin
 - Agora RTC SDK has been integrated in the project
-- Contact ByteDance customer service to get ByteDance's beauty SDK, beauty resources and license
+- Contact ByteDance customer service to get Cosmos's beauty SDK, beauty resources and license
 
 ## Quick Start
-1. (Optional)Unzip the ByteDance SDK and configure the following aar libraries, resource files, and certificates to the corresponding directory of the project
+1. (Optional)Unzip the Cosmos SDK and configure the following aar libraries, resource files, and certificates to the corresponding directory of the project
 
-| ByteDance SDK                                | Location                |
-|----------------------------------------------|-------------------------|
-| resource/LicenseBag.bundle                   | assets/beauty_bytedance |
-| resource/ModelResource.bundle                | assets/beauty_bytedance |
-| resource/ComposeMakeup.bundle                | assets/beauty_bytedance |
-| resource/StickerResource.bundle              | assets/beauty_bytedance |
-| resource/StickerResource.bundle              | assets/beauty_bytedance |
-| byted_effect_andr/libs/effectAAR-release.aar | libs                    |
+| Cosmos SDK                                   | Location                                         |
+|----------------------------------------------|--------------------------------------------------|
+| sample/app/src/main/assets/model-all.zip     | app/src/main/assets/beauty_cosmos/model-all.zip  |
+| sample/app/src/main/assets/cosmos.zip        | app/src/main/assets/beauty_cosmos/cosmos.zip     |
+| sample/app/libs/beautysdk-3.7.0-20230301.aar | libs                                             |
 
 2. Copy the following BeautyAPI interface and implementation into the project
 > Please keep the package name so that we can upgrade the code.
 ```xml
-src/main/java/io/agora/beautyapi/bytedance
-   ├── ByteDanceBeautyAPI.kt
-   ├── ByteDanceBeautyAPIImpl.kt
-   └── utils
+src/main/java/io/agora/beautyapi/cosmos
+    ├── CosmosBeautyAPI.kt
+    ├── CosmosBeautyAPIImpl.kt
+    └── utils
 ```
 
 3. Initialization
 
-> Before initialization, you need to copy the resources required by the ByteDanceBeauty SDK to the sdcard, and create a RenderManager instance in advance and pass it to ByteDanceBeautyAPI.
-> For the initialization and destruction of renderManager, it needs to be called in the GL thread. Here, ByteDanceBeautyAPI provides two callbacks, onEffectInitialized and onEffectDestroyed.
+> Before initialization, you need to copy the resources required by the ByteDanceBeauty SDK to the sdcard, and create a renderModuleManager instance in advance and pass it to CosmosBeautyAPI.
 
 ```kotlin
-private val mByteDanceApi by lazy {
-  createByteDanceBeautyAPI()
+private val mCosmosApi by lazy {
+  createCosmosBeautyAPI()
 }
-mByteDanceApi.initialize(
+mCosmosApi.initialize(
   Config(
-    applicationContext,
+    application,
     mRtcEngine,
-    renderManager,
-    captureMode = if (isCustomCaptureMode) CaptureMode.Custom else CaptureMode.Agora,
+    CosmosBeautyWrapSDK.renderModuleManager!!,
+    captureMode = CaptureMode.Agora,
     statsEnable = true,
-    cameraConfig = CameraConfig(),
     eventCallback = EventCallback(
-      onBeautyStats = {stats ->
-        Log.d(TAG, "BeautyStats stats = $stats")
-      },
-      onEffectInitialized = {
-        // Callback in the GL thread, used to initialize the Bytebeauty SDK
-        ByteDanceBeautySDK.initEffect(applicationContext)
-        Log.d(TAG, "onEffectInitialized")
-      },
-      onEffectDestroyed = {
-        // Callback in the GL thread, used to destroy the Bytebeauty SDK
-        ByteDanceBeautySDK.unInitEffect()
-        Log.d(TAG, "onEffectInitialized")
+      onBeautyStats = { stats ->
+        Log.d(TAG, "onBeautyStats >> $stats")
       }
     )
   )
@@ -66,17 +51,17 @@ mByteDanceApi.initialize(
 
 4. Beauty On/Off (default off)
 ```kotlin
-mByteDanceApi.enable(true)
+mCosmosApi.enable(true)
 ```
 
 5. Local Rendering
 ```kotlin
-mByteDanceApi.setupLocalVideo(mBinding.localVideoView, Constants.RENDER_MODE_FIT)
+mCosmosApi.setupLocalVideo(mBinding.localVideoView, Constants.RENDER_MODE_FIT)
 ```
 
 6. Set Recommended Beauty Parameters
 ```kotlin
-mByteDanceApi.setBeautyPreset(BeautyPreset.DEFAULT) // BeautyPreset.CUSTOM：Close Recommended Beauty
+mCosmosApi.setBeautyPreset(BeautyPreset.DEFAULT) // BeautyPreset.CUSTOM：Close Recommended Beauty
 ```
 
 7. Update Camera Config
@@ -85,7 +70,7 @@ val cameraConfig = CameraConfig(
     frontMirror = MirrorMode.MIRROR_LOCAL_REMOTE,
     backMirror = MirrorMode.MIRROR_NONE
 )
-mByteDanceApi.updateCameraConfig(cameraConfig)
+mCosmosApi.updateCameraConfig(cameraConfig)
 ```
 
 8. Destroy BeautyAPI
@@ -99,7 +84,7 @@ if (isCustomCaptureMode) {
   // If you use custom capture mode and have registered video frame observer, register video frame observer to null here!
   mRtcEngine.registerVideoFrameObserver(null)
 }
-mByteDanceApi.release()
+mCosmosApi.release()
 RtcEngine.destroy()
 ```
 
@@ -108,37 +93,31 @@ The BeautyAPI also supports external video frames for processing. The implementa
 
 1. Initialize BeautyAPI with CaptureMode.Custom
 ```kotlin
-mByteDanceApi.initialize(
-    Config(
-        mRtcEngine,
-        mEffectManager,
-        captureMode = CaptureMode.Custom,
-        statsEnable = BuildConfig.BUILD,
-        cameraConfig = CameraConfig(),
-        eventCallback = EventCallback(
-            onBeautyStats = {stats ->
-                Log.d(TAG, "BeautyStats stats = $stats")
-            },
-            onEffectInitialized = {
-                Log.d(TAG, "onEffectInitialized")
-            },
-            onEffectDestroyed = {
-                Log.d(TAG, "onEffectInitialized")
-            }
-        )
-    ))
+mCosmosApi.initialize(
+  Config(
+    application,
+    mRtcEngine,
+    CosmosBeautyWrapSDK.renderModuleManager!!,
+    captureMode = CaptureMode.Custom,
+    statsEnable = true,
+    eventCallback = EventCallback(
+      onBeautyStats = { stats ->
+        Log.d(TAG, "onBeautyStats >> $stats")
+      }
+    )
+  )
 ```
 2. Pass external video frame to BeautyAPI by onFrame interface.
 ```kotlin
 override fun onCaptureVideoFrame(
   sourceType: Int,
   videoFrame: VideoFrame?
-) = when (mByteDanceApi.onFrame(videoFrame!!)) {
+) = when (mCosmosApi.onFrame(videoFrame!!)) {
   ErrorCode.ERROR_FRAME_SKIPPED.value -> false
   else -> true
 }
 
-override fun getMirrorApplied() = mByteDanceApi.getMirrorApplied()
+override fun getMirrorApplied() = mCosmosApi.getMirrorApplied()
 ```
 
 ## Feedback

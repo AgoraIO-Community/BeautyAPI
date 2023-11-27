@@ -648,8 +648,7 @@ class CosmosActivity : ComponentActivity() {
 
 object CosmosBeautyWrapSDK {
     private const val TAG = "CosmosBeautySDK"
-    private const val LICENSE =
-        "UHlDYW5rdzZrSWVkTUlHZE1BMEdDU3FHU0liM0RRRUJBUVVBQTRHTEFEQ0Jma1Nod0tCZ1FDOTZhZjhRalBTRERhcHpscFgzK1pXbzRDd1pUV1N6CnNERkZwb0doZkpLV0V0cnNNdEFnbk1tOFhsbGhJVTlpaGVxMEdEbG02RVM1SkdTSVEreUZlb3dRRHB4em1zMzZsSTJ5YlNjcjZKb1ZkcjFITGNkQ20KQmV4aEp2ZDNtdXNMNmphTDYwZzhhL0tjLzhjSjltbTYwclUwdEtyNXp4dWZCYlhlMTZCNGs4M3RVNHhRaEkySXVzWGd1RDRsM1EwZTNMYWJKR1pBVGRqcGwyZ2dHTW9WNnpxUy9IRVlBcW1BaUJveW5rTENBV1EKUTdnQS9nZ3hKR1FwWVZsSmdRSUJBdzRqNE9WZldnSVJHOFRVWXNNeGNHSFNOVzhmMEEyV2puVHNIcEI3M3lLY0lOZm11VzJHREl6REpzSHgvWkd1b1lTQXY1VHNHanhvdz0="
+    private const val LICENSE = ""
 
     private val workerThread = Executors.newSingleThreadExecutor()
     private var context: Application? = null
