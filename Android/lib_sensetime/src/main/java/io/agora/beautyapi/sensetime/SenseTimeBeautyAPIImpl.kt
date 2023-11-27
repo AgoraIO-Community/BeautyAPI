@@ -52,6 +52,7 @@ import io.agora.rtc2.gl.EglBaseProvider
 import io.agora.rtc2.video.IVideoFrameObserver
 import io.agora.rtc2.video.VideoCanvas
 import java.nio.ByteBuffer
+import java.util.Collections
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 
@@ -76,6 +77,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
     private var isFrontCamera = true
     private var cameraConfig = CameraConfig()
     private var localVideoRenderMode = Constants.RENDER_MODE_HIDDEN
+    private val pendingProcessRunList = Collections.synchronizedList(mutableListOf<()->Unit>())
 
     private enum class ProcessSourceType{
         UNKNOWN,
@@ -293,6 +295,24 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         return ErrorCode.ERROR_OK.value
     }
 
+    override fun runOnProcessThread(run: () -> Unit) {
+        if (config == null) {
+            LogUtils.e(TAG, "runOnProcessThread >> The beauty api has not been initialized!")
+            return
+        }
+        if (isReleased) {
+            LogUtils.e(TAG, "runOnProcessThread >> The beauty api has been released!")
+            return
+        }
+        if (textureBufferHelper?.handler?.looper?.thread == Thread.currentThread()) {
+            run.invoke()
+        } else if (textureBufferHelper != null) {
+            textureBufferHelper?.handler?.post(run)
+        } else {
+            pendingProcessRunList.add(run)
+        }
+    }
+
     override fun updateCameraConfig(config: CameraConfig): Int {
         LogUtils.i(TAG, "updateCameraConfig >> oldCameraConfig=$cameraConfig, newCameraConfig=$config")
         cameraConfig = CameraConfig(config.frontMirror, config.backMirror)
@@ -310,7 +330,8 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
     }
 
     override fun release(): Int {
-        if(config == null){
+        val conf = config
+        if(conf == null){
             LogUtils.e(TAG, "release >> The beauty api has not been initialized!")
             return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
         }
@@ -318,13 +339,17 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
             LogUtils.e(TAG, "setBeautyPreset >> The beauty api has been released!")
             return ErrorCode.ERROR_HAS_RELEASED.value
         }
-        config?.rtcEngine?.sendCustomReportMessage(reportId, reportCategory, "release", "", 0)
+        if (conf.captureMode == CaptureMode.Agora) {
+            conf.rtcEngine.registerVideoFrameObserver(null)
+        }
+        conf.rtcEngine.sendCustomReportMessage(reportId, reportCategory, "release", "", 0)
 
         LogUtils.i(TAG, "release")
         isReleased = true
         workerThreadExecutor.shutdown()
         textureBufferHelper?.let {
             textureBufferHelper = null
+            it.handler.removeCallbacksAndMessages(null)
             it.invoke {
                 beautyProcessor?.release()
                 null
@@ -333,6 +358,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         }
         statsHelper?.reset()
         statsHelper = null
+        pendingProcessRunList.clear()
         return ErrorCode.ERROR_OK.value
     }
 
@@ -414,6 +440,15 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
                 "STRender",
                 EglBaseProvider.instance().rootEglBase.eglBaseContext
             )
+            textureBufferHelper?.invoke {
+                synchronized(pendingProcessRunList){
+                    val iterator = pendingProcessRunList.iterator()
+                    while (iterator.hasNext()){
+                        iterator.next().invoke()
+                        iterator.remove()
+                    }
+                }
+            }
             LogUtils.i(TAG, "processBeauty >> create texture buffer, beautyMode=$beautyMode")
         }
 
@@ -431,6 +466,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
 
         if (processTexId < 0) {
             LogUtils.w(TAG, "processBeauty >> processTexId < 0")
+            return false
         }
 
         if(skipFrame > 0){

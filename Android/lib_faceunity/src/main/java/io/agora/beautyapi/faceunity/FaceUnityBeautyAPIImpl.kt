@@ -56,6 +56,7 @@ import io.agora.rtc2.video.IVideoFrameObserver
 import io.agora.rtc2.video.VideoCanvas
 import java.io.File
 import java.nio.ByteBuffer
+import java.util.Collections
 import java.util.concurrent.Callable
 
 class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
@@ -89,6 +90,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
     private var isFrontCamera = true
     private var cameraConfig = CameraConfig()
     private var localVideoRenderMode = Constants.RENDER_MODE_HIDDEN
+    private val pendingProcessRunList = Collections.synchronizedList(mutableListOf<()->Unit>())
 
     override fun initialize(config: Config): Int {
         if (this.config != null) {
@@ -189,6 +191,24 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         return ErrorCode.ERROR_OK.value
     }
 
+    override fun runOnProcessThread(run: () -> Unit) {
+        if (config == null) {
+            LogUtils.e(TAG, "runOnProcessThread >> The beauty api has not been initialized!")
+            return
+        }
+        if (isReleased) {
+            LogUtils.e(TAG, "runOnProcessThread >> The beauty api has been released!")
+            return
+        }
+        if (textureBufferHelper?.handler?.looper?.thread == Thread.currentThread()) {
+            run.invoke()
+        } else if (textureBufferHelper != null) {
+            textureBufferHelper?.handler?.post(run)
+        } else {
+            pendingProcessRunList.add(run)
+        }
+    }
+
     override fun isFrontCamera() = isFrontCamera
 
     override fun setParameters(key: String, value: String) {
@@ -263,7 +283,8 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
     }
 
     override fun release(): Int {
-        val fuRenderer = config?.fuRenderKit
+        val conf = config
+        val fuRenderer = conf?.fuRenderKit
         if(fuRenderer == null){
             LogUtils.e(TAG, "release >> The beauty api has not been initialized!")
             return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
@@ -273,11 +294,15 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             return ErrorCode.ERROR_HAS_RELEASED.value
         }
         LogUtils.i(TAG, "release")
-        config?.rtcEngine?.sendCustomReportMessage(reportId, reportCategory, "release", "", 0)
+        if (conf.captureMode == CaptureMode.Agora) {
+            conf.rtcEngine.registerVideoFrameObserver(null)
+        }
+        conf.rtcEngine.sendCustomReportMessage(reportId, reportCategory, "release", "", 0)
 
         isReleased = true
         textureBufferHelper?.let {
             textureBufferHelper = null
+            it.handler.removeCallbacksAndMessages(null)
             it.invoke {
                 fuRenderer.release()
                 mTextureProcessHelper?.release()
@@ -293,6 +318,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         }
         statsHelper?.reset()
         statsHelper = null
+        pendingProcessRunList.clear()
         return ErrorCode.ERROR_OK.value
     }
 
@@ -375,6 +401,15 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
                 "FURender",
                 EglBaseProvider.instance().rootEglBase.eglBaseContext
             )
+            textureBufferHelper?.invoke {
+                synchronized(pendingProcessRunList){
+                    val iterator = pendingProcessRunList.iterator()
+                    while (iterator.hasNext()){
+                        iterator.next().invoke()
+                        iterator.remove()
+                    }
+                }
+            }
             LogUtils.i(TAG, "processBeauty >> create texture buffer, beautyMode=$beautyMode")
         }
         if (wrapTextureBufferHelper == null) {
@@ -484,9 +519,10 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
                 if (isReleased) {
                     return@setFilter -1
                 }
-                return@setFilter textureBufferHelper?.invoke {
+                val ret = textureBufferHelper?.invoke {
                     return@invoke fuRenderKit.renderWithInput(input).texture?.texId ?: -1
-                } ?: -1
+                }
+                return@setFilter ret ?: -1
             }
         }
 

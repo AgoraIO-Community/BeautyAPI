@@ -5,6 +5,7 @@
         <item>@string/beauty_sensetime</item>
         <item>@string/beauty_faceunity</item>
         <item>@string/beauty_bytedance</item>
+        <item>@string/beauty_cosmos</item>
     </array>
 
     <array name="beauty_process_mode">

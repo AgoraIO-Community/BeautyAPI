@@ -101,6 +101,7 @@ dependencies {
         implementation project(":lib_sensetime")
         implementation project(":lib_faceunity")
         implementation project(":lib_bytedance")
+        implementation project(":lib_cosmos")
     }
 
 }
