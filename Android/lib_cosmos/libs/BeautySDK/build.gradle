@@ -13,14 +13,14 @@ afterEvaluate {
                 // You can then customize attributes of the publication as shown below.
                 artifact publishArtifact
                 groupId = 'com.github.AgoraIO-Community.BeautyAPI'
-                artifactId = 'ByteDance-LibEffectAAR'
+                artifactId = 'Cosmos-LibBeautySDK'
                 version = "$LIB_VERSION"
             }
             debug(MavenPublication) {
                 // You can then customize attributes of the publication as shown below.
                 artifact publishArtifact
                 groupId = 'com.github.AgoraIO-Community.BeautyAPI'
-                artifactId = 'ByteDance-LibEffectAAR'
+                artifactId = 'Cosmos-LibBeautySDK'
                 version = "$LIB_VERSION"
             }
         }

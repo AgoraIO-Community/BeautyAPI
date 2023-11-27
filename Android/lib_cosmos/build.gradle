@@ -56,7 +56,7 @@ afterEvaluate {
 
                 // You can then customize attributes of the publication as shown below.
                 groupId = 'com.github.AgoraIO-Community.BeautyAPI'
-                artifactId = 'ByteDance'
+                artifactId = 'Cosmos'
                 version = "$LIB_VERSION"
             }
             // Creates a Maven publication called “debug”.
@@ -65,7 +65,7 @@ afterEvaluate {
                 from components.debug
 
                 groupId = 'com.github.AgoraIO-Community.BeautyAPI'
-                artifactId = 'ByteDance'
+                artifactId = 'Cosmos'
                 version = "$LIB_VERSION"
             }
         }

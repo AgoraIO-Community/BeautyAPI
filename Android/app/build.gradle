@@ -84,18 +84,26 @@ dependencies {
         def beautyApiVersion = "$LIB_VERSION"
         implementation("com.github.AgoraIO-Community.BeautyAPI:ByteDance:$beautyApiVersion"){
             // exclude group:'io.agora.rtc', module: 'full-sdk'
+            // exclude group:'io.agora.rtc', module: 'agora-special-full'
             // exclude group:'com.github.AgoraIO-Community.BeautyAPI', module: 'ByteDance-LibEffectAAR'
         }
         implementation("com.github.AgoraIO-Community.BeautyAPI:FaceUnity:$beautyApiVersion"){
             // exclude group:'io.agora.rtc', module: 'full-sdk'
+            // exclude group:'io.agora.rtc', module: 'agora-special-full'
             // exclude group:'com.faceunity', module: 'core'
             // exclude group:'com.faceunity', module: 'model'
         }
         implementation("com.github.AgoraIO-Community.BeautyAPI:SenseTime:$beautyApiVersion"){
             // exclude group:'io.agora.rtc', module: 'full-sdk'
+            // exclude group:'io.agora.rtc', module: 'agora-special-full'
             // exclude group:'com.github.AgoraIO-Community.BeautyAPI', module: 'SenseTime-LibHardwareBuffer'
             // exclude group:'com.github.AgoraIO-Community.BeautyAPI', module: 'SenseTime-LibSenseArSourceManager'
             // exclude group:'com.github.AgoraIO-Community.BeautyAPI', module: 'SenseTime-LibSTMobileJNI'
+        }
+        implementation("com.github.AgoraIO-Community.BeautyAPI:Cosmos:$beautyApiVersion"){
+            // exclude group:'io.agora.rtc', module: 'full-sdk'
+            // exclude group:'io.agora.rtc', module: 'agora-special-full'
+            // exclude group:'com.github.AgoraIO-Community.BeautyAPI', module: 'Cosmos-LibBeautySDK'
         }
     } else {
         implementation project(":lib_sensetime")
