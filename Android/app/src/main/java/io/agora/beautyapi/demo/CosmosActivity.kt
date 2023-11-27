@@ -49,7 +49,9 @@ import io.agora.rtc2.video.VideoCanvas
 import io.agora.rtc2.video.VideoEncoderConfiguration
 import io.agora.rtc2.video.VideoEncoderConfiguration.FRAME_RATE
 import java.io.File
+import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
+import java.util.concurrent.Future
 
 
 class CosmosActivity : ComponentActivity() {
@@ -654,6 +656,7 @@ object CosmosBeautyWrapSDK {
     private var context: Application? = null
     private var storagePath = ""
     private var assetsPath = ""
+    private var initLoader : Future<*>? = null
 
     @Volatile
     private var authSuccess = false
@@ -706,7 +709,7 @@ object CosmosBeautyWrapSDK {
         this.context = context.applicationContext as Application?
         this.storagePath = context.getExternalFilesDir("")?.absolutePath ?: return
         this.assetsPath = "beauty_cosmos"
-        workerThread.execute {
+        initLoader = workerThread.submit {
             // copy cosmos.zip
             val cosmosZipPath = "${storagePath}/beauty_cosmos/cosmos.zip"
             FileUtils.copyAssets(context, "$assetsPath/cosmos.zip", cosmosZipPath)
@@ -724,6 +727,7 @@ object CosmosBeautyWrapSDK {
             val modelAllPath = "${storagePath}/beauty_cosmos"
             ZipUtils.unzip(modelAllZipPath, modelAllPath)
 
+            val letch = CountDownLatch(1)
             Handler(Looper.getMainLooper()).post {
                 val result = CosmosBeautySDK.init(
                     context, LICENSE, modelAllPath
@@ -734,11 +738,14 @@ object CosmosBeautyWrapSDK {
                 } else {
                     Log.e(TAG, "授权失败 ${result.msg}")
                 }
+                letch.countDown()
             }
+            letch.await()
         }
     }
 
     private fun initRenderManager() {
+        initLoader?.get()
         renderModuleManager = CosmosBeautySDK.createRenderModuleManager()
         renderModuleManager?.prepare(true)
         initModules()
