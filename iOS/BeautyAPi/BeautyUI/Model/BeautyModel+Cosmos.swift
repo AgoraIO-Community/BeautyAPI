@@ -13,6 +13,7 @@ extension BeautyModel {
         var model = BeautyModel()
         model.name = "show_beauty_item_none".beauty_localized
         model.icon = "show_beauty_none"
+        model.isSelected = true
         dataArray.append(model)
         
         model = BeautyModel()
@@ -21,7 +22,6 @@ extension BeautyModel {
         model.value = 0.55
         model.name = "show_beauty_item_beauty_smooth".beauty_localized
         model.icon = "meiyan_icon_mopi"
-        model.isSelected = true
         dataArray.append(model)
         
         model = BeautyModel()
@@ -116,14 +116,6 @@ extension BeautyModel {
         model.name = "show_beauty_item_none".beauty_localized
         model.icon = "show_beauty_none"
         model.isSelected = true
-        dataArray.append(model)
-     
-        model = BeautyModel()
-        model.path = "makeup_facial/richang"
-        model.key = "makeup"
-        model.value = 0.5
-        model.name = "show_beauty_item_effect_richang".beauty_localized
-        model.icon = "meiyan_fgz_cwei"
         dataArray.append(model)
         
         model = BeautyModel()

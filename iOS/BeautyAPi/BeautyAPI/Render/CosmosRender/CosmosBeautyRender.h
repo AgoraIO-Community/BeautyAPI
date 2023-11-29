@@ -20,7 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)setBeautyFactor:(float)value forKey:(NSString *)key;
 
-- (void)addMakeupPath:(NSString *)path;
+- (void)addMakeupPath:(NSString *)path key:(NSString *)key value:(CGFloat)value;
 
 - (void)addStickerPath:(NSString *)path;
 

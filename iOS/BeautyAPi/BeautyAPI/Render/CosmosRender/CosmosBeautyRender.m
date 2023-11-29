@@ -8,7 +8,7 @@
 #import "CosmosBeautyRender.h"
 
 @interface CosmosBeautyRender ()
-@property (nonatomic, copy) NSString *makeupPath;
+@property (nonatomic, copy) NSString *makeup;
 
 @end
 
@@ -50,17 +50,19 @@
 #endif
 }
 
-- (void)addMakeupPath:(NSString *)path {
+- (void)addMakeupPath:(NSString *)path key:(NSString *)key value:(CGFloat)value {
 #if __has_include(CosmosMoudle)
     if (path.length <= 0) {
         [self.render clearMakeup];
+        self.makeup = nil;
         return;
     }
-    if (![path isEqualToString:self.makeupPath]) {
+    if (![path isEqualToString:self.makeup]) {
         NSString *rootPath = [NSBundle.mainBundle pathForResource:@"makeup" ofType:@"bundle"];
         [self.render addMakeupPath:[rootPath stringByAppendingPathComponent:path]];
-        self.makeupPath = path;
+        self.makeup = path;
     }
+    [self.render setBeautyFactor:value forKey:key];
 #endif
 }
 

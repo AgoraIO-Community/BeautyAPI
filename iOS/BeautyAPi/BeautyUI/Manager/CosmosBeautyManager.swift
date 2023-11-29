@@ -28,8 +28,7 @@ class CosmosBeautyManager: NSObject {
     }
     
     func setStyle(path: String?, key: String?, value: CGFloat) {
-        render.addMakeupPath(path ?? "")
-        render.setBeautyFactor(Float(value), forKey: key ?? "")
+        render.addMakeupPath(path ?? "", key: key ?? "", value: value)
     }
     
     func setFilter(path: String?, value: CGFloat) { }
@@ -43,7 +42,7 @@ class CosmosBeautyManager: NSObject {
     }
     
     func resetStyle(datas: [BeautyModel]) {
-        render.render.clearMakeup()
+        render.addMakeupPath("", key: "", value: 0)
     }
     
     func resetFilter(datas: [BeautyModel]) {
