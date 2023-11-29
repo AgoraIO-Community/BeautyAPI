@@ -128,6 +128,7 @@
     } else if ([key isEqualToString:@"sharpen"]) {
         beauty.sharpen = value;
     }
+    beauty.enable = YES;
     [FURenderKit shareRenderKit].beauty = beauty;
 #endif
 }
@@ -194,7 +195,7 @@
 
 - (void)reset {
 #if __has_include(FURenderMoudle)
-    [FURenderKit shareRenderKit].beauty = nil;
+    [FURenderKit shareRenderKit].beauty.enable = NO;
 #endif
 }
 
