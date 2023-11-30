@@ -10,11 +10,11 @@
 ## 快速集成
 1. (可选)解压宇宙美颜SDK并将以下aar库、资源文件、证书配置到项目对应目录下
 
-| 字节/火山SDK文件/目录                                 | 项目目录                                            |
-|-----------------------------------------------|-------------------------------------------------|
-| sample/app/src/main/assets/model-all.zip      | app/src/main/assets/beauty_cosmos/model-all.zip |
-| sample/app/src/main/assets/cosmos.zip         | app/src/main/assets/beauty_cosmos/cosmos.zip    |
-| sample/app/libs/beautysdk-3.7.0-20230301.aar  | libs                                            |
+| 宇宙SDK文件/目录                                   | 项目目录                                            |
+|----------------------------------------------|-------------------------------------------------|
+| sample/app/src/main/assets/model-all.zip     | app/src/main/assets/beauty_cosmos/model-all.zip |
+| sample/app/src/main/assets/cosmos.zip        | app/src/main/assets/beauty_cosmos/cosmos.zip    |
+| sample/app/libs/beautysdk-3.7.0-20230301.aar | libs                                            |
 
 2. 复制以下场景化接口及实现到项目里
 > 请保留原有包名目录，以便于代码升级
