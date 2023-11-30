@@ -79,7 +79,6 @@ static NSString *const beautyAPIVersion = @"1.0.4";
             }
         };
         [self rtcReportWithEvent:@"initialize" label:dict];
-        [self setupMirror];
 #else
         [LogUtil log:@"rtc 未导入" level:(LogLevelError)];
         return -1;
@@ -87,6 +86,7 @@ static NSString *const beautyAPIVersion = @"1.0.4";
     } else {
         [LogUtil log:@"captureMode == Custom"];
     }
+    [self setupMirror];
     return 0;
 }
 
