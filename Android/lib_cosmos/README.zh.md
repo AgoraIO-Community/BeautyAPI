@@ -1,4 +1,4 @@
-# 字节/火山美颜场景化API
+# 宇宙美颜场景化API
 
 [English](README.md) | 中文
 
