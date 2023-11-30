@@ -13,21 +13,21 @@ extension BeautyModel {
         var model = BeautyModel()
         model.name = "show_beauty_item_none".beauty_localized
         model.icon = "show_beauty_none"
-        model.isSelected = true
         dataArray.append(model)
         
         model = BeautyModel()
         model.path = ""
         model.key = "smooth"
-        model.value = 0.55
+        model.value = 0
         model.name = "show_beauty_item_beauty_smooth".beauty_localized
         model.icon = "meiyan_icon_mopi"
+        model.isSelected = true
         dataArray.append(model)
         
         model = BeautyModel()
         model.path = ""
         model.key = "white"
-        model.value = 0.2
+        model.value = 0
         model.name = "show_beauty_item_beauty_whiten".beauty_localized
         model.icon = "meiyan_icon_meibai"
         dataArray.append(model)
@@ -35,7 +35,7 @@ extension BeautyModel {
         model = BeautyModel()
         model.path = ""
         model.key = "thinFace"
-        model.value = 0.4
+        model.value = 0
         model.name = "show_beauty_item_beauty_overall".beauty_localized
         model.icon = "meiyan_icon_shoulian"
         dataArray.append(model)
@@ -51,7 +51,7 @@ extension BeautyModel {
         model = BeautyModel()
         model.path = ""
         model.key = "eyeSize"
-        model.value = 0.3
+        model.value = 0
         model.name = "show_beauty_item_beauty_eye".beauty_localized
         model.icon = "meiyan_icon_dayan"
         dataArray.append(model)

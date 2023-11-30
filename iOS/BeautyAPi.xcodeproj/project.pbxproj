@@ -43,6 +43,7 @@
 		E72F62712A8A2E6A00C963D2 /* ByteBeautyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72F626E2A8A2E6A00C963D2 /* ByteBeautyManager.swift */; };
 		E72F62732A8A2F0700C963D2 /* BeautyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72F62722A8A2F0700C963D2 /* BeautyManager.swift */; };
 		E72F62782A8A3A9D00C963D2 /* UIColor+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72F62772A8A3A9D00C963D2 /* UIColor+Hex.swift */; };
+		E73A2D172B182D4800C8EC76 /* LoadUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = E73A2D162B182D4800C8EC76 /* LoadUtil.m */; };
 		E77902B72A4D636C008791AD /* BELicenseHelper.mm in Sources */ = {isa = PBXBuildFile; fileRef = E779029B2A4D636C008791AD /* BELicenseHelper.mm */; };
 		E77902B82A4D636C008791AD /* BEOpenGLRenderHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E779029C2A4D636C008791AD /* BEOpenGLRenderHelper.m */; };
 		E77902B92A4D636C008791AD /* BEEffectManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = E779029F2A4D636C008791AD /* BEEffectManager.mm */; };
@@ -122,6 +123,8 @@
 		E72F62722A8A2F0700C963D2 /* BeautyManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeautyManager.swift; sourceTree = "<group>"; };
 		E72F62772A8A3A9D00C963D2 /* UIColor+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Hex.swift"; sourceTree = "<group>"; };
 		E732E9202A31A786004403AF /* authpack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = authpack.h; sourceTree = "<group>"; };
+		E73A2D152B182D4800C8EC76 /* LoadUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoadUtil.h; sourceTree = "<group>"; };
+		E73A2D162B182D4800C8EC76 /* LoadUtil.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoadUtil.m; sourceTree = "<group>"; };
 		E779029B2A4D636C008791AD /* BELicenseHelper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BELicenseHelper.mm; sourceTree = "<group>"; };
 		E779029C2A4D636C008791AD /* BEOpenGLRenderHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEOpenGLRenderHelper.m; sourceTree = "<group>"; };
 		E779029D2A4D636C008791AD /* Core.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Core.h; sourceTree = "<group>"; };
@@ -241,6 +244,8 @@
 				E72D78152A25963500C9134C /* AppDelegate.swift */,
 				E72D78172A25963500C9134C /* SceneDelegate.swift */,
 				E72D78192A25963500C9134C /* ViewController.swift */,
+				E73A2D152B182D4800C8EC76 /* LoadUtil.h */,
+				E73A2D162B182D4800C8EC76 /* LoadUtil.m */,
 				E72D787B2A284A1C00C9134C /* BeautyViewController.swift */,
 				E72D787D2A284BBA00C9134C /* BeautyViewController.storyboard */,
 				E72D781B2A25963500C9134C /* Main.storyboard */,
@@ -622,6 +627,7 @@
 				E72D78872A2893F300C9134C /* CLSettingCellView.swift in Sources */,
 				E72D78572A259E9C00C9134C /* KeyCenter.swift in Sources */,
 				E72F62712A8A2E6A00C963D2 /* ByteBeautyManager.swift in Sources */,
+				E73A2D172B182D4800C8EC76 /* LoadUtil.m in Sources */,
 				E72F62702A8A2E6A00C963D2 /* SenseBeautyManager.swift in Sources */,
 				E7E682172B0E07F1006F67C8 /* CosmosBeautyManager.swift in Sources */,
 				E7E6823B2B0F4B68006F67C8 /* BeautyModel+Cosmos.swift in Sources */,
