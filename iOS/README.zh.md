@@ -42,6 +42,9 @@
 | byted_effect_ios_static/iossample\_static/libeffect-sdk.a                    | iOS/ByteEffectLib/ibeffect-sdk.a           |
 | byted_effect_ios_static/iossample\_static/include/BytedEffectSDK                    | iOS/ByteEffectLib/BytedEffectSDK           |
 
+### [字节美颜对应key官方文档](https://cv-api.bytedance.com/doc/openapi/2036/99769)
+
+
 ### 配置声网AppID
 
 > PS：这个demo不支持带证书的AppId
