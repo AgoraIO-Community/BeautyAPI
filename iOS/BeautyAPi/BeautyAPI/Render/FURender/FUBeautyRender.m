@@ -31,10 +31,13 @@
 
 - (void)destroy {
 #if __has_include(FURenderMoudle)
-    [FURenderKit shareRenderKit].beauty = nil;
-    [FURenderKit shareRenderKit].makeup = nil;
-    [[FURenderKit shareRenderKit].stickerContainer removeAllSticks];
-    [FURenderKit destroy];
+    dispatch_queue_t referQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
+    dispatch_async(referQueue, ^{
+        [FURenderKit shareRenderKit].beauty = nil;
+        [FURenderKit shareRenderKit].makeup = nil;
+        [[FURenderKit shareRenderKit].stickerContainer removeAllSticks];
+        [FURenderKit destroy];
+    });
     _fuManager = nil;
 #endif
 }
@@ -218,7 +221,6 @@
 - (void)resetStyle {
 #if __has_include(FURenderMoudle)
     [FURenderKit shareRenderKit].makeup.enable = NO;
-    [FURenderKit shareRenderKit].makeup = nil;
 #endif
 }
 
@@ -232,9 +234,13 @@
 
 - (void)setBeautyPreset {
 #if __has_include(FURenderMoudle)
-    NSString *faceAIPath = [[NSBundle mainBundle] pathForResource:@"face_beautification" ofType:@"bundle"];
-    FUBeauty *beauty = [[FUBeauty alloc] initWithPath:faceAIPath name:@"FUBeauty"];
-    [FURenderKit shareRenderKit].beauty = beauty;
+    dispatch_queue_t referQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
+    dispatch_async(referQueue, ^{
+        NSString *faceAIPath = [[NSBundle mainBundle] pathForResource:@"face_beautification" ofType:@"bundle"];
+        FUBeauty *beauty = [[FUBeauty alloc] initWithPath:faceAIPath name:@"FUBeauty"];
+        beauty.enable = YES;
+        [FURenderKit shareRenderKit].beauty = beauty;
+    });
 #endif
 }
 
@@ -253,7 +259,6 @@
         makeup.intensity = 0.7;
     } else {
         [FURenderKit shareRenderKit].makeup.enable = NO;
-        [FURenderKit shareRenderKit].makeup = nil;
     }
 #endif
 }
