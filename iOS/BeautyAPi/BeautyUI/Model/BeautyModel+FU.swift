@@ -7,6 +7,11 @@
 
 import UIKit
 
+class FUBeautyModel: BeautyModel {
+    /// 是否v8.0.0之后新组合妆（只用一个bundle）
+    var isCombined: Bool = false
+}
+
 extension BeautyModel {
     static func createFUBeautyData() -> [BeautyModel] {
         var dataArray = [BeautyModel]()
@@ -110,15 +115,15 @@ extension BeautyModel {
         return dataArray
     }
     
-    static func createFUStyleData() -> [BeautyModel] {
-        var dataArray = [BeautyModel]()
-        var model = BeautyModel()
+    static func createFUStyleData() -> [FUBeautyModel] {
+        var dataArray = [FUBeautyModel]()
+        var model = FUBeautyModel()
         model.name = "show_beauty_item_none".beauty_localized
         model.icon = "show_beauty_none"
         model.isSelected = true
         dataArray.append(model)
         
-        model = BeautyModel()
+        model = FUBeautyModel()
         model.path = "face_makeup"
         model.key = "makeup/xinggan"
         model.value = 0.5
@@ -126,12 +131,21 @@ extension BeautyModel {
         model.icon = "meiyan_fgz_cwei"
         dataArray.append(model)
         
-        model = BeautyModel()
+        model = FUBeautyModel()
         model.path = "face_makeup"
         model.key = "makeup/tianmei"
         model.value = 0.5
         model.name = "show_beauty_item_effect_sweet".beauty_localized
         model.icon = "meiyan_fgz_cwei"
+        dataArray.append(model)
+        
+        model = FUBeautyModel()
+        model.path = ""
+        model.key = "makeup/diadiatu"
+        model.value = 0.8
+        model.name = "show_beauty_item_effect_diadiatu".beauty_localized
+        model.icon = "meiyan_fgz_cwei"
+        model.isCombined = true
         dataArray.append(model)
         
         return dataArray

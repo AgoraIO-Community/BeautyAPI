@@ -84,9 +84,11 @@ class BeautyMenuItemVC: UIViewController {
                 BeautyManager.shareManager.resetStyle(datas: dataArray)
                 return
             }
+            let styleModel = model as? FUBeautyModel
             BeautyManager.shareManager.setStyle(path: model.path,
-                                                    key: model.key,
-                                                    value: model.value)
+                                                key: model.key,
+                                                value: model.value,
+                                                isCombined: styleModel?.isCombined ?? false)
             
         case .sticker:
             BeautyManager.shareManager.setSticker(path: model.path, datas: stickerData)

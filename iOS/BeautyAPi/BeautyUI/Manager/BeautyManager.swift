@@ -82,15 +82,19 @@ class BeautyManager: NSObject {
         }
     }
     
-    func setStyle(path: String?, key: String?, value: CGFloat) {
+    func setStyle(path: String?, key: String?, value: CGFloat, isCombined: Bool) {
         switch BeautyModel.beautyType {
         case .byte:
             ByteBeautyManager.shareManager.setStyle(path: path, key: key, value: value)
             
         case .sense:
             SenseBeautyManager.shareManager.setStyle(path: path, key: key, value: value)
+            
         case .fu:
-            FUBeautyManager.shareManager.setStyle(path: path, key: key, value: value)
+            FUBeautyManager.shareManager.setStyle(path: path, 
+                                                  key: key,
+                                                  value: value,
+                                                  isCombined: isCombined)
             
         case .cosmos:
             CosmosBeautyManager.shareManager.setStyle(path: path, key: key, value: value)
