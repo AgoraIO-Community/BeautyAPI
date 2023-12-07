@@ -35,6 +35,7 @@ class MApplication: Application() {
         SenseTimeBeautySDK.initBeautySDK(this)
         FaceUnityBeautySDK.initBeauty(this)
         ByteDanceBeautySDK.initBeautySDK(this)
+        CosmosBeautyWrapSDK.initBeautySDK(this)
 
         CrashReport.initCrashReport(this, "96866f635f", true, CrashReport.UserStrategy(this).apply {
             isEnableCatchAnrTrace = true

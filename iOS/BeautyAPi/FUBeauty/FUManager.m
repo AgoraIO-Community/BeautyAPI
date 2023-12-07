@@ -202,6 +202,9 @@ static FUManager *shareManager = NULL;
         [self.delegate faceUnityManagerCheckAI];
     }
 #if __has_include(<FURenderKit/FURenderKit.h>)
+    if ([FURenderKit shareRenderKit].beauty == nil) {
+        return frame;
+    }
     FURenderInput *input = [[FURenderInput alloc] init];
     input.pixelBuffer = frame;
     //默认图片内部的人脸始终是朝上，旋转屏幕也无需修改该属性。

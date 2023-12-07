@@ -103,7 +103,7 @@ class BeautyViewController: UIViewController {
     
     private func setupRTC() {
         if isBroascast {
-            beautyAPI?.setupLocalVideo(localView, renderMode: .hidden)
+            beautyAPI?.setupLocalVideo(localView, renderMode: .fit)
             rtcEngine.startPreview()
         }
         

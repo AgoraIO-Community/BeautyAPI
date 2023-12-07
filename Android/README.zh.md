@@ -13,7 +13,8 @@
 ## 快速跑通
 ### 配置美颜SDK
 
-> PS：没有配置项目能正常运行，但是对应美颜可能会黑屏
+> PS：没有配置项目能正常运行，但是对应美颜可能会黑屏。
+> 以下证书与资源需要对应申请时所用包名，并将包名配置在app/build.gradle文件applicationId处！
 
 1. 商汤美颜
 解压商汤美颜SDK并复制以下文件/目录到对应路径下
@@ -48,6 +49,16 @@
 
 修改app/src/main/java/io/agora/beautyapi/demo/ByteDanceActivity.kt文件里LICENSE_NAME为申请到的证书文件名
 
+4. 宇宙美颜
+获取宇宙美颜资源并复制以下文件到对应路径下
+
+| 宇宙SDK文件/目录                                | 项目路径                                            |
+|-------------------------------------------|-------------------------------------------------|
+| sample/app/src/main/assets/model-all.zip  | app/src/main/assets/beauty_cosmos/model-all.zip |
+| sample/app/src/main/assets/cosmos.zip     | app/src/main/assets/beauty_cosmos/cosmos.zip    |
+
+修改app/src/main/java/io/agora/beautyapi/demo/CosmosActivity.kt文件里LICENSE为申请到的证书
+
 ### 配置声网AppID
 
 > PS：这个demo不支持带证书的AppId
@@ -73,11 +84,12 @@ AGORA_APP_ID=#YOUR APP ID#
 
 每个美颜可以单独集成到自己的项目，详见对应的集成说明文档
 
-| 美颜  | 集成说明                                  |
-|-----|---------------------------------------|
-| 商汤  | [README](lib_sensetime/README.zh.md)  |
-| 相芯  | [README](lib_faceunity/README.zh.md)  |
-| 字节  | [README](lib_bytedance/README.zh.md)  |
+| 美颜  | 集成说明                                 |
+|-----|--------------------------------------|
+| 商汤  | [README](lib_sensetime/README.zh.md) |
+| 相芯  | [README](lib_faceunity/README.zh.md) |
+| 字节  | [README](lib_bytedance/README.zh.md) |
+| 宇宙  | [README](lib_cosmos/README.zh.md)    |
 
 ## 联系我们
 

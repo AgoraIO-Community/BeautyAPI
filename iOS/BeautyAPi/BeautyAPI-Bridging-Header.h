@@ -10,3 +10,4 @@
 #import "FUBeautyRender.h"
 #import "SenseBeautyRender.h"
 #import "BeautyAPI.h"
+#import "CosmosBeautyRender.h"

@@ -42,6 +42,8 @@ _English | [中文](README.zh.md)
 | byted_effect_ios_static/iossample\_static/libeffect-sdk.a                    | iOS/ByteEffectLib/ibeffect-sdk.a           |
 | byted_effect_ios_static/iossample\_static/include/BytedEffectSDK                    | iOS/ByteEffectLib/BytedEffectSDK           |
 
+### [ByteDance Beauty Corresponding Key Official Document](https://cv-api.bytedance.com/doc/openapi/2036/99769)
+
 ### Agora AppID Configuration
 
 > PS：This demo does not support AppId with certificate
