@@ -1,4 +1,4 @@
-package io.agora.beautyapi.demo
+package io.agora.beautyapi.demo.widget
 
 import android.content.Context
 import android.view.LayoutInflater

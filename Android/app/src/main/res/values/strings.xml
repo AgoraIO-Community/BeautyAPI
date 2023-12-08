@@ -58,4 +58,13 @@
     <string name="beauty_item_sticker_wochaotian">我超甜</string>
 
     <string name="remote_video_default_dimension_ratio" translatable="false">9:16</string>
+    <string name="beauty_item_beauty_face_three">五官立体</string>
+    <string name="beauty_item_effect_diadiatu">嗲嗲兔</string>
+    <string name="beauty_item_effect_hunxue">混血</string>
+    <string name="beauty_item_sticker_sdlu">麋鹿</string>
+    <string name="beauty_item_effect_oumei">欧美</string>
+    <string name="beauty_item_sticker_shangbanle">上班了</string>
+    <string name="beauty_item_effect_heitonghua">黑童话</string>
+    <string name="beauty_item_sticker_weixiao">微笑</string>
+    <string name="beauty_item_sticker_xiha">嘻哈</string>
 </resources>

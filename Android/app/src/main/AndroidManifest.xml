@@ -43,7 +43,7 @@
         </activity>
 
         <activity
-            android:name="io.agora.beautyapi.demo.SenseTimeActivity"
+            android:name="io.agora.beautyapi.demo.module.sensetime.SenseTimeActivity"
             android:launchMode="singleTop"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="behind"/>
@@ -55,19 +55,19 @@
             android:screenOrientation="behind"/>
 
         <activity
-            android:name="io.agora.beautyapi.demo.FaceUnityActivity"
+            android:name="io.agora.beautyapi.demo.module.faceunity.FaceUnityActivity"
             android:launchMode="singleTop"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="behind"/>
 
         <activity
-            android:name="io.agora.beautyapi.demo.ByteDanceActivity"
+            android:name="io.agora.beautyapi.demo.module.bytedance.ByteDanceActivity"
             android:launchMode="singleTop"
             android:configChanges="orientation|screenSize|screenLayout"
             android:screenOrientation="behind"/>
 
         <activity
-            android:name="io.agora.beautyapi.demo.CosmosActivity"
+            android:name="io.agora.beautyapi.demo.module.cosmos.CosmosActivity"
             android:launchMode="singleTop"
             android:configChanges="orientation|screenSize|screenLayout"
             android:screenOrientation="behind"/>

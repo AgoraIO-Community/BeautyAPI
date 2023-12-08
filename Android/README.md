@@ -29,11 +29,11 @@ _English | [中文](README.zh.md)
 2. FaceUnity
    Put the FaceUnity beauty resources into the corresponding path
 
-| FaceUnity Beauty Resources          | Location                                                |
-|-------------------------------------|---------------------------------------------------------|
-| makeup resource(e.g. naicha.bundle) | app/src/main/assets/beauty_faceunity/makeup             |
-| sticker resource(e.g. fashi.bundle) | app/src/main/assets/beauty_faceunity/sticker            |
-| authpack.java                       | app/src/main/java/io/agora/beautyapi/demo/authpack.java |
+| FaceUnity Beauty Resources          | Location                                                                  |
+|-------------------------------------|---------------------------------------------------------------------------|
+| makeup resource(e.g. naicha.bundle) | app/src/main/assets/beauty_faceunity/makeup                               |
+| sticker resource(e.g. fashi.bundle) | app/src/main/assets/beauty_faceunity/sticker                              |
+| authpack.java                       | app/src/main/java/io/agora/beautyapi/demo/module/faceunity/authpack.java  |
 
 3. ByteDance
    Unzip the ByteDance beauty resource and copy the following files/directories to the corresponding path
@@ -46,7 +46,7 @@ _English | [中文](README.zh.md)
 | resource/StickerResource.bundle | app/src/main/assets/beauty_bytedance |
 | resource/StickerResource.bundle | app/src/main/assets/beauty_bytedance |
 
-Modify the LICENSE_NAME in the app/src/main/java/io/agora/beautyapi/demo/ByteDanceActivity.kt file to the name of the applied certificate file.
+Modify the LICENSE_NAME in the app/src/main/java/io/agora/beautyapi/demo/module/bytedance/ByteDanceBeautySDK.kt file to the name of the applied certificate file.
 
 4. Cosmos
    Unzip the Cosmos beauty resource and copy the following files/directories to the corresponding path
@@ -56,7 +56,7 @@ Modify the LICENSE_NAME in the app/src/main/java/io/agora/beautyapi/demo/ByteDan
 | sample/app/src/main/assets/model-all.zip  | app/src/main/assets/beauty_cosmos/model-all.zip  |
 | sample/app/src/main/assets/cosmos.zip     | app/src/main/assets/beauty_cosmos/cosmos.zip     |
 
-Modify the LICENSE in the app/src/main/java/io/agora/beautyapi/demo/CosmosActivity.kt file to the applied license code.
+Modify the LICENSE in the app/src/main/java/io/agora/beautyapi/demo/module/cosmos/CosmosBeautyWrapSDK.kt file to the applied license code.
 
 ### Agora AppID Configuration
 
