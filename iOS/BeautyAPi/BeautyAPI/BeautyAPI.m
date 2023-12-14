@@ -34,6 +34,13 @@ static NSString *const beautyAPIVersion = @"1.0.4";
 
 @implementation BeautyAPI
 
+- (instancetype)init {
+    if (self == [super init]) {
+        _isFrontCamera = YES;
+    }
+    return self;
+}
+
 - (NSMutableArray *)statsArray {
     if (_statsArray == nil) {
         _statsArray = [NSMutableArray new];
@@ -50,7 +57,6 @@ static NSString *const beautyAPIVersion = @"1.0.4";
     }
     [LogUtil log:[NSString stringWithFormat:@"RTC Version == %@", [AgoraRtcEngineKit getSdkVersion]]];
     [LogUtil log:[NSString stringWithFormat:@"BeautyAPI Version == %@", [self getVersion]]];
-    _isFrontCamera = YES;
     self.config = config;
     if (self.config.statsDuration <= 0) {
         self.config.statsDuration = 1;

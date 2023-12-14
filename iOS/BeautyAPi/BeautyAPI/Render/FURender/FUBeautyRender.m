@@ -15,6 +15,7 @@
 @property (nonatomic, strong) FUSticker *currentSticker;
 @property (nonatomic, strong) FUAnimoji *currentAnimoji;
 #endif
+@property (nonatomic, copy) NSString *makeupKey;
 
 @end
 
@@ -140,7 +141,7 @@
 #if __has_include(FURenderMoudle)
     FUMakeup *makeup = [FURenderKit shareRenderKit].makeup;
     if (isCombined) {
-        if (makeup == nil) {
+        if (makeup == nil || self.makeupKey != key) {
             NSBundle *bundle = [BundleUtil bundleWithBundleName:@"FURenderKit" podName:@"fuLib"];
             NSString *stylePath = [bundle pathForResource:key ofType:@"bundle"];
             makeup = [[FUMakeup alloc] initWithPath:stylePath name:@"makeup"];
@@ -153,9 +154,10 @@
             });
         }
         [FURenderKit shareRenderKit].makeup.intensity = value;
+        self.makeupKey = key;
     } else {
         NSString *makeupPath = [[NSBundle mainBundle] pathForResource:path ofType:@"bundle"];
-        if (makeup == nil) {
+        if (makeup == nil || self.makeupKey != path) {
             makeup = [[FUMakeup alloc] initWithPath:makeupPath name:@"face_makeup"];
             makeup.isMakeupOn = YES;
             [FURenderKit shareRenderKit].makeup = makeup;
@@ -166,6 +168,7 @@
         FUItem *makupItem = [[FUItem alloc] initWithPath:stylePath name:key];
         [makeup updateMakeupPackage:makupItem needCleanSubItem:NO];
         makeup.intensity = value;
+        self.makeupKey = path;
     }
 #endif
 }
@@ -222,6 +225,7 @@
 #if __has_include(FURenderMoudle)
     [FURenderKit shareRenderKit].makeup.enable = NO;
 #endif
+    self.makeupKey = nil;
 }
 
 - (void)resetSticker {
