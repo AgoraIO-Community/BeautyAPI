@@ -22,7 +22,7 @@ You can refer to following demo to lean how to use the beauty api:
 | Platform  | Demo                   | Notes |
 |-----------|------------------------|---------|
 | Android   | [Android/app](Android) |         |
-| iOS       | [iOS/BeautyAPi](iOS)   | Optimized image performance, this version supports RTC SDK version 4.1.1.23 and above (excluding version 4.2.x)  |
+| iOS       | [iOS/BeautyAPi](iOS)   |         |
 
 ## Feedback
 

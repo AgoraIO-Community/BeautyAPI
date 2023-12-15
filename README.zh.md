@@ -22,7 +22,7 @@
 | 平台      | Demo                   | 备注 |
 |---------|------------------------|-------|
 | Android | [Android/app](Android) |       |
-| iOS     | [iOS/BeautyAPi](iOS)   |   优化了镜像性能, 此版本支持RTC SDK 4.1.1.23及以上版本(不包含4.2.x版本)    |
+| iOS     | [iOS/BeautyAPi](iOS)   |       |
 
 ## 反馈
 
