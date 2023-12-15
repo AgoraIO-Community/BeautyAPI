@@ -104,7 +104,7 @@ if result != 0 {
     print("initialize error == \(result)")
 }
 ```
-2.将外部数据帧通过onFrame接口传入，处理成功会替换VideoFrame的buffer数据，即videoFrame参数既为输入也为输出
+2.将外部数据帧通过onFrame接口传入，处理成功后替换VideoFrame的pixelBuffer数据，即pixelBuffer参数既为输入也为输出
 
 ```swift
 beautyAPI.onFrame(pixelBuffer) { pixelBuffer in
