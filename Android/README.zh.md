@@ -30,24 +30,24 @@
 2. 相芯美颜
 将相芯美颜资源放入对应路径下
 
-| 美颜资源                 | 项目路径                                                    |
-|----------------------|---------------------------------------------------------|
-| 美妆资源(如naicha.bundle) | app/src/main/assets/beauty_faceunity/makeup             |
-| 贴纸资源(如fashi.bundle)  | app/src/main/assets/beauty_faceunity/sticker            |
-| 证书authpack.java      | app/src/main/java/io/agora/beautyapi/demo/authpack.java |
+| 美颜资源                 | 项目路径                                                                      |
+|----------------------|---------------------------------------------------------------------------|
+| 美妆资源(如naicha.bundle) | app/src/main/assets/beauty_faceunity/makeup                               |
+| 贴纸资源(如fashi.bundle)  | app/src/main/assets/beauty_faceunity/sticker                              |
+| 证书authpack.java      | app/src/main/java/io/agora/beautyapi/demo/module/faceunity/authpack.java  |
 
 3. 字节/火山美颜
 解压字节/火山美颜资源并复制以下文件/目录到对应路径下
 
-| 字节SDK文件/目录                                       | 项目路径                                                  |
-|--------------------------------------------------|-------------------------------------------------------|
-| resource/LicenseBag.bundle                       | app/src/main/assets/beauty_bytedance           |
-| resource/ModelResource.bundle                    | app/src/main/assets/beauty_bytedance           |
-| resource/ComposeMakeup.bundle                    | app/src/main/assets/beauty_bytedance           |
-| resource/StickerResource.bundle                  | app/src/main/assets/beauty_bytedance           |
-| resource/StickerResource.bundle                  | app/src/main/assets/beauty_bytedance           |
+| 字节SDK文件/目录                                       | 项目路径                                  |
+|--------------------------------------------------|---------------------------------------|
+| resource/LicenseBag.bundle                       | app/src/main/assets/beauty_bytedance  |
+| resource/ModelResource.bundle                    | app/src/main/assets/beauty_bytedance  |
+| resource/ComposeMakeup.bundle                    | app/src/main/assets/beauty_bytedance  |
+| resource/StickerResource.bundle                  | app/src/main/assets/beauty_bytedance  |
+| resource/StickerResource.bundle                  | app/src/main/assets/beauty_bytedance  |
 
-修改app/src/main/java/io/agora/beautyapi/demo/ByteDanceActivity.kt文件里LICENSE_NAME为申请到的证书文件名
+修改app/src/main/java/io/agora/beautyapi/demo/module/bytedance/ByteDanceBeautySDK.kt文件里LICENSE_NAME为申请到的证书文件名
 
 4. 宇宙美颜
 获取宇宙美颜资源并复制以下文件到对应路径下
@@ -57,7 +57,7 @@
 | sample/app/src/main/assets/model-all.zip  | app/src/main/assets/beauty_cosmos/model-all.zip |
 | sample/app/src/main/assets/cosmos.zip     | app/src/main/assets/beauty_cosmos/cosmos.zip    |
 
-修改app/src/main/java/io/agora/beautyapi/demo/CosmosActivity.kt文件里LICENSE为申请到的证书
+修改app/src/main/java/io/agora/beautyapi/demo/module/cosmos/CosmosBeautyWrapSDK.kt文件里LICENSE为申请到的证书
 
 ### 配置声网AppID
 

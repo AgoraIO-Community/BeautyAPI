@@ -85,6 +85,7 @@ static NSString *const beautyAPIVersion = @"1.0.4";
             }
         };
         [self rtcReportWithEvent:@"initialize" label:dict];
+        [self setupMirror];
 #else
         [LogUtil log:@"rtc 未导入" level:(LogLevelError)];
         return -1;
@@ -146,6 +147,7 @@ static NSString *const beautyAPIVersion = @"1.0.4";
     NSString *jsonString = [NSString stringWithFormat:@"{\"rtc.camera_capture_mirror_mode\":%d}", mirror];
     [self.config.rtcEngine setParameters:jsonString];
     [self.config.rtcEngine setLocalRenderMode:self.renderMode mirror:mirrorMode];
+
     NSDictionary *dict = @{@"setupMirror": @(mirror), @"isFrontCamera": @(self.isFrontCamera)};
     [self rtcReportWithEvent:@"setupMirror" label:dict];
     
@@ -322,7 +324,7 @@ static NSString *const beautyAPIVersion = @"1.0.4";
 }
 
 - (AgoraVideoFramePosition)getObservedFramePosition {
-    return AgoraVideoFramePositionPostCapture;
+    return AgoraVideoFramePositionPostCapture | AgoraVideoFramePositionPreEncoder;
 }
 #endif
 
