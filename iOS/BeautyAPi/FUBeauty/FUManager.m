@@ -32,28 +32,27 @@ static FUManager *shareManager = NULL;
     dispatch_once(&onceToken, ^{
         shareManager = [[FUManager alloc] init];
     });
-
+    
     return shareManager;
 }
 
 - (instancetype)init
 {
     if (self = [super init]) {
-        
 #if __has_include(<FURenderKit/FURenderKit.h>)
-        NSString *controllerPath = [[NSBundle mainBundle] pathForResource:@"controller_cpp" ofType:@"bundle"];
-        NSString *controllerConfigPath = [[NSBundle mainBundle] pathForResource:@"controller_config" ofType:@"bundle"];
-        FUSetupConfig *setupConfig = [[FUSetupConfig alloc] init];
-        setupConfig.authPack = FUAuthPackMake(g_auth_package, sizeof(g_auth_package));
-        setupConfig.controllerPath = controllerPath;
-        setupConfig.controllerConfigPath = controllerConfigPath;
-                
-        // 初始化 FURenderKit
-        [FURenderKit setupWithSetupConfig:setupConfig];
-        
-        [FURenderKit setLogLevel:FU_LOG_LEVEL_ERROR];
-        
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            NSString *controllerPath = [[NSBundle mainBundle] pathForResource:@"controller_cpp" ofType:@"bundle"];
+            NSString *controllerConfigPath = [[NSBundle mainBundle] pathForResource:@"controller_config" ofType:@"bundle"];
+            FUSetupConfig *setupConfig = [[FUSetupConfig alloc] init];
+            setupConfig.authPack = FUAuthPackMake(g_auth_package, sizeof(g_auth_package));
+            setupConfig.controllerPath = controllerPath;
+            setupConfig.controllerConfigPath = controllerConfigPath;
+            
+            // 初始化 FURenderKit
+            [FURenderKit setupWithSetupConfig:setupConfig];
+            
+            [FURenderKit setLogLevel:FU_LOG_LEVEL_ERROR];
+            
             // 加载人脸 AI 模型
             NSString *faceAIPath = [[NSBundle mainBundle] pathForResource:@"ai_face_processor" ofType:@"bundle"];
             [FUAIKit loadAIModeWithAIType:FUAITYPE_FACEPROCESSOR dataPath:faceAIPath];
