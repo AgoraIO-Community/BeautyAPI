@@ -207,7 +207,7 @@
         return;
     }
 #if __has_include(FURenderMoudle)
-    FUSticker *sticker = [[FUSticker alloc] initWithPath:
+    FUSticker *sticker = [[FUSticker alloc] initWithPath:stickerPath
                           name:path];
     if (self.currentAnimoji) {
         [[FURenderKit shareRenderKit].stickerContainer removeSticker:self.currentAnimoji completion:nil];
