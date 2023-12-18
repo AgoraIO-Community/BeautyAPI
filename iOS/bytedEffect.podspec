@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "bytedEffect"
-  s.version      = "4.6.0"
+  s.version      = "4.5.1"
   s.license       = { "type" => "Copyright", "text" => "Copyright 2018 agora.io. All rights reserved.\n"}
   s.homepage     = 'https://github.com'
   s.author        = { "Agora Lab" => "developer@agora.io" }
@@ -19,5 +19,5 @@ Pod::Spec.new do |s|
   s.platform     = :ios, '9.0'
   s.requires_arc = true
   s.libraries = 'z', 'stdc++'
-  # s.dependency 'SSZipArchive'
+  s.dependency 'SSZipArchive'
 end

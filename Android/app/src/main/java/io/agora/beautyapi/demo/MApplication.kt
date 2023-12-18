@@ -26,6 +26,10 @@ package io.agora.beautyapi.demo
 
 import android.app.Application
 import com.tencent.bugly.crashreport.CrashReport
+import io.agora.beautyapi.demo.module.bytedance.ByteDanceBeautySDK
+import io.agora.beautyapi.demo.module.cosmos.CosmosBeautyWrapSDK
+import io.agora.beautyapi.demo.module.faceunity.FaceUnityBeautySDK
+import io.agora.beautyapi.demo.module.sensetime.SenseTimeBeautySDK
 
 class MApplication: Application() {
 
@@ -35,6 +39,7 @@ class MApplication: Application() {
         SenseTimeBeautySDK.initBeautySDK(this)
         FaceUnityBeautySDK.initBeauty(this)
         ByteDanceBeautySDK.initBeautySDK(this)
+        CosmosBeautyWrapSDK.initBeautySDK(this)
 
         CrashReport.initCrashReport(this, "96866f635f", true, CrashReport.UserStrategy(this).apply {
             isEnableCatchAnrTrace = true

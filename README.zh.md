@@ -6,21 +6,23 @@
 
 该仓库包含集成 Agora Rtc 和美颜 SDK 的美颜场景 API，包括以下美颜场景API：
 
-| 美颜    | 平台      | 语言          | 路径                                                       | RTC SDK 版本 | Beauty SDK 版本 |
-|-------|---------|-------------|----------------------------------------------------------|------------|---------------|
-| 商汤    | Android | Java/Kotlin | [/Android/lib_sensetime](/Android/lib_sensetime)         | 4.2.2      | 9.3.1         |
-| 相芯    | Android | Java/Kotlin | [/Android/lib_faceunity](/Android/lib_faceunity)         | 4.2.2      | 8.7.0         |
-| 字节火山  | Android | Java/Kotlin | [/Android/lib_bytedance](/Android/lib_bytedance)         | 4.2.2      | 4.6.0         |
-| 商汤    | iOS     | Swift/OC    | [/iOS/BeautyAPi/SenseBeaufy](/iOS/BeautyAPi/SenseBeaufy) | 4.2.2      | 9.3.1         |
-| 相芯    | iOS     | Swift/OC    | [/iOS/BeautyAPi/FUBeauty](/iOS/BeautyAPi/FUBeauty)       | 4.2.2      | 8.7.0         |
-| 字节火山  | iOS     | Swift/OC    | [/iOS/BeautyAPi/ByteBeaufy](/iOS/BeautyAPi/ByteBeaufy)   | 4.2.2      | 4.6.0         |
+| 美颜   | 平台      | 语言          | 路径                                                         | RTC SDK 版本 | Beauty SDK 版本 |
+|------|---------|-------------|------------------------------------------------------------|------------|---------------|
+| 商汤   | Android | Java/Kotlin | [/Android/lib_sensetime](/Android/lib_sensetime)           | 4.1.1.23   | 9.3.1         |
+| 相芯   | Android | Java/Kotlin | [/Android/lib_faceunity](/Android/lib_faceunity)           | 4.1.1.23   | 8.7.0         |
+| 字节火山 | Android | Java/Kotlin | [/Android/lib_bytedance](/Android/lib_bytedance)           | 4.1.1.23   | 4.6.0         |
+| 宇宙   | Android | Java/Kotlin | [/Android/lib_cosmos](/Android/lib_cosmos)                 | 4.1.1.23   | 3.7.0         |
+| 商汤   | iOS     | Swift/OC    | [/iOS/BeautyAPi/SenseBeauty](/iOS/BeautyAPi/SenseBeauty)   | 4.1.1.23   | 9.3.1         |
+| 相芯   | iOS     | Swift/OC    | [/iOS/BeautyAPi/FUBeauty](/iOS/BeautyAPi/FUBeauty)         | 4.1.1.23   | 8.7.0         |
+| 字节火山 | iOS     | Swift/OC    | [/iOS/BeautyAPi/ByteBeauty](/iOS/BeautyAPi/ByteBeauty)     | 4.1.1.23   | 4.5.1         |
+| 宇宙 | iOS     | Swift/OC    | [/iOS/BeautyAPi/CosmosBeauty](/iOS/BeautyAPi/CosmosBeauty) | 4.1.1.23   | 3.7.1         |
 
 你可以参考下面的Demo，以集成美颜场景化API：
 
-| 平台      | Demo                   |
-|---------|------------------------|
-| Android | [Android/app](Android) |
-| iOS     | [iOS/BeautyAPi](iOS)   |
+| 平台      | Demo                   | 备注 |
+|---------|------------------------|-------|
+| Android | [Android/app](Android) |       |
+| iOS     | [iOS/BeautyAPi](iOS)   |   优化了镜像性能, 此版本支持RTC SDK 4.1.1.23及以上版本(不包含4.2.x版本)    |
 
 ## 反馈
 

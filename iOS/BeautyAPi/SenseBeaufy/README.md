@@ -11,7 +11,6 @@ _English | [中文](README.zh.md)
 
 | SenseTime SDK                                                           | Location                        |
 |-------------------------------------------------------------------------|---------------------------------|
-| SenseMe/remoteSourcesLib                                                       | iOS/SenseLib/remoteSourcesLib              |
 | SenseMe/st\_mobil\_sdk | iOS/SenseLib/st\_mobile\_sdk  |
 |SenseMe/st\_mobil\_sdk/license/SENSEME.lic                                                          | iOS/SenseLib/SENSEME.lic ||
 
@@ -20,7 +19,13 @@ _English | [中文](README.zh.md)
 	pod 'SenseLib', :path => 'sense.podspec'
 ```
 
-3.Copy the following BeautyAPI interface and implementation into the project
+3.Configuration Bundle Identifier
+    
+- BeautyAPI
+  - Signing&Capabilities
+    - Bundle Identifier
+
+4.Copy the following BeautyAPI interface and implementation into the project
 
 ```
 BeautyAPI
@@ -28,7 +33,7 @@ BeautyAPI
     └── Render/SenseRender
 ```
 
-4.Initialization
+5.Initialization
 
 ```swift
 private lazy var beautyAPI = BeautyAPI()
@@ -52,26 +57,26 @@ if result != 0 {
 ```
 
 
-5.Beauty On/Off (default off)
+6.Beauty On/Off (default off)
 
 ```swift
 beautyAPI.enable(true)
 ```
 
-6.Local Rendering
+7.Local Rendering
 
 ```
 beautyAPI.setupLocalVideo(localView, renderMode: .hidden)
 ```
 
-7.Set Recommended Beauty Parameters
+8.Set Recommended Beauty Parameters
 
 ```swift
 beautyAPI.setBeautyPreset(.default)
 // BeautyPreset.CUSTOM：Implement your own beauty parameters
 ```
 
-8.Destroy BeautyAPI
+9.Destroy BeautyAPI
 
 ```swift
 rtcEngine.leaveChannel()
@@ -127,4 +132,4 @@ If you have any problems or suggestions regarding the sample projects, feel free
 
 ## License
 
-The sample projects are under the MIT license.
+The sample projects are under the MIT license.BeautyAPi/SenseBeaufy/README.md

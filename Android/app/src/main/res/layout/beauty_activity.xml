@@ -32,7 +32,7 @@
         android:padding="12dp"
         android:layout_margin="12dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/llBeautyOptions"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:src="@drawable/ic_settings"/>
 
     <ImageView
@@ -43,7 +43,7 @@
         android:padding="12dp"
         android:layout_margin="12dp"
         app:layout_constraintEnd_toStartOf="@id/ivMirror"
-        app:layout_constraintBottom_toTopOf="@id/llBeautyOptions"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:src="@mipmap/ic_beauty"/>
 
     <ImageView
@@ -54,7 +54,7 @@
         android:padding="12dp"
         android:layout_margin="12dp"
         app:layout_constraintEnd_toStartOf="@id/ivCamera"
-        app:layout_constraintBottom_toTopOf="@id/llBeautyOptions"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:src="@drawable/ic_mirror"/>
 
     <ImageView
@@ -65,49 +65,8 @@
         android:padding="12dp"
         android:layout_margin="12dp"
         app:layout_constraintEnd_toStartOf="@id/ivSetting"
-        app:layout_constraintBottom_toTopOf="@id/llBeautyOptions"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:src="@drawable/ic_camera"/>
 
-    <LinearLayout
-        android:id="@+id/llBeautyOptions"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="#88000000"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <CheckedTextView
-            android:id="@+id/ctvFaceBeauty"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="美颜"
-            android:textAlignment="center"
-            android:textColor="@color/beauty_option_text_color" />
-
-        <CheckedTextView
-            android:id="@+id/ctvMarkup"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="美妆"
-            android:textAlignment="center"
-            android:textColor="@color/beauty_option_text_color" />
-
-        <CheckedTextView
-            android:id="@+id/ctvSticker"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="贴纸"
-            android:textAlignment="center"
-            android:textColor="@color/beauty_option_text_color" />
-
-
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
