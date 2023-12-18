@@ -11,7 +11,7 @@
 | 商汤   | Android  | Java/Kotlin  | [/Android/lib_sensetime](/Android/lib_sensetime)           | 4.2.6   | 9.3.1         |
 | 相芯   | Android  | Java/Kotlin  | [/Android/lib_faceunity](/Android/lib_faceunity)           | 4.2.6   | 8.7.0         |
 | 字节火山 | Android  | Java/Kotlin  | [/Android/lib_bytedance](/Android/lib_bytedance)           | 4.2.6   | 4.6.0         |
-| 宇宙   | Android  | Java/Kotlin  | [/Android/lib_cosmos](/Android/lib_bytedance)              | 4.2.6   | 3.7.0         |
+| 宇宙   | Android  | Java/Kotlin  | [/Android/lib_cosmos](/Android/lib_cosmos)                 | 4.2.6   | 3.7.0         |
 | 商汤   | iOS      | Swift/OC     | [/iOS/BeautyAPi/SenseBeauty](/iOS/BeautyAPi/SenseBeauty)   | 4.2.6   | 9.3.1         |
 | 相芯   | iOS      | Swift/OC     | [/iOS/BeautyAPi/FUBeauty](/iOS/BeautyAPi/FUBeauty)         | 4.2.6  | 8.7.0         |
 | 字节火山 | iOS      | Swift/OC     | [/iOS/BeautyAPi/ByteBeauty](/iOS/BeautyAPi/ByteBeauty)     | 4.2.6   | 4.5.1         |

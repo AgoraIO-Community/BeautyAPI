@@ -1,4 +1,7 @@
 # Beauty API Change Log
+## 1.0.5
+1. 添加宇宙美颜
+2. Android 优化demo美颜资源加载
 
 ## 1.0.4.1
 1. Android 修复Video Frame Observer没有释放的问题
