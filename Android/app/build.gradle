@@ -11,6 +11,7 @@ android {
 
     defaultConfig {
         applicationId "io.agora.test.entfull"
+        // applicationId "com.thankyo.hwgame"
         minSdkVersion 21
         targetSdkVersion 31
         versionCode 4
