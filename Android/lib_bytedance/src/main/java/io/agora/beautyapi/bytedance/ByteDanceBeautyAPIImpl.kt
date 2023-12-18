@@ -90,7 +90,6 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
         statsHelper = StatsHelper(config.statsDuration) {
             this.config?.eventCallback?.onBeautyStats?.invoke(it)
         }
-        LogUtils.setLogFilePath(config.context.getExternalFilesDir("")?.absolutePath ?: "")
         LogUtils.i(TAG, "initialize >> config = $config")
         LogUtils.i(TAG, "initialize >> beauty api version=$VERSION, beauty sdk version=${RenderManager.getSDKVersion()}")
         config.rtcEngine.sendCustomReportMessage(reportId, reportCategory, "initialize", "$config", 0)

@@ -11,3 +11,6 @@ include ':lib_faceunity'
 include ':lib_bytedance'
 include ':lib_bytedance_EffectAAR'
 project(':lib_bytedance_EffectAAR').projectDir = new File(settingsDir, 'lib_bytedance/libs/EffectAAR')
+include ':lib_cosmos'
+include ':lib_cosmos_BeautySDK'
+project(':lib_cosmos_BeautySDK').projectDir = new File(settingsDir, 'lib_cosmos/libs/BeautySDK')

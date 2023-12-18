@@ -7,7 +7,7 @@
 
 #import "BeautyAPI.h"
 
-static NSString *const beautyAPIVnersio = @"1.0.3";
+static NSString *const beautyAPIVersion = @"1.0.5";
 
 @implementation BeautyStats
 @end
@@ -34,6 +34,13 @@ static NSString *const beautyAPIVnersio = @"1.0.3";
 
 @implementation BeautyAPI
 
+- (instancetype)init {
+    if (self == [super init]) {
+        _isFrontCamera = YES;
+    }
+    return self;
+}
+
 - (NSMutableArray *)statsArray {
     if (_statsArray == nil) {
         _statsArray = [NSMutableArray new];
@@ -50,7 +57,6 @@ static NSString *const beautyAPIVnersio = @"1.0.3";
     }
     [LogUtil log:[NSString stringWithFormat:@"RTC Version == %@", [AgoraRtcEngineKit getSdkVersion]]];
     [LogUtil log:[NSString stringWithFormat:@"BeautyAPI Version == %@", [self getVersion]]];
-    _isFrontCamera = YES;
     self.config = config;
     if (self.config.statsDuration <= 0) {
         self.config.statsDuration = 1;
@@ -79,6 +85,7 @@ static NSString *const beautyAPIVnersio = @"1.0.3";
             }
         };
         [self rtcReportWithEvent:@"initialize" label:dict];
+        [self setupMirror];
 #else
         [LogUtil log:@"rtc 未导入" level:(LogLevelError)];
         return -1;
@@ -86,15 +93,17 @@ static NSString *const beautyAPIVnersio = @"1.0.3";
     } else {
         [LogUtil log:@"captureMode == Custom"];
     }
+    [self setupMirror];
     return 0;
 }
 
 - (int)switchCamera {
     _isFrontCamera = !_isFrontCamera;
-    [self setupMirror];
     NSDictionary *dict = @{ @"cameraPosition": @(_isFrontCamera) };
     [self rtcReportWithEvent:@"cameraPosition" label:dict];
-    return [self.config.rtcEngine switchCamera];
+    int res = [self.config.rtcEngine switchCamera];
+    [self setupMirror];
+    return res;
 }
 
 - (AgoraVideoMirrorMode)setupMirror {
@@ -222,11 +231,14 @@ static NSString *const beautyAPIVnersio = @"1.0.3";
 }
 
 - (NSString *)getVersion {
-    return beautyAPIVnersio;
+    return beautyAPIVersion;
 }
 
 #pragma mark - VideoFrameDelegate
 #if __has_include(<AgoraRtcKit/AgoraRtcKit.h>)
+- (BOOL)onCaptureVideoFrame:(AgoraOutputVideoFrame *)videoFrame {
+    return [self onCaptureVideoFrame:videoFrame sourceType:(AgoraVideoSourceTypeCamera)];
+}
 - (BOOL)onCaptureVideoFrame:(AgoraOutputVideoFrame *)videoFrame sourceType:(AgoraVideoSourceType)sourceType {
     if (!self.isEnable) { return YES; }
     CFTimeInterval startTime = CACurrentMediaTime();
@@ -239,7 +251,7 @@ static NSString *const beautyAPIVnersio = @"1.0.3";
     if (self.config.eventCallback && self.preTime > 0 && self.config.statsEnable) {
         CFTimeInterval time = startTime - self.preTime;
         if (time > self.config.statsDuration && self.statsArray.count > 0) {
-           NSArray *sortArray = [self.statsArray sortedArrayUsingComparator:^NSComparisonResult(NSNumber * _Nonnull obj1, NSNumber * _Nonnull obj2) {
+            NSArray *sortArray = [self.statsArray sortedArrayUsingComparator:^NSComparisonResult(NSNumber * _Nonnull obj1, NSNumber * _Nonnull obj2) {
                 return obj1.doubleValue > obj2.doubleValue;
             }];
             double totalValue = 0;

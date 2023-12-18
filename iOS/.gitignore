@@ -9,6 +9,7 @@ SenseLib/*
 FULib/*
 ByteEffectLib/*
 libs/*
+CosmosEffect
 
 *.zip
 agora_sdk

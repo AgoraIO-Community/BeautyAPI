@@ -104,7 +104,6 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         statsHelper = StatsHelper(config.statsDuration){
             this.config?.eventCallback?.onBeautyStats(it)
         }
-        LogUtils.setLogFilePath(config.context.getExternalFilesDir("")?.absolutePath ?: "")
         LogUtils.i(TAG, "initialize >> config = $config")
         LogUtils.i(TAG, "initialize >> beauty api version=$VERSION, beauty sdk version=${FURenderKit.getInstance().getVersion()}")
 
@@ -232,7 +231,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         LogUtils.i(TAG, "setBeautyPreset >> preset = $preset")
         config?.rtcEngine?.sendCustomReportMessage(reportId, reportCategory, "enable", "preset=$preset", 0)
 
-        val recommendFaceBeauty =
+        val recommendFaceBeauty = conf.fuRenderKit.faceBeauty ?:
             FaceBeauty(FUBundleData("graphics" + File.separator + "face_beautification.bundle"))
         if (preset == BeautyPreset.DEFAULT) {
             recommendFaceBeauty.filterName = FaceBeautyFilterEnum.FENNEN_1

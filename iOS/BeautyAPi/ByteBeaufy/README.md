@@ -7,7 +7,7 @@ _English | [中文](README.zh.md)
 - Contact ByteDance customer service to get ByteDance's beauty SDK, beauty resources and license
 
 ## Quick Start
-1.Unzip the ByteDance SDK and configure the following aar libraries, resource files, and certificates to the corresponding directory of the project
+1.Unzip the ByteDance SDK and configure the following framework libraries, resource files, and certificates to the corresponding directory of the project
 
 | ByteDance SDK                                | Location                |
 |----------------------------------------------|-------------------------|
@@ -20,7 +20,17 @@ _English | [中文](README.zh.md)
 		pod 'bytedEffect', :path => 'bytedEffect.podspec'
 ```
 
-3.Copy the following BeautyAPI interface and implementation into the project
+3.Configuration license and Bundle Identifier
+
+- BeautyAPI
+  - ByteBeauty
+    - Config.h
+    
+- BeautyAPI
+  - Signing&Capabilities
+    - Bundle Identifier
+
+4.Copy the following BeautyAPI interface and implementation into the project
 
 ```
 BeautyAPI
@@ -28,7 +38,7 @@ BeautyAPI
     └── Render/BytesRender
 ```
 
-4.Initialization
+5.Initialization
 
 ```swift
 private lazy var beautyAPI = BeautyAPI()
@@ -52,26 +62,26 @@ if result != 0 {
 ```
 
 
-5.Beauty On/Off (default off)
+6.Beauty On/Off (default off)
 
 ```swift
 beautyAPI.enable(true)
 ```
 
-6.Local Rendering
+7.Local Rendering
 
 ```
 beautyAPI.setupLocalVideo(localView, renderMode: .hidden)
 ```
 
-7.Set Recommended Beauty Parameters
+8.Set Recommended Beauty Parameters
 
 ```swift
 beautyAPI.setBeautyPreset(.default)
 // BeautyPreset.CUSTOM：Implement your own beauty parameters
 ```
 
-8.Destroy BeautyAPI
+9.Destroy BeautyAPI
 
 ```swift
 rtcEngine.leaveChannel()

@@ -13,7 +13,7 @@ FaceUnity Configuration
 
 | FaceUnity Beauty Resources          | Location                        |
 |-------------------------------------|---------------------------------|
-| FaceUnity/Lib/Resources | iOS/FULib         |
+| FULiveDemo/Resources | iOS/FULib         |
 | authpack.h      | iOS/BeautyAPi/FUBeauty/authpack.h  |
 
 2.Config Dependencies
@@ -21,14 +21,24 @@ FaceUnity Configuration
 	pod 'fuLib', :path => 'fu.podspec'
 ```
 
-3.Copy the following BeautyAPI interface and implementation into the project
+3.Configuration license and Bundle Identifier
+
+- BeautyAPI
+  - FUBeauty
+    - authpack.h
+    
+- BeautyAPI
+  - Signing&Capabilities
+    - Bundle Identifier
+
+4.Copy the following BeautyAPI interface and implementation into the project
 ```
 BeautyAPI
     ├── BeautyAPI.{h,m}
     └── Render/FURender
 ```
 
-4.Initialization
+5.Initialization
 
 ```swift
 private lazy var beautyAPI = BeautyAPI()
@@ -52,26 +62,26 @@ if result != 0 {
 ```
 
 
-5.Beauty On/Off (default off)
+6.Beauty On/Off (default off)
 
 ```swift
 beautyAPI.enable(true)
 ```
 
-6.Local Rendering
+7.Local Rendering
 
 ```
 beautyAPI.setupLocalVideo(localView, renderMode: .hidden)
 ```
 
-7.Set Recommended Beauty Parameters
+8.Set Recommended Beauty Parameters
 
 ```swift
 beautyAPI.setBeautyPreset(.default)
 // BeautyPreset.CUSTOM：Implement your own beauty parameters
 ```
 
-8.Destroy BeautyAPI
+9.Destroy BeautyAPI
 
 ```swift
 rtcEngine.leaveChannel()

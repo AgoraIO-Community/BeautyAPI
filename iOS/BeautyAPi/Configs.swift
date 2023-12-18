@@ -7,7 +7,8 @@
 
 import Foundation
 
-enum Configs {
+@objc
+class Configs: NSObject {
     static let resolution: [String: CGSize] = ["VD_1920X1080": CGSize(width: 1080, height: 1920),
                                                "VD_1280X720": CGSize(width: 720, height: 1280),
                                                "VD_960X540": CGSize(width: 540, height: 960),
@@ -16,7 +17,8 @@ enum Configs {
     static let fps: [String] = ["FPS_15", "FPS_24", "FPS_30", "FPS_60"]
     static let roles: [String] = ["Broascast", "Audience"]
     static let captures: [String] = ["Agora", "Custom"]
-    static let beautyTypes: [String] = ["sensetime", "fu", "bytes"]
+    @objc
+    static var beautyTypes: [String] = []//["sensetime", "fu", "bytes", "cosmos"]
     static let mirrorTypes: [String: MirrorMode] = ["local_remote": .LOCAL_REMOTE,
                                                     "local_only" : .LOCAL_ONLY,
                                                     "remote_only": .REMOTE_ONLY,

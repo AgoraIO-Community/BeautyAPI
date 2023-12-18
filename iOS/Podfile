@@ -10,15 +10,16 @@ target 'BeautyAPi' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
 
-#  pod 'AgoraRtcEngine_iOS', '~> 4.2.0'
-  pod 'sdk', :path => 'sdk.podspec'
+  pod 'AgoraRtcEngine_iOS', '4.2.6'
+#  pod 'sdk', :path => 'sdk.podspec'
 #  pod 'BeautyAPI', :path => Dir.pwd() + '/BeautyAPi/BeautyAPI.podspec'
   pod 'SenseLib', :path => 'sense.podspec'
   pod 'fuLib', :path => 'fu.podspec'
   pod 'bytedEffect', :path => 'bytedEffect.podspec'
+  pod 'CosmosEffect', :path => './CosmosEffect'
   
   #滚动视图
-  pod 'JXCategoryView', '1.6.1'
+  pod 'JXCategoryView', '~> 1.6.1'
 
 end
 

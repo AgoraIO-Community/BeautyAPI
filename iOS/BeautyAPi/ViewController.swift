@@ -13,11 +13,14 @@ class ViewController: UIViewController {
     @IBOutlet weak var fpsButton: UIButton!
     @IBOutlet weak var roleButton: UIButton!
     @IBOutlet weak var captureButton: UIButton!
+    @IBOutlet weak var venderBeautyButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         let tap = UITapGestureRecognizer(target: self, action: #selector(onTapView))
         view.addGestureRecognizer(tap)
+        venderBeautyButton.setTitle(Configs.beautyTypes.first, for: .normal)
+        setBeautyType(title: Configs.beautyTypes.first ?? "")
     }
     
     @objc
@@ -63,18 +66,20 @@ class ViewController: UIViewController {
     @IBAction func onClickChoseBeautyType(_ sender: UIButton) {
         let pickerView = PickerView()
         pickerView.dataArray = Configs.beautyTypes
-        pickerView.pickerViewSelectedValueClosure = { value in
+        pickerView.pickerViewSelectedValueClosure = { [weak self] value in
             sender.setTitle(value, for: .normal)
-            switch value {
-            case "sensetime":
-                BeautyModel.beautyType = .sense
-            case "fu":
-                BeautyModel.beautyType = .fu
-            default:
-                BeautyModel.beautyType = .byte
-            }
+            self?.setBeautyType(title: value)
         }
         pickerView.show()
+    }
+    
+    private func setBeautyType(title: String) {
+        switch title {
+        case "sensetime": BeautyModel.beautyType = .sense
+        case "fu": BeautyModel.beautyType = .fu
+        case "cosmos": BeautyModel.beautyType = .cosmos
+        default: BeautyModel.beautyType = .byte
+        }
     }
     
     @IBAction func onClickJoinChannelButton(_ sender: Any) {

@@ -11,7 +11,6 @@
 
 | 商汤SDK文件/目录                                                              | 项目目录                             |
 |-------------------------------------------------------------------------|----------------------------------|
-| SenseMe/remoteSourcesLib                                                       | iOS/SenseLib/remoteSourcesLib              |
 | SenseMe/st\_mobil\_sdk | iOS/SenseLib/st\_mobile\_sdk  |
 |SenseMe/st\_mobil\_sdk/license/SENSEME.lic                                                          | iOS/SenseLib/SENSEME.lic |
 
@@ -20,8 +19,13 @@
 	pod 'SenseLib', :path => 'sense.podspec'
 ```
 
+3.配置Bundle Identifier
+    
+- BeautyAPI
+  - Signing&Capabilities
+    - Bundle Identifier
 
-3.复制以下场景化接口及实现到项目里
+4.复制以下场景化接口及实现到项目里
 
 ```
 BeautyAPI
@@ -29,7 +33,7 @@ BeautyAPI
     └── Render/FURender
 ```
 
-4.初始化
+5.初始化
 
 ```swift
 private lazy var beautyAPI = BeautyAPI()
@@ -52,25 +56,25 @@ if result != 0 {
 }
 ```
 
-5.美颜开关(默认关)
+6.美颜开关(默认关)
 
 ```swift
 beautyAPI.enable(true)
 ```
 
-6.本地渲染
+7.本地渲染
 
 ```swift
 beautyAPI.setupLocalVideo(localView, renderMode: .hidden)
 rtcEngine.startPreview()
 ```
 
-7.设置推荐美颜参数
+8.设置推荐美颜参数
 ```swift
 beautyAPI.setBeautyPreset(.default) // BeautyPreset.CUSTOM：自己实现美颜参数
 ```
 
-8.销毁美颜
+9.销毁美颜
 
 ```swift
 rtcEngine.leaveChannel()
@@ -100,7 +104,7 @@ if result != 0 {
     print("initialize error == \(result)")
 }
 ```
-2.将外部数据帧通过onFrame接口传入，处理成功会替换VideoFrame的buffer数据，即videoFrame参数既为输入也为输出
+2.将外部数据帧通过onFrame接口传入，处理成功后替换VideoFrame的pixelBuffer数据，即pixelBuffer参数既为输入也为输出
 
 ```swift
 beautyAPI.onFrame(pixelBuffer) { pixelBuffer in
