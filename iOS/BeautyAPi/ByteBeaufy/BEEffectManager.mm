@@ -54,7 +54,7 @@ static const bool USE_PIPELINE = YES;
     bef_ai_face_mask_info       *_faceMaskInfo;
     bef_ai_mouth_mask_info      *_mouthMaskInfo;
     bef_ai_teeth_mask_info      *_teethMaskInfo;
-    EAGLContext                 *_glContext;
+//    EAGLContext                 *_glContext;
     
 #if BE_LOAD_RESOURCE_TIMEOUT
     NSMutableSet<NSString *>    *_existResourcePathes;
