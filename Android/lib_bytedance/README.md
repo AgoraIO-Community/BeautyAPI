@@ -141,20 +141,13 @@ override fun onCaptureVideoFrame(
 override fun getMirrorApplied() = mByteDanceApi.getMirrorApplied()
 ```
 
-## Feedback
+## Contact us
 
-If you have any problems or suggestions regarding the sample projects, feel free to file an issue.
+- If you are already using Shengwang services or are in the process of docking, you can directly contact the docked sales or service.
+- Send an email to [support@agora.io](mailto:support@agora.io) for consultation
+- Scan the QR code to join our WeChat communication group to ask questions
 
-## Related resources
-
-- Check our [FAQ](https://docs.agora.io/en/faq) to see if your issue has been recorded.
-- Dive into [Agora SDK Samples](https://github.com/AgoraIO) to see more tutorials.
-- Take a look at [Agora Use Case](https://github.com/AgoraIO-usecase) for more complicated real use
-  case.
-- Repositories managed by developer communities can be found
-  at [Agora Community](https://github.com/AgoraIO-Community).
-- If you encounter problems during integration, feel free to ask questions
-  in [Stack Overflow](https://stackoverflow.com/questions/tagged/agora.io).
+![](https://download.agora.io/demo/release/SDHY_QA.jpg)
 
 ## License
 

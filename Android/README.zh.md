@@ -29,7 +29,7 @@
 
    - 进入[控制台](https://console.shengwang.cn/)
    - 创建应用
-   - <img src="/Users/xcz/Workspaces/BeautyAPI-github/Android/imgs/console_create_project.jpeg" width="600" />
+   - <img src="imgs/console_create_project.jpeg" width="600" />
    - 选择调试模式并创建
    - <img src="imgs/console_init_project.png" width="600" />
    - 复制AppID

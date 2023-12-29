@@ -101,13 +101,13 @@ Each beauty api can be integrated into your project separately, see the below in
 | ByteDance | [README](lib_bytedance/README.md) |
 | Cosmos    | [README](lib_cosmos/README.md)    |
 
-- ## Contact us
-  
-  - If you are already using Shengwang services or are in the process of docking, you can directly contact the docked sales or service.
-  - Send an email to [support@agora.io](mailto:support@agora.io) for consultation
-  - Scan the QR code to join our WeChat communication group to ask questions
-  
-  ![](https://download.agora.io/demo/release/SDHY_QA.jpg)
+## Contact us
+
+- If you are already using Shengwang services or are in the process of docking, you can directly contact the docked sales or service.
+- Send an email to [support@agora.io](mailto:support@agora.io) for consultation
+- Scan the QR code to join our WeChat communication group to ask questions
+
+![](https://download.agora.io/demo/release/SDHY_QA.jpg)
 
 ## License
 
