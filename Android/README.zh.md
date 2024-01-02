@@ -30,17 +30,17 @@
       >
       > <img src="imgs/console_init_project.png" width="1080" />
   > 
-  > - 得到 App ID
+  > - 复制 App ID
       >
       > <img src="imgs/console_copy_appid.png" width="1080" />
 
-- 在`Android`目录下创建`local.properties`（如果存在则不需要重复创建），在`Android/local.properties`里填写需要的声网 App ID
+- 在`Android`目录下创建`local.properties`，并在`Android/local.properties`里填写上面复制的声网 App ID
 
 ```xml
 AGORA_APP_ID=<=声网 App ID=>
 ```
 
-- **联系美颜厂家获取对应的美颜证书和资源，并做以下配置**（如果没有配置美颜证书和资源，项目能正常跑进来，但是对应厂家美颜显示会黑屏）
+- **联系美颜厂家获取对应的美颜证书和资源，并做以下配置**（如果没有配置美颜证书和资源，对应厂家美颜会显示黑屏）
   - **商汤美颜（可选）**
     > - 在[app/build.gradle](app/build.gradle)里配置证书对应的包名applicationId
     >
