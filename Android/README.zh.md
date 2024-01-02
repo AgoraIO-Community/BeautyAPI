@@ -28,15 +28,15 @@
   > 
   > - 点击创建应用
       > 
-      > <img src="imgs/console_create_project.jpeg" width="600" />
+      > <img src="imgs/console_create_project.jpeg" width="1080" />
   >
   > - 选择调试模式并创建（本示例仅支持调试模式）
       >
-      > <img src="imgs/console_init_project.png" width="600" />
+      > <img src="imgs/console_init_project.png" width="1080" />
   > 
   > - 得到 App ID
       >
-      > <img src="imgs/console_copy_appid.png" width="600" />
+      > <img src="imgs/console_copy_appid.png" width="1080" />
 
 - 在`Android`目录下创建`local.properties`（如果存在则不需要重复创建），在`Android/local.properties`里填写需要的声网 App ID
 
@@ -57,7 +57,7 @@ AGORA_APP_ID=<=声网 App ID=>
   > | Android/smaple/SenseMeEffects/app/src/main/assets/makeup_lip         | app/src/main/assets/beauty_sensetime/makeup_lip          |
   > | SenseME.lic                                                          | app/src/main/assets/beauty_sensetime/license/SenseME.lic |
 
-- <mark>联系美颜厂家获取对应的美颜证书和资源</mark>（如果没有配置需要的美颜证书和资源无法进行以下配置，对应厂家美颜显示会黑屏）
+- **联系美颜厂家获取对应的美颜证书和资源**（如果没有配置需要的美颜证书和资源无法进行以下配置，对应厂家美颜显示会黑屏）
 
 - （可选）配置相芯美颜
   > - 在[app/build.gradle](app/build.gradle)里配置证书对应的包名applicationId
