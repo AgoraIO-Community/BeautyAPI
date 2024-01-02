@@ -28,11 +28,14 @@ You can refer to following demo to lean how to use the beauty api:
 
 ### Contact us
 
-- If you are already using Shengwang services or are in the process of docking, you can directly contact the docked sales or service.
-- Send an email to [support@agora.io](mailto:support@agora.io) for consultation
-- Scan the QR code to join our WeChat communication group to ask questions
-
-![](https://download.agora.io/demo/release/SDHY_QA.jpg)
+> Plan 1: If you are already using Shengwang services or are in the process of docking, you can directly contact the docked sales or service.
+>
+> Plan 2: Send an email to [support@agora.io](mailto:support@agora.io) for consultation
+>
+> Plan 3: Scan the QR code to join our WeChat communication group to ask questions
+>
+> <img src="https://download.agora.io/demo/release/SDHY_QA.jpg" width="360" height="360">
+---
 
 ### License
 
