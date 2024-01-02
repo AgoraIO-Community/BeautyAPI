@@ -44,6 +44,8 @@
 AGORA_APP_ID=<=声网 App ID=>
 ```
 
+- **联系美颜厂家获取对应的美颜证书和资源**（如果没有配置需要的美颜证书和资源无法进行以下配置，对应厂家美颜显示会黑屏）
+
 - （可选）配置商汤美颜
   > - 在[app/build.gradle](app/build.gradle)里配置证书对应的包名applicationId
   >
@@ -57,7 +59,6 @@ AGORA_APP_ID=<=声网 App ID=>
   > | Android/smaple/SenseMeEffects/app/src/main/assets/makeup_lip         | app/src/main/assets/beauty_sensetime/makeup_lip          |
   > | SenseME.lic                                                          | app/src/main/assets/beauty_sensetime/license/SenseME.lic |
 
-- **联系美颜厂家获取对应的美颜证书和资源**（如果没有配置需要的美颜证书和资源无法进行以下配置，对应厂家美颜显示会黑屏）
 
 - （可选）配置相芯美颜
   > - 在[app/build.gradle](app/build.gradle)里配置证书对应的包名applicationId
