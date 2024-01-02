@@ -67,8 +67,8 @@ typedef NS_ENUM(NSInteger, BEEffectPart) {
 @property (nonatomic, weak) id<BEEffectManagerDelegate> delegate;
 @property (nonatomic, strong) NSString *resourcePath;
 @property (atomic, weak) dispatch_queue_t renderQueue;
+@property (nonatomic, strong) EAGLContext *glContext;
 @property (nonatomic, assign, readonly) BOOL isSuccessLicense;
-
 
 //   {zh} / @brief 构造函数     {en} /@brief constructor
 //   {zh} / @details 需要传入一个 BEEffectResourceProvider 实现，用于提供各种素材的路径，和一个BELicenseProvider的实现，用于获取license     {en} /@details need to pass in a BEEffectResourceProvider implementation to provide the path of various materials, and a BELicenseProvider implementation to get license
