@@ -59,7 +59,7 @@ AGORA_APP_ID=<=声网 App ID=>
     > | Android/smaple/SenseMeEffects/app/src/main/assets/style_lightly      | app/src/main/assets/beauty_sensetime/style_lightly       |
     > | Android/smaple/SenseMeEffects/app/src/main/assets/makeup_lip         | app/src/main/assets/beauty_sensetime/makeup_lip          |
     > | SenseME.lic                                                          | app/src/main/assets/beauty_sensetime/license/SenseME.lic |
-
+  >
   > - 相芯美颜（可选）
     > - 在[app/build.gradle](app/build.gradle)里配置证书对应的包名applicationId
     >
@@ -70,7 +70,7 @@ AGORA_APP_ID=<=声网 App ID=>
     > | 美妆资源(如naicha.bundle) | app/src/main/assets/beauty_faceunity/makeup                               |
     > | 贴纸资源(如fashi.bundle)  | app/src/main/assets/beauty_faceunity/sticker                              |
     > | 证书authpack.java      | app/src/main/java/io/agora/beautyapi/demo/module/faceunity/authpack.java  |
-
+  >
   > - 字节火山美颜（可选）
     > - 在[app/build.gradle](app/build.gradle)里配置证书对应的包名applicationId
     >
@@ -85,7 +85,7 @@ AGORA_APP_ID=<=声网 App ID=>
     > | resource/ComposeMakeup.bundle                    | app/src/main/assets/beauty_bytedance  |
     > | resource/StickerResource.bundle                  | app/src/main/assets/beauty_bytedance  |
     > | resource/StickerResource.bundle                  | app/src/main/assets/beauty_bytedance  |
-
+  >
   > - 宇宙美颜（可选）
     > - 在[app/build.gradle](app/build.gradle)里配置证书对应的包名applicationId
     > 
