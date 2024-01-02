@@ -15,10 +15,6 @@
 - 最低兼容 Android 5.0（SDK API Level 21）
 - Android Studio 3.5及以上版本，使用Java 11
 - Android 5.0 及以上的手机设备。
-- 联系商汤客服拿到商汤的美颜SDK、美颜资源以及证书（可选）
-- 联系字节火山客服拿到火山SDK、美颜资源以及证书（可选）
-- 联系相芯客服拿到美颜资源以及证书（可选）
-- 联系宇宙客服拿到美颜资源以及证书（可选）
 
 ---
 
@@ -47,7 +43,7 @@ AGORA_APP_ID=<=声网 App ID=>
 - **联系美颜厂家获取对应的美颜证书和资源**（如果没有配置需要的美颜证书和资源无法进行以下配置，对应厂家美颜显示会黑屏）
 
 - 配置美颜证书/资源
-  > - 商汤美颜（可选）
+  - **商汤美颜（可选）**
     > - 在[app/build.gradle](app/build.gradle)里配置证书对应的包名applicationId
     >
     > - 解压商汤美颜SDK并复制以下文件/目录到对应路径下
@@ -59,8 +55,7 @@ AGORA_APP_ID=<=声网 App ID=>
     > | Android/smaple/SenseMeEffects/app/src/main/assets/style_lightly      | app/src/main/assets/beauty_sensetime/style_lightly       |
     > | Android/smaple/SenseMeEffects/app/src/main/assets/makeup_lip         | app/src/main/assets/beauty_sensetime/makeup_lip          |
     > | SenseME.lic                                                          | app/src/main/assets/beauty_sensetime/license/SenseME.lic |
-  >
-  > - 相芯美颜（可选）
+  - **相芯美颜（可选）**
     > - 在[app/build.gradle](app/build.gradle)里配置证书对应的包名applicationId
     >
     > - 将相芯美颜资源放入对应路径下
@@ -70,8 +65,7 @@ AGORA_APP_ID=<=声网 App ID=>
     > | 美妆资源(如naicha.bundle) | app/src/main/assets/beauty_faceunity/makeup                               |
     > | 贴纸资源(如fashi.bundle)  | app/src/main/assets/beauty_faceunity/sticker                              |
     > | 证书authpack.java      | app/src/main/java/io/agora/beautyapi/demo/module/faceunity/authpack.java  |
-  >
-  > - 字节火山美颜（可选）
+  - **字节火山美颜（可选）**
     > - 在[app/build.gradle](app/build.gradle)里配置证书对应的包名applicationId
     >
     > - 修改[ByteDanceBeautySDK.kt](app/src/main/java/io/agora/beautyapi/demo/module/bytedance/ByteDanceBeautySDK.kt)文件里LICENSE_NAME为申请到的证书文件名
@@ -85,8 +79,7 @@ AGORA_APP_ID=<=声网 App ID=>
     > | resource/ComposeMakeup.bundle                    | app/src/main/assets/beauty_bytedance  |
     > | resource/StickerResource.bundle                  | app/src/main/assets/beauty_bytedance  |
     > | resource/StickerResource.bundle                  | app/src/main/assets/beauty_bytedance  |
-  >
-  > - 宇宙美颜（可选）
+  - **宇宙美颜（可选）**
     > - 在[app/build.gradle](app/build.gradle)里配置证书对应的包名applicationId
     > 
     > - 修改[CosmosBeautyWrapSDK.kt](app/src/main/java/io/agora/beautyapi/demo/module/cosmos/CosmosBeautyWrapSDK.kt)文件里LICENSE为申请到的证书
