@@ -92,8 +92,6 @@ AGORA_APP_ID=<=声网 App ID=>
     > | sample/app/src/main/assets/cosmos.zip     | app/src/main/assets/beauty_cosmos/cosmos.zip    |
 
 - 运行项目
-  > - 编辑`app/build.gradle`， **修改applicationId包名成申请美颜时所用包名**
-  >
   > - 使用AndroidStudio打开`Android`项目，点击运行即可
 
 ---
