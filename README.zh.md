@@ -28,13 +28,14 @@
 
 ### 集成遇到困难，该如何联系声网获取协助
 
-方案1：如果您已经在使用声网服务或者在对接中，可以直接联系对接的销售或服务
-
-方案2：发送邮件给 [support@agora.io](mailto:support@agora.io) 咨询
-
-方案3：扫码加入我们的微信交流群提问
-
-![](https://download.agora.io/demo/release/SDHY_QA.jpg)
+> 方案1：如果您已经在使用声网服务或者在对接中，可以直接联系对接的销售或服务
+> 
+> 方案2：发送邮件给 [support@agora.io](mailto:support@agora.io) 咨询
+> 
+> 方案3：扫码加入我们的微信交流群提问
+> 
+> <img src="https://download.agora.io/demo/release/SDHY_QA.jpg" width="360" height="360">
+---
 
 ### 许可证
 
