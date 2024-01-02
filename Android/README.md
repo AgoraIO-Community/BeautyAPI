@@ -2,13 +2,13 @@
 
 _English | [中文](README.zh.md)
 
-# Introduction
+### Introduction
 
 This document mainly introduces how to quickly run through the beauty scene API sample code.
 
 <img src="imgs/app_page_launch.png" width="300" />
 
-## Prerequisites
+### Prerequisites
 
 - Android 5.0（SDK API Level 21）Above
 - Android Studio 3.5+, Using java 11
@@ -18,8 +18,8 @@ This document mainly introduces how to quickly run through the beauty scene API 
 - (Optional) Contact ByteDance customer service to get ByteDance's beauty SDK, beauty resources and license
 - (Optional) Contact Cosmos customer service to get ByteDance's beauty SDK, beauty resources and license
 
-## Quick Start
-### Agora AppID Configuration
+### Quick Start
+#### Agora AppID Configuration
 
 > PS：This demo does not support AppId with certificate
 
@@ -35,7 +35,7 @@ This document mainly introduces how to quickly run through the beauty scene API 
 AGORA_APP_ID=#YOUR APP ID#
 ```
 
-### Beauty SDK Configuration
+#### Beauty SDK Configuration
 
 > PS：**You can only configure one kind of beauty**. You can also enter the beauty without configuration, but the corresponding beauty will display a black screen.
 
@@ -86,13 +86,13 @@ AGORA_APP_ID=#YOUR APP ID#
 
 
 
-### Run Project
+#### Run Project
 
 1. Edit the app/build.gradle file, change applicationId to your application id using to apply to beauty SDK.
 2. Run Project
 
 
-## Integrate Into Project
+### Integrate Into Project
 
 Each beauty api can be integrated into your project separately, see the below integration documentation for details
 
@@ -103,7 +103,7 @@ Each beauty api can be integrated into your project separately, see the below in
 | ByteDance | [Official website document](https://doc.shengwang.cn/doc/showroom/android/advanced-features/beauty/bytedance/integrate) |
 | Cosmos    | None yet                                                     |
 
-## Contact us
+### Contact us
 
 - If you are already using Shengwang services or are in the process of docking, you can directly contact the docked sales or service.
 - Send an email to [support@agora.io](mailto:support@agora.io) for consultation
@@ -111,6 +111,7 @@ Each beauty api can be integrated into your project separately, see the below in
 
 ![](https://download.agora.io/demo/release/SDHY_QA.jpg)
 
-## License
+### License
 
 The sample projects are under the [MIT license](../LICENSE).
+

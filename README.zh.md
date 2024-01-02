@@ -2,7 +2,7 @@
 
 [English](README.md) | 中文
 
-## 概述
+### 概述
 
 为降低开发者的集成美颜的难度，声网提供了美颜场景化 API。美颜场景化 API 使用**声网RTC祼数据接口**对**不同厂商的美颜处理**进行封装，力求提供最佳的美颜体验，将美颜耗时尽可能降到最低。你只需要调用简单几个场景化 API 即可实现流畅的美颜效果。
 
@@ -19,14 +19,14 @@
 | 字节火山 | iOS      | Swift/OC     | [iOS/BeautyAPi/ByteBeauty](iOS/BeautyAPi/ByteBeauty) | 4.2.6   | 4.5.1         |
 | 宇宙   | iOS      | Swift/OC     | [iOS/BeautyAPi/CosmosBeauty](iOS/BeautyAPi/CosmosBeauty) | 4.2.6   | 3.7.1         |
 
-## 快速开始
+### 快速开始
 
 | 平台      | Demo                   |
 |---------|------------------------|
 | Android | [Android/app](Android/README.zh.md) |
 | iOS     | [iOS/BeautyAPi](iOS/README.zh.md) |
 
-## 集成遇到困难，该如何联系声网获取协助
+### 集成遇到困难，该如何联系声网获取协助
 
 方案1：如果您已经在使用声网服务或者在对接中，可以直接联系对接的销售或服务
 
@@ -36,6 +36,6 @@
 
 ![](https://download.agora.io/demo/release/SDHY_QA.jpg)
 
-## 许可证
+### 许可证
 
 示例项目遵守 [MIT 许可证](LICENSE)。

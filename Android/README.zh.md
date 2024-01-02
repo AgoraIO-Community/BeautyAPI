@@ -2,7 +2,7 @@
 
 [English](README.md) | 中文
 
-# 概述
+### 概述
 
 本文档主要介绍如何快速跑通美颜场景化API示例代码，运行效果如下：
 
@@ -10,7 +10,7 @@
 
 
 
-## 环境准备
+### 环境准备
 
 - 最低兼容 Android 5.0（SDK API Level 21）
 - Android Studio 3.5及以上版本，使用Java 11
@@ -20,10 +20,10 @@
 - （可选）联系相芯客服拿到美颜资源以及证书
 - （可选）联系宇宙客服拿到美颜资源以及证书
 
-## 运行示例
-### 配置声网AppID
+### 运行示例
+#### 配置声网AppID
 
-> PS：这个demo暂不支持开通Token安全认证的AppId
+> PS：这个demo暂不支持开通Token安全认证的AppID
 
 1. [获取AppID](https://docportal.shengwang.cn/cn/Agora%20Platform/get_appid_token?platform=All%20Platforms#%E8%8E%B7%E5%8F%96-app-id)
 
@@ -43,7 +43,7 @@
 AGORA_APP_ID=<=声网 App ID=>
 ```
 
-### 配置美颜SDK
+#### 配置美颜SDK
 
 > PS：**可以只配置一种美颜**，对于没有配置的美颜也能正常进入，但是对应美颜会显示黑屏
 
@@ -92,13 +92,13 @@ AGORA_APP_ID=<=声网 App ID=>
 | sample/app/src/main/assets/model-all.zip  | app/src/main/assets/beauty_cosmos/model-all.zip |
 | sample/app/src/main/assets/cosmos.zip     | app/src/main/assets/beauty_cosmos/cosmos.zip    |
 
-### 运行项目
+#### 运行项目
 
 1. 编辑`app/build.gradle`， **修改applicationId包名成申请美颜时所用包名**
 2. 运行项目
 
 
-## 集成到项目
+### 集成到项目
 
 每个美颜可以单独集成到自己的项目，详见对应的集成说明文档
 
@@ -109,7 +109,7 @@ AGORA_APP_ID=<=声网 App ID=>
 | 字节火山 | [官网文档](https://doc.shengwang.cn/doc/showroom/android/advanced-features/beauty/bytedance/integrate) |
 | 宇宙     | 暂无                                                         |
 
-## 集成遇到困难，该如何联系声网获取协助
+### 集成遇到困难，该如何联系声网获取协助
 
 方案1：如果您已经在使用声网服务或者在对接中，可以直接联系对接的销售或服务
 

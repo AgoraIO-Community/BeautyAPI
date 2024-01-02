@@ -2,7 +2,7 @@
 
 _English | [中文](README.zh.md)
 
-## Overview
+### Overview
 
 In order to reduce the difficulty for developers to integrate beauty, Shengwang provides a beauty scene-based API. The beauty scene API uses the **Shengwang RTC raw data interface** to encapsulate the beauty processing of different manufacturers, striving to provide the best beauty experience and minimize the beauty time as much as possible. You only need to call a few simple scene-based APIs to achieve smooth beautification effects.
 
@@ -26,7 +26,7 @@ You can refer to following demo to lean how to use the beauty api:
 | Android   | [Android/app](Android) |         |
 | iOS       | [iOS/BeautyAPi](iOS)   |         |
 
-## Contact us
+### Contact us
 
 - If you are already using Shengwang services or are in the process of docking, you can directly contact the docked sales or service.
 - Send an email to [support@agora.io](mailto:support@agora.io) for consultation
@@ -34,6 +34,7 @@ You can refer to following demo to lean how to use the beauty api:
 
 ![](https://download.agora.io/demo/release/SDHY_QA.jpg)
 
-## License
+### License
 
 The sample projects are under the [MIT license](LICENSE).
+
