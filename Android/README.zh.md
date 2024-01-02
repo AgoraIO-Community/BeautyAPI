@@ -2,7 +2,7 @@
 
 [English](README.md) | 中文
 
-# 简介
+# 概述
 
 本文档主要介绍如何快速跑通美颜场景化API示例代码，运行效果如下：
 
@@ -10,7 +10,7 @@
 
 
 
-## 前提条件
+## 环境准备
 
 - 最低兼容 Android 5.0（SDK API Level 21）
 - Android Studio 3.5及以上版本，使用Java 11
@@ -20,7 +20,7 @@
 - （可选）联系相芯客服拿到美颜资源以及证书
 - （可选）联系宇宙客服拿到美颜资源以及证书
 
-## 快速跑通
+## 运行示例
 ### 配置声网AppID
 
 > PS：这个demo暂不支持开通Token安全认证的AppId
@@ -37,10 +37,10 @@
 
    
 
-2. 编辑[Android项目根目录](./)下的local.properties，如果不存在则创建一个，并配置上
+2. 在`Android`目录下创建`local.properties`（如果存在则不需要重复创建），在`Android/local.properties`里填写需要的声网 App ID
 
 ```xml
-AGORA_APP_ID=#YOUR APP ID#
+AGORA_APP_ID=<=声网 App ID=>
 ```
 
 ### 配置美颜SDK
@@ -94,7 +94,7 @@ AGORA_APP_ID=#YOUR APP ID#
 
 ### 运行项目
 
-1. 编辑app/build.gradle， 修改applicationId包名成申请美颜时所用包名
+1. 编辑`app/build.gradle`， **修改applicationId包名成申请美颜时所用包名**
 2. 运行项目
 
 
@@ -102,18 +102,20 @@ AGORA_APP_ID=#YOUR APP ID#
 
 每个美颜可以单独集成到自己的项目，详见对应的集成说明文档
 
-| 美颜  | 集成说明                                 |
-|-----|--------------------------------------|
-| 商汤  | [README](lib_sensetime/README.zh.md) |
-| 相芯  | [README](lib_faceunity/README.zh.md) |
-| 字节  | [README](lib_bytedance/README.zh.md) |
-| 宇宙  | [README](lib_cosmos/README.zh.md)    |
+| 美颜     | 集成说明                                                     |
+| -------- | ------------------------------------------------------------ |
+| 商汤     | [官网文档](https://doc.shengwang.cn/doc/showroom/android/advanced-features/beauty/sensetime/integrate) |
+| 相芯     | [官网文档](https://doc.shengwang.cn/doc/showroom/android/advanced-features/beauty/faceunity/integrate) |
+| 字节火山 | [官网文档](https://doc.shengwang.cn/doc/showroom/android/advanced-features/beauty/bytedance/integrate) |
+| 宇宙     | 暂无                                                         |
 
-## 联系我们
+## 集成遇到困难，该如何联系声网获取协助
 
-- 如果您已经在使用声网服务或者在对接中，可以直接联系对接的销售或服务
-- 发送邮件给 [support@agora.io](mailto:support@agora.io) 咨询
-- 扫码加入我们的微信交流群提问
+方案1：如果您已经在使用声网服务或者在对接中，可以直接联系对接的销售或服务
+
+方案2：发送邮件给 [support@agora.io](mailto:support@agora.io) 咨询
+
+方案3：扫码加入我们的微信交流群提问
 
 ![](https://download.agora.io/demo/release/SDHY_QA.jpg)
 

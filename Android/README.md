@@ -6,6 +6,8 @@ _English | [中文](README.zh.md)
 
 This document mainly introduces how to quickly run through the beauty scene API sample code.
 
+<img src="imgs/app_page_launch.png" width="300" />
+
 ## Prerequisites
 
 - Android 5.0（SDK API Level 21）Above
@@ -94,12 +96,12 @@ AGORA_APP_ID=#YOUR APP ID#
 
 Each beauty api can be integrated into your project separately, see the below integration documentation for details
 
-| Beauty    | Documentation                     |
-|-----------|-----------------------------------|
-| SenseTime | [README](lib_sensetime/README.md) |
-| FaceUnity | [README](lib_faceunity/README.md) |
-| ByteDance | [README](lib_bytedance/README.md) |
-| Cosmos    | [README](lib_cosmos/README.md)    |
+| Beauty    | Documentation                                                |
+| --------- | ------------------------------------------------------------ |
+| SenseTime | [Official website document](https://doc.shengwang.cn/doc/showroom/android/advanced-features/beauty/sensetime/integrate) |
+| FaceUnity | [Official website document](https://doc.shengwang.cn/doc/showroom/android/advanced-features/beauty/faceunity/integrate) |
+| ByteDance | [Official website document](https://doc.shengwang.cn/doc/showroom/android/advanced-features/beauty/bytedance/integrate) |
+| Cosmos    | None yet                                                     |
 
 ## Contact us
 
@@ -111,4 +113,4 @@ Each beauty api can be integrated into your project separately, see the below in
 
 ## License
 
-The sample projects are under the MIT license.
+The sample projects are under the [MIT license](../LICENSE).
