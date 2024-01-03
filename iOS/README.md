@@ -24,9 +24,9 @@ _English | [中文](README.zh.md)
 - Get Agora App
 
 	> 1. Create a developer account at [agora.io](https://www.agora.io). Once you finish the signup process, you will be redirected to the Dashboard.
-
+	>
 	> 2. Navigate in the Dashboard tree on the left to Projects > Project List.
-
+	>
 	> 3. Save the App Id from the Dashboard for later use.
 
 - Edit the KeyCenter.swift, configure it whth
