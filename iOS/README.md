@@ -23,17 +23,18 @@ _English | [中文](README.zh.md)
 
 - Get Agora App
 
-> 1. Create a developer account at [agora.io](https://www.agora.io). Once you finish the signup process, you will be redirected to the Dashboard.
+	> 1. Create a developer account at [agora.io](https://www.agora.io). Once you finish the signup process, you will be redirected to the Dashboard.
 
-> 2. Navigate in the Dashboard tree on the left to Projects > Project List.
+	> 2. Navigate in the Dashboard tree on the left to Projects > Project List.
 
-> 3. Save the App Id from the Dashboard for later use.
+	> 3. Save the App Id from the Dashboard for later use.
 
 - Edit the KeyCenter.swift, configure it whth
 
-```
-static let AppId: String = #YOUR APP ID#
-```
+	```
+	static let AppId: String = #YOUR APP ID#
+	```
+	
 ---
 
 ## 3. Integrate Into Project
@@ -51,8 +52,8 @@ static let AppId: String = #YOUR APP ID#
 
 ## 4. Run Project
 
-1. Edit the `BeautyAPi Project`, change `Bundle Identifier` to your application id using to apply to beauty SDK.
-2. Run Project
+> 1. Edit the `BeautyAPi Project`, change `Bundle Identifier` to your application id using to apply to beauty SDK.
+> 2. Run Project
 
 ---
 
