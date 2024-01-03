@@ -55,7 +55,7 @@
 > | 商汤 | [官网文档](https://doc.shengwang.cn/doc/showroom/ios/advanced-features/beauty/sensetime/integrate) |
 > | 相芯 | [官网文档](https://doc.shengwang.cn/doc/showroom/ios/advanced-features/beauty/faceunity/integrate) |
 > | 字节火山 | [官网文档](https://doc.shengwang.cn/doc/showroom/ios/advanced-features/beauty/bytedance/integrate) |
-> | 宇宙    | 暂无                                                     |
+> | 宇宙    | [宇宙美颜](./BeautyAPi/CosmosBeauty/README.zh.md)                                                      |
 
 ---
 

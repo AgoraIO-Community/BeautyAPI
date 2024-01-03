@@ -45,7 +45,7 @@ static let AppId: String = #YOUR APP ID#
 > | SenseTime | [Official website document](https://doc.shengwang.cn/doc/showroom/ios/advanced-features/beauty/sensetime/integrate) |
 > | FaceUnity | [Official website document](https://doc.shengwang.cn/doc/showroom/ios/advanced-features/beauty/faceunity/integrate) |
 > | ByteDance | [Official website document](https://doc.shengwang.cn/doc/showroom/ios/advanced-features/beauty/bytedance/integrate) |
-> | Cosmos    | None yet                                                     |
+> | Cosmos    | [Cosmos](./BeautyAPi/CosmosBeauty/README.md)                                                      |
 
 ---
 
