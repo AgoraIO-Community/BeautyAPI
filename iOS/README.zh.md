@@ -15,7 +15,7 @@
 
 > PS：没有配置项目能正常运行，但是对应美颜不生效
 
-1. 商汤美颜
+- 商汤美颜
 解压商汤美颜SDK并复制以下文件/目录到对应路径下
 
 | 商汤SDK文件/目录                                                           | 项目路径                                                     |
@@ -25,7 +25,7 @@
 | SenseAR_Effects__*/libs/ios\_os-universal | iOS/SenseLib/st\_mobile\_sdk/ios\_os-universal  |
 |SenseAR_Effects__*/license/SENSEME.lic                                                          | iOS/SenseLib/SENSEME.lic |
 
-2. 相芯美颜
+- 相芯美颜
 将相芯美颜资源放入对应路径下
 
 相芯SDK文件/目录         | 项目路径                                                  |
@@ -33,8 +33,9 @@
 | FULiveDemo/Resources | iOS/FULib         |
 | 证书authpack.h      | iOS/BeautyAPi/FUBeauty/authpack.h  |
 
-3. 字节/火山美颜
+- 字节/火山美颜
 解压字节/火山美颜资源并复制以下文件/目录到对应路径下
+- [字节美颜对应key官方文档](https://cv-api.bytedance.com/doc/openapi/2036/99769)
 
 | 字节SDK文件/目录                                       | 项目路径                                                  |
 |--------------------------------------------------|-------------------------------------------------------|
@@ -42,7 +43,12 @@
 | byted_effect_ios_static/iossample\_static/libeffect-sdk.a                    | iOS/ByteEffectLib/ibeffect-sdk.a           |
 | byted_effect_ios_static/iossample\_static/include/BytedEffectSDK                    | iOS/ByteEffectLib/BytedEffectSDK           |
 
-### [字节美颜对应key官方文档](https://cv-api.bytedance.com/doc/openapi/2036/99769)
+- 宇宙美颜
+
+| 宇宙SDK文件/目录                                | 项目目录                            |
+|-----------------------------------------------|---------------------------------|
+| iOS-Release-xxx/libs/CosmosEffect-xxx                       | iOS/CosmosEffect           |
+| iOS/CosmosEffect/cv.bundle    | iOS/CosmosEffect/Frameworks/Resources/cv.bundle          |
 
 
 ### 配置声网AppID
@@ -75,6 +81,7 @@ AppId=#YOUR APP ID#
 | 商汤  | [SenseBeauty](BeautyAPi/SenseBeaufy/README.zh.md)  |
 | 相芯  | [fuBeauty](BeautyAPi/FUBeauty/README.zh.md)  |
 | 字节  | [byteBeauty](BeautyAPi/ByteBeaufy/README.zh.md)  |
+| 宇宙 | [CosmosBeauty](BeautyAPi/CosmosBeauty/README.zh.md)  |
 
 ## 联系我们
 
