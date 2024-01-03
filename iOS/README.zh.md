@@ -19,6 +19,7 @@
 - 联系字节火山客户拿到火山SDK、美颜资源以及证书
 - 联系相芯客户拿到美颜资源以及证书
 
+---
 
 ## 2. 配置声网AppID
 
@@ -33,11 +34,17 @@
       >
       > <img src="imgs/console_init_project.png" width="1080" />
   > 
- > - 复制 App ID
+  > - 复制 App ID
       >
       > <img src="imgs/console_copy_appid.png" width="1080" />
 
 - 编辑`BeautyAPi/KeyCenter.swift`，并填写上面复制的声网 App ID
+
+	```
+	static let AppId: String = #YOUR APP ID#
+	```
+
+---
 
 ## 3. 集成到项目
 
@@ -56,6 +63,8 @@
 
 1. 编辑`BeautyAPi Project`， 修改`Bundle Identifier`为申请美颜时所用包名
 2. 运行项目
+
+---
 
 ### 集成遇到困难，该如何联系声网获取协助
 

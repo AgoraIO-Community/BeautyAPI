@@ -17,21 +17,24 @@ _English | [中文](README.zh.md)
 - Contact FaceUnity customer service to get beauty resources and license
 - Contact ByteDance customer service to get ByteDance's beauty SDK, beauty resources and license
 
+---
 
 ## 2. Agora AppID Configuration
 
-> PS：This demo does not support AppId with certificate
+- Get Agora App
 
-1. Create a developer account at [agora.io](https://www.agora.io). Once you finish the signup process, you will be redirected to the Dashboard.
+> 1. Create a developer account at [agora.io](https://www.agora.io). Once you finish the signup process, you will be redirected to the Dashboard.
 
-2. Navigate in the Dashboard tree on the left to Projects > Project List.
+> 2. Navigate in the Dashboard tree on the left to Projects > Project List.
 
-3. Save the App Id from the Dashboard for later use.
+> 3. Save the App Id from the Dashboard for later use.
 
-4. Edit the KeyCenter.swift, configure it whth
+- Edit the KeyCenter.swift, configure it whth
+
 ```
-AppId=#YOUR APP ID#
+static let AppId: String = #YOUR APP ID#
 ```
+---
 
 ## 3. Integrate Into Project
 
@@ -50,6 +53,8 @@ AppId=#YOUR APP ID#
 
 1. Edit the `BeautyAPi Project`, change `Bundle Identifier` to your application id using to apply to beauty SDK.
 2. Run Project
+
+---
 
 ### Contact us
 
