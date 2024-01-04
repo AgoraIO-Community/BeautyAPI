@@ -28,10 +28,10 @@
   >   ├── CosmosBeautyAPI.kt
   >   ├── CosmosBeautyAPIImpl.kt
   >   └── utils
-  >```
+  > ```
 
 - 初始化美颜
-  > 初始化前需要先复制字节美颜SDK所需的资源model-all.zip、cosmos.zip到sdcard上，并解压到对应目录，然后进行授权认证并renderModuleManager实例传给ByteDanceBeautyAPI。
+  > 初始化前需要先复制宇宙美颜SDK所需的资源model-all.zip、cosmos.zip到sdcard上，并解压到对应目录，然后进行授权认证并renderModuleManager实例传给CosmosBeautyAPI。
   >
   > ```kotlin
   > private val mCosmosApi by lazy {
@@ -93,7 +93,7 @@
 ---
 
 ## 3. 自定义采集模式
-美颜场景API除了能够内部直接使用RTC 祼数据接口进行美颜处理，也支持由外部传入视频帧进行处理，实现步骤如下：
+美颜场景化API除了能够内部直接使用RTC 祼数据接口进行美颜处理外，也支持由外部传入视频帧进行处理，实现步骤如下：
 
 - 初始化时配置captureMode为CaptureMode.Custom
   > ```kotlin
