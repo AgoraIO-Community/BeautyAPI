@@ -82,20 +82,20 @@ AGORA_APP_ID=#YOUR APP ID#
 
 ---
 
-## Integrate Into Project
+## 3. Integrate Into Project
 
 > Each beauty api can be integrated into your project separately, see the below integration documentation for details
 > 
-> | Beauty    | Documentation                                                |
-> | --------- | ------------------------------------------------------------ |
+> | Beauty    | Documentation                                                                                                           |
+> |-------------------------------------------------------------------------------------------------------------------------| ------------------------------------------------------------ |
 > | SenseTime | [Official website document](https://doc.shengwang.cn/doc/showroom/android/advanced-features/beauty/sensetime/integrate) |
 > | FaceUnity | [Official website document](https://doc.shengwang.cn/doc/showroom/android/advanced-features/beauty/faceunity/integrate) |
 > | ByteDance | [Official website document](https://doc.shengwang.cn/doc/showroom/android/advanced-features/beauty/bytedance/integrate) |
-> | Cosmos    | None yet                                                     |
+> | Cosmos    | [Cosmos beauty](./lib_cosmos/README.zh.md)                                                                              |
 
 ---
 
-### Contact us
+## 4. Contact us
 
 > Plan 1: If you are already using Shengwang services or are in the process of docking, you can directly contact the docked sales or service.
 >
@@ -106,7 +106,7 @@ AGORA_APP_ID=#YOUR APP ID#
 > <img src="https://download.agora.io/demo/release/SDHY_QA.jpg" width="360" height="360">
 ---
 
-### License
+### 5. License
 
 The sample projects are under the [MIT license](../LICENSE).
 

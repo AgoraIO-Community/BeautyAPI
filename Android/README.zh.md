@@ -94,19 +94,19 @@ AGORA_APP_ID=<=声网 App ID=>
 
 ---
 
-### 集成到项目
+## 3. 集成到项目
 
 > 每个美颜可以单独集成到自己的项目，详见对应的集成说明文档
 > 
-> | 美颜     | 集成说明                                                     |
-> | -------- | ------------------------------------------------------------ |
+> | 美颜     | 集成说明                                                                                               |
+> |----------------------------------------------------------------------------------------------------| ------------------------------------------------------------ |
 > | 商汤     | [官网文档](https://doc.shengwang.cn/doc/showroom/android/advanced-features/beauty/sensetime/integrate) |
 > | 相芯     | [官网文档](https://doc.shengwang.cn/doc/showroom/android/advanced-features/beauty/faceunity/integrate) |
 > | 字节火山 | [官网文档](https://doc.shengwang.cn/doc/showroom/android/advanced-features/beauty/bytedance/integrate) |
-> | 宇宙     | 暂无                                                         |
+> | 宇宙     | [宇宙美颜](./lib_cosmos/README.zh.md)                                                                  |
 ---
 
-### 集成遇到困难，该如何联系声网获取协助
+## 4. 集成遇到困难，该如何联系声网获取协助
 
 > 方案1：如果您已经在使用声网服务或者在对接中，可以直接联系对接的销售或服务；
 >
@@ -117,6 +117,6 @@ AGORA_APP_ID=<=声网 App ID=>
 > <img src="https://download.agora.io/demo/release/SDHY_QA.jpg" width="360" height="360">
 ---
 
-## 代码许可
+## 5. 代码许可
 
 The MIT [License (MIT)](../LICENSE)
