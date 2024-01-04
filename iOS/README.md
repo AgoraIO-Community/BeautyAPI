@@ -13,9 +13,6 @@ _English | [中文](README.zh.md)
 
 - iOS 11 And Above
 - Xcode 13 And Above
-- Contact SenseTime customer service to get SenseTime's beauty SDK, beauty resources and license
-- Contact FaceUnity customer service to get beauty resources and license
-- Contact ByteDance customer service to get ByteDance's beauty SDK, beauty resources and license
 
 ---
 
