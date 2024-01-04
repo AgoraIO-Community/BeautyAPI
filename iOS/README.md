@@ -19,7 +19,7 @@ _English | [中文](README.zh.md)
 
 ---
 
-## 2. Agora AppID Configuration
+## 2. Run Project
 
 - Get Agora App
 
@@ -34,10 +34,13 @@ _English | [中文](README.zh.md)
 	```
 	static let AppId: String = #YOUR APP ID#
 	```
+- Edit the `BeautyAPi Project`, change `Bundle Identifier` to your application id using to apply to beauty SDK.
+
+- Run Project
 	
 ---
 
-## 3. Integrate Into Project
+## Integrate Into Project
 
 > Each beauty api can be integrated into your project separately, see the below integration documentation for details
 > 
@@ -50,12 +53,6 @@ _English | [中文](README.zh.md)
 
 ---
 
-## 4. Run Project
-
-> 1. Edit the `BeautyAPi Project`, change `Bundle Identifier` to your application id using to apply to beauty SDK.
-> 2. Run Project
-
----
 
 ### Contact us
 

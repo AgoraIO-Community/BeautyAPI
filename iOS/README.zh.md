@@ -11,7 +11,7 @@
 ---
 
 
-## 1. 前提条件
+## 1. 环境准备
 
 - 最低兼容 iOS 11
 - Xcode 13及以上版本
@@ -21,7 +21,7 @@
 
 ---
 
-## 2. 配置声网AppID
+## 2. 运行示例
 
 - 获取声网 App ID -------- [声网Agora - 文档中心 - 如何获取 App ID](https://docs.agora.io/cn/Agora%20Platform/get_appid_token?platform=All%20Platforms#%E8%8E%B7%E5%8F%96-app-id)
   > - 进入[控制台](https://console.shengwang.cn/)
@@ -43,10 +43,12 @@
 	```
 	static let AppId: String = #YOUR APP ID#
 	```
+- 编辑`BeautyAPi Project`， 修改`Bundle Identifier`为申请美颜时所用包名
+- 运行项目
 
 ---
 
-## 3. 集成到项目
+###  集成到项目
 
 >  每个美颜可以单独集成到自己的项目，详见对应的集成说明文档
 > 
@@ -56,14 +58,6 @@
 > | 相芯 | [官网文档](https://doc.shengwang.cn/doc/showroom/ios/advanced-features/beauty/faceunity/integrate) |
 > | 字节火山 | [官网文档](https://doc.shengwang.cn/doc/showroom/ios/advanced-features/beauty/bytedance/integrate) |
 > | 宇宙    | [宇宙美颜](./BeautyAPi/CosmosBeauty/README.zh.md)                                                      |
-
----
-
-## 4. 运行项目
-
-1. 编辑`BeautyAPi Project`， 修改`Bundle Identifier`为申请美颜时所用包名
-2. 运行项目
-
 ---
 
 ### 集成遇到困难，该如何联系声网获取协助
