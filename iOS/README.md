@@ -15,7 +15,7 @@ _English | [中文](README.zh.md)
 
 > PS：The project can run without config beauty sdk, but the preview may be black.
 
-1. SenseTime
+- SenseTime
    Unzip the SenseTime Beauty SDK and copy the following files/directories to the corresponding path
 
 | SenseTime Beauty SDK                                                 | Location                                                 |
@@ -25,7 +25,7 @@ _English | [中文](README.zh.md)
 | SenseAR_Effects__*/libs/ios\_os-universal | iOS/SenseLib/st\_mobile\_sdk/ios\_os-universal  |
 |SenseAR_Effects__*/license/SENSEME.lic                                                          | iOS/SenseLib/SENSEME.lic |
 
-2. FaceUnity
+- FaceUnity
    Put the FaceUnity beauty resources into the corresponding path
 
 | FaceUnity Beauty          | Location                                             |
@@ -33,8 +33,9 @@ _English | [中文](README.zh.md)
 | FULiveDemo/Resources | iOS/FULib         |
 | authpack.h      | iOS/BeautyAPi/FUBeauty/authpack.h  |
 
-3. ByteDance
+- ByteDance
    Unzip the ByteDance beauty resource and copy the following files/directories to the corresponding path
+- [ByteDance Beauty Corresponding Key Official Document](https://cv-api.bytedance.com/doc/openapi/2036/99769)
 
 | ByteDance Beauty Resources      | Location                             |
 |---------------------------------|--------------------------------------|
@@ -42,7 +43,12 @@ _English | [中文](README.zh.md)
 | byted_effect_ios_static/iossample\_static/libeffect-sdk.a                    | iOS/ByteEffectLib/ibeffect-sdk.a           |
 | byted_effect_ios_static/iossample\_static/include/BytedEffectSDK                    | iOS/ByteEffectLib/BytedEffectSDK           |
 
-### [ByteDance Beauty Corresponding Key Official Document](https://cv-api.bytedance.com/doc/openapi/2036/99769)
+- Unzip the Cosmos SDK and configure the following framework libraries, resource files, and certificates to the corresponding directory of the project
+
+| Cosmos SDK                                | Location                |
+|----------------------------------------------|-------------------------|
+| iOS-Release-xxx/libs/CosmosEffect-xxx                       | iOS/CosmosEffect           |
+| iOS/CosmosEffect/cv.bundle    | iOS/CosmosEffect/Frameworks/Resources/cv.bundle          |
 
 ### Agora AppID Configuration
 
@@ -72,8 +78,9 @@ Each beauty api can be integrated into your project separately, see the below in
 | Beauty     | Documentation                             |
 |------------|-------------------------------------------|
 | SenseTime  | [SenseBeauty](BeautyAPi/SenseBeaufy/README.md)   |
-| FaceUnity  | [fuBeauty](BeautyAPi/FUBeauty/README.md)  |
-| ByteDance  | [byteBeauty](BeautyAPi/ByteBeaufy/README.md)   |
+| FaceUnity  | [FUBeauty](BeautyAPi/FUBeauty/README.md)  |
+| ByteDance  | [ByteBeauty](BeautyAPi/ByteBeaufy/README.md)   |
+| Cosmos  | [CosmosBeauty](BeautyAPi/CosmosBeauty/README.md)   |
 
 ## Feedback
 

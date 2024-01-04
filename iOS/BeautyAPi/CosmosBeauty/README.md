@@ -1,13 +1,13 @@
-# ByteDance BeautyAPI
+# Cosmos BeautyAPI
 
 _English | [中文](README.zh.md)
 
 ## Prerequisites
 - Agora RTC SDK has been integrated in the project
-- Contact ByteDance customer service to get ByteDance's beauty SDK, beauty resources and license
+- Contact Cosmos customer service to get Cosmos beauty SDK, beauty resources and license
 
 ## Quick Start
-1.Unzip the ByteDance SDK and configure the following framework libraries, resource files, and certificates to the corresponding directory of the project
+1.Unzip the Cosmos SDK and configure the following framework libraries, resource files, and certificates to the corresponding directory of the project
 
 | Cosmos SDK(Must)                                | Location                |
 |----------------------------------------------|-------------------------|
