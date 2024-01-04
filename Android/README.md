@@ -86,12 +86,12 @@ AGORA_APP_ID=#YOUR APP ID#
 
 > Each beauty api can be integrated into your project separately, see the below integration documentation for details
 > 
-> | Beauty    | Documentation                                                                                                           |
-> |-------------------------------------------------------------------------------------------------------------------------| ------------------------------------------------------------ |
+> | Beauty    | Documentation                                                                                                        |
+> |----------------------------------------------------------------------------------------------------------------------| ------------------------------------------------------------ |
 > | SenseTime | [Official website document](https://doc.shengwang.cn/doc/showroom/android/advanced-features/beauty/sensetime/integrate) |
 > | FaceUnity | [Official website document](https://doc.shengwang.cn/doc/showroom/android/advanced-features/beauty/faceunity/integrate) |
 > | ByteDance | [Official website document](https://doc.shengwang.cn/doc/showroom/android/advanced-features/beauty/bytedance/integrate) |
-> | Cosmos    | [Cosmos beauty](./lib_cosmos/README.zh.md)                                                                              |
+> | Cosmos    | [Cosmos beauty](./lib_cosmos/README.md)                                                                              |
 
 ---
 
