@@ -6,7 +6,7 @@ _English | [中文](README.zh.md)
 > 
 > **Demo Effect:**
 >
-> <img src="imgs/app_page_launch.png" width="300" />
+> <img src="imgs/app_page_launch_en.png" width="300" />
 ---
 
 ## 1. Prerequisites
