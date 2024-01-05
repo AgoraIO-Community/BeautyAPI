@@ -2,106 +2,121 @@
 
 [English](README.md) | 中文
 
-## 前提条件
+> 本文档主要介绍如何快速跑通美颜场景化API示例代码。
+> 
+> **Demo 效果：**
+>
+> <img src="imgs/app_page_launch.png" width="300" />
+---
+
+
+## 1. 环境准备
 
 - 最低兼容 Android 5.0（SDK API Level 21）
 - Android Studio 3.5及以上版本，使用Java 11
-- 联系商汤客服拿到商汤的美颜SDK、美颜资源以及证书
-- 联系字节火山客户拿到火山SDK、美颜资源以及证书
-- 联系相芯客户拿到美颜资源以及证书
+- Android 5.0 及以上的手机设备。
 
-## 快速跑通
-### 配置美颜SDK
+---
 
-> PS：没有配置项目能正常运行，但是对应美颜可能会黑屏。
-> 以下证书与资源需要对应申请时所用包名，并将包名配置在app/build.gradle文件applicationId处！
+## 2. 运行示例
+- 获取声网 App ID -------- [声网Agora - 文档中心 - 如何获取 App ID](https://docs.agora.io/cn/Agora%20Platform/get_appid_token?platform=All%20Platforms#%E8%8E%B7%E5%8F%96-app-id)
+  > - 进入[控制台](https://console.shengwang.cn/)
+  > 
+  > - 点击创建应用
+      > 
+      > <img src="imgs/console_create_project.jpeg" width="1080" />
+  >
+  > - 选择调试模式并创建（本示例仅支持调试模式）
+      >
+      > <img src="imgs/console_init_project.png" width="1080" />
+  > 
+  > - 复制 App ID
+      >
+      > <img src="imgs/console_copy_appid.png" width="1080" />
 
-1. 商汤美颜
-解压商汤美颜SDK并复制以下文件/目录到对应路径下
+- 在`Android`目录下创建`local.properties`，并在`Android/local.properties`里填写上面复制的声网 App ID
 
-| 商汤SDK文件/目录                                                           | 项目路径                                                     |
-|----------------------------------------------------------------------|----------------------------------------------------------|
-| Android/models                                                       | app/src/main/assets/beauty_sensetime/models              |
-| Android/smaple/SenseMeEffects/app/src/main/assets/sticker_face_shape | app/src/main/assets/beauty_sensetime/sticker_face_shape  |
-| Android/smaple/SenseMeEffects/app/src/main/assets/style_lightly      | app/src/main/assets/beauty_sensetime/style_lightly       |
-| Android/smaple/SenseMeEffects/app/src/main/assets/makeup_lip         | app/src/main/assets/beauty_sensetime/makeup_lip          |
-| SenseME.lic                                                          | app/src/main/assets/beauty_sensetime/license/SenseME.lic |
-
-2. 相芯美颜
-将相芯美颜资源放入对应路径下
-
-| 美颜资源                 | 项目路径                                                                      |
-|----------------------|---------------------------------------------------------------------------|
-| 美妆资源(如naicha.bundle) | app/src/main/assets/beauty_faceunity/makeup                               |
-| 贴纸资源(如fashi.bundle)  | app/src/main/assets/beauty_faceunity/sticker                              |
-| 证书authpack.java      | app/src/main/java/io/agora/beautyapi/demo/module/faceunity/authpack.java  |
-
-3. 字节/火山美颜
-解压字节/火山美颜资源并复制以下文件/目录到对应路径下
-
-| 字节SDK文件/目录                                       | 项目路径                                  |
-|--------------------------------------------------|---------------------------------------|
-| resource/LicenseBag.bundle                       | app/src/main/assets/beauty_bytedance  |
-| resource/ModelResource.bundle                    | app/src/main/assets/beauty_bytedance  |
-| resource/ComposeMakeup.bundle                    | app/src/main/assets/beauty_bytedance  |
-| resource/StickerResource.bundle                  | app/src/main/assets/beauty_bytedance  |
-| resource/StickerResource.bundle                  | app/src/main/assets/beauty_bytedance  |
-
-修改app/src/main/java/io/agora/beautyapi/demo/module/bytedance/ByteDanceBeautySDK.kt文件里LICENSE_NAME为申请到的证书文件名
-
-4. 宇宙美颜
-获取宇宙美颜资源并复制以下文件到对应路径下
-
-| 宇宙SDK文件/目录                                | 项目路径                                            |
-|-------------------------------------------|-------------------------------------------------|
-| sample/app/src/main/assets/model-all.zip  | app/src/main/assets/beauty_cosmos/model-all.zip |
-| sample/app/src/main/assets/cosmos.zip     | app/src/main/assets/beauty_cosmos/cosmos.zip    |
-
-修改app/src/main/java/io/agora/beautyapi/demo/module/cosmos/CosmosBeautyWrapSDK.kt文件里LICENSE为申请到的证书
-
-### 配置声网AppID
-
-> PS：这个demo不支持带证书的AppId
-
-1. 在[agora.io](https://www.shengwang.cn/)创建一个开发者账号
-
-2. 前往后台页面，点击左部导航栏的 项目 > 项目列表 菜单
-
-3. 复制后台的 App Id 并备注，稍后启动应用时会用到它
-
-4. 编辑local.properties，如果不存在则创建一个，并配置上
 ```xml
-AGORA_APP_ID=#YOUR APP ID#
+AGORA_APP_ID=<=声网 App ID=>
 ```
 
-### 运行项目
+- **联系美颜厂家获取对应的美颜证书和资源，并做以下配置**（如果没有配置美颜证书和资源，对应厂家美颜会显示黑屏）
+  - **商汤美颜（可选）**
+    > - 在[app/build.gradle](app/build.gradle)里配置证书对应的包名applicationId
+    >
+    > - 解压商汤美颜SDK并复制以下文件/目录到对应路径下
+    >
+    > | 商汤SDK文件/目录                                                           | 项目路径                                                     |
+    > |----------------------------------------------------------------------|----------------------------------------------------------|
+    > | Android/models                                                       | app/src/main/assets/beauty_sensetime/models              |
+    > | Android/smaple/SenseMeEffects/app/src/main/assets/sticker_face_shape | app/src/main/assets/beauty_sensetime/sticker_face_shape  |
+    > | Android/smaple/SenseMeEffects/app/src/main/assets/style_lightly      | app/src/main/assets/beauty_sensetime/style_lightly       |
+    > | Android/smaple/SenseMeEffects/app/src/main/assets/makeup_lip         | app/src/main/assets/beauty_sensetime/makeup_lip          |
+    > | SenseME.lic                                                          | app/src/main/assets/beauty_sensetime/license/SenseME.lic |
+  - **相芯美颜（可选）**
+    > - 在[app/build.gradle](app/build.gradle)里配置证书对应的包名applicationId
+    >
+    > - 将相芯美颜资源放入对应路径下
+    >
+    > | 美颜资源                 | 项目路径                                                                      |
+    > |----------------------|---------------------------------------------------------------------------|
+    > | 美妆资源(如naicha.bundle) | app/src/main/assets/beauty_faceunity/makeup                               |
+    > | 贴纸资源(如fashi.bundle)  | app/src/main/assets/beauty_faceunity/sticker                              |
+    > | 证书authpack.java      | app/src/main/java/io/agora/beautyapi/demo/module/faceunity/authpack.java  |
+  - **字节火山美颜（可选）**
+    > - 在[app/build.gradle](app/build.gradle)里配置证书对应的包名applicationId
+    >
+    > - 修改[ByteDanceBeautySDK.kt](app/src/main/java/io/agora/beautyapi/demo/module/bytedance/ByteDanceBeautySDK.kt)文件里LICENSE_NAME为申请到的证书文件名
+    > 
+    > - 解压字节/火山美颜资源并复制以下文件/目录到对应路径下
+    >
+    > | 字节SDK文件/目录                                       | 项目路径                                  |
+    > |--------------------------------------------------|---------------------------------------|
+    > | resource/LicenseBag.bundle                       | app/src/main/assets/beauty_bytedance  |
+    > | resource/ModelResource.bundle                    | app/src/main/assets/beauty_bytedance  |
+    > | resource/ComposeMakeup.bundle                    | app/src/main/assets/beauty_bytedance  |
+    > | resource/StickerResource.bundle                  | app/src/main/assets/beauty_bytedance  |
+    > | resource/StickerResource.bundle                  | app/src/main/assets/beauty_bytedance  |
+  - **宇宙美颜（可选）**
+    > - 在[app/build.gradle](app/build.gradle)里配置证书对应的包名applicationId
+    > 
+    > - 修改[CosmosBeautyWrapSDK.kt](app/src/main/java/io/agora/beautyapi/demo/module/cosmos/CosmosBeautyWrapSDK.kt)文件里LICENSE为申请到的证书
+    > 
+    > - 获取宇宙美颜资源并复制以下文件到对应路径下
+    > 
+    > | 宇宙SDK文件/目录                                | 项目路径                                            |
+    > |-------------------------------------------|-------------------------------------------------|
+    > | sample/app/src/main/assets/model-all.zip  | app/src/main/assets/beauty_cosmos/model-all.zip |
+    > | sample/app/src/main/assets/cosmos.zip     | app/src/main/assets/beauty_cosmos/cosmos.zip    |
 
-1. 编辑app/build.gradle， 修改applicationId包名成申请美颜时所用包名
-2. 运行项目
+- 运行项目
+  > - 使用AndroidStudio打开`Android`项目，点击运行即可
 
+---
 
-## 集成到项目
+## 3. 集成到项目
 
-每个美颜可以单独集成到自己的项目，详见对应的集成说明文档
+> 每个美颜可以单独集成到自己的项目，详见对应的集成说明文档
+> 
+> | 美颜     | 集成说明                                                                                               |
+> |----------------------------------------------------------------------------------------------------| ------------------------------------------------------------ |
+> | 商汤     | [官网文档](https://doc.shengwang.cn/doc/showroom/android/advanced-features/beauty/sensetime/integrate) |
+> | 相芯     | [官网文档](https://doc.shengwang.cn/doc/showroom/android/advanced-features/beauty/faceunity/integrate) |
+> | 字节火山 | [官网文档](https://doc.shengwang.cn/doc/showroom/android/advanced-features/beauty/bytedance/integrate) |
+> | 宇宙     | [宇宙美颜](./lib_cosmos/README.zh.md)                                                                  |
+---
 
-| 美颜  | 集成说明                                 |
-|-----|--------------------------------------|
-| 商汤  | [README](lib_sensetime/README.zh.md) |
-| 相芯  | [README](lib_faceunity/README.zh.md) |
-| 字节  | [README](lib_bytedance/README.zh.md) |
-| 宇宙  | [README](lib_cosmos/README.zh.md)    |
+## 4. 集成遇到困难，该如何联系声网获取协助
 
-## 联系我们
+> 方案1：如果您已经在使用声网服务或者在对接中，可以直接联系对接的销售或服务；
+>
+> 方案2：发送邮件给 [support@agora.io](mailto:support@agora.io) 咨询
+>
+> 方案3：扫码加入我们的微信交流群提问
+>
+> <img src="https://download.agora.io/demo/release/SDHY_QA.jpg" width="360" height="360">
+---
 
-- 如果你遇到了困难，可以先参阅 [常见问题](https://docs.agora.io/cn/faq)
-- 如果你想了解更多官方示例，可以参考 [官方SDK示例](https://github.com/AgoraIO)
-- 如果你想了解声网SDK在复杂场景下的应用，可以参考 [官方场景案例](https://github.com/AgoraIO-usecase)
-- 如果你想了解声网的一些社区开发者维护的项目，可以查看 [社区](https://github.com/AgoraIO-Community)
-- 完整的 API 文档见 [文档中心](https://docs.agora.io/cn/)
-- 若遇到问题需要开发者帮助，你可以到 [开发者社区](https://rtcdeveloper.com/) 提问
-- 如果需要售后技术支持, 你可以在 [Agora Dashboard](https://dashboard.agora.io) 提交工单
-- 如果发现了示例代码的 bug，欢迎提交 [issue](https://github.com/AgoraIO-Community/BeautyAPI/issues)
+## 5. 代码许可
 
-## 代码许可
-
-The MIT License (MIT)
+The MIT [License (MIT)](../LICENSE)

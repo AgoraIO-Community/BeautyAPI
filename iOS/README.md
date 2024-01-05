@@ -2,101 +2,66 @@
 
 _English | [中文](README.zh.md)
 
-## Prerequisites
+> This document mainly introduces how to quickly run through the beauty scene API sample code.
+> 
+> **Demo Effect:**
+>
+> <img src="imgs/app_page_launch_en.png" width="300" />
+---
+
+## 1. Prerequisites
 
 - iOS 11 And Above
 - Xcode 13 And Above
-- Contact SenseTime customer service to get SenseTime's beauty SDK, beauty resources and license
-- Contact FaceUnity customer service to get beauty resources and license
-- Contact ByteDance customer service to get ByteDance's beauty SDK, beauty resources and license
 
-## Quick Start
-### Beauty SDK Configuration
+---
 
-> PS：The project can run without config beauty sdk, but the preview may be black.
+## 2. Run Project
 
-- SenseTime
-   Unzip the SenseTime Beauty SDK and copy the following files/directories to the corresponding path
+- Get Agora App
 
-| SenseTime Beauty SDK                                                 | Location                                                 |
-|----------------------------------------------------------------------|----------------------------------------------------------|
-| SenseAR_Effects__*/models | iOS/SenseLib/st\_mobile\_sdk/models  |
-| SenseAR_Effects__*/include | iOS/SenseLib/st\_mobile\_sdk/include  |
-| SenseAR_Effects__*/libs/ios\_os-universal | iOS/SenseLib/st\_mobile\_sdk/ios\_os-universal  |
-|SenseAR_Effects__*/license/SENSEME.lic                                                          | iOS/SenseLib/SENSEME.lic |
+	> 1. Create a developer account at [agora.io](https://www.agora.io). Once you finish the signup process, you will be redirected to the Dashboard.
+	>
+	> 2. Navigate in the Dashboard tree on the left to Projects > Project List.
+	>
+	> 3. Save the App Id from the Dashboard for later use.
 
-- FaceUnity
-   Put the FaceUnity beauty resources into the corresponding path
+- Edit the KeyCenter.swift, configure it whth
 
-| FaceUnity Beauty          | Location                                             |
-|-------------------------------------|------------------------------------------------------|
-| FULiveDemo/Resources | iOS/FULib         |
-| authpack.h      | iOS/BeautyAPi/FUBeauty/authpack.h  |
+	```
+	static let AppId: String = #YOUR APP ID#
+	```
+- Edit the `BeautyAPi Project`, change `Bundle Identifier` to your application id using to apply to beauty SDK.
 
-- ByteDance
-   Unzip the ByteDance beauty resource and copy the following files/directories to the corresponding path
-- [ByteDance Beauty Corresponding Key Official Document](https://cv-api.bytedance.com/doc/openapi/2036/99769)
-
-| ByteDance Beauty Resources      | Location                             |
-|---------------------------------|--------------------------------------|
-| BytedEffects/app/Resource                       | iOS/ByteEffectLib/Resource           |
-| byted_effect_ios_static/iossample\_static/libeffect-sdk.a                    | iOS/ByteEffectLib/ibeffect-sdk.a           |
-| byted_effect_ios_static/iossample\_static/include/BytedEffectSDK                    | iOS/ByteEffectLib/BytedEffectSDK           |
-
-- Unzip the Cosmos SDK and configure the following framework libraries, resource files, and certificates to the corresponding directory of the project
-
-| Cosmos SDK                                | Location                |
-|----------------------------------------------|-------------------------|
-| iOS-Release-xxx/libs/CosmosEffect-xxx                       | iOS/CosmosEffect           |
-| iOS/CosmosEffect/cv.bundle    | iOS/CosmosEffect/Frameworks/Resources/cv.bundle          |
-
-### Agora AppID Configuration
-
-> PS：This demo does not support AppId with certificate
-
-1. Create a developer account at [agora.io](https://www.agora.io). Once you finish the signup process, you will be redirected to the Dashboard.
-
-2. Navigate in the Dashboard tree on the left to Projects > Project List.
-
-3. Save the App Id from the Dashboard for later use.
-
-4. Edit the KeyCenter.swift, configure it whth
-```
-AppId=#YOUR APP ID#
-```
-
-### Run Project
-
-1. Edit the BeautyAPi Project, change Bundle Identifier to your application id using to apply to beauty SDK.
-2. Run Project
-
+- Run Project
+	
+---
 
 ## Integrate Into Project
 
-Each beauty api can be integrated into your project separately, see the below integration documentation for details
+> Each beauty api can be integrated into your project separately, see the below integration documentation for details
+> 
+> | Beauty    | Documentation                                                |
+> | --------- | ------------------------------------------------------------ |
+> | SenseTime | [Official website document](https://doc.shengwang.cn/doc/showroom/ios/advanced-features/beauty/sensetime/integrate) |
+> | FaceUnity | [Official website document](https://doc.shengwang.cn/doc/showroom/ios/advanced-features/beauty/faceunity/integrate) |
+> | ByteDance | [Official website document](https://doc.shengwang.cn/doc/showroom/ios/advanced-features/beauty/bytedance/integrate) |
+> | Cosmos    | [Cosmos](./BeautyAPi/CosmosBeauty/README.md)                                                      |
 
-| Beauty     | Documentation                             |
-|------------|-------------------------------------------|
-| SenseTime  | [SenseBeauty](BeautyAPi/SenseBeaufy/README.md)   |
-| FaceUnity  | [FUBeauty](BeautyAPi/FUBeauty/README.md)  |
-| ByteDance  | [ByteBeauty](BeautyAPi/ByteBeaufy/README.md)   |
-| Cosmos  | [CosmosBeauty](BeautyAPi/CosmosBeauty/README.md)   |
+---
 
-## Feedback
 
-If you have any problems or suggestions regarding the sample projects, feel free to file an issue.
+### Contact us
 
-## Related resources
-
-- Check our [FAQ](https://docs.agora.io/en/faq) to see if your issue has been recorded.
-- Dive into [Agora SDK Samples](https://github.com/AgoraIO) to see more tutorials.
-- Take a look at [Agora Use Case](https://github.com/AgoraIO-usecase) for more complicated real use
-  case.
-- Repositories managed by developer communities can be found
-  at [Agora Community](https://github.com/AgoraIO-Community).
-- If you encounter problems during integration, feel free to ask questions
-  in [Stack Overflow](https://stackoverflow.com/questions/tagged/agora.io).
+> Plan 1: If you are already using Shengwang services or are in the process of docking, you can directly contact the docked sales or service.
+>
+> Plan 2: Send an email to [support@agora.io](mailto:support@agora.io) for consultation
+>
+> Plan 3: Scan the QR code to join our WeChat communication group to ask questions
+>
+> <img src="https://download.agora.io/demo/release/SDHY_QA.jpg" width="360" height="360">
+---
 
 ## License
 
-The sample projects are under the MIT license.
+The sample projects are under the [MIT license](../LICENSE).
