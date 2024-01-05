@@ -97,7 +97,7 @@
 	>beautyAPI.destroy()
 	>AgoraRtcEngineKit.destroy()
 	```
-	---
+---
 
 ## 3. 自定义采集模式
 美颜场景API除了能够内部直接使用RTC 祼数据接口进行美颜处理，也支持由外部传入视频帧进行处理，实现步骤如下：
