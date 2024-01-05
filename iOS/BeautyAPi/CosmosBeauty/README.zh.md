@@ -91,12 +91,11 @@
 	>```
 
 - 销毁美颜
-
 	>```swift
 	>rtcEngine.leaveChannel()
 	>beautyAPI.destroy()
 	>AgoraRtcEngineKit.destroy()
-	```
+	>```
 ---
 
 ## 3. 自定义采集模式
