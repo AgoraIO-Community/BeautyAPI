@@ -54,11 +54,12 @@ static const bool USE_PIPELINE = YES;
     bef_ai_face_mask_info       *_faceMaskInfo;
     bef_ai_mouth_mask_info      *_mouthMaskInfo;
     bef_ai_teeth_mask_info      *_teethMaskInfo;
-    EAGLContext                 *_glContext;
+//    EAGLContext                 *_glContext;
     
 #if BE_LOAD_RESOURCE_TIMEOUT
     NSMutableSet<NSString *>    *_existResourcePathes;
     BOOL                        _needLoadResource;
+    BOOL                        _isInitSuccess;
 }
 #else
 }
@@ -140,7 +141,7 @@ static const bool USE_PIPELINE = YES;
     
     _msgDelegateManager = [[IRenderMsgDelegateManager alloc] init];
     [self addMsgHandler:self];
-    
+    _isInitSuccess = ret == 0;
     return ret;
 #else
     return -1;
@@ -163,6 +164,7 @@ static const bool USE_PIPELINE = YES;
     free(_faceMaskInfo);
     free(_mouthMaskInfo);
     free(_teethMaskInfo);
+    _isInitSuccess = NO;
     return 0;
 #else
     return -1;
@@ -172,6 +174,9 @@ static const bool USE_PIPELINE = YES;
 #pragma mark - public
 #if __has_include(<effect-sdk/bef_effect_ai_api.h>)
 - (bef_effect_result_t)processTexture:(GLuint)texture outputTexture:(GLuint)outputTexture width:(int)width height:(int)height rotate:(bef_ai_rotate_type)rotate timeStamp:(double)timeStamp {
+    if (!_isInitSuccess) {
+        return BEF_RESULT_FAIL;
+    }
 #if BE_LOAD_RESOURCE_TIMEOUT
     if (_renderQueue) {
         if (_needLoadResource) {
