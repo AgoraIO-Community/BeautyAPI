@@ -35,6 +35,7 @@ import io.agora.base.VideoFrame
 import io.agora.base.VideoFrame.I420Buffer
 import io.agora.base.VideoFrame.TextureBuffer
 import io.agora.base.internal.video.RendererCommon
+import io.agora.base.internal.video.SurfaceTextureHelper
 import io.agora.base.internal.video.YuvHelper
 import io.agora.beautyapi.cosmos.utils.AgoraImageHelper
 import io.agora.beautyapi.cosmos.utils.LogUtils
@@ -56,6 +57,7 @@ class CosmosBeautyAPIImpl : CosmosBeautyAPI, IVideoFrameObserver {
 
 
     private var textureBufferHelper: TextureBufferHelper? = null
+    private var surfaceTextureHelper: SurfaceTextureHelper? = null
     private var agoraImageHelper: AgoraImageHelper? = null
     private var nv21ByteBuffer: ByteBuffer? = null
     private var config: Config? = null
@@ -241,6 +243,8 @@ class CosmosBeautyAPIImpl : CosmosBeautyAPI, IVideoFrameObserver {
             }
             it.dispose()
         }
+        surfaceTextureHelper?.dispose()
+        surfaceTextureHelper = null
         statsHelper?.reset()
         statsHelper = null
         pendingProcessRunList.clear()
@@ -312,7 +316,7 @@ class CosmosBeautyAPIImpl : CosmosBeautyAPI, IVideoFrameObserver {
 
         if (textureBufferHelper == null) {
             textureBufferHelper = TextureBufferHelper.create(
-                "ByteDanceRender",
+                "CosmosProcessor",
                 EglBaseProvider.instance().rootEglBase.eglBaseContext
             )
             textureBufferHelper?.invoke {
@@ -350,14 +354,20 @@ class CosmosBeautyAPIImpl : CosmosBeautyAPI, IVideoFrameObserver {
             return false
         }
 
-        val processBuffer: TextureBuffer = textureBufferHelper?.wrapTextureBuffer(
+        val textureHelper = textureBufferHelper ?: return false
+        val processBuffer: TextureBuffer = textureHelper.wrapTextureBuffer(
             videoFrame.rotatedWidth,
             videoFrame.rotatedHeight,
             TextureBuffer.Type.RGB,
             processTexId,
             Matrix()
         ) ?: return false
-        videoFrame.replaceBuffer(processBuffer, 0, videoFrame.timestampNs)
+
+        if(surfaceTextureHelper == null){
+            surfaceTextureHelper = SurfaceTextureHelper.create("CosmosCopyProcessor", textureHelper.eglBase.eglBaseContext)
+        }
+        val textureCopy = surfaceTextureHelper?.textureCopy(processBuffer) ?: return false
+        videoFrame.replaceBuffer(textureCopy, 0, videoFrame.timestampNs)
         return true
     }
 
