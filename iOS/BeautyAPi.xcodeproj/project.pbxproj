@@ -122,7 +122,6 @@
 		E72F626E2A8A2E6A00C963D2 /* ByteBeautyManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ByteBeautyManager.swift; sourceTree = "<group>"; };
 		E72F62722A8A2F0700C963D2 /* BeautyManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeautyManager.swift; sourceTree = "<group>"; };
 		E72F62772A8A3A9D00C963D2 /* UIColor+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Hex.swift"; sourceTree = "<group>"; };
-		E732E9202A31A786004403AF /* authpack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = authpack.h; sourceTree = "<group>"; };
 		E73A2D152B182D4800C8EC76 /* LoadUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoadUtil.h; sourceTree = "<group>"; };
 		E73A2D162B182D4800C8EC76 /* LoadUtil.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoadUtil.m; sourceTree = "<group>"; };
 		E779029B2A4D636C008791AD /* BELicenseHelper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BELicenseHelper.mm; sourceTree = "<group>"; };
@@ -348,7 +347,6 @@
 			children = (
 				E77902F62A57C066008791AD /* FUManager.h */,
 				E77902F72A57C066008791AD /* FUManager.m */,
-				E732E9202A31A786004403AF /* authpack.h */,
 			);
 			path = FUBeauty;
 			sourceTree = "<group>";
