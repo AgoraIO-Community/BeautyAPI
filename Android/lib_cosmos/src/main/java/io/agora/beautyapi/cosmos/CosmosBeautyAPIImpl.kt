@@ -26,6 +26,7 @@ package io.agora.beautyapi.cosmos
 
 import android.graphics.Matrix
 import android.opengl.GLES20
+import android.os.Handler
 import android.view.SurfaceView
 import android.view.TextureView
 import android.view.View
@@ -34,6 +35,8 @@ import io.agora.base.TextureBufferHelper
 import io.agora.base.VideoFrame
 import io.agora.base.VideoFrame.I420Buffer
 import io.agora.base.VideoFrame.TextureBuffer
+import io.agora.base.internal.ThreadUtils
+import io.agora.base.internal.video.EglBase
 import io.agora.base.internal.video.RendererCommon
 import io.agora.base.internal.video.SurfaceTextureHelper
 import io.agora.base.internal.video.YuvHelper
@@ -58,6 +61,8 @@ class CosmosBeautyAPIImpl : CosmosBeautyAPI, IVideoFrameObserver {
 
     private var textureBufferHelper: TextureBufferHelper? = null
     private var surfaceTextureHelper: SurfaceTextureHelper? = null
+    private var surfaceTextureHandler: Handler? = null
+    private var surfaceTextureEglBase: EglBase? = null
     private var agoraImageHelper: AgoraImageHelper? = null
     private var nv21ByteBuffer: ByteBuffer? = null
     private var config: Config? = null
@@ -93,6 +98,8 @@ class CosmosBeautyAPIImpl : CosmosBeautyAPI, IVideoFrameObserver {
         LogUtils.i(TAG, "initialize >> config = $config")
         LogUtils.i(TAG, "initialize >> beauty api version=$VERSION, beauty sdk version=3.7.0")
         config.rtcEngine.sendCustomReportMessage(reportId, reportCategory, "initialize", "$config", 0)
+
+        config.rtcEngine.setParameters("{\"che.video.android_texture.copy_enable\": false}")
         return ErrorCode.ERROR_OK.value
     }
 
@@ -245,6 +252,8 @@ class CosmosBeautyAPIImpl : CosmosBeautyAPI, IVideoFrameObserver {
         }
         surfaceTextureHelper?.dispose()
         surfaceTextureHelper = null
+        surfaceTextureHandler = null
+        surfaceTextureEglBase = null
         statsHelper?.reset()
         statsHelper = null
         pendingProcessRunList.clear()
@@ -363,10 +372,29 @@ class CosmosBeautyAPIImpl : CosmosBeautyAPI, IVideoFrameObserver {
             Matrix()
         ) ?: return false
 
-        if(surfaceTextureHelper == null){
-            surfaceTextureHelper = SurfaceTextureHelper.create("CosmosCopyProcessor", textureHelper.eglBase.eglBaseContext)
+        var copyTextureHelper = surfaceTextureHelper
+        if(copyTextureHelper == null){
+            copyTextureHelper = SurfaceTextureHelper.create("CosmosCopyProcessor", textureHelper.eglBase.eglBaseContext)
+            surfaceTextureHelper = copyTextureHelper
+
+            surfaceTextureHandler = copyTextureHelper.javaClass.getDeclaredField("handler").apply {
+                isAccessible = true
+            }.get(copyTextureHelper) as? Handler
+
+            surfaceTextureEglBase = copyTextureHelper.javaClass.getDeclaredField("eglBase").apply {
+                isAccessible = true
+            }.get(copyTextureHelper) as? EglBase
+
+            LogUtils.d(TAG, "copyTextureHelper surfaceTextureHandler=$surfaceTextureHandler, surfaceTextureEglBase=$surfaceTextureEglBase")
         }
-        val textureCopy = surfaceTextureHelper?.textureCopy(processBuffer) ?: return false
+        copyTextureHelper?: return false
+        val textureCopy = copyTextureHelper.textureCopy(processBuffer) ?: return false
+
+        ThreadUtils.invokeAtFrontUninterruptibly(surfaceTextureHandler){
+            surfaceTextureEglBase?.makeCurrent()
+            GLES20.glFinish()
+        }
+
         videoFrame.replaceBuffer(textureCopy, 0, videoFrame.timestampNs)
         return true
     }

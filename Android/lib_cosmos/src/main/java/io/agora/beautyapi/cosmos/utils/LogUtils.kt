@@ -33,7 +33,7 @@ object LogUtils {
     @JvmStatic
     fun i(tag: String, content: String, vararg args: Any) {
         val consoleMessage = "[BeautyAPI][$beautyType] : ${String.format(content, args)}"
-        Logging.v(tag, consoleMessage)
+        Logging.w(tag, consoleMessage)
     }
 
     @JvmStatic
