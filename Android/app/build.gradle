@@ -1,9 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
-def properties = new Properties()
-properties.load(rootProject.file("local.properties").newDataInputStream())
-final def AGORA_APP_ID = "${properties.getProperty("AGORA_APP_ID")}"
+
 
 android {
     compileSdkVersion 31
@@ -13,8 +11,8 @@ android {
         applicationId "io.agora.test.entfull"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 4
-        versionName "1.0.4"
+        versionCode 6
+        versionName "1.0.6"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -22,18 +20,22 @@ android {
         }
         ndk.abiFilters 'armeabi-v7a','arm64-v8a'//, 'x86', 'x86-64'
 
-
+        def properties = new Properties()
+        properties.load(rootProject.file("local.properties").newDataInputStream())
+        final def AGORA_APP_ID = "${properties.getProperty("AGORA_APP_ID", "")}"
+        if(AGORA_APP_ID == ""){
+            throw new GradleException("请在项目根目录下local.properties文件里正确配置：AGORA_APP_ID=<您的声网AppId>")
+        }
+        buildConfigField "String", "AGORA_APP_ID", "\"$AGORA_APP_ID\""
     }
 
     buildTypes {
         release {
-            buildConfigField "String", "AGORA_APP_ID", "\"$AGORA_APP_ID\""
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
             debuggable true
-            buildConfigField "String", "AGORA_APP_ID", "\"$AGORA_APP_ID\""
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }

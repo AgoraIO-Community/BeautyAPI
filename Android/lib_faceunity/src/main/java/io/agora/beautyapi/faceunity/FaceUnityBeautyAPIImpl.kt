@@ -45,6 +45,7 @@ import io.agora.base.VideoFrame
 import io.agora.base.VideoFrame.I420Buffer
 import io.agora.base.VideoFrame.SourceType
 import io.agora.base.VideoFrame.TextureBuffer
+import io.agora.base.internal.video.EglBase
 import io.agora.base.internal.video.YuvHelper
 import io.agora.beautyapi.faceunity.utils.FuDeviceUtils
 import io.agora.beautyapi.faceunity.utils.LogUtils
@@ -98,6 +99,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             return ErrorCode.ERROR_HAS_INITIALIZED.value
         }
         this.config = config
+        this.cameraConfig = config.cameraConfig
         if (config.captureMode == CaptureMode.Agora) {
             config.rtcEngine.registerVideoFrameObserver(this)
         }
@@ -520,7 +522,9 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
                     return@setFilter -1
                 }
                 val ret = textureBufferHelper?.invoke {
-                    return@invoke fuRenderKit.renderWithInput(input).texture?.texId ?: -1
+                    synchronized(EglBase.lock){
+                        return@invoke fuRenderKit.renderWithInput(input).texture?.texId ?: -1
+                    }
                 }
                 return@setFilter ret ?: -1
             }
@@ -653,7 +657,9 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
                     return@Callable -1
                 }
             }
-            return@Callable fuRenderKit.renderWithInput(input).texture?.texId ?: -1
+            synchronized(EglBase.lock){
+                return@Callable fuRenderKit.renderWithInput(input).texture?.texId ?: -1
+            }
         })
     }
 

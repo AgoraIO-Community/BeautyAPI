@@ -95,6 +95,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
             return ErrorCode.ERROR_HAS_INITIALIZED.value
         }
         this.config = config
+        this.cameraConfig = config.cameraConfig
         if (config.captureMode == CaptureMode.Agora) {
             config.rtcEngine.registerVideoFrameObserver(this)
         }
