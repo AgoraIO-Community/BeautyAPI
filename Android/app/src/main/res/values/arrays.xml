@@ -25,6 +25,8 @@
         <item>VD_960x540</item>
         <item>VD_840x480</item>
         <item>VD_640x360</item>
+        <item>VD_360x540</item>
+        <item>VD_160x160</item>
     </array>
 
     <array name="frame_rate">

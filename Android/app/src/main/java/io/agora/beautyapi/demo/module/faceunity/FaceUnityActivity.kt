@@ -185,6 +185,20 @@ class FaceUnityActivity : ComponentActivity() {
                     mFaceUnityApi.setParameters("beauty_mode", "0")
                 }
             }
+            setResolutionSelect(intent.getStringExtra(EXTRA_RESOLUTION) ?: "")
+            setOnResolutionChangeListener {resolution ->
+                mVideoEncoderConfiguration.dimensions = ReflectUtils.getStaticFiledValue(
+                    VideoEncoderConfiguration::class.java, resolution
+                )
+                mRtcEngine.setVideoEncoderConfiguration(mVideoEncoderConfiguration)
+            }
+            setFrameRateSelect(intent.getStringExtra(EXTRA_FRAME_RATE) ?: "")
+            setOnFrameRateChangeListener { frameRate ->
+                mVideoEncoderConfiguration.frameRate = ReflectUtils.getStaticFiledValue(
+                    VideoEncoderConfiguration::class.java, frameRate
+                ) ?: 15
+                mRtcEngine.setVideoEncoderConfiguration(mVideoEncoderConfiguration)
+            }
         }
     }
     private var cameraConfig = CameraConfig()

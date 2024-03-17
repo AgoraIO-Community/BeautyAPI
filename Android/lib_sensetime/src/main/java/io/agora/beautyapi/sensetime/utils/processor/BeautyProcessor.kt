@@ -134,6 +134,7 @@ class BeautyProcessor : IBeautyProcessor {
         if (mSTMobileHardwareBufferNative == null) {
             mProcessWidth = width
             mProcessHeight = height
+            glFrameBuffer.resizeTexture(processInTextureId, width, height)
             mSTMobileHardwareBufferNative = STMobileHardwareBufferNative().apply {
                 init(
                     width,
