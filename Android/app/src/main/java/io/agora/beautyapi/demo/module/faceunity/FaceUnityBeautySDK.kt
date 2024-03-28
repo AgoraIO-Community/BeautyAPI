@@ -92,8 +92,15 @@ object FaceUnityBeautySDK {
         private val fuRenderKit = FURenderKit.getInstance()
 
         // 美颜配置
-        private val faceBeauty =
-            FaceBeauty(FUBundleData("graphics" + File.separator + "face_beautification.bundle"))
+        private val faceBeauty : FaceBeauty
+            get() {
+                val beauty = fuRenderKit.faceBeauty ?: FaceBeauty(FUBundleData("graphics" + File.separator + "face_beautification.bundle"))
+                if(fuRenderKit.faceBeauty == null){
+                    fuRenderKit.faceBeauty = beauty
+                }
+                return beauty
+            }
+
 
         // 资源基础路径
         private val resourceBase = "beauty_faceunity"

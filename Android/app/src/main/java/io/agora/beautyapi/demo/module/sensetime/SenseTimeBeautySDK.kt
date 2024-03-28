@@ -81,8 +81,10 @@ object SenseTimeBeautySDK {
     }
 
     fun unInitMobileEffect() {
-        _mobileEffectNative?.destroyInstance()
-        _mobileEffectNative = null
+        if(_mobileEffectNative != null){
+            _mobileEffectNative?.destroyInstance()
+            _mobileEffectNative = null
+        }
     }
 
     private fun checkLicense(context: Context): Boolean {

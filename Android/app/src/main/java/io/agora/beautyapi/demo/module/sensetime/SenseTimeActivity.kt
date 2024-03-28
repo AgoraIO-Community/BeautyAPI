@@ -43,7 +43,6 @@ import io.agora.beautyapi.demo.databinding.BeautyActivityBinding
 import io.agora.beautyapi.demo.utils.ReflectUtils
 import io.agora.beautyapi.demo.widget.BottomAlertDialog
 import io.agora.beautyapi.demo.widget.SettingsDialog
-import io.agora.beautyapi.sensetime.BeautyPreset
 import io.agora.beautyapi.sensetime.BeautyStats
 import io.agora.beautyapi.sensetime.CameraConfig
 import io.agora.beautyapi.sensetime.CaptureMode
@@ -240,20 +239,28 @@ class SenseTimeActivity : ComponentActivity() {
     }
 
     private fun initBeautyApi() {
-        SenseTimeBeautySDK.initMobileEffect(this)
         mSenseTimeApi.initialize(
             Config(
                 application,
                 mRtcEngine,
-                STHandlers(
-                    SenseTimeBeautySDK.mobileEffectNative,
-                    SenseTimeBeautySDK.humanActionNative
-                ),
                 captureMode = if (isCustomCaptureMode) CaptureMode.Custom else CaptureMode.Agora,
                 statsEnable = true,
                 eventCallback = object : IEventCallback {
                     override fun onBeautyStats(stats: BeautyStats) {
                         Log.d(TAG, "BeautyStats stats = $stats")
+                    }
+
+                    override fun onEffectInitialized(): STHandlers {
+                        SenseTimeBeautySDK.initMobileEffect(this@SenseTimeActivity)
+                        SenseTimeBeautySDK.beautyConfig.resume()
+                        return STHandlers(
+                            SenseTimeBeautySDK.mobileEffectNative,
+                            SenseTimeBeautySDK.humanActionNative
+                        )
+                    }
+
+                    override fun onEffectDestroyed() {
+                        SenseTimeBeautySDK.unInitMobileEffect()
                     }
                 }
             )
@@ -319,7 +326,6 @@ class SenseTimeActivity : ComponentActivity() {
         }
 
         mSenseTimeApi.enable(beautyEnable)
-        mSenseTimeApi.setBeautyPreset(BeautyPreset.DEFAULT)
         // render local video
         mSenseTimeApi.setupLocalVideo(mBinding.localVideoView, Constants.RENDER_MODE_HIDDEN)
     }
@@ -405,7 +411,6 @@ class SenseTimeActivity : ComponentActivity() {
             mRtcEngine.registerVideoFrameObserver(null)
         }
         mSenseTimeApi.release()
-        SenseTimeBeautySDK.unInitMobileEffect()
         RtcEngine.destroy()
     }
 }

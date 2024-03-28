@@ -34,6 +34,7 @@ import io.agora.base.TextureBufferHelper
 import io.agora.base.VideoFrame
 import io.agora.base.VideoFrame.I420Buffer
 import io.agora.base.VideoFrame.TextureBuffer
+import io.agora.base.internal.video.EglBase.Context
 import io.agora.base.internal.video.RendererCommon
 import io.agora.base.internal.video.YuvHelper
 import io.agora.beautyapi.bytedance.utils.AgoraImageHelper
@@ -57,6 +58,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
 
 
     private var textureBufferHelper: TextureBufferHelper? = null
+    private var textureBufferHelperShareContext: Context? = null
     private var imageUtils: ImageUtil? = null
     private var agoraImageHelper: AgoraImageHelper? = null
     private var nv21ByteBuffer: ByteBuffer? = null
@@ -295,6 +297,14 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
         LogUtils.i(TAG, "release")
         isReleased = true
         workerThreadExecutor.shutdown()
+        disposeTextureBufferHelper()
+        statsHelper?.reset()
+        statsHelper = null
+        pendingProcessRunList.clear()
+        return ErrorCode.ERROR_OK.value
+    }
+
+    private fun disposeTextureBufferHelper() {
         textureBufferHelper?.let {
             textureBufferHelper = null
             it.handler.removeCallbacksAndMessages(null)
@@ -308,10 +318,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
             }
             it.dispose()
         }
-        statsHelper?.reset()
-        statsHelper = null
-        pendingProcessRunList.clear()
-        return ErrorCode.ERROR_OK.value
+        textureBufferHelperShareContext = null
     }
 
     private fun processBeauty(videoFrame: VideoFrame): Boolean {
@@ -377,6 +384,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
             return true
         }
 
+        val shareContext = (videoFrame.buffer as? TextureBuffer)?.eglBaseContext ?: EglBaseProvider.instance().rootEglBase.eglBaseContext
         if (textureBufferHelper == null) {
             textureBufferHelper = TextureBufferHelper.create(
                 "ByteDanceRender",
@@ -394,7 +402,11 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
                     }
                 }
             }
+            textureBufferHelperShareContext = shareContext
             LogUtils.i(TAG, "processBeauty >> create texture buffer, beautyMode=$beautyMode")
+        } else if(textureBufferHelperShareContext != shareContext){
+            disposeTextureBufferHelper()
+            return false
         }
 
         val startTime = System.currentTimeMillis()
