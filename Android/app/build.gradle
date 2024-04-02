@@ -61,6 +61,15 @@ android {
         }
     }
 
+    sourceSets {
+        main {
+            jniLibs.srcDirs += 'src/main/jniLibs'
+            if(new File("${AGORA_RTC_SDK}").exists()){
+                jniLibs.srcDirs += "${AGORA_RTC_SDK}"
+            }
+        }
+    }
+
     applicationVariants.all {
         variant ->
             variant.outputs.all { output ->

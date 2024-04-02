@@ -39,7 +39,11 @@ dependencies {
     implementation "com.getkeepsafe.relinker:relinker:1.4.4"
     implementation 'com.google.code.gson:gson:2.2.4'
 
-    api "$AGORA_RTC_SDK"
+    if (new File("$AGORA_RTC_SDK").exists()) {
+        api fileTree(dir: "${AGORA_RTC_SDK}", include: ['*.jar', '*.aar'])
+    } else {
+        api "$AGORA_RTC_SDK"
+    }
 
     api project(':lib_cosmos_BeautySDK')
 }
