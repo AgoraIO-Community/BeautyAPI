@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
 apply plugin: 'kotlin-android'
+apply from: 'vendors.gradle'
 
 android {
     compileSdkVersion 31
