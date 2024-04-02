@@ -256,7 +256,6 @@ class CosmosActivity : ComponentActivity() {
             )
         )
         mCosmosApi.enable(beautyEnable)
-        mCosmosApi.setBeautyPreset(BeautyPreset.DEFAULT)
         // render local video
         mCosmosApi.setupLocalVideo(mBinding.localVideoView, Constants.RENDER_MODE_HIDDEN)
 

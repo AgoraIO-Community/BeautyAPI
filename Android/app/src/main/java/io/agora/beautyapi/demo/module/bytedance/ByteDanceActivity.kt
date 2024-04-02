@@ -309,12 +309,6 @@ class ByteDanceActivity : ComponentActivity() {
         }
 
         mByteDanceApi.enable(beautyEnable)
-        mByteDanceApi.setBeautyPreset(
-            BeautyPreset.DEFAULT,
-            ByteDanceBeautySDK.beautyNodePath,
-            ByteDanceBeautySDK.beauty4ItemsNodePath,
-            ByteDanceBeautySDK.reSharpNodePath
-        )
 
         // render local video
         mByteDanceApi.setupLocalVideo(mBinding.localVideoView, Constants.RENDER_MODE_HIDDEN)

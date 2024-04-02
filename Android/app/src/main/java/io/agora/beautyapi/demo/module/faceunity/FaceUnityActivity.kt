@@ -357,7 +357,6 @@ class FaceUnityActivity : ComponentActivity() {
             })
         }
         mFaceUnityApi.enable(beautyEnable)
-        mFaceUnityApi.setBeautyPreset(BeautyPreset.DEFAULT)
 
         // render local video
         mFaceUnityApi.setupLocalVideo(mBinding.localVideoView, Constants.RENDER_MODE_HIDDEN)
