@@ -1,4 +1,13 @@
 # Beauty API Change Log
+
+## 1.0.6
+1. Android：美颜处理时添加EGLBase.lock锁，防止在部分机型退出时出现anr的问题
+2. Android：相芯美颜添加一个开关，支持选择实时优先还是流畅优先
+3. Android：修复相芯纹理+异步处理在部分中端机上出现回帧的问题
+4. Android：将美颜库改成动态下载
+5. demo层去掉setBeautyPreset调用
+
+
 ## 1.0.5
 1. 添加宇宙美颜
 2. Android 优化demo美颜资源加载
