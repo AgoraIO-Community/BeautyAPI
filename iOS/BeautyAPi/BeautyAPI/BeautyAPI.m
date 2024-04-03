@@ -7,7 +7,7 @@
 
 #import "BeautyAPI.h"
 
-static NSString *const beautyAPIVersion = @"1.0.5";
+static NSString *const beautyAPIVersion = @"1.0.6";
 
 @implementation BeautyStats
 @end
