@@ -175,8 +175,8 @@ class CosmosBeautyAPIImpl : CosmosBeautyAPI, IVideoFrameObserver {
         LogUtils.i(TAG, "setBeautyPreset >> preset = $preset")
         conf.rtcEngine.sendCustomReportMessage(reportId, reportCategory, "enable", "preset=$preset", 0)
 
-        runOnProcessThread {
-
+        if (preset == BeautyPreset.DEFAULT) {
+            throw RuntimeException("The default beauty preset is not defined yet!")
         }
         return ErrorCode.ERROR_OK.value
     }
