@@ -239,8 +239,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         LogUtils.i(TAG, "setBeautyPreset >> preset = $preset")
         config?.rtcEngine?.sendCustomReportMessage(reportId, reportCategory, "enable", "preset=$preset", 0)
 
-        val recommendFaceBeauty = conf.fuRenderKit.faceBeauty ?:
-            FaceBeauty(FUBundleData("graphics" + File.separator + "face_beautification.bundle"))
+        val recommendFaceBeauty = FaceBeauty(FUBundleData("graphics" + File.separator + "face_beautification.bundle"))
         if (preset == BeautyPreset.DEFAULT) {
             recommendFaceBeauty.filterName = FaceBeautyFilterEnum.FENNEN_1
             recommendFaceBeauty.filterIntensity = 0.7
