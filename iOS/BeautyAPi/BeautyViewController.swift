@@ -98,7 +98,7 @@ class BeautyViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        beautyAPI?.setBeautyPreset(.default)
+//        beautyAPI?.setBeautyPreset(.default)
     }
     
     private func setupRTC() {

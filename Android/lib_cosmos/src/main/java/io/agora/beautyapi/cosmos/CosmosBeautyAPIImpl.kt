@@ -82,6 +82,7 @@ class CosmosBeautyAPIImpl : CosmosBeautyAPI, IVideoFrameObserver {
             return ErrorCode.ERROR_HAS_INITIALIZED.value
         }
         this.config = config
+        this.cameraConfig = config.cameraConfig
         if (config.captureMode == CaptureMode.Agora) {
             config.rtcEngine.registerVideoFrameObserver(this)
         }
@@ -174,8 +175,8 @@ class CosmosBeautyAPIImpl : CosmosBeautyAPI, IVideoFrameObserver {
         LogUtils.i(TAG, "setBeautyPreset >> preset = $preset")
         conf.rtcEngine.sendCustomReportMessage(reportId, reportCategory, "enable", "preset=$preset", 0)
 
-        runOnProcessThread {
-
+        if (preset == BeautyPreset.DEFAULT) {
+            throw RuntimeException("The default beauty preset is not defined yet!")
         }
         return ErrorCode.ERROR_OK.value
     }

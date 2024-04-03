@@ -31,7 +31,8 @@ task clean(type: Delete) {
 
 ext {
     IS_PUBLISH_LOCAL=true
-    LIB_VERSION="1.0.5"
-    // AGORA_RTC_SDK="io.agora.rtc:agora-special-full:4.1.1.22"
+    LIB_VERSION="1.0.6"
+//    AGORA_RTC_SDK="io.agora.rtc:agora-special-full:4.1.1.28"
+//    AGORA_RTC_SDK= "${rootProject.rootDir.absolutePath}/sdk"
     AGORA_RTC_SDK="io.agora.rtc:full-sdk:4.2.6"
 }

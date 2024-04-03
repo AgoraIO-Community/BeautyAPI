@@ -118,6 +118,49 @@ class CosmosActivity : ComponentActivity() {
         createCosmosBeautyAPI()
     }
 
+    private val mSettingsDialog by lazy {
+        SettingsDialog(this).apply {
+            setBeautyEnable(beautyEnable)
+            setOnBeautyChangeListener { enable ->
+                beautyEnable = enable
+                mCosmosApi.enable(enable)
+            }
+            setOnColorEnhanceChangeListener { enable ->
+                val options = ColorEnhanceOptions()
+                options.strengthLevel = 0.5f
+                options.skinProtectLevel = 0.5f
+                mRtcEngine.setColorEnhanceOptions(enable, options)
+            }
+            setOnI420ChangeListener { enable ->
+                if (enable) {
+                    mCosmosApi.setParameters(
+                        "beauty_mode",
+                        "2"
+                    )
+                } else {
+                    mCosmosApi.setParameters(
+                        "beauty_mode",
+                        "0"
+                    )
+                }
+            }
+            setResolutionSelect(intent.getStringExtra(EXTRA_RESOLUTION) ?: "")
+            setOnResolutionChangeListener {resolution ->
+                mVideoEncoderConfiguration.dimensions = ReflectUtils.getStaticFiledValue(
+                    VideoEncoderConfiguration::class.java, resolution
+                )
+                mRtcEngine.setVideoEncoderConfiguration(mVideoEncoderConfiguration)
+            }
+            setFrameRateSelect(intent.getStringExtra(EXTRA_FRAME_RATE) ?: "")
+            setOnFrameRateChangeListener { frameRate ->
+                mVideoEncoderConfiguration.frameRate = ReflectUtils.getStaticFiledValue(
+                    VideoEncoderConfiguration::class.java, frameRate
+                ) ?: 15
+                mRtcEngine.setVideoEncoderConfiguration(mVideoEncoderConfiguration)
+            }
+        }
+    }
+
     private val mRtcHandler = object : IRtcEngineEventHandler() {
         override fun onError(err: Int) {
             super.onError(err)
@@ -213,7 +256,6 @@ class CosmosActivity : ComponentActivity() {
             )
         )
         mCosmosApi.enable(beautyEnable)
-        mCosmosApi.setBeautyPreset(BeautyPreset.DEFAULT)
         // render local video
         mCosmosApi.setupLocalVideo(mBinding.localVideoView, Constants.RENDER_MODE_HIDDEN)
 
@@ -336,33 +378,7 @@ class CosmosActivity : ComponentActivity() {
     }
 
     private fun showSettingsDialog() {
-        SettingsDialog(this).apply {
-            setBeautyEnable(beautyEnable)
-            setOnBeautyChangeListener { enable ->
-                beautyEnable = enable
-                mCosmosApi.enable(enable)
-            }
-            setOnColorEnhanceChangeListener { enable ->
-                val options = ColorEnhanceOptions()
-                options.strengthLevel = 0.5f
-                options.skinProtectLevel = 0.5f
-                mRtcEngine.setColorEnhanceOptions(enable, options)
-            }
-            setOnI420ChangeListener { enable ->
-                if (enable) {
-                    mCosmosApi.setParameters(
-                        "beauty_mode",
-                        "2"
-                    )
-                } else {
-                    mCosmosApi.setParameters(
-                        "beauty_mode",
-                        "0"
-                    )
-                }
-            }
-            show()
-        }
+        mSettingsDialog.show()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {

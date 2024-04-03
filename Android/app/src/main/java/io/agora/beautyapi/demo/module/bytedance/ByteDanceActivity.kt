@@ -183,6 +183,20 @@ class ByteDanceActivity : ComponentActivity() {
                     )
                 }
             }
+            setResolutionSelect(intent.getStringExtra(EXTRA_RESOLUTION) ?: "")
+            setOnResolutionChangeListener {resolution ->
+                mVideoEncoderConfiguration.dimensions = ReflectUtils.getStaticFiledValue(
+                    VideoEncoderConfiguration::class.java, resolution
+                )
+                mRtcEngine.setVideoEncoderConfiguration(mVideoEncoderConfiguration)
+            }
+            setFrameRateSelect(intent.getStringExtra(EXTRA_FRAME_RATE) ?: "")
+            setOnFrameRateChangeListener { frameRate ->
+                mVideoEncoderConfiguration.frameRate = ReflectUtils.getStaticFiledValue(
+                    VideoEncoderConfiguration::class.java, frameRate
+                ) ?: 15
+                mRtcEngine.setVideoEncoderConfiguration(mVideoEncoderConfiguration)
+            }
         }
     }
     private var cameraConfig = CameraConfig()
@@ -295,12 +309,6 @@ class ByteDanceActivity : ComponentActivity() {
         }
 
         mByteDanceApi.enable(beautyEnable)
-        mByteDanceApi.setBeautyPreset(
-            BeautyPreset.DEFAULT,
-            ByteDanceBeautySDK.beautyNodePath,
-            ByteDanceBeautySDK.beauty4ItemsNodePath,
-            ByteDanceBeautySDK.reSharpNodePath
-        )
 
         // render local video
         mByteDanceApi.setupLocalVideo(mBinding.localVideoView, Constants.RENDER_MODE_HIDDEN)
