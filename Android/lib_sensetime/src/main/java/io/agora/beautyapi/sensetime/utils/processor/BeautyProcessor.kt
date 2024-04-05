@@ -404,16 +404,23 @@ class BeautyProcessor : IBeautyProcessor {
             STEffectParam.EFFECT_PARAM_USE_INPUT_TIMESTAMP,
             1.0f
         )
+        if (isReleased) {
+            return -1
+        }
         mSTMobileEffectNative.render(
             sTEffectRenderInParam,
             stEffectRenderOutParam,
             false
         )
 
+
         if (event == mCustomEvent) {
             mCustomEvent = 0
         }
 
+        if (isReleased) {
+            return -1
+        }
         glFrameBuffer.setSize(width, height)
         glFrameBuffer.resetTransform()
         glFrameBuffer.setFlipV(true)

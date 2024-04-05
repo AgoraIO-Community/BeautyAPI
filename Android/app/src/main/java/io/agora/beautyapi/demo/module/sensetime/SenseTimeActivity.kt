@@ -404,8 +404,11 @@ class SenseTimeActivity : ComponentActivity() {
         if (isCustomCaptureMode) {
             mRtcEngine.registerVideoFrameObserver(null)
         }
+        mSenseTimeApi.runOnProcessThread {
+            SenseTimeBeautySDK.unInitMobileEffect()
+        }
         mSenseTimeApi.release()
-        SenseTimeBeautySDK.unInitMobileEffect()
+
         RtcEngine.destroy()
     }
 }
