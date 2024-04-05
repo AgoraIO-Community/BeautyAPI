@@ -568,7 +568,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
     }
 
     private fun processBeautySingleTexture(videoFrame: VideoFrame): Int {
-        val texBufferHelper = wrapTextureBufferHelper ?: return -1
+        val texBufferHelper = textureBufferHelper ?: return -1
         val textureBuffer = videoFrame.buffer as? TextureBuffer ?: return -1
 
         when(textureBuffer.type){
