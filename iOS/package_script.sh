@@ -5,7 +5,9 @@ echo $2
 branch=${1//\//_}
 echo branch: $branch
 
-pod install --repo-update
+repo_name=$1
+
+http_proxy=http://10.10.114.51:1080 https_proxy=http://10.10.114.51:1080 pod install --repo-update
 if [ $? -eq 0 ]; then
     echo "pod success"
 else
@@ -14,7 +16,7 @@ else
 fi
 
 script_path="$( cd "$(dirname "$0")" ; pwd -P )"
+echo $script_path
 today=$(date +"%Y-%m-%d")
-TARGET_NAME=${script_path##*/}
-echo $TARGET_NAME
-zip -r ${TARGET_NAME}_${branch}_${today}.zip .
+echo $repo_name
+zip -r ${repo_name}_${branch}_${today}.zip .
