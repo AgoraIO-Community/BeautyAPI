@@ -44,7 +44,6 @@ import io.agora.beautyapi.demo.databinding.BeautyActivityBinding
 import io.agora.beautyapi.demo.utils.ReflectUtils
 import io.agora.beautyapi.demo.widget.BottomAlertDialog
 import io.agora.beautyapi.demo.widget.SettingsDialog
-import io.agora.beautyapi.faceunity.BeautyPreset
 import io.agora.beautyapi.faceunity.BeautyStats
 import io.agora.beautyapi.faceunity.CameraConfig
 import io.agora.beautyapi.faceunity.CaptureMode
@@ -185,6 +184,13 @@ class FaceUnityActivity : ComponentActivity() {
                     mFaceUnityApi.setParameters("beauty_mode", "0")
                 }
             }
+            setOnTextureAsyncChangeListener { enable ->
+                if (enable) {
+                    mFaceUnityApi.setParameters("enableTextureAsync", "true")
+                } else {
+                    mFaceUnityApi.setParameters("enableTextureAsync", "false")
+                }
+            }
             setResolutionSelect(intent.getStringExtra(EXTRA_RESOLUTION) ?: "")
             setOnResolutionChangeListener {resolution ->
                 mVideoEncoderConfiguration.dimensions = ReflectUtils.getStaticFiledValue(
@@ -286,6 +292,7 @@ class FaceUnityActivity : ComponentActivity() {
     }
 
     private fun initBeautyApi() {
+        FaceUnityBeautySDK.beautyConfig.reset()
         mFaceUnityApi.initialize(
             Config(
                 applicationContext,

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
+import androidx.core.view.isVisible
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import io.agora.beautyapi.demo.databinding.SettingDialogBinding
 
@@ -38,6 +39,13 @@ class SettingsDialog(private val context: Context) {
 
     fun setOnI420ChangeListener(onChanged: (enable: Boolean) -> Unit) {
         mBinding.swI420.setOnCheckedChangeListener { _, isChecked ->
+            onChanged.invoke(isChecked)
+        }
+    }
+
+    fun setOnTextureAsyncChangeListener(onChanged: (enable: Boolean) -> Unit){
+        mBinding.swTextureAsync.isVisible = true
+        mBinding.swTextureAsync.setOnCheckedChangeListener { _, isChecked ->
             onChanged.invoke(isChecked)
         }
     }
