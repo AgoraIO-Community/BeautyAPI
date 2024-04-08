@@ -19,4 +19,4 @@ script_path="$( cd "$(dirname "$0")" ; pwd -P )"
 echo $script_path
 today=$(date +"%Y-%m-%d")
 echo $repo_name
-zip -r ${repo_name}_${branch}_${today}.zip .
+zip -r ${repo_name}_${today}.zip .
