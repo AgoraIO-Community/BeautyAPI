@@ -73,6 +73,8 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
     private var cameraConfig = CameraConfig()
     private var localVideoRenderMode = Constants.RENDER_MODE_HIDDEN
     private val pendingProcessRunList = Collections.synchronizedList(mutableListOf<()->Unit>())
+    private var frameWidth = 0
+    private var frameHeight = 0
 
     private enum class BeautyProcessType{
         UNKNOWN, TEXTURE_OES, TEXTURE_2D, I420
@@ -371,6 +373,17 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
         if(oldIsFrontCamera != isFrontCamera){
             LogUtils.w(TAG, "processBeauty >> oldIsFrontCamera=$oldIsFrontCamera, isFrontCamera=$isFrontCamera")
             return false
+        }
+
+        val oldFrameWidth = frameWidth
+        val oldFrameHeight = frameHeight
+        frameWidth = videoFrame.rotatedWidth
+        frameHeight = videoFrame.rotatedHeight
+        if (oldFrameWidth > 0 || oldFrameHeight > 0) {
+            if(oldFrameWidth != frameWidth || oldFrameHeight != frameHeight){
+                skipFrame = 2
+                return false
+            }
         }
 
         if(!enable){
