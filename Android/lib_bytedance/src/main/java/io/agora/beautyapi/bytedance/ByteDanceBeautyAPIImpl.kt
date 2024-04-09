@@ -364,7 +364,10 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
                     if(renderMirror) Constants.VIDEO_MIRROR_MODE_ENABLED else Constants.VIDEO_MIRROR_MODE_DISABLED
                 )
             }
-            skipFrame = 2
+            textureBufferHelper?.invoke {
+                skipFrame = 2
+                imageUtils?.release()
+            }
             return false
         }
 
