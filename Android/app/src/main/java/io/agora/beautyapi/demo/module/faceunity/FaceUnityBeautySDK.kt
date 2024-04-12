@@ -31,6 +31,8 @@ object FaceUnityBeautySDK {
 
     private var beautyAPI: FaceUnityBeautyAPI? = null
 
+    private var authSuccess = false
+
     fun initBeauty(context: Context): Boolean {
         val auth = try {
             getAuth()
@@ -45,6 +47,7 @@ object FaceUnityBeautySDK {
             override fun onSuccess(code: Int, msg: String) {
                 Log.i(TAG, "FURenderManager onSuccess -- code=$code, msg=$msg")
                 if (code == OPERATE_SUCCESS_AUTH) {
+                    authSuccess = true
                     faceunity.fuSetUseTexAsync(1)
                     FUAIKit.getInstance()
                         .loadAIProcessor(BUNDLE_AI_FACE, FUAITypeEnum.FUAITYPE_FACEPROCESSOR)
@@ -63,9 +66,14 @@ object FaceUnityBeautySDK {
         return true
     }
 
+    fun isAuthSuccess(): Boolean {
+        return authSuccess
+    }
+
     fun unInitBeauty() {
         beautyAPI = null
         beautyConfig.reset()
+        authSuccess = false
         FUAIKit.getInstance().releaseAllAIProcessor()
         FURenderKit.getInstance().release()
     }

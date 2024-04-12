@@ -55,16 +55,25 @@ object SenseTimeBeautySDK {
 
     private var beautyAPI: SenseTimeBeautyAPI? = null
 
+    private var authSuccess = false
+
     fun initBeautySDK(context: Context): Boolean {
         if (checkLicense(context)) {
             initHumanAction(context)
+            authSuccess = true
             return true
         }
+        initHumanAction(context)
         return false
+    }
+
+    fun isAuthSuccess(): Boolean {
+        return authSuccess
     }
 
     fun unInitBeautySDK() {
         beautyAPI = null
+        authSuccess = false
         unInitHumanActionNative()
         beautyConfig.reset()
     }
@@ -98,8 +107,8 @@ object SenseTimeBeautySDK {
             license,
             license.length
         )
-        Log.d(TAG, "SenseTime >> checkLicense successfully! activeCode=$activeCode")
-        return true
+        Log.d(TAG, "SenseTime >> checkLicense activeCode=$activeCode")
+        return activeCode.isNotEmpty()
     }
 
     private fun initHumanAction(context: Context) {

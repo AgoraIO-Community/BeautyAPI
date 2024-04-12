@@ -523,7 +523,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
                 videoFrame.timestampNs
             )
             if (!success) {
-                return@Callable -1
+                return@Callable srcTexture
             }
             return@Callable dstTexture
         })
@@ -586,7 +586,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
             return@Callable if (success) {
                 dstTexture
             } else {
-                -1
+                srcTexture
             }
         })
     }

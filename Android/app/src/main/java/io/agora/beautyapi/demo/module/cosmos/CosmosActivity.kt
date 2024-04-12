@@ -35,9 +35,9 @@ import android.view.SurfaceView
 import android.view.View
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import io.agora.base.VideoFrame
-import io.agora.beautyapi.cosmos.BeautyPreset
 import io.agora.beautyapi.cosmos.CameraConfig
 import io.agora.beautyapi.cosmos.CaptureMode
 import io.agora.beautyapi.cosmos.Config
@@ -233,6 +233,18 @@ class CosmosActivity : ComponentActivity() {
         setContentView(mBinding.root)
         //requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         window.decorView.keepScreenOn = true
+
+        if (!CosmosBeautyWrapSDK.isAuthSuccess()) {
+            AlertDialog.Builder(this).apply {
+                setTitle("Auth Failed")
+                setMessage("Please check your license file")
+                setCancelable(false)
+                setPositiveButton( "OK") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                show()
+            }
+        }
 
         initRtcEngine()
         initBeautyApi()
