@@ -68,8 +68,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
     private var beautyMode = 0 // 0: 自动根据buffer类型切换，1：固定使用OES纹理，2：固定使用i420，3: 单纹理模式
     private var enableTextureAsync = true // 是否开启纹理+异步缓存处理。对于GPU性能好的手机可以减小美颜处理耗时，对于中端机开启后效果也不明显。
 
-    private var textureBufferHelper: TextureBufferHelper? = null
-    private var wrapTextureBufferHelper: TextureBufferHelper? = null
+    private var beautyTextureBufferHelper: TextureBufferHelper? = null
     private var byteBuffer: ByteBuffer? = null
     private var byteArray: ByteArray? = null
     private var config: Config? = null
@@ -79,7 +78,6 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
     private var captureMirror = false
     private var renderMirror = false
     private val identityMatrix =  Matrix()
-    private var mTextureProcessHelper: TextureProcessHelper? = null
     private var statsHelper: StatsHelper? = null
     private var skipFrame = 0
     private enum class ProcessSourceType{
@@ -97,6 +95,10 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
     private var localVideoRenderMode = Constants.RENDER_MODE_HIDDEN
     private val pendingProcessRunList = Collections.synchronizedList(mutableListOf<()->Unit>())
     private val transformGLFrameBuffer = GLFrameBuffer()
+    private val outGLFrameBuffer = GLFrameBuffer()
+
+    private var asyncTextureProcessHelper: TextureProcessHelper? = null
+    private var asyncTextureBufferHelper: TextureBufferHelper? = null
 
     override fun initialize(config: Config): Int {
         if (this.config != null) {
@@ -207,10 +209,10 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             LogUtils.e(TAG, "runOnProcessThread >> The beauty api has been released!")
             return
         }
-        if (textureBufferHelper?.handler?.looper?.thread == Thread.currentThread()) {
+        if (beautyTextureBufferHelper?.handler?.looper?.thread == Thread.currentThread()) {
             run.invoke()
-        } else if (textureBufferHelper != null) {
-            textureBufferHelper?.handler?.post(run)
+        } else if (beautyTextureBufferHelper != null) {
+            beautyTextureBufferHelper?.handler?.post(run)
         } else {
             pendingProcessRunList.add(run)
         }
@@ -307,21 +309,23 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         conf.rtcEngine.sendCustomReportMessage(reportId, reportCategory, "release", "", 0)
 
         isReleased = true
-        textureBufferHelper?.let {
-            textureBufferHelper = null
+        beautyTextureBufferHelper?.let {
+            beautyTextureBufferHelper = null
             it.handler.removeCallbacksAndMessages(null)
             it.invoke {
                 fuRenderer.release()
-                mTextureProcessHelper?.release()
-                mTextureProcessHelper = null
                 transformGLFrameBuffer.release()
+                outGLFrameBuffer.release()
                 null
             }
-            // it.handler.looper.quit()
             it.dispose()
         }
-        wrapTextureBufferHelper?.let {
-            wrapTextureBufferHelper = null
+        asyncTextureBufferHelper?.let {
+            asyncTextureBufferHelper = null
+            it.invoke {
+                asyncTextureProcessHelper?.release()
+                asyncTextureProcessHelper = null
+            }
             it.dispose()
         }
         statsHelper?.reset()
@@ -378,10 +382,13 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
                     if(renderMirror) Constants.VIDEO_MIRROR_MODE_ENABLED else Constants.VIDEO_MIRROR_MODE_DISABLED
                 )
             }
-            textureBufferHelper?.invoke {
-                mTextureProcessHelper?.reset()
+            asyncTextureBufferHelper?.invoke {
+                asyncTextureProcessHelper?.reset()
             }
-            skipFrame = 2
+            beautyTextureBufferHelper?.invoke {
+                skipFrame = 2
+                outGLFrameBuffer.resetTexture()
+            }
             return false
         }
 
@@ -394,8 +401,8 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
 
         if(enableChange){
             enableChange = false
-            textureBufferHelper?.invoke {
-                mTextureProcessHelper?.reset()
+            asyncTextureBufferHelper?.invoke {
+                asyncTextureProcessHelper?.reset()
             }
             return false
         }
@@ -404,12 +411,12 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             return true
         }
 
-        if (textureBufferHelper == null) {
-            textureBufferHelper = TextureBufferHelper.create(
+        if (beautyTextureBufferHelper == null) {
+            beautyTextureBufferHelper = TextureBufferHelper.create(
                 "FURender",
                 EglBaseProvider.instance().rootEglBase.eglBaseContext
             )
-            textureBufferHelper?.invoke {
+            beautyTextureBufferHelper?.invoke {
                 synchronized(pendingProcessRunList){
                     val iterator = pendingProcessRunList.iterator()
                     while (iterator.hasNext()){
@@ -419,13 +426,6 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
                 }
             }
             LogUtils.i(TAG, "processBeauty >> create texture buffer, beautyMode=$beautyMode")
-        }
-        if (wrapTextureBufferHelper == null) {
-            wrapTextureBufferHelper = TextureBufferHelper.create(
-                "FURenderWrap",
-                EglBaseProvider.instance().rootEglBase.eglBaseContext
-            )
-            LogUtils.i(TAG, "processBeauty >> create texture buffer wrap, beautyMode=$beautyMode")
         }
         val startTime = System.currentTimeMillis()
         val processTexId = when (beautyMode) {
@@ -456,7 +456,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             return false
         }
 
-        val processBuffer: TextureBuffer = wrapTextureBufferHelper?.wrapTextureBuffer(
+        val processBuffer: TextureBuffer = beautyTextureBufferHelper?.wrapTextureBuffer(
             videoFrame.rotatedWidth,
             videoFrame.rotatedHeight,
             TextureBuffer.Type.RGB,
@@ -481,16 +481,21 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
     }
 
     private fun processBeautySingleTextureAsync(videoFrame: VideoFrame): Int {
-        val texBufferHelper = wrapTextureBufferHelper ?: return -1
+        val texBufferHelper = beautyTextureBufferHelper ?: return -1
         val textureBuffer = videoFrame.buffer as? TextureBuffer ?: return -1
+
+        if (asyncTextureBufferHelper == null) {
+            asyncTextureBufferHelper = TextureBufferHelper.create(
+                "FURenderAsync",
+                EglBaseProvider.instance().rootEglBase.eglBaseContext
+            )
+            LogUtils.i(TAG, "processBeauty >> create texture buffer wrap, beautyMode=$beautyMode")
+        }
 
         when(textureBuffer.type){
             TextureBuffer.Type.OES -> {
                 if(currProcessSourceType != ProcessSourceType.TEXTURE_OES_ASYNC){
                     LogUtils.i(TAG, "processBeauty >> process source type change old=$currProcessSourceType, new=${ProcessSourceType.TEXTURE_OES_ASYNC}")
-                    if (currProcessSourceType != ProcessSourceType.UNKNOWN) {
-                        skipFrame = 3
-                    }
                     currProcessSourceType = ProcessSourceType.TEXTURE_OES_ASYNC
                     return -1
                 }
@@ -498,19 +503,15 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             else -> {
                 if(currProcessSourceType != ProcessSourceType.TEXTURE_2D_ASYNC){
                     LogUtils.i(TAG, "processBeauty >> process source type change old=$currProcessSourceType, new=${ProcessSourceType.TEXTURE_2D_ASYNC}")
-                    if (currProcessSourceType != ProcessSourceType.UNKNOWN) {
-                        skipFrame = 3
-                    }
                     currProcessSourceType = ProcessSourceType.TEXTURE_2D_ASYNC
-                    skipFrame = 6
                     return -1
                 }
             }
         }
 
-        if(mTextureProcessHelper == null) {
-            mTextureProcessHelper = TextureProcessHelper()
-            mTextureProcessHelper?.setFilter { frame ->
+        if(asyncTextureProcessHelper == null) {
+            asyncTextureProcessHelper = TextureProcessHelper()
+            asyncTextureProcessHelper?.setFilter { frame ->
                 val fuRenderKit = config?.fuRenderKit ?: return@setFilter -1
 
                 val input = FURenderInputData(frame.width, frame.height)
@@ -537,7 +538,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
                 if (isReleased) {
                     return@setFilter -1
                 }
-                val ret = textureBufferHelper?.invoke {
+                val ret = texBufferHelper.invoke {
                     synchronized(EglBase.lock){
                         return@invoke fuRenderKit.renderWithInput(input).texture?.texId ?: -1
                     }
@@ -546,12 +547,12 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             }
         }
 
-        return texBufferHelper.invoke {
+        return asyncTextureBufferHelper?.invoke {
             if(isReleased){
                 return@invoke -1
             }
 
-            return@invoke mTextureProcessHelper?.process(
+            return@invoke asyncTextureProcessHelper?.process(
                 textureBuffer.textureId,
                 when (textureBuffer.type) {
                     TextureBuffer.Type.OES -> GLES11Ext.GL_TEXTURE_EXTERNAL_OES
@@ -564,20 +565,17 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
                 isFrontCamera,
                 (isFrontCamera && !captureMirror) || (!isFrontCamera && captureMirror)
             )?: -1
-        }
+        } ?: -1
     }
 
     private fun processBeautySingleTexture(videoFrame: VideoFrame): Int {
-        val texBufferHelper = textureBufferHelper ?: return -1
+        val texBufferHelper = beautyTextureBufferHelper ?: return -1
         val textureBuffer = videoFrame.buffer as? TextureBuffer ?: return -1
 
         when(textureBuffer.type){
             TextureBuffer.Type.OES -> {
                 if(currProcessSourceType != ProcessSourceType.TEXTURE_OES){
                     LogUtils.i(TAG, "processBeauty >> process source type change old=$currProcessSourceType, new=${ProcessSourceType.TEXTURE_OES}")
-                    if (currProcessSourceType != ProcessSourceType.UNKNOWN) {
-                        skipFrame = 3
-                    }
                     currProcessSourceType = ProcessSourceType.TEXTURE_OES
                     return -1
                 }
@@ -585,11 +583,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             else -> {
                 if(currProcessSourceType != ProcessSourceType.TEXTURE_2D){
                     LogUtils.i(TAG, "processBeauty >> process source type change old=$currProcessSourceType, new=${ProcessSourceType.TEXTURE_2D}")
-                    if (currProcessSourceType != ProcessSourceType.UNKNOWN) {
-                        skipFrame = 3
-                    }
                     currProcessSourceType = ProcessSourceType.TEXTURE_2D
-                    skipFrame = 6
                     return -1
                 }
             }
@@ -642,19 +636,20 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             if (isReleased) {
                 return@invoke -1
             }
+            var fuTexId = -1
             synchronized(EglBase.lock){
-                return@invoke fuRenderKit.renderWithInput(input).texture?.texId ?: -1
+                fuTexId = fuRenderKit.renderWithInput(input).texture?.texId ?: -1
             }
+            outGLFrameBuffer.setSize(videoFrame.rotatedWidth, videoFrame.rotatedHeight)
+            outGLFrameBuffer.resetTransform()
+            return@invoke outGLFrameBuffer.process(fuTexId, GLES20.GL_TEXTURE_2D)
         }
     }
 
     private fun processBeautySingleBuffer(videoFrame: VideoFrame): Int {
-        val texBufferHelper = textureBufferHelper ?: return -1
+        val texBufferHelper = beautyTextureBufferHelper ?: return -1
         if(currProcessSourceType != ProcessSourceType.I420){
             LogUtils.i(TAG, "processBeauty >> process source type change old=$currProcessSourceType, new=${ProcessSourceType.I420}")
-            if (currProcessSourceType != ProcessSourceType.UNKNOWN) {
-                skipFrame = 3
-            }
             currProcessSourceType = ProcessSourceType.I420
             return -1
         }
@@ -748,15 +743,20 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
                 }
             }
 
-            mTextureProcessHelper?.let {
-                if(it.size() > 0){
-                    it.reset()
-                    return@Callable -1
+            if ((asyncTextureProcessHelper?.size() ?: 0) > 0) {
+                asyncTextureBufferHelper?.invoke {
+                    asyncTextureProcessHelper?.reset()
                 }
+                return@Callable -1
             }
-            synchronized(EglBase.lock){
-                return@Callable fuRenderKit.renderWithInput(input).texture?.texId ?: -1
+
+            var fuTexId = -1
+            synchronized(EglBase.lock) {
+                fuTexId = fuRenderKit.renderWithInput(input).texture?.texId ?: -1
             }
+            outGLFrameBuffer.setSize(videoFrame.rotatedWidth, videoFrame.rotatedHeight)
+            outGLFrameBuffer.resetTransform()
+            return@Callable outGLFrameBuffer.process(fuTexId, GLES20.GL_TEXTURE_2D);
         })
     }
 

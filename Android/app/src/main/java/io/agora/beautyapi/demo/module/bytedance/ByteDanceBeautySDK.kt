@@ -82,13 +82,13 @@ object ByteDanceBeautySDK {
     }
 
     // GL Thread
-    fun initEffect(context: Context) {
+    fun initEffect(context: Context) : Boolean{
         val ret = renderManager.init(
             context,
             modelsPath, licensePath, false, false, 0
         )
         if (!checkResult("RenderManager init ", ret)) {
-            return
+            return false
         }
         renderManager.useBuiltinSensor(true)
         renderManager.set3Buffer(false)
@@ -98,6 +98,7 @@ object ByteDanceBeautySDK {
         )
         renderManager.loadResourceWithTimeout(-1)
         beautyConfig.resume()
+        return true
     }
 
     // GL Thread

@@ -364,7 +364,10 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
                     if(renderMirror) Constants.VIDEO_MIRROR_MODE_ENABLED else Constants.VIDEO_MIRROR_MODE_DISABLED
                 )
             }
-            skipFrame = 2
+            textureBufferHelper?.invoke {
+                skipFrame = 2
+                imageUtils?.release()
+            }
             return false
         }
 
@@ -520,7 +523,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
                 videoFrame.timestampNs
             )
             if (!success) {
-                return@Callable -1
+                return@Callable srcTexture
             }
             return@Callable dstTexture
         })
@@ -583,7 +586,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
             return@Callable if (success) {
                 dstTexture
             } else {
-                -1
+                srcTexture
             }
         })
     }

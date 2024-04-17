@@ -35,6 +35,7 @@ import android.view.SurfaceView
 import android.view.View
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.faceunity.core.faceunity.FURenderKit
 import io.agora.base.VideoFrame
@@ -227,6 +228,19 @@ class FaceUnityActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(mBinding.root)
         window.decorView.keepScreenOn = true
+
+        if (!FaceUnityBeautySDK.isAuthSuccess()) {
+            AlertDialog.Builder(this).apply {
+                setTitle("Auth Failed")
+                setMessage("Please check your license file")
+                setCancelable(false)
+                setPositiveButton("OK") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                show()
+            }
+        }
+
 
         initRtcEngine()
         initBeautyApi()

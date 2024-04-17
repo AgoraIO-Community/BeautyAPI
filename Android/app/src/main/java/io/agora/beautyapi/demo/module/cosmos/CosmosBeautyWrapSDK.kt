@@ -122,6 +122,10 @@ object CosmosBeautyWrapSDK {
         }
     }
 
+    fun isAuthSuccess(): Boolean {
+        return authSuccess
+    }
+
     private fun initRenderManager() {
         initLoader?.get()
         renderModuleManager = CosmosBeautySDK.createRenderModuleManager()
