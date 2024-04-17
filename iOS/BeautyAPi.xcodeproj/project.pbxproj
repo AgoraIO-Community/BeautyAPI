@@ -44,6 +44,7 @@
 		E72F62732A8A2F0700C963D2 /* BeautyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72F62722A8A2F0700C963D2 /* BeautyManager.swift */; };
 		E72F62782A8A3A9D00C963D2 /* UIColor+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72F62772A8A3A9D00C963D2 /* UIColor+Hex.swift */; };
 		E73A2D172B182D4800C8EC76 /* LoadUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = E73A2D162B182D4800C8EC76 /* LoadUtil.m */; };
+		E76515992BCFC3BA004E3821 /* APIReporter.m in Sources */ = {isa = PBXBuildFile; fileRef = E76515982BCFC3BA004E3821 /* APIReporter.m */; };
 		E77902B72A4D636C008791AD /* BELicenseHelper.mm in Sources */ = {isa = PBXBuildFile; fileRef = E779029B2A4D636C008791AD /* BELicenseHelper.mm */; };
 		E77902B82A4D636C008791AD /* BEOpenGLRenderHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E779029C2A4D636C008791AD /* BEOpenGLRenderHelper.m */; };
 		E77902B92A4D636C008791AD /* BEEffectManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = E779029F2A4D636C008791AD /* BEEffectManager.mm */; };
@@ -125,6 +126,8 @@
 		E732E9202A31A786004403AF /* authpack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = authpack.h; sourceTree = "<group>"; };
 		E73A2D152B182D4800C8EC76 /* LoadUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoadUtil.h; sourceTree = "<group>"; };
 		E73A2D162B182D4800C8EC76 /* LoadUtil.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoadUtil.m; sourceTree = "<group>"; };
+		E76515972BCFC3BA004E3821 /* APIReporter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = APIReporter.h; sourceTree = "<group>"; };
+		E76515982BCFC3BA004E3821 /* APIReporter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = APIReporter.m; sourceTree = "<group>"; };
 		E779029B2A4D636C008791AD /* BELicenseHelper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BELicenseHelper.mm; sourceTree = "<group>"; };
 		E779029C2A4D636C008791AD /* BEOpenGLRenderHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEOpenGLRenderHelper.m; sourceTree = "<group>"; };
 		E779029D2A4D636C008791AD /* Core.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Core.h; sourceTree = "<group>"; };
@@ -353,6 +356,15 @@
 			path = FUBeauty;
 			sourceTree = "<group>";
 		};
+		E76515942BCFC08F004E3821 /* Report */ = {
+			isa = PBXGroup;
+			children = (
+				E76515972BCFC3BA004E3821 /* APIReporter.h */,
+				E76515982BCFC3BA004E3821 /* APIReporter.m */,
+			);
+			path = Report;
+			sourceTree = "<group>";
+		};
 		E77902992A4D636C008791AD /* ByteBeaufy */ = {
 			isa = PBXGroup;
 			children = (
@@ -393,6 +405,7 @@
 		E779030C2A57EE58008791AD /* BeautyAPI */ = {
 			isa = PBXGroup;
 			children = (
+				E76515942BCFC08F004E3821 /* Report */,
 				E70ADE422A5E50BE009947CF /* Render */,
 				E779030E2A57EE58008791AD /* BeautyAPI.h */,
 				E77903132A57EE58008791AD /* BeautyAPI.m */,
@@ -601,6 +614,7 @@
 				E7E682352B0F46EF006F67C8 /* BeautyModel+Sense.swift in Sources */,
 				E779031B2A57EE58008791AD /* FUBeautyRender.m in Sources */,
 				E72D78812A286F1600C9134C /* PickerView.swift in Sources */,
+				E76515992BCFC3BA004E3821 /* APIReporter.m in Sources */,
 				E72D78832A286F2900C9134C /* AlertManager.swift in Sources */,
 				E7E682372B0F4868006F67C8 /* BeautyModel+FU.swift in Sources */,
 				E77902C12A4D636C008791AD /* BEHttpRequestProvider.mm in Sources */,
@@ -856,10 +870,6 @@
 					"-framework",
 					"\"CoreVideo\"",
 					"-framework",
-					"\"CosmosBeautyKit\"",
-					"-framework",
-					"\"CosmosCV\"",
-					"-framework",
 					"\"FURenderKit\"",
 					"-framework",
 					"\"Foundation\"",
@@ -868,14 +878,6 @@
 					"-framework",
 					"\"JavaScriptCore\"",
 					"-framework",
-					"\"MNN\"",
-					"-framework",
-					"\"Mantle\"",
-					"-framework",
-					"\"Metal\"",
-					"-framework",
-					"\"MetalPetal\"",
-					"-framework",
 					"\"OpenAL\"",
 					"-framework",
 					"\"OpenGLES\"",
@@ -883,14 +885,6 @@
 					"\"QuartzCore\"",
 					"-framework",
 					"\"UIKit\"",
-					"-framework",
-					"\"XEngine\"",
-					"-framework",
-					"\"ceres\"",
-					"-framework",
-					"\"opencv2\"",
-					"-framework",
-					"\"protobufc\"",
 					"-framework",
 					"\"video_dec\"",
 					"-framework",
@@ -992,10 +986,6 @@
 					"-framework",
 					"\"CoreVideo\"",
 					"-framework",
-					"\"CosmosBeautyKit\"",
-					"-framework",
-					"\"CosmosCV\"",
-					"-framework",
 					"\"FURenderKit\"",
 					"-framework",
 					"\"Foundation\"",
@@ -1004,14 +994,6 @@
 					"-framework",
 					"\"JavaScriptCore\"",
 					"-framework",
-					"\"MNN\"",
-					"-framework",
-					"\"Mantle\"",
-					"-framework",
-					"\"Metal\"",
-					"-framework",
-					"\"MetalPetal\"",
-					"-framework",
 					"\"OpenAL\"",
 					"-framework",
 					"\"OpenGLES\"",
@@ -1019,14 +1001,6 @@
 					"\"QuartzCore\"",
 					"-framework",
 					"\"UIKit\"",
-					"-framework",
-					"\"XEngine\"",
-					"-framework",
-					"\"ceres\"",
-					"-framework",
-					"\"opencv2\"",
-					"-framework",
-					"\"protobufc\"",
 					"-framework",
 					"\"video_dec\"",
 					"-framework",

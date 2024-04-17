@@ -6,8 +6,9 @@
 //
 
 #import "BeautyAPI.h"
+#import "APIReporter.h"
 
-static NSString *const beautyAPIVersion = @"1.0.6";
+static NSString *const beautyAPIVersion = @"1.0.7";
 
 @implementation BeautyStats
 @end
@@ -24,6 +25,8 @@ static NSString *const beautyAPIVersion = @"1.0.6";
 @property (nonatomic, assign) CFTimeInterval preTime;
 @property (nonatomic, strong) NSMutableArray *statsArray;
 @property (nonatomic, assign) AgoraVideoRenderMode renderMode;
+@property (nonatomic, strong) APIReporter *reporter;
+@property (nonatomic, assign) BOOL isFirstFrame;
 
 @end
 
@@ -48,6 +51,15 @@ static NSString *const beautyAPIVersion = @"1.0.6";
     return _statsArray;
 }
 
+- (APIReporter *)reporter {
+    if (_reporter == nil) {
+        _reporter = [[APIReporter alloc] initWithType:(APITypeBeauty) 
+                                              version:beautyAPIVersion
+                                               engine:self.config.rtcEngine];
+    }
+    return _reporter;
+}
+
 - (int)initialize:(BeautyConfig *)config {
     if (config.cameraConfig == nil) {
         CameraConfig *cameraConfig = [[CameraConfig alloc] init];
@@ -70,6 +82,7 @@ static NSString *const beautyAPIVersion = @"1.0.6";
         return -1;
     }
     [LogUtil log:[NSString stringWithFormat:@"beautyRender == %@", config.beautyRender.description]];
+    [self.reporter startDurationEventWithName:@"initialize-release"];
     self.beautyRender = config.beautyRender;
     if (config.captureMode == CaptureModeAgora) {
 #if __has_include(<AgoraRtcKit/AgoraRtcKit.h>)
@@ -199,6 +212,7 @@ static NSString *const beautyAPIVersion = @"1.0.6";
     [self.config.beautyRender destroy];
     self.config = nil;
     [LogUtil log:@"destroy"];
+    [self.reporter endDurationEventWithName:@"initialize-release" ext:@{}];
     return 0;
 }
 
@@ -207,27 +221,7 @@ static NSString *const beautyAPIVersion = @"1.0.6";
         [LogUtil log:@"rtc 不能为空" level:(LogLevelError)];
         return;
     }
-    NSString *jsonString = [self convertToJson:label];
-    [self.config.rtcEngine sendCustomReportMessage:@"scenarioAPI"
-                                          category:[NSString stringWithFormat:@"beauty_iOS_%@",[self getVersion]]
-                                             event:event
-                                             label:jsonString
-                                             value:0];
-}
-
-- (NSString *)convertToJson: (NSDictionary *)object {
-    NSError *error = nil;
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:object
-                                                       options:0
-                                                         error:&error];
-    if (error) {
-        // 转换失败
-        NSLog(@"Error: %@", error.localizedDescription);
-        return nil;
-    }
-    NSString *jsonString = [[NSString alloc] initWithData:jsonData
-                                                 encoding:NSUTF8StringEncoding];
-    return jsonString;
+    [self.reporter reportFuncEventWithName:event value:label ext:@{}];
 }
 
 - (NSString *)getVersion {
@@ -242,7 +236,19 @@ static NSString *const beautyAPIVersion = @"1.0.6";
 - (BOOL)onCaptureVideoFrame:(AgoraOutputVideoFrame *)videoFrame sourceType:(AgoraVideoSourceType)sourceType {
     if (!self.isEnable) { return YES; }
     CFTimeInterval startTime = CACurrentMediaTime();
+    if (!self.isFirstFrame) {
+        [self.reporter startDurationEventWithName:@"first_beauty_frame"];
+    }
     CVPixelBufferRef pixelBuffer = [self.config.beautyRender onCapture:videoFrame.pixelBuffer];
+    if (!self.isFirstFrame) {
+        [self.reporter endDurationEventWithName:@"first_beauty_frame" ext:@{
+            @"width": @(CVPixelBufferGetWidth(pixelBuffer)),
+            @"height": @(CVPixelBufferGetHeight(pixelBuffer)),
+            @"camera_facing": _isFrontCamera ? @"front" : @"back",
+            @"buffer_type": @"pixelbuffer"
+        }];
+        self.isFirstFrame = YES;
+    }
     CFTimeInterval endTime = CACurrentMediaTime();
     if (self.config.statsEnable) {
         [self.statsArray addObject:@(endTime - startTime)];
