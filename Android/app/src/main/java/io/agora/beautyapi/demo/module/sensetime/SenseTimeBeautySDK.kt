@@ -157,7 +157,7 @@ object SenseTimeBeautySDK {
     }
 
 
-    internal fun setBeautyAPI(beautyAPI: SenseTimeBeautyAPI){
+    internal fun setBeautyAPI(beautyAPI: SenseTimeBeautyAPI?){
         this.beautyAPI = beautyAPI
         beautyConfig.resume()
     }

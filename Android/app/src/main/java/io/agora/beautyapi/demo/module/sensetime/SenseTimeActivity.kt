@@ -271,6 +271,7 @@ class SenseTimeActivity : ComponentActivity() {
                 }
             )
         )
+        SenseTimeBeautySDK.setBeautyAPI(mSenseTimeApi)
 
         when (intent.getStringExtra(EXTRA_PROCESS_MODE)) {
             getString(R.string.beauty_process_auto) -> mSenseTimeApi.setParameters(
@@ -420,6 +421,7 @@ class SenseTimeActivity : ComponentActivity() {
         mSenseTimeApi.runOnProcessThread {
             SenseTimeBeautySDK.unInitMobileEffect()
         }
+        SenseTimeBeautySDK.setBeautyAPI(null)
         mSenseTimeApi.release()
         SenseTimeBeautySDK.beautyConfig.reset()
         RtcEngine.destroy()

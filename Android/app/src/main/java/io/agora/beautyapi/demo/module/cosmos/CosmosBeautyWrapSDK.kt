@@ -150,6 +150,7 @@ object CosmosBeautyWrapSDK {
 
     internal fun setBeautyAPI(beautyAPI: CosmosBeautyAPI?) {
         this.beautyAPI = beautyAPI
+        beautyConfig.resume()
     }
 
     private fun runOnBeautyThread(run: () -> Unit) {

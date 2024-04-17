@@ -323,6 +323,7 @@ class FaceUnityActivity : ComponentActivity() {
                 }
             )
         )
+        FaceUnityBeautySDK.setBeautyAPI(mFaceUnityApi)
         when (intent.getStringExtra(EXTRA_PROCESS_MODE)) {
             getString(R.string.beauty_process_auto) -> mFaceUnityApi.setParameters(
                 "beauty_mode",
@@ -406,6 +407,7 @@ class FaceUnityActivity : ComponentActivity() {
         if (isCustomCaptureMode) {
             mRtcEngine.registerVideoFrameObserver(null)
         }
+        FaceUnityBeautySDK.setBeautyAPI(null)
         mFaceUnityApi.release()
         RtcEngine.destroy()
     }

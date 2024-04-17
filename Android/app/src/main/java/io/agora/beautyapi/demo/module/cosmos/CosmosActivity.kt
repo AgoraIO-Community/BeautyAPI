@@ -267,6 +267,7 @@ class CosmosActivity : ComponentActivity() {
                 )
             )
         )
+        CosmosBeautyWrapSDK.setBeautyAPI(mCosmosApi)
         mCosmosApi.enable(beautyEnable)
         // render local video
         mCosmosApi.setupLocalVideo(mBinding.localVideoView, Constants.RENDER_MODE_HIDDEN)
@@ -415,6 +416,7 @@ class CosmosActivity : ComponentActivity() {
         if (isCustomCaptureMode) {
             mRtcEngine.registerVideoFrameObserver(null)
         }
+        CosmosBeautyWrapSDK.setBeautyAPI(null)
         mCosmosApi.release()
         CosmosBeautyWrapSDK.reset()
         RtcEngine.destroy()
