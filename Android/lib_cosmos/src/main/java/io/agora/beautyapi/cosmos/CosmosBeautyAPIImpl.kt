@@ -36,6 +36,8 @@ import io.agora.base.VideoFrame.I420Buffer
 import io.agora.base.VideoFrame.TextureBuffer
 import io.agora.base.internal.video.RendererCommon
 import io.agora.base.internal.video.YuvHelper
+import io.agora.beautyapi.cosmos.utils.APIReporter
+import io.agora.beautyapi.cosmos.utils.APIType
 import io.agora.beautyapi.cosmos.utils.AgoraImageHelper
 import io.agora.beautyapi.cosmos.utils.LogUtils
 import io.agora.beautyapi.cosmos.utils.StatsHelper
@@ -50,8 +52,6 @@ import java.util.concurrent.Executors
 
 class CosmosBeautyAPIImpl : CosmosBeautyAPI, IVideoFrameObserver {
     private val TAG = "ByteDanceBeautyAPIImpl"
-    private val reportId = "scenarioAPI"
-    private val reportCategory = "beauty_android_$VERSION"
     private var beautyMode = 0 // 0: 自动根据buffer类型切换，1：固定使用OES纹理，2：固定使用i420
 
 
@@ -71,6 +71,9 @@ class CosmosBeautyAPIImpl : CosmosBeautyAPI, IVideoFrameObserver {
     private var cameraConfig = CameraConfig()
     private var localVideoRenderMode = Constants.RENDER_MODE_HIDDEN
     private val pendingProcessRunList = Collections.synchronizedList(mutableListOf<()->Unit>())
+    private val apiReporter by lazy {
+        APIReporter(APIType.BEAUTY, VERSION, config!!.rtcEngine)
+    }
 
     private enum class BeautyProcessType{
         UNKNOWN, TEXTURE_OES, TEXTURE_2D, I420
@@ -91,7 +94,17 @@ class CosmosBeautyAPIImpl : CosmosBeautyAPI, IVideoFrameObserver {
         }
         LogUtils.i(TAG, "initialize >> config = $config")
         LogUtils.i(TAG, "initialize >> beauty api version=$VERSION, beauty sdk version=3.7.0")
-        config.rtcEngine.sendCustomReportMessage(reportId, reportCategory, "initialize", "$config", 0)
+        apiReporter.reportFuncEvent(
+            "initialize",
+            mapOf(
+                "captureMode" to config.captureMode,
+                "statsDuration" to config.statsDuration,
+                "statsEnable" to config.statsEnable,
+                "cameraConfig" to config.cameraConfig,
+            ),
+            emptyMap()
+        )
+        apiReporter.startDurationEvent("initialize-release")
         return ErrorCode.ERROR_OK.value
     }
 
@@ -110,7 +123,11 @@ class CosmosBeautyAPIImpl : CosmosBeautyAPI, IVideoFrameObserver {
             LogUtils.i(TAG, "enable >> skipFrame = $skipFrame")
         }
         this.enable = enable
-        config?.rtcEngine?.sendCustomReportMessage(reportId, reportCategory, "enable", "$enable", 0)
+        apiReporter.reportFuncEvent(
+            "enable",
+            mapOf("enable" to enable),
+            emptyMap()
+        )
         return ErrorCode.ERROR_OK.value
     }
 
@@ -121,7 +138,11 @@ class CosmosBeautyAPIImpl : CosmosBeautyAPI, IVideoFrameObserver {
             return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
         }
         LogUtils.i(TAG, "setupLocalVideo >> view=$view, renderMode=$renderMode")
-        rtcEngine.sendCustomReportMessage(reportId, reportCategory, "enable", "view=$view, renderMode=$renderMode", 0)
+        apiReporter.reportFuncEvent(
+            "setupLocalVideo",
+            mapOf("view" to view, "renderMode" to renderMode),
+            emptyMap()
+        )
         if (view is TextureView || view is SurfaceView) {
             val canvas = VideoCanvas(view, renderMode, 0)
             canvas.mirrorMode = Constants.VIDEO_MIRROR_MODE_DISABLED
@@ -173,7 +194,11 @@ class CosmosBeautyAPIImpl : CosmosBeautyAPI, IVideoFrameObserver {
         }
 
         LogUtils.i(TAG, "setBeautyPreset >> preset = $preset")
-        conf.rtcEngine.sendCustomReportMessage(reportId, reportCategory, "enable", "preset=$preset", 0)
+        apiReporter.reportFuncEvent(
+            "setBeautyPreset",
+            mapOf("preset" to preset),
+            emptyMap()
+        )
 
         if (preset == BeautyPreset.DEFAULT) {
             throw RuntimeException("The default beauty preset is not defined yet!")
@@ -182,6 +207,11 @@ class CosmosBeautyAPIImpl : CosmosBeautyAPI, IVideoFrameObserver {
     }
 
     override fun setParameters(key: String, value: String) {
+        apiReporter.reportFuncEvent(
+            "setParameters",
+            mapOf("key" to key, "value" to value),
+            emptyMap()
+        )
         when (key) {
             "beauty_mode" -> beautyMode = value.toInt()
         }
@@ -208,8 +238,11 @@ class CosmosBeautyAPIImpl : CosmosBeautyAPI, IVideoFrameObserver {
     override fun updateCameraConfig(config: CameraConfig): Int {
         LogUtils.i(TAG, "updateCameraConfig >> oldCameraConfig=$cameraConfig, newCameraConfig=$config")
         cameraConfig = CameraConfig(config.frontMirror, config.backMirror)
-        this.config?.rtcEngine?.sendCustomReportMessage(reportId, reportCategory, "updateCameraConfig", "config=$config", 0)
-
+        apiReporter.reportFuncEvent(
+            "updateCameraConfig",
+            mapOf("config" to config),
+            emptyMap()
+        )
         return ErrorCode.ERROR_OK.value
     }
 
@@ -228,7 +261,11 @@ class CosmosBeautyAPIImpl : CosmosBeautyAPI, IVideoFrameObserver {
         if (conf.captureMode == CaptureMode.Agora) {
             conf.rtcEngine.registerVideoFrameObserver(null)
         }
-        conf.rtcEngine.sendCustomReportMessage(reportId, reportCategory, "release", "", 0)
+        apiReporter.reportFuncEvent(
+            "release",
+            emptyMap(),
+            emptyMap())
+        apiReporter.endDurationEvent("initialize-release", emptyMap())
         LogUtils.i(TAG, "release")
         isReleased = true
         workerThreadExecutor.shutdown()
@@ -327,6 +364,7 @@ class CosmosBeautyAPIImpl : CosmosBeautyAPI, IVideoFrameObserver {
                 }
             }
             LogUtils.i(TAG, "processBeauty >> create texture buffer, beautyMode=$beautyMode")
+            apiReporter.startDurationEvent("first_beauty_frame")
         }
 
         val startTime = System.currentTimeMillis()
@@ -350,6 +388,8 @@ class CosmosBeautyAPIImpl : CosmosBeautyAPI, IVideoFrameObserver {
             skipFrame--
             return false
         }
+
+        apiReporter.endDurationEvent("first_beauty_frame", emptyMap())
 
         val processBuffer: TextureBuffer = textureBufferHelper?.wrapTextureBuffer(
             videoFrame.rotatedWidth,

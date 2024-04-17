@@ -47,6 +47,8 @@ import io.agora.base.VideoFrame.SourceType
 import io.agora.base.VideoFrame.TextureBuffer
 import io.agora.base.internal.video.EglBase
 import io.agora.base.internal.video.YuvHelper
+import io.agora.beautyapi.faceunity.utils.APIReporter
+import io.agora.beautyapi.faceunity.utils.APIType
 import io.agora.beautyapi.faceunity.utils.FuDeviceUtils
 import io.agora.beautyapi.faceunity.utils.LogUtils
 import io.agora.beautyapi.faceunity.utils.StatsHelper
@@ -63,8 +65,6 @@ import java.util.concurrent.Callable
 
 class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
     private val TAG = "FaceUnityBeautyAPIImpl"
-    private val reportId = "scenarioAPI"
-    private val reportCategory = "beauty_android_$VERSION"
     private var beautyMode = 0 // 0: 自动根据buffer类型切换，1：固定使用OES纹理，2：固定使用i420，3: 单纹理模式
     private var enableTextureAsync = true // 是否开启纹理+异步缓存处理。对于GPU性能好的手机可以减小美颜处理耗时，对于中端机开启后效果也不明显。
 
@@ -96,6 +96,9 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
     private val pendingProcessRunList = Collections.synchronizedList(mutableListOf<()->Unit>())
     private val transformGLFrameBuffer = GLFrameBuffer()
     private val outGLFrameBuffer = GLFrameBuffer()
+    private val apiReporter by lazy {
+        APIReporter(APIType.BEAUTY, VERSION, config!!.rtcEngine)
+    }
 
     private var asyncTextureProcessHelper: TextureProcessHelper? = null
     private var asyncTextureBufferHelper: TextureBufferHelper? = null
@@ -125,7 +128,17 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             }
         }
         LogUtils.i(TAG, "initialize >> FuDeviceUtils deviceLevel=$deviceLevel")
-        config.rtcEngine.sendCustomReportMessage(reportId, reportCategory, "initialize", "config=$config, deviceLevel=$deviceLevel", 0)
+        apiReporter.reportFuncEvent(
+            "initialize",
+            mapOf(
+                "captureMode" to config.cameraConfig,
+                "statsDuration" to config.statsDuration,
+                "statsEnable" to config.statsEnable,
+                "cameraConfig" to config.cameraConfig,
+            ),
+            emptyMap()
+        )
+        apiReporter.startDurationEvent("initialize-release")
         return ErrorCode.ERROR_OK.value
     }
 
@@ -143,8 +156,11 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             skipFrame = 2
             LogUtils.i(TAG, "enable >> skipFrame = $skipFrame")
         }
-        config?.rtcEngine?.sendCustomReportMessage(reportId, reportCategory, "enable", "enable=$enable", 0)
-
+        apiReporter.reportFuncEvent(
+            "enable",
+            mapOf("enable" to enable),
+            emptyMap()
+        )
         if(this.enable != enable){
             this.enable = enable
             enableChange = true
@@ -161,7 +177,11 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         }
         LogUtils.i(TAG, "setupLocalVideo >> view=$view, renderMode=$renderMode")
         localVideoRenderMode = renderMode
-        rtcEngine.sendCustomReportMessage(reportId, reportCategory, "enable", "view=$view, renderMode=$renderMode", 0)
+        apiReporter.reportFuncEvent(
+            "setupLocalVideo",
+            mapOf("view" to view, "renderMode" to renderMode),
+            emptyMap()
+        )
         if (view is TextureView || view is SurfaceView) {
             val canvas = VideoCanvas(view, renderMode, 0)
             canvas.mirrorMode = Constants.VIDEO_MIRROR_MODE_DISABLED
@@ -195,8 +215,11 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
     override fun updateCameraConfig(config: CameraConfig): Int {
         LogUtils.i(TAG, "updateCameraConfig >> oldCameraConfig=$cameraConfig, newCameraConfig=$config")
         cameraConfig = CameraConfig(config.frontMirror, config.backMirror)
-        this.config?.rtcEngine?.sendCustomReportMessage(reportId, reportCategory, "updateCameraConfig", "config=$config", 0)
-
+        apiReporter.reportFuncEvent(
+            "updateCameraConfig",
+            mapOf("config" to config),
+            emptyMap()
+        )
         return ErrorCode.ERROR_OK.value
     }
 
@@ -221,6 +244,10 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
     override fun isFrontCamera() = isFrontCamera
 
     override fun setParameters(key: String, value: String) {
+        apiReporter.reportFuncEvent("setParameters",
+            mapOf("key" to key, "value" to value),
+            emptyMap()
+        )
         when(key){
             "beauty_mode" -> beautyMode = value.toInt()
             "enableTextureAsync" -> enableTextureAsync = value.toBoolean()
@@ -239,8 +266,10 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         }
 
         LogUtils.i(TAG, "setBeautyPreset >> preset = $preset")
-        config?.rtcEngine?.sendCustomReportMessage(reportId, reportCategory, "enable", "preset=$preset", 0)
-
+        apiReporter.reportFuncEvent("setBeautyPreset",
+            mapOf("preset" to preset),
+            emptyMap()
+        )
         val recommendFaceBeauty = FaceBeauty(FUBundleData("graphics" + File.separator + "face_beautification.bundle"))
         if (preset == BeautyPreset.DEFAULT) {
             recommendFaceBeauty.filterName = FaceBeautyFilterEnum.FENNEN_1
@@ -306,7 +335,8 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         if (conf.captureMode == CaptureMode.Agora) {
             conf.rtcEngine.registerVideoFrameObserver(null)
         }
-        conf.rtcEngine.sendCustomReportMessage(reportId, reportCategory, "release", "", 0)
+        apiReporter.reportFuncEvent("release", emptyMap(), emptyMap())
+        apiReporter.endDurationEvent("initialize-release", emptyMap())
 
         isReleased = true
         beautyTextureBufferHelper?.let {
@@ -426,6 +456,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
                 }
             }
             LogUtils.i(TAG, "processBeauty >> create texture buffer, beautyMode=$beautyMode")
+            apiReporter.startDurationEvent("first_beauty_frame")
         }
         val startTime = System.currentTimeMillis()
         val processTexId = when (beautyMode) {
@@ -455,6 +486,15 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             LogUtils.w(TAG, "processBeauty >> skipFrame=$skipFrame")
             return false
         }
+
+        apiReporter.endDurationEvent("first_beauty_frame",
+            mapOf(
+                "width" to videoFrame.rotatedWidth,
+                "height" to videoFrame.rotatedHeight,
+                "camera_facing" to videoFrame.sourceType.name,
+                "buffer_type" to videoFrame.buffer::class.java.simpleName,
+            )
+        )
 
         val processBuffer: TextureBuffer = beautyTextureBufferHelper?.wrapTextureBuffer(
             videoFrame.rotatedWidth,
