@@ -421,7 +421,7 @@ class SenseTimeActivity : ComponentActivity() {
             SenseTimeBeautySDK.unInitMobileEffect()
         }
         mSenseTimeApi.release()
-
+        SenseTimeBeautySDK.beautyConfig.reset()
         RtcEngine.destroy()
     }
 }

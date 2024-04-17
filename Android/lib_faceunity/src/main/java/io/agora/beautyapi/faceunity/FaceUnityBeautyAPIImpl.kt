@@ -563,16 +563,16 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
                 input.renderConfig.let {
                     if (isFront) {
                         it.cameraFacing = CameraFacingEnum.CAMERA_FRONT
-                        it.inputBufferMatrix = FUTransformMatrixEnum.CCROT0
-                        it.inputTextureMatrix = FUTransformMatrixEnum.CCROT0
-                        it.outputMatrix = FUTransformMatrixEnum.CCROT0_FLIPVERTICAL
-                        it.deviceOrientation = 270
+                        it.inputBufferMatrix = FUTransformMatrixEnum.CCROT0_FLIPVERTICAL
+                        it.inputTextureMatrix = FUTransformMatrixEnum.CCROT0_FLIPVERTICAL
+                        it.outputMatrix = FUTransformMatrixEnum.CCROT0
+                        it.deviceOrientation = 90
                     } else {
                         it.cameraFacing = CameraFacingEnum.CAMERA_BACK
-                        it.inputBufferMatrix = FUTransformMatrixEnum.CCROT0
-                        it.inputTextureMatrix = FUTransformMatrixEnum.CCROT0
-                        it.outputMatrix = FUTransformMatrixEnum.CCROT0_FLIPVERTICAL
-                        it.deviceOrientation = 270
+                        it.inputBufferMatrix = FUTransformMatrixEnum.CCROT0_FLIPVERTICAL
+                        it.inputTextureMatrix = FUTransformMatrixEnum.CCROT0_FLIPVERTICAL
+                        it.outputMatrix = FUTransformMatrixEnum.CCROT0
+                        it.deviceOrientation = 90
                     }
                 }
                 if (isReleased) {
@@ -661,16 +661,16 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             input.renderConfig.let {
                 if (isFront) {
                     it.cameraFacing = CameraFacingEnum.CAMERA_FRONT
-                    it.inputBufferMatrix = FUTransformMatrixEnum.CCROT0
-                    it.inputTextureMatrix = FUTransformMatrixEnum.CCROT0
-                    it.outputMatrix = FUTransformMatrixEnum.CCROT0_FLIPVERTICAL
-                    it.deviceOrientation = 270
+                    it.inputBufferMatrix = FUTransformMatrixEnum.CCROT0_FLIPVERTICAL
+                    it.inputTextureMatrix = FUTransformMatrixEnum.CCROT0_FLIPVERTICAL
+                    it.outputMatrix = FUTransformMatrixEnum.CCROT0
+                    it.deviceOrientation = 90
                 } else {
                     it.cameraFacing = CameraFacingEnum.CAMERA_BACK
-                    it.inputBufferMatrix = FUTransformMatrixEnum.CCROT0
-                    it.inputTextureMatrix = FUTransformMatrixEnum.CCROT0
-                    it.outputMatrix = FUTransformMatrixEnum.CCROT0_FLIPVERTICAL
-                    it.deviceOrientation = 270
+                    it.inputBufferMatrix = FUTransformMatrixEnum.CCROT0_FLIPVERTICAL
+                    it.inputTextureMatrix = FUTransformMatrixEnum.CCROT0_FLIPVERTICAL
+                    it.outputMatrix = FUTransformMatrixEnum.CCROT0
+                    it.deviceOrientation = 90
                 }
             }
             if (isReleased) {

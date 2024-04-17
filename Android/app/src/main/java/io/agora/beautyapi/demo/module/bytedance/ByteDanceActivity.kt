@@ -263,6 +263,7 @@ class ByteDanceActivity : ComponentActivity() {
                 )
             )
         )
+        ByteDanceBeautySDK.setBeautyAPI(mByteDanceApi)
 
         if (isCustomCaptureMode) {
             mRtcEngine.registerVideoFrameObserver(object : IVideoFrameObserver {
@@ -407,6 +408,7 @@ class ByteDanceActivity : ComponentActivity() {
         if (isCustomCaptureMode) {
             mRtcEngine.registerVideoFrameObserver(null)
         }
+        ByteDanceBeautySDK.setBeautyAPI(null)
         mByteDanceApi.release()
         RtcEngine.destroy()
     }
