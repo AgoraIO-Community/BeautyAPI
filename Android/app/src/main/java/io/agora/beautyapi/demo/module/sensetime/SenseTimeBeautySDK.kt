@@ -87,6 +87,7 @@ object SenseTimeBeautySDK {
             _mobileEffectNative?.createInstance(context, STMobileEffectNative.EFFECT_CONFIG_NONE)
         _mobileEffectNative?.setParam(STMobileEffectParams.EFFECT_PARAM_QUATERNION_SMOOTH_FRAME, 5f)
         Log.d(TAG, "SenseTime >> STMobileEffectNative create result : $result")
+        beautyConfig.resume()
     }
 
     fun unInitMobileEffect() {
@@ -156,7 +157,7 @@ object SenseTimeBeautySDK {
     }
 
 
-    internal fun setBeautyAPI(beautyAPI: SenseTimeBeautyAPI){
+    internal fun setBeautyAPI(beautyAPI: SenseTimeBeautyAPI?){
         this.beautyAPI = beautyAPI
         beautyConfig.resume()
     }

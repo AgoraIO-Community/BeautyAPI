@@ -43,6 +43,11 @@ class SettingsDialog(private val context: Context) {
         }
     }
 
+    fun setTextureAsyncChecked(isChecked: Boolean){
+        mBinding.swTextureAsync.isVisible = true
+        mBinding.swTextureAsync.isChecked = isChecked
+    }
+
     fun setOnTextureAsyncChangeListener(onChanged: (enable: Boolean) -> Unit){
         mBinding.swTextureAsync.isVisible = true
         mBinding.swTextureAsync.setOnCheckedChangeListener { _, isChecked ->

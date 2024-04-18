@@ -85,8 +85,9 @@ object FaceUnityBeautySDK {
         return aMethod.invoke(null) as? ByteArray
     }
 
-    internal fun setBeautyAPI(beautyAPI: FaceUnityBeautyAPI) {
+    internal fun setBeautyAPI(beautyAPI: FaceUnityBeautyAPI?) {
         this.beautyAPI = beautyAPI
+        beautyConfig.resume()
     }
 
     private fun runOnBeautyThread(run: () -> Unit) {
@@ -318,6 +319,28 @@ object FaceUnityBeautySDK {
 
             makeUp = null
             sticker = null
+        }
+
+        fun resume(){
+            smooth = smooth
+            whiten = whiten
+            thinFace = thinFace
+            enlargeEye = enlargeEye
+            redden = redden
+            shrinkCheekbone = shrinkCheekbone
+            shrinkJawbone = shrinkJawbone
+            whiteTeeth = whiteTeeth
+            hairlineHeight = hairlineHeight
+            narrowNose = narrowNose
+            mouthSize = mouthSize
+            chinLength = chinLength
+            brightEye = brightEye
+            darkCircles = darkCircles
+            nasolabialFolds = nasolabialFolds
+            faceThree = faceThree
+
+            makeUp = makeUp
+            sticker = sticker
         }
 
     }
