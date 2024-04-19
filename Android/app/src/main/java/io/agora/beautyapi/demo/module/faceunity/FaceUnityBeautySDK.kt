@@ -48,13 +48,13 @@ object FaceUnityBeautySDK {
                 Log.i(TAG, "FURenderManager onSuccess -- code=$code, msg=$msg")
                 if (code == OPERATE_SUCCESS_AUTH) {
                     authSuccess = true
-                    faceunity.fuSetUseTexAsync(1)
+                    faceunity.fuSetUseTexAsync(0)
                     FUAIKit.getInstance()
                         .loadAIProcessor(BUNDLE_AI_FACE, FUAITypeEnum.FUAITYPE_FACEPROCESSOR)
-                    FUAIKit.getInstance().loadAIProcessor(
-                        BUNDLE_AI_HUMAN,
-                        FUAITypeEnum.FUAITYPE_HUMAN_PROCESSOR
-                    )
+                    // FUAIKit.getInstance().loadAIProcessor(
+                    //     BUNDLE_AI_HUMAN,
+                    //     FUAITypeEnum.FUAITYPE_HUMAN_PROCESSOR
+                    // )
 
                 }
             }
