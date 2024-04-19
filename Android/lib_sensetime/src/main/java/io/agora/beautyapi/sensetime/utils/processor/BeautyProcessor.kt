@@ -199,7 +199,6 @@ class BeautyProcessor : IBeautyProcessor {
             )
         }
 
-        GLES20.glFinish()
 
         return processDoubleInput(
             InputInfo(
@@ -470,7 +469,6 @@ class BeautyProcessor : IBeautyProcessor {
             finalTextId,
             GLES20.GL_TEXTURE_2D
         )
-        GLES20.glFinish()
         return finalOutTextureId
     }
 

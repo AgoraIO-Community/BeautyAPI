@@ -105,7 +105,6 @@ class GLTextureBufferQueue(
             glFrameBuffer.setFlipH(flipH)
             glFrameBuffer.setFlipV(flipV)
             glFrameBuffer.process(iN.textureId, iN.textureType)
-            GLES20.glFinish()
             out.index = cacheIndex
             textureIdQueue.offer(out)
             cacheIndex = (cacheIndex + 1) % cacheCount

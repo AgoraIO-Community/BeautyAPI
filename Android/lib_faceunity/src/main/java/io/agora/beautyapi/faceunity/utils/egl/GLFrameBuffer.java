@@ -113,16 +113,15 @@ public class GLFrameBuffer {
         transform.preTranslate(-0.5f, -0.5f);
         float[] matrix = RendererCommon.convertMatrixFromAndroidGraphicsMatrix(transform);
 
-        synchronized (EglBase.lock){
-            if(textureType == GLES11Ext.GL_TEXTURE_EXTERNAL_OES){
-                drawer.drawOes(textureId, matrix, mWidth, mHeight, 0, 0, mWidth, mHeight);
-            }else{
-                drawer.drawRgb(textureId, matrix, mWidth, mHeight, 0, 0, mWidth, mHeight);
+        synchronized (EglBase.lock) {
+            if (textureType == GLES11Ext.GL_TEXTURE_EXTERNAL_OES) {
+                drawer.drawOes(textureId, 0, matrix, mWidth, mHeight, 0, 0, mWidth, mHeight);
+            } else {
+                drawer.drawRgb(textureId, 0, matrix, mWidth, mHeight, 0, 0, mWidth, mHeight);
             }
         }
 
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, GLES20.GL_NONE);
-        GLES20.glFinish();
 
         return mTextureId;
     }

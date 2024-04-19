@@ -27,6 +27,7 @@ package io.agora.beautyapi.faceunity
 import android.graphics.Matrix
 import android.opengl.GLES11Ext
 import android.opengl.GLES20
+import android.opengl.GLES30
 import android.view.SurfaceView
 import android.view.TextureView
 import android.view.View
@@ -486,6 +487,17 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             LogUtils.w(TAG, "processBeauty >> skipFrame=$skipFrame")
             return false
         }
+        val newFence = beautyTextureBufferHelper?.invoke {
+            val texBuffer = videoFrame.buffer as? TextureBuffer ?: return@invoke 0L
+            val fenceOpen = GLES30.glIsSync(texBuffer.fenceObject)
+            if (fenceOpen) {
+                val glFenceSync = GLES30.glFenceSync(GLES30.GL_SYNC_GPU_COMMANDS_COMPLETE, 0)
+                GLES20.glFlush()
+                return@invoke glFenceSync
+            }
+            GLES20.glFinish()
+            return@invoke 0L
+        } ?: 0L
 
         apiReporter.endDurationEvent("first_beauty_frame",
             mapOf(
@@ -501,6 +513,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             videoFrame.rotatedHeight,
             TextureBuffer.Type.RGB,
             processTexId,
+            newFence,
             identityMatrix
         ) ?: return false
         videoFrame.replaceBuffer(processBuffer, 0, videoFrame.timestampNs)
