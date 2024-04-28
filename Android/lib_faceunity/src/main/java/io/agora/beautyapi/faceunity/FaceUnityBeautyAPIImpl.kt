@@ -66,7 +66,7 @@ import java.util.concurrent.Callable
 class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
     private val TAG = "FaceUnityBeautyAPIImpl"
     private var beautyMode = 0 // 0: 自动根据buffer类型切换，1：固定使用OES纹理，2：固定使用i420，3: 单纹理模式
-    private var enableTextureAsync = true // 是否开启纹理+异步缓存处理。对于GPU性能好的手机可以减小美颜处理耗时，对于中端机开启后效果也不明显。
+    private var enableTextureAsync = false // 是否开启纹理+异步缓存处理。对于GPU性能好的手机可以减小美颜处理耗时，对于中端机开启后效果也不明显。
 
     private var beautyTextureBufferHelper: TextureBufferHelper? = null
     private var byteBuffer: ByteBuffer? = null

@@ -185,7 +185,7 @@ class FaceUnityActivity : ComponentActivity() {
                     mFaceUnityApi.setParameters("beauty_mode", "0")
                 }
             }
-            setTextureAsyncChecked(true)
+            setTextureAsyncChecked(false)
             setOnTextureAsyncChangeListener { enable ->
                 if (enable) {
                     mFaceUnityApi.setParameters("enableTextureAsync", "true")
