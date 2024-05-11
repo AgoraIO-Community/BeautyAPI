@@ -139,6 +139,7 @@
 
 - (void)setStyleWithPath:(NSString *)path key:(NSString *)key value:(float)value isCombined:(BOOL)isCombined {
 #if __has_include(FURenderMoudle)
+    [self _setBeautyPreset];
     FUMakeup *makeup = [FURenderKit shareRenderKit].makeup;
     if (isCombined) {
         if (makeup == nil || self.makeupKey != key) {
@@ -180,6 +181,7 @@
 
 - (void)setAnimojiWithPath:(NSString *)path {
 #if __has_include(FURenderMoudle)
+    [self _setBeautyPreset];
     if (self.currentSticker) {
         [[FURenderKit shareRenderKit].stickerContainer removeSticker:self.currentSticker completion:nil];
         self.currentSticker = nil;
@@ -201,6 +203,7 @@
 
 - (void)setStickerWithPath:(NSString *)path {
 #if __has_include(FURenderMoudle)
+    [self _setBeautyPreset];
     NSBundle *bundle = [BundleUtil bundleWithBundleName:@"FURenderKit" podName:@"fuLib"];
     NSString *stickerPath = [bundle pathForResource:[NSString stringWithFormat:@"sticker/%@", path] ofType:@"bundle"];
     if (stickerPath == nil && self.currentSticker == nil) {
@@ -250,6 +253,16 @@
         FUBeauty *beauty = [[FUBeauty alloc] initWithPath:faceAIPath name:@"FUBeauty"];
         [FURenderKit shareRenderKit].beauty = beauty;
     });
+#endif
+}
+
+- (void)_setBeautyPreset {
+#if __has_include(FURenderMoudle)
+    if ([FURenderKit shareRenderKit].beauty == nil) {
+        NSString *faceAIPath = [[NSBundle mainBundle] pathForResource:@"face_beautification" ofType:@"bundle"];
+        FUBeauty *beauty = [[FUBeauty alloc] initWithPath:faceAIPath name:@"FUBeauty"];
+        [FURenderKit shareRenderKit].beauty = beauty;
+    }
 #endif
 }
 
