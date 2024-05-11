@@ -200,12 +200,12 @@
 }
 
 - (void)setStickerWithPath:(NSString *)path {
+#if __has_include(FURenderMoudle)
     NSBundle *bundle = [BundleUtil bundleWithBundleName:@"FURenderKit" podName:@"fuLib"];
     NSString *stickerPath = [bundle pathForResource:[NSString stringWithFormat:@"sticker/%@", path] ofType:@"bundle"];
     if (stickerPath == nil && self.currentSticker == nil) {
         return;
     }
-#if __has_include(FURenderMoudle)
     FUSticker *sticker = [[FUSticker alloc] initWithPath:stickerPath
                           name:path];
     if (self.currentAnimoji) {
