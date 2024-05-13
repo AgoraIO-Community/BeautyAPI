@@ -24,6 +24,17 @@ class FUBeautyManager: NSObject {
         }
     }
     
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    override init() {
+        super.init()
+        if FUBeautyRender.checkLicense() == false {
+            AUIToast.show(text: "Auth Failed, Please check your license file")
+        }
+    }
+    
     func setBeauty(path: String?, key: String?, value: CGFloat) {
         if path == "init" {
             render.setBeautyPreset()

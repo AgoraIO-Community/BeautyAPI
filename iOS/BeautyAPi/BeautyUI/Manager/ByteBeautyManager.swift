@@ -36,6 +36,16 @@ class ByteBeautyManager {
     
     var isEnableBeauty: Bool = true
     
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    init() {
+        NotificationCenter.default.addObserver(forName: Notification.Name("kBESdkErrorNotification"), object: self, queue: .main) { notification in
+            AUIToast.show(text: "Auth Failed, Please check your license file")
+        }
+    }
+    
     func setBeauty(path: String?, key: String?, value: CGFloat) {
         guard let path = path, let key = key else { return }
         if !path.isEmpty, !beautyNodes.contains(path) {
