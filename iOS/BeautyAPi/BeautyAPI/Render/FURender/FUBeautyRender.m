@@ -7,6 +7,9 @@
 
 #import "FUBeautyRender.h"
 #import "BundleUtil.h"
+#if __has_include("FUManager.h")
+#import "authpack.h"
+#endif
 
 @interface FUBeautyRender ()
 
@@ -28,6 +31,17 @@
 #endif
     }
     return self;
+}
+
++ (BOOL)checkLicense {
+#if __has_include("FUManager.h")
+    FUSetupConfig *setupConfig = [[FUSetupConfig alloc] init];
+    setupConfig.authPack = FUAuthPackMake(g_auth_package, sizeof(g_auth_package));
+    
+    // 初始化 FURenderKit
+    BOOL success = [FURenderKit setupWithSetupConfig:setupConfig];
+    return success;
+#endif
 }
 
 - (void)destroy {
