@@ -22,6 +22,11 @@ class CosmosBeautyManager: NSObject {
             _sharedManager = nil
         }
     }
+    override init() {
+        super.init()
+        if render.render.isAuthSuccess() {return}
+        AUIToast.show(text: "Auth Failed, Please check your license file")
+    }
     
     func setBeauty(path: String?, key: String?, value: CGFloat) {
         render.setBeautyFactor(Float(value), forKey: key ?? "")
