@@ -1,5 +1,9 @@
 # Beauty API Change Log
 
+## 1.0.7
+1. 添加APIReporter日志上报模块
+2. 优化证书过期时的处理逻辑
+
 ## 1.0.6.2
 1. Android：修复相芯直接纹理处理模式下切换I420美颜卡住的问题
 2. Android：完善美颜设置
