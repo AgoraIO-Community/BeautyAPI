@@ -197,6 +197,14 @@ static BELicenseHelper* _instance = nil;
     return _licenseMode;
 }
 
+- (bool)checkLicense {
+    NSString *licenseName = [NSString stringWithFormat:@"/%s", LICENSE_NAME];
+    NSBundle *bundle = [BundleUtil bundleWithBundleName:@"ByteEffectLib" podName:@"bytedEffect"];
+    NSString* licensePath = [bundle pathForResource:OFFLIN_LICENSE_PATH ofType:OFFLIN_BUNDLE];
+    licensePath = [licensePath stringByAppendingString:licenseName];
+    return [self checkLicenseOK:[licensePath UTF8String]];
+}
+
 - (bool)checkLicenseResult:(NSString*) msg {
     if (_errorCode != 0) {
         if ([_errorMsg length] > 0) {

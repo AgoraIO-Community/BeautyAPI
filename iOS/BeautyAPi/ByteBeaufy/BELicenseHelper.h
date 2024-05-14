@@ -28,6 +28,7 @@ typedef NS_ENUM(NSInteger, LICENSE_MODE_ENUM) {
 
 - (bool)deleteCacheFile;
 
+- (bool)checkLicense;
 @end
 
 @interface BELicenseHelper : NSObject<BELicenseProvider>
