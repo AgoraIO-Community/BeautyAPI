@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) BEEffectManager *effectManager;
 @property (nonatomic, strong) BEImageUtils *imageUtils;
 #endif
-
+- (BOOL)checkLicense;
 @end
 
 NS_ASSUME_NONNULL_END

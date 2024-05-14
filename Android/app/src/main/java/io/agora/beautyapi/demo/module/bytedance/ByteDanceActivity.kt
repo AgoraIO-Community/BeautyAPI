@@ -24,6 +24,7 @@
 
 package io.agora.beautyapi.demo.module.bytedance
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -37,7 +38,6 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import io.agora.base.VideoFrame
-import io.agora.beautyapi.bytedance.BeautyPreset
 import io.agora.beautyapi.bytedance.CameraConfig
 import io.agora.beautyapi.bytedance.CaptureMode
 import io.agora.beautyapi.bytedance.Config
@@ -240,7 +240,20 @@ class ByteDanceActivity : ComponentActivity() {
                         Log.d(TAG, "BeautyStats stats = $stats")
                     },
                     onEffectInitialized = {
-                        ByteDanceBeautySDK.initEffect(applicationContext)
+                        val authSuccess = ByteDanceBeautySDK.initEffect(applicationContext)
+                        if(!authSuccess){
+                            runOnUiThread {
+                                AlertDialog.Builder(this@ByteDanceActivity).apply {
+                                    setTitle("Auth Failed")
+                                    setMessage("Please check your license file")
+                                    setCancelable(false)
+                                    setPositiveButton( "OK") { dialog, _ ->
+                                        dialog.dismiss()
+                                    }
+                                    show()
+                                }
+                            }
+                        }
                         Log.d(TAG, "onEffectInitialized")
                     },
                     onEffectDestroyed = {
@@ -250,6 +263,7 @@ class ByteDanceActivity : ComponentActivity() {
                 )
             )
         )
+        ByteDanceBeautySDK.setBeautyAPI(mByteDanceApi)
 
         if (isCustomCaptureMode) {
             mRtcEngine.registerVideoFrameObserver(object : IVideoFrameObserver {
@@ -394,6 +408,7 @@ class ByteDanceActivity : ComponentActivity() {
         if (isCustomCaptureMode) {
             mRtcEngine.registerVideoFrameObserver(null)
         }
+        ByteDanceBeautySDK.setBeautyAPI(null)
         mByteDanceApi.release()
         RtcEngine.destroy()
     }

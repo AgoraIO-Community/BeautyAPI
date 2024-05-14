@@ -41,6 +41,13 @@
         android:visibility="gone"
         android:background="#eeeeee"/>
 
+    <Switch
+        android:id="@+id/swTextureAsync"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:visibility="gone"
+        android:text="TextureAsync开关(测试用)"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="45dp"

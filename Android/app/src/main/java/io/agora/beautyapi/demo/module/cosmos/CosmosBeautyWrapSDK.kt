@@ -122,11 +122,16 @@ object CosmosBeautyWrapSDK {
         }
     }
 
+    fun isAuthSuccess(): Boolean {
+        return authSuccess
+    }
+
     private fun initRenderManager() {
         initLoader?.get()
         renderModuleManager = CosmosBeautySDK.createRenderModuleManager()
         renderModuleManager?.prepare(true)
         initModules()
+        beautyConfig.resume()
     }
 
     private fun initModules(){
@@ -145,6 +150,7 @@ object CosmosBeautyWrapSDK {
 
     internal fun setBeautyAPI(beautyAPI: CosmosBeautyAPI?) {
         this.beautyAPI = beautyAPI
+        beautyConfig.resume()
     }
 
     private fun runOnBeautyThread(run: () -> Unit) {
@@ -154,6 +160,7 @@ object CosmosBeautyWrapSDK {
     fun reset() {
         renderModuleManager?.release()
         renderModuleManager = null
+        beautyConfig.reset()
         beautyModule = null
         makeupModule = null
         lookupModule = null
@@ -400,6 +407,26 @@ object CosmosBeautyWrapSDK {
 
             makeUp = null
             sticker = null
+        }
+
+        internal fun resume(){
+            smooth = smooth
+            whiten = whiten
+            thinFace = thinFace
+            enlargeEye = enlargeEye
+            redden = redden
+            shrinkCheekbone = shrinkCheekbone
+            shrinkJawbone = shrinkJawbone
+            whiteTeeth = whiteTeeth
+            hairlineHeight = hairlineHeight
+            narrowNose = narrowNose
+            mouthSize = mouthSize
+            chinLength = chinLength
+            brightEye = brightEye
+            nasolabialFolds = nasolabialFolds
+
+            makeUp = makeUp
+            sticker = sticker
         }
     }
 

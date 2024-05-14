@@ -36,6 +36,15 @@ class ByteBeautyManager {
     
     var isEnableBeauty: Bool = true
     
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    init() {
+        if render.checkLicense() { return }
+        AUIToast.show(text: "Auth Failed, Please check your license file")
+    }
+    
     func setBeauty(path: String?, key: String?, value: CGFloat) {
         guard let path = path, let key = key else { return }
         if !path.isEmpty, !beautyNodes.contains(path) {

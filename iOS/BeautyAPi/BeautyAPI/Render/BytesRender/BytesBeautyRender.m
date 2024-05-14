@@ -46,6 +46,14 @@
     return _bytesNodes;
 }
 
+- (BOOL)checkLicense {
+#if __has_include(BytesMoudle)
+    return [[BELicenseHelper shareInstance] checkLicense];
+#else
+    return NO;
+#endif
+}
+
 - (void)destroy {
 #if __has_include(BytesMoudle)
     [_effectManager cleanPipeline];

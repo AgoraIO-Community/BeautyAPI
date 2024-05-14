@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		C5DC38DA660712418398BB5E /* Pods_BeautyAPi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A74E98AAF37F5AC2599EC0B /* Pods_BeautyAPi.framework */; };
+		DDC3B4382BF2157000200137 /* AUIToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC3B4372BF2157000200137 /* AUIToast.swift */; };
 		E70ADED02A68E3FB009947CF /* EFGlobalSingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = E70ADECF2A68E3FB009947CF /* EFGlobalSingleton.m */; };
 		E72D78162A25963500C9134C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72D78152A25963500C9134C /* AppDelegate.swift */; };
 		E72D78182A25963500C9134C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72D78172A25963500C9134C /* SceneDelegate.swift */; };
@@ -44,6 +45,7 @@
 		E72F62732A8A2F0700C963D2 /* BeautyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72F62722A8A2F0700C963D2 /* BeautyManager.swift */; };
 		E72F62782A8A3A9D00C963D2 /* UIColor+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72F62772A8A3A9D00C963D2 /* UIColor+Hex.swift */; };
 		E73A2D172B182D4800C8EC76 /* LoadUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = E73A2D162B182D4800C8EC76 /* LoadUtil.m */; };
+		E76515992BCFC3BA004E3821 /* APIReporter.m in Sources */ = {isa = PBXBuildFile; fileRef = E76515982BCFC3BA004E3821 /* APIReporter.m */; };
 		E77902B72A4D636C008791AD /* BELicenseHelper.mm in Sources */ = {isa = PBXBuildFile; fileRef = E779029B2A4D636C008791AD /* BELicenseHelper.mm */; };
 		E77902B82A4D636C008791AD /* BEOpenGLRenderHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E779029C2A4D636C008791AD /* BEOpenGLRenderHelper.m */; };
 		E77902B92A4D636C008791AD /* BEEffectManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = E779029F2A4D636C008791AD /* BEEffectManager.mm */; };
@@ -72,6 +74,7 @@
 		0D6108959E288EB21E103A36 /* Pods-BeautyAPi.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BeautyAPi.debug.xcconfig"; path = "Target Support Files/Pods-BeautyAPi/Pods-BeautyAPi.debug.xcconfig"; sourceTree = "<group>"; };
 		9A74E98AAF37F5AC2599EC0B /* Pods_BeautyAPi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BeautyAPi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A646339435DAD37A2AE0A5BC /* Pods-BeautyAPi.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BeautyAPi.release.xcconfig"; path = "Target Support Files/Pods-BeautyAPi/Pods-BeautyAPi.release.xcconfig"; sourceTree = "<group>"; };
+		DDC3B4372BF2157000200137 /* AUIToast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AUIToast.swift; sourceTree = "<group>"; };
 		E70ADECE2A68E3FB009947CF /* EFGlobalSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EFGlobalSingleton.h; sourceTree = "<group>"; };
 		E70ADECF2A68E3FB009947CF /* EFGlobalSingleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EFGlobalSingleton.m; sourceTree = "<group>"; };
 		E726BFEE2A8CAA61006870E2 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
@@ -125,6 +128,8 @@
 		E732E9202A31A786004403AF /* authpack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = authpack.h; sourceTree = "<group>"; };
 		E73A2D152B182D4800C8EC76 /* LoadUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoadUtil.h; sourceTree = "<group>"; };
 		E73A2D162B182D4800C8EC76 /* LoadUtil.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoadUtil.m; sourceTree = "<group>"; };
+		E76515972BCFC3BA004E3821 /* APIReporter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = APIReporter.h; sourceTree = "<group>"; };
+		E76515982BCFC3BA004E3821 /* APIReporter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = APIReporter.m; sourceTree = "<group>"; };
 		E779029B2A4D636C008791AD /* BELicenseHelper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BELicenseHelper.mm; sourceTree = "<group>"; };
 		E779029C2A4D636C008791AD /* BEOpenGLRenderHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEOpenGLRenderHelper.m; sourceTree = "<group>"; };
 		E779029D2A4D636C008791AD /* Core.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Core.h; sourceTree = "<group>"; };
@@ -199,6 +204,14 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		DDC3B4362BF2157000200137 /* ToastView */ = {
+			isa = PBXGroup;
+			children = (
+				DDC3B4372BF2157000200137 /* AUIToast.swift */,
+			);
+			path = ToastView;
+			sourceTree = "<group>";
+		};
 		E70ADE422A5E50BE009947CF /* Render */ = {
 			isa = PBXGroup;
 			children = (
@@ -231,6 +244,7 @@
 		E72D78142A25963500C9134C /* BeautyAPi */ = {
 			isa = PBXGroup;
 			children = (
+				DDC3B4362BF2157000200137 /* ToastView */,
 				E72D787F2A286F0900C9134C /* PickerView */,
 				E72D78562A259E9C00C9134C /* KeyCenter.swift */,
 				E72D78882A2897E200C9134C /* Configs.swift */,
@@ -353,6 +367,15 @@
 			path = FUBeauty;
 			sourceTree = "<group>";
 		};
+		E76515942BCFC08F004E3821 /* Report */ = {
+			isa = PBXGroup;
+			children = (
+				E76515972BCFC3BA004E3821 /* APIReporter.h */,
+				E76515982BCFC3BA004E3821 /* APIReporter.m */,
+			);
+			path = Report;
+			sourceTree = "<group>";
+		};
 		E77902992A4D636C008791AD /* ByteBeaufy */ = {
 			isa = PBXGroup;
 			children = (
@@ -393,6 +416,7 @@
 		E779030C2A57EE58008791AD /* BeautyAPI */ = {
 			isa = PBXGroup;
 			children = (
+				E76515942BCFC08F004E3821 /* Report */,
 				E70ADE422A5E50BE009947CF /* Render */,
 				E779030E2A57EE58008791AD /* BeautyAPI.h */,
 				E77903132A57EE58008791AD /* BeautyAPI.m */,
@@ -598,9 +622,11 @@
 				E77902F82A57C067008791AD /* FUManager.m in Sources */,
 				E77902C32A4D636C008791AD /* BEImageUtils.m in Sources */,
 				E72F62732A8A2F0700C963D2 /* BeautyManager.swift in Sources */,
+				DDC3B4382BF2157000200137 /* AUIToast.swift in Sources */,
 				E7E682352B0F46EF006F67C8 /* BeautyModel+Sense.swift in Sources */,
 				E779031B2A57EE58008791AD /* FUBeautyRender.m in Sources */,
 				E72D78812A286F1600C9134C /* PickerView.swift in Sources */,
+				E76515992BCFC3BA004E3821 /* APIReporter.m in Sources */,
 				E72D78832A286F2900C9134C /* AlertManager.swift in Sources */,
 				E7E682372B0F4868006F67C8 /* BeautyModel+FU.swift in Sources */,
 				E77902C12A4D636C008791AD /* BEHttpRequestProvider.mm in Sources */,
@@ -778,9 +804,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = YS397FG5PA;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = YS397FG5PA;
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -856,25 +884,11 @@
 					"-framework",
 					"\"CoreVideo\"",
 					"-framework",
-					"\"CosmosBeautyKit\"",
-					"-framework",
-					"\"CosmosCV\"",
-					"-framework",
-					"\"FURenderKit\"",
-					"-framework",
 					"\"Foundation\"",
 					"-framework",
 					"\"JXCategoryView\"",
 					"-framework",
 					"\"JavaScriptCore\"",
-					"-framework",
-					"\"MNN\"",
-					"-framework",
-					"\"Mantle\"",
-					"-framework",
-					"\"Metal\"",
-					"-framework",
-					"\"MetalPetal\"",
 					"-framework",
 					"\"OpenAL\"",
 					"-framework",
@@ -883,14 +897,6 @@
 					"\"QuartzCore\"",
 					"-framework",
 					"\"UIKit\"",
-					"-framework",
-					"\"XEngine\"",
-					"-framework",
-					"\"ceres\"",
-					"-framework",
-					"\"opencv2\"",
-					"-framework",
-					"\"protobufc\"",
 					"-framework",
 					"\"video_dec\"",
 					"-framework",
@@ -906,6 +912,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.agora.test.entfull;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = wildcard;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "BeautyAPi/BeautyAPI-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -919,9 +927,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = YS397FG5PA;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = YS397FG5PA;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BeautyAPi/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Request Camera Access";
@@ -992,25 +1002,11 @@
 					"-framework",
 					"\"CoreVideo\"",
 					"-framework",
-					"\"CosmosBeautyKit\"",
-					"-framework",
-					"\"CosmosCV\"",
-					"-framework",
-					"\"FURenderKit\"",
-					"-framework",
 					"\"Foundation\"",
 					"-framework",
 					"\"JXCategoryView\"",
 					"-framework",
 					"\"JavaScriptCore\"",
-					"-framework",
-					"\"MNN\"",
-					"-framework",
-					"\"Mantle\"",
-					"-framework",
-					"\"Metal\"",
-					"-framework",
-					"\"MetalPetal\"",
 					"-framework",
 					"\"OpenAL\"",
 					"-framework",
@@ -1019,14 +1015,6 @@
 					"\"QuartzCore\"",
 					"-framework",
 					"\"UIKit\"",
-					"-framework",
-					"\"XEngine\"",
-					"-framework",
-					"\"ceres\"",
-					"-framework",
-					"\"opencv2\"",
-					"-framework",
-					"\"protobufc\"",
 					"-framework",
 					"\"video_dec\"",
 					"-framework",
@@ -1042,6 +1030,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.agora.test.entfull;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = wildcard;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "BeautyAPi/BeautyAPI-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;

@@ -11,7 +11,7 @@ object ByteDanceBeautySDK {
 
     private const val TAG = "ByteDanceBeautySDK"
 
-    private val LICENSE_NAME = "Agora_test_20240111_20240411_io.agora.test.entfull_4.5.0_1111.licbag"
+    private val LICENSE_NAME = "Agora_test_20240412_20240712_io.agora.test.entfull_4.5.0_1443.licbag"
     private var storagePath = ""
     private var assetsPath = ""
     private var licensePath = ""
@@ -82,13 +82,13 @@ object ByteDanceBeautySDK {
     }
 
     // GL Thread
-    fun initEffect(context: Context) {
+    fun initEffect(context: Context) : Boolean{
         val ret = renderManager.init(
             context,
             modelsPath, licensePath, false, false, 0
         )
         if (!checkResult("RenderManager init ", ret)) {
-            return
+            return false
         }
         renderManager.useBuiltinSensor(true)
         renderManager.set3Buffer(false)
@@ -98,6 +98,7 @@ object ByteDanceBeautySDK {
         )
         renderManager.loadResourceWithTimeout(-1)
         beautyConfig.resume()
+        return true
     }
 
     // GL Thread

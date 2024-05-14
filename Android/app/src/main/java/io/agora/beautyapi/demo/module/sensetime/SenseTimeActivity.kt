@@ -35,6 +35,7 @@ import android.view.SurfaceView
 import android.view.View
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import io.agora.base.VideoFrame
 import io.agora.beautyapi.demo.BuildConfig
@@ -234,6 +235,18 @@ class SenseTimeActivity : ComponentActivity() {
         //requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         window.decorView.keepScreenOn = true
 
+        if (!SenseTimeBeautySDK.isAuthSuccess()) {
+            AlertDialog.Builder(this).apply {
+                setTitle("Auth Failed")
+                setMessage("Please check your license file")
+                setCancelable(false)
+                setPositiveButton("OK") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                show()
+            }
+        }
+
         initRtcEngine()
         initBeautyApi()
         initView()
@@ -258,6 +271,7 @@ class SenseTimeActivity : ComponentActivity() {
                 }
             )
         )
+        SenseTimeBeautySDK.setBeautyAPI(mSenseTimeApi)
 
         when (intent.getStringExtra(EXTRA_PROCESS_MODE)) {
             getString(R.string.beauty_process_auto) -> mSenseTimeApi.setParameters(
@@ -407,8 +421,9 @@ class SenseTimeActivity : ComponentActivity() {
         mSenseTimeApi.runOnProcessThread {
             SenseTimeBeautySDK.unInitMobileEffect()
         }
+        SenseTimeBeautySDK.setBeautyAPI(null)
         mSenseTimeApi.release()
-
+        SenseTimeBeautySDK.beautyConfig.reset()
         RtcEngine.destroy()
     }
 }

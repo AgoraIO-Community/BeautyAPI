@@ -233,11 +233,11 @@ class ByteDanceControllerView : BeautyControllerView {
                         }
                     ),
                     ItemInfo(
-                        R.string.beauty_item_sticker_huahua,
-                        R.mipmap.ic_beauty_sticker_huahua,
-                        isSelected = beautyConfig.sticker == "huahua",
+                        R.string.beauty_item_sticker_zhaocaimao,
+                        R.mipmap.ic_beauty_sticker_zhaocaimao,
+                        isSelected = beautyConfig.sticker == "zhaocaimao",
                         onValueChanged = { _ ->
-                            beautyConfig.sticker = "huahua"
+                            beautyConfig.sticker = "zhaocaimao"
                         }
                     )
                 )

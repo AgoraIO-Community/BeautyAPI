@@ -8,7 +8,14 @@
 import UIKit
 
 class SenseBeautyManager: NSObject {
-    public lazy var render = SenseBeautyRender()
+    public lazy var render: SenseBeautyRender = {
+        let beautyRender = SenseBeautyRender()
+        beautyRender.licenseEventCallback = {[weak self] success in
+            if success {return}
+            AUIToast.show(text: "Auth Failed, Please check your license file")
+        }
+        return beautyRender
+    }()
     
     private var processor: VideoProcessingManager {
         return render.videoProcessing

@@ -61,10 +61,11 @@
     self.isSuccessLicense = [EffectsProcess authorizeWithLicensePath:licensePath];
     __weak SenseBeautyRender *weakSelf = self;
     self.timer = [NSTimer timerWithTimeInterval:1 repeats:YES block:^(NSTimer * _Nonnull timer) {
-        weakSelf.isSuccessLicense = weakSelf.videoProcessing.effectsProcess.isAuthrized;
         if (weakSelf.isSuccessLicense) {
             [weakSelf.timer invalidate];
             weakSelf.timer = nil;
+        } else {
+            weakSelf.isSuccessLicense = weakSelf.videoProcessing.effectsProcess.isAuthrized;
         }
         if (weakSelf.licenseEventCallback) {
             weakSelf.licenseEventCallback(weakSelf.isSuccessLicense);

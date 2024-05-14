@@ -35,6 +35,7 @@ import android.view.SurfaceView
 import android.view.View
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.faceunity.core.faceunity.FURenderKit
 import io.agora.base.VideoFrame
@@ -44,7 +45,6 @@ import io.agora.beautyapi.demo.databinding.BeautyActivityBinding
 import io.agora.beautyapi.demo.utils.ReflectUtils
 import io.agora.beautyapi.demo.widget.BottomAlertDialog
 import io.agora.beautyapi.demo.widget.SettingsDialog
-import io.agora.beautyapi.faceunity.BeautyPreset
 import io.agora.beautyapi.faceunity.BeautyStats
 import io.agora.beautyapi.faceunity.CameraConfig
 import io.agora.beautyapi.faceunity.CaptureMode
@@ -185,6 +185,14 @@ class FaceUnityActivity : ComponentActivity() {
                     mFaceUnityApi.setParameters("beauty_mode", "0")
                 }
             }
+            setTextureAsyncChecked(false)
+            setOnTextureAsyncChangeListener { enable ->
+                if (enable) {
+                    mFaceUnityApi.setParameters("enableTextureAsync", "true")
+                } else {
+                    mFaceUnityApi.setParameters("enableTextureAsync", "false")
+                }
+            }
             setResolutionSelect(intent.getStringExtra(EXTRA_RESOLUTION) ?: "")
             setOnResolutionChangeListener {resolution ->
                 mVideoEncoderConfiguration.dimensions = ReflectUtils.getStaticFiledValue(
@@ -221,6 +229,19 @@ class FaceUnityActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(mBinding.root)
         window.decorView.keepScreenOn = true
+
+        if (!FaceUnityBeautySDK.isAuthSuccess()) {
+            AlertDialog.Builder(this).apply {
+                setTitle("Auth Failed")
+                setMessage("Please check your license file")
+                setCancelable(false)
+                setPositiveButton("OK") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                show()
+            }
+        }
+
 
         initRtcEngine()
         initBeautyApi()
@@ -286,6 +307,7 @@ class FaceUnityActivity : ComponentActivity() {
     }
 
     private fun initBeautyApi() {
+        FaceUnityBeautySDK.beautyConfig.reset()
         mFaceUnityApi.initialize(
             Config(
                 applicationContext,
@@ -301,6 +323,7 @@ class FaceUnityActivity : ComponentActivity() {
                 }
             )
         )
+        FaceUnityBeautySDK.setBeautyAPI(mFaceUnityApi)
         when (intent.getStringExtra(EXTRA_PROCESS_MODE)) {
             getString(R.string.beauty_process_auto) -> mFaceUnityApi.setParameters(
                 "beauty_mode",
@@ -384,6 +407,7 @@ class FaceUnityActivity : ComponentActivity() {
         if (isCustomCaptureMode) {
             mRtcEngine.registerVideoFrameObserver(null)
         }
+        FaceUnityBeautySDK.setBeautyAPI(null)
         mFaceUnityApi.release()
         RtcEngine.destroy()
     }

@@ -55,16 +55,25 @@ object SenseTimeBeautySDK {
 
     private var beautyAPI: SenseTimeBeautyAPI? = null
 
+    private var authSuccess = false
+
     fun initBeautySDK(context: Context): Boolean {
         if (checkLicense(context)) {
             initHumanAction(context)
+            authSuccess = true
             return true
         }
+        initHumanAction(context)
         return false
+    }
+
+    fun isAuthSuccess(): Boolean {
+        return authSuccess
     }
 
     fun unInitBeautySDK() {
         beautyAPI = null
+        authSuccess = false
         unInitHumanActionNative()
         beautyConfig.reset()
     }
@@ -78,6 +87,7 @@ object SenseTimeBeautySDK {
             _mobileEffectNative?.createInstance(context, STMobileEffectNative.EFFECT_CONFIG_NONE)
         _mobileEffectNative?.setParam(STMobileEffectParams.EFFECT_PARAM_QUATERNION_SMOOTH_FRAME, 5f)
         Log.d(TAG, "SenseTime >> STMobileEffectNative create result : $result")
+        beautyConfig.resume()
     }
 
     fun unInitMobileEffect() {
@@ -98,8 +108,8 @@ object SenseTimeBeautySDK {
             license,
             license.length
         )
-        Log.d(TAG, "SenseTime >> checkLicense successfully! activeCode=$activeCode")
-        return true
+        Log.d(TAG, "SenseTime >> checkLicense activeCode=$activeCode")
+        return activeCode.isNotEmpty()
     }
 
     private fun initHumanAction(context: Context) {
@@ -147,7 +157,7 @@ object SenseTimeBeautySDK {
     }
 
 
-    internal fun setBeautyAPI(beautyAPI: SenseTimeBeautyAPI){
+    internal fun setBeautyAPI(beautyAPI: SenseTimeBeautyAPI?){
         this.beautyAPI = beautyAPI
         beautyConfig.resume()
     }
@@ -418,7 +428,6 @@ object SenseTimeBeautySDK {
         // 美妆
         var makeUp: MakeUpItem? = null
             set(value) {
-                val shouldReset = field?.path != value?.path
                 field = value
                 runOnBeautyThread {
                     if (value == null) {
@@ -427,14 +436,12 @@ object SenseTimeBeautySDK {
                             null
                         )
                     } else {
-                        if(shouldReset){
-                            val assets = value.context.assets
-                            _mobileEffectNative?.setBeautyFromAssetsFile(
-                                STEffectBeautyType.EFFECT_BEAUTY_MAKEUP_ALL,
-                                "$resourcePath/${value.path}",
-                                assets
-                            )
-                        }
+                        val assets = value.context.assets
+                        _mobileEffectNative?.setBeautyFromAssetsFile(
+                            STEffectBeautyType.EFFECT_BEAUTY_MAKEUP_ALL,
+                            "$resourcePath/${value.path}",
+                            assets
+                        )
                         _mobileEffectNative?.setBeautyStrength(
                             STEffectBeautyType.EFFECT_BEAUTY_MAKEUP_ALL,
                             value.strength

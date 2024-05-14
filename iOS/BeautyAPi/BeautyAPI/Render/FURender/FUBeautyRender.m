@@ -7,6 +7,9 @@
 
 #import "FUBeautyRender.h"
 #import "BundleUtil.h"
+#if __has_include("FUManager.h")
+#import "authpack.h"
+#endif
 
 @interface FUBeautyRender ()
 
@@ -28,6 +31,18 @@
 #endif
     }
     return self;
+}
+
++ (BOOL)checkLicense {
+    BOOL success = NO;
+#if __has_include(FURenderMoudle)
+    FUSetupConfig *setupConfig = [[FUSetupConfig alloc] init];
+    setupConfig.authPack = FUAuthPackMake(g_auth_package, sizeof(g_auth_package));
+    
+    // 初始化 FURenderKit
+    success = [FURenderKit setupWithSetupConfig:setupConfig];
+#endif
+    return success;
 }
 
 - (void)destroy {
@@ -139,6 +154,7 @@
 
 - (void)setStyleWithPath:(NSString *)path key:(NSString *)key value:(float)value isCombined:(BOOL)isCombined {
 #if __has_include(FURenderMoudle)
+    [self setupBeauty];
     FUMakeup *makeup = [FURenderKit shareRenderKit].makeup;
     if (isCombined) {
         if (makeup == nil || self.makeupKey != key) {
@@ -180,6 +196,7 @@
 
 - (void)setAnimojiWithPath:(NSString *)path {
 #if __has_include(FURenderMoudle)
+    [self setupBeauty];
     if (self.currentSticker) {
         [[FURenderKit shareRenderKit].stickerContainer removeSticker:self.currentSticker completion:nil];
         self.currentSticker = nil;
@@ -200,12 +217,13 @@
 }
 
 - (void)setStickerWithPath:(NSString *)path {
+#if __has_include(FURenderMoudle)
+    [self setupBeauty];
     NSBundle *bundle = [BundleUtil bundleWithBundleName:@"FURenderKit" podName:@"fuLib"];
     NSString *stickerPath = [bundle pathForResource:[NSString stringWithFormat:@"sticker/%@", path] ofType:@"bundle"];
     if (stickerPath == nil && self.currentSticker == nil) {
         return;
     }
-#if __has_include(FURenderMoudle)
     FUSticker *sticker = [[FUSticker alloc] initWithPath:stickerPath
                           name:path];
     if (self.currentAnimoji) {
@@ -250,6 +268,16 @@
         FUBeauty *beauty = [[FUBeauty alloc] initWithPath:faceAIPath name:@"FUBeauty"];
         [FURenderKit shareRenderKit].beauty = beauty;
     });
+#endif
+}
+
+- (void)setupBeauty {
+#if __has_include(FURenderMoudle)
+    if ([FURenderKit shareRenderKit].beauty == nil) {
+        NSString *faceAIPath = [[NSBundle mainBundle] pathForResource:@"face_beautification" ofType:@"bundle"];
+        FUBeauty *beauty = [[FUBeauty alloc] initWithPath:faceAIPath name:@"FUBeauty"];
+        [FURenderKit shareRenderKit].beauty = beauty;
+    }
 #endif
 }
 
