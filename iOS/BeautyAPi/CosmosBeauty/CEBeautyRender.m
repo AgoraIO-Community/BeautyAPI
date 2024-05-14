@@ -10,6 +10,9 @@
 
 #if __has_include(<CosmosBeautyKit/CosmosBeautySDK.h>)
 @interface CEBeautyRender () <CBRenderModuleManagerDelegate>
+{
+    BOOL _isAuthSuccess;
+}
 
 @property (nonatomic, strong) CBRenderModuleManager *render;
 @property (nonatomic, strong) CBRenderFilterBeautyMakeupModule *beautyDescriptor;
@@ -31,6 +34,7 @@
         CBRenderError ret1 = [CosmosBeautySDK initSDKWith:@"<#Input License#>"];
         
         CBRenderError ret2 = [CosmosBeautySDK setupCVModelPath:[[NSBundle mainBundle]pathForResource:@"cv" ofType:@"bundle"]];
+        _isAuthSuccess = ret1 == CBRenderErrorNone && ret2 == CBRenderErrorNone;
         
         NSLog(@"美颜初始化 path = %@",[NSBundle bundleForClass:[CBRenderModuleManager class]].bundlePath);
 
@@ -51,6 +55,14 @@
 #endif
     }
     return self;
+}
+
+- (BOOL)isAuthSuccess {
+#if __has_include(<CosmosBeautyKit/CosmosBeautySDK.h>)
+    return _isAuthSuccess;
+#else
+    return NO;
+#endif
 }
 
 - (void)addBeauty {
