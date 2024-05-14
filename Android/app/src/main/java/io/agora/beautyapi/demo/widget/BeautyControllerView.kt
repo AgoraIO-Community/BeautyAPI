@@ -108,14 +108,6 @@ open class BeautyControllerView : FrameLayout {
                 pageList.forEachIndexed { index, pageInfo ->
                     pageInfo.isSelected = index == selectedPosition
                 }
-                var itemIndex = pageList[selectedPosition].itemList.indexOfFirst { it.isSelected }
-                if (itemIndex < 0) {
-                    itemIndex = 0
-                }
-                onSelectedChanged(
-                    selectedPosition,
-                    itemIndex
-                )
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
