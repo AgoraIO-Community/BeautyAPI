@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
   # s.header_mappings_dir = "ByteEffectLib/BytedEffectSDK/"
   s.vendored_framework = "ByteEffectLib/*.framework"
   s.vendored_libraries = "ByteEffectLib/*.a"
-  s.resource_bundles    = {"ByteEffectLib" => "ByteEffectLib/**/*.bundle"}
+  s.resource_bundles    = {"ByteEffectLib" => "ByteEffectLib/Resource/*.bundle"}
   s.platform     = :ios, '9.0'
   s.requires_arc = true
   s.libraries = 'z', 'stdc++'
