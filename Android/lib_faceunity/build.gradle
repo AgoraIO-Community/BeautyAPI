@@ -40,9 +40,12 @@ dependencies {
         api "$AGORA_RTC_SDK"
     }
 
-
-    api 'com.faceunity:core:8.7.0'
-    api 'com.faceunity:model:8.7.0'
+    configurations.all {
+        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+        resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
+    }
+    api 'com.faceunity:core:8.11.0-SNAPSHOT'
+    api 'com.faceunity:model:8.11.0-SNAPSHOT'
 }
 
 // Because the components are created only during the afterEvaluate phase, you must

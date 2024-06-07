@@ -339,6 +339,7 @@ class CosmosActivity : ComponentActivity() {
         // Config RtcEngine
         mRtcEngine.addHandler(mRtcHandler)
         mRtcEngine.setVideoEncoderConfiguration(mVideoEncoderConfiguration)
+        mRtcEngine.setParameters("{\"che.video.android_texture.copy_enable\": false}")
         mRtcEngine.setParameters("{\"che.video.observer_texture.copy_enable\": ${intent.getBooleanExtra(EXTRA_ENABLE_FENCE, false)}}")
         mRtcEngine.setParameters("{\"che.video.enable_gl_fence\": ${intent.getBooleanExtra(EXTRA_ENABLE_FENCE, false)}}")
         mRtcEngine.enableVideo()
