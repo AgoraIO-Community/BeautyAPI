@@ -39,6 +39,8 @@ import com.faceunity.core.enumeration.FUTransformMatrixEnum
 import com.faceunity.core.faceunity.FUAIKit
 import com.faceunity.core.faceunity.FURenderKit
 import com.faceunity.core.model.facebeauty.FaceBeauty
+import com.faceunity.core.model.facebeauty.FaceBeautyBlurTypeEnum.EquallySkin
+import com.faceunity.core.model.facebeauty.FaceBeautyBlurTypeEnum.FineSkin
 import com.faceunity.core.model.facebeauty.FaceBeautyFilterEnum
 import io.agora.base.TextureBufferHelper
 import io.agora.base.VideoFrame
@@ -49,6 +51,7 @@ import io.agora.base.internal.video.EglBase
 import io.agora.base.internal.video.YuvHelper
 import io.agora.beautyapi.faceunity.utils.APIReporter
 import io.agora.beautyapi.faceunity.utils.APIType
+import io.agora.beautyapi.faceunity.utils.FUConfig
 import io.agora.beautyapi.faceunity.utils.FuDeviceUtils
 import io.agora.beautyapi.faceunity.utils.LogUtils
 import io.agora.beautyapi.faceunity.utils.StatsHelper
@@ -89,7 +92,6 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         I420
     }
     private var currProcessSourceType = ProcessSourceType.UNKNOWN
-    private var deviceLevel = FuDeviceUtils.DEVICEINFO_UNKNOWN
     private var isFrontCamera = true
     private var cameraConfig = CameraConfig()
     private var localVideoRenderMode = Constants.RENDER_MODE_HIDDEN
@@ -120,14 +122,15 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         LogUtils.i(TAG, "initialize >> beauty api version=$VERSION, beauty sdk version=${FURenderKit.getInstance().getVersion()}")
 
         // config face beauty
-        if (deviceLevel == FuDeviceUtils.DEVICEINFO_UNKNOWN) {
-            deviceLevel = FuDeviceUtils.judgeDeviceLevel(config.context)
-            FUAIKit.getInstance().faceProcessorSetFaceLandmarkQuality(deviceLevel)
-            if (deviceLevel > FuDeviceUtils.DEVICE_LEVEL_MID) {
-                FUAIKit.getInstance().fuFaceProcessorSetDetectSmallFace(true)
-            }
+        FUConfig.DEVICE_LEVEL = FuDeviceUtils.judgeDeviceLevel(true)
+        //高端机开启小脸检测
+        FUAIKit.getInstance().faceProcessorSetFaceLandmarkQuality(FUConfig.DEVICE_LEVEL)
+        FURenderKit.getInstance().setDynamicQualityControl(FUConfig.DEVICE_LEVEL <= FuDeviceUtils.DEVICE_LEVEL_ONE)
+        if (FUConfig.DEVICE_LEVEL > FuDeviceUtils.DEVICE_LEVEL_ONE) {
+            FUAIKit.getInstance()
+                .fuFaceProcessorSetDetectSmallFace(true)
         }
-        LogUtils.i(TAG, "initialize >> FuDeviceUtils deviceLevel=$deviceLevel")
+        LogUtils.i(TAG, "initialize >> FuDeviceUtils deviceLevel=${FUConfig.DEVICE_LEVEL}")
         apiReporter.reportFuncEvent(
             "initialize",
             mapOf(
@@ -286,17 +289,17 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             recommendFaceBeauty.colorIntensity = 0.75 * 2
             // 磨皮
             recommendFaceBeauty.blurIntensity = 0.75 * 6
-            if (deviceLevel > FuDeviceUtils.DEVICE_LEVEL_MID) {
+            if (FUConfig.DEVICE_LEVEL > FuDeviceUtils.DEVICE_LEVEL_ONE) {
                 val score = FUAIKit.getInstance().getFaceProcessorGetConfidenceScore(0)
                 if (score > 0.95) {
-                    recommendFaceBeauty.blurType = 3
+                    recommendFaceBeauty.blurType = EquallySkin
                     recommendFaceBeauty.enableBlurUseMask = true
                 } else {
-                    recommendFaceBeauty.blurType = 2
+                    recommendFaceBeauty.blurType = FineSkin
                     recommendFaceBeauty.enableBlurUseMask = false
                 }
             } else {
-                recommendFaceBeauty.blurType = 2
+                recommendFaceBeauty.blurType = FineSkin
                 recommendFaceBeauty.enableBlurUseMask = false
             }
             // 嘴型

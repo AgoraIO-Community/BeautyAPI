@@ -14,6 +14,7 @@ buildscript {
 
 allprojects {
     repositories {
+        maven { url 'https://maven.faceunity.com/repository/maven-public/' }
         mavenCentral()
         maven { url "file://${rootDir}/maven" }
         maven { url "https://maven.aliyun.com/repository/public" }
@@ -32,8 +33,8 @@ task clean(type: Delete) {
 ext {
     IS_PUBLISH_LOCAL=true
     LIB_VERSION="1.0.7"
-//    AGORA_RTC_SDK="io.agora.rtc:agora-special-full:4.1.1.28"
-    AGORA_RTC_SDK="io.agora.rtc:agora-special-full:4.2.6.5"
+    AGORA_RTC_SDK="io.agora.rtc:agora-special-full:4.1.1.31"
+//    AGORA_RTC_SDK="io.agora.rtc:agora-special-full:4.2.6.5"
 //    AGORA_RTC_SDK= "${rootProject.rootDir.absolutePath}/sdk"
 //    AGORA_RTC_SDK="io.agora.rtc:full-sdk:4.2.6"
 }

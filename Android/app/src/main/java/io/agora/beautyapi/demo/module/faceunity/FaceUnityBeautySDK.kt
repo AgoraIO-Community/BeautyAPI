@@ -16,6 +16,8 @@ import com.faceunity.core.model.prop.sticker.Sticker
 import com.faceunity.core.utils.FULogger
 import com.faceunity.wrapper.faceunity
 import io.agora.beautyapi.faceunity.FaceUnityBeautyAPI
+import io.agora.beautyapi.faceunity.utils.FUConfig
+import io.agora.beautyapi.faceunity.utils.FuDeviceUtils
 import java.io.File
 
 object FaceUnityBeautySDK {
@@ -128,8 +130,10 @@ object FaceUnityBeautySDK {
         var whiten = 0.65f
             set(value) {
                 field = value
-                runOnBeautyThread {
-                    faceBeauty.colorIntensity = value * 2.0
+                if (FUConfig.DEVICE_LEVEL >= FuDeviceUtils.DEVICE_LEVEL_FOUR) {
+                    runOnBeautyThread {
+                        faceBeauty.colorIntensity = value * 2.0
+                    }
                 }
             }
 
@@ -137,8 +141,10 @@ object FaceUnityBeautySDK {
         var thinFace = 0.3f
             set(value) {
                 field = value
-                runOnBeautyThread {
-                    faceBeauty.cheekThinningIntensity = value.toDouble()
+                if (FUConfig.DEVICE_LEVEL >= FuDeviceUtils.DEVICE_LEVEL_ONE) {
+                    runOnBeautyThread {
+                        faceBeauty.cheekThinningIntensity = value.toDouble()
+                    }
                 }
             }
 
@@ -155,8 +161,10 @@ object FaceUnityBeautySDK {
         var redden = 0.0f
             set(value) {
                 field = value
-                runOnBeautyThread {
-                    faceBeauty.redIntensity = value * 2.0
+                if (FUConfig.DEVICE_LEVEL >= FuDeviceUtils.DEVICE_LEVEL_ONE) {
+                    runOnBeautyThread {
+                        faceBeauty.redIntensity = value * 2.0
+                    }
                 }
             }
 
@@ -164,8 +172,10 @@ object FaceUnityBeautySDK {
         var faceThree = 0.0f
             set(value) {
                 field = value
-                runOnBeautyThread {
-                    faceBeauty.faceThreeIntensity = value.toDouble()
+                if (FUConfig.DEVICE_LEVEL >= FuDeviceUtils.DEVICE_LEVEL_ONE) {
+                    runOnBeautyThread {
+                        faceBeauty.faceThreeIntensity = value.toDouble()
+                    }
                 }
             }
 
@@ -173,8 +183,10 @@ object FaceUnityBeautySDK {
         var shrinkCheekbone = 0.3f
             set(value) {
                 field = value
-                runOnBeautyThread {
-                    faceBeauty.cheekBonesIntensity = value.toDouble()
+                if (FUConfig.DEVICE_LEVEL >= FuDeviceUtils.DEVICE_LEVEL_ONE) {
+                    runOnBeautyThread {
+                        faceBeauty.cheekBonesIntensity = value.toDouble()
+                    }
                 }
             }
 
@@ -182,8 +194,10 @@ object FaceUnityBeautySDK {
         var shrinkJawbone = 0.0f
             set(value) {
                 field = value
-                runOnBeautyThread {
-                    faceBeauty.lowerJawIntensity = value.toDouble()
+                if (FUConfig.DEVICE_LEVEL >= FuDeviceUtils.DEVICE_LEVEL_ONE) {
+                    runOnBeautyThread {
+                        faceBeauty.lowerJawIntensity = value.toDouble()
+                    }
                 }
             }
 
@@ -191,8 +205,10 @@ object FaceUnityBeautySDK {
         var whiteTeeth = 0.0f
             set(value) {
                 field = value
-                runOnBeautyThread {
-                    faceBeauty.toothIntensity = value.toDouble()
+                if (FUConfig.DEVICE_LEVEL >= FuDeviceUtils.DEVICE_LEVEL_ONE) {
+                    runOnBeautyThread {
+                        faceBeauty.toothIntensity = value.toDouble()
+                    }
                 }
             }
 
@@ -200,8 +216,10 @@ object FaceUnityBeautySDK {
         var hairlineHeight = 0.0f
             set(value) {
                 field = value
-                runOnBeautyThread {
-                    faceBeauty.forHeadIntensity = value.toDouble()
+                if (FUConfig.DEVICE_LEVEL >= FuDeviceUtils.DEVICE_LEVEL_ONE) {
+                    runOnBeautyThread {
+                        faceBeauty.forHeadIntensity = value.toDouble()
+                    }
                 }
             }
 
@@ -218,8 +236,10 @@ object FaceUnityBeautySDK {
         var mouthSize = 0.0f
             set(value) {
                 field = value
-                runOnBeautyThread {
-                    faceBeauty.mouthIntensity = value.toDouble()
+                if (FUConfig.DEVICE_LEVEL >= FuDeviceUtils.DEVICE_LEVEL_ONE) {
+                    runOnBeautyThread {
+                        faceBeauty.mouthIntensity = value.toDouble()
+                    }
                 }
             }
 
@@ -227,8 +247,10 @@ object FaceUnityBeautySDK {
         var chinLength = 0.0f
             set(value) {
                 field = value
-                runOnBeautyThread {
-                    faceBeauty.chinIntensity = value.toDouble()
+                if (FUConfig.DEVICE_LEVEL >= FuDeviceUtils.DEVICE_LEVEL_ONE) {
+                    runOnBeautyThread {
+                        faceBeauty.chinIntensity = value.toDouble()
+                    }
                 }
             }
 
@@ -236,8 +258,10 @@ object FaceUnityBeautySDK {
         var brightEye = 0.0f
             set(value) {
                 field = value
-                runOnBeautyThread {
-                    faceBeauty.eyeBrightIntensity = value.toDouble()
+                if (FUConfig.DEVICE_LEVEL >= FuDeviceUtils.DEVICE_LEVEL_ONE) {
+                    runOnBeautyThread {
+                        faceBeauty.eyeBrightIntensity = value.toDouble()
+                    }
                 }
             }
 
@@ -245,8 +269,10 @@ object FaceUnityBeautySDK {
         var darkCircles = 0.0f
             set(value) {
                 field = value
-                runOnBeautyThread {
-                    faceBeauty.removePouchIntensity = value.toDouble()
+                if (FUConfig.DEVICE_LEVEL >= FuDeviceUtils.DEVICE_LEVEL_ONE) {
+                    runOnBeautyThread {
+                        faceBeauty.removePouchIntensity = value.toDouble()
+                    }
                 }
             }
 
@@ -254,8 +280,10 @@ object FaceUnityBeautySDK {
         var nasolabialFolds = 0.0f
             set(value) {
                 field = value
-                runOnBeautyThread {
-                    faceBeauty.removeLawPatternIntensity = value.toDouble()
+                if (FUConfig.DEVICE_LEVEL >= FuDeviceUtils.DEVICE_LEVEL_ONE) {
+                    runOnBeautyThread {
+                        faceBeauty.removeLawPatternIntensity = value.toDouble()
+                    }
                 }
             }
 
@@ -263,8 +291,10 @@ object FaceUnityBeautySDK {
         var sharpen = 0.0f
             set(value) {
                 field = value
-                runOnBeautyThread {
-                    faceBeauty.sharpenIntensity = value.toDouble()
+                if (FUConfig.DEVICE_LEVEL >= FuDeviceUtils.DEVICE_LEVEL_ONE) {
+                    runOnBeautyThread {
+                        faceBeauty.sharpenIntensity = value.toDouble()
+                    }
                 }
             }
 
@@ -293,6 +323,7 @@ object FaceUnityBeautySDK {
                             SimpleMakeup(FUBundleData("graphics" + File.separator + "face_makeup.bundle"))
                         makeup.setCombinedConfig(FUBundleData("$resourceBase/${value.path}"))
                         makeup.makeupIntensity = value.intensity.toDouble()
+                        makeup.machineLevel = FUConfig.DEVICE_LEVEL > FuDeviceUtils.DEVICE_LEVEL_ONE
                         fuRenderKit.makeup = makeup
                     }
                 }
@@ -321,7 +352,7 @@ object FaceUnityBeautySDK {
             sticker = null
         }
 
-        fun resume(){
+        fun resume() {
             smooth = smooth
             whiten = whiten
             thinFace = thinFace

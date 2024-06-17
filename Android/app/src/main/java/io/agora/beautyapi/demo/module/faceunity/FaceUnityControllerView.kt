@@ -171,12 +171,12 @@ class FaceUnityControllerView : BeautyControllerView {
                         R.string.beauty_item_effect_diadiatu,
                         R.mipmap.ic_beauty_effect_diadiatu,
                         withPadding = false,
-                        isSelected = beautyConfig.makeUp?.path == "makeup/diadiatu.bundle",
-                        value = if (beautyConfig.makeUp?.path == "makeup/diadiatu.bundle") beautyConfig.makeUp?.intensity
+                        isSelected = beautyConfig.makeUp?.path == "makeup/chuqiu.bundle",
+                        value = if (beautyConfig.makeUp?.path == "makeup/chuqiu.bundle") beautyConfig.makeUp?.intensity
                             ?: 0.8f else 0.8f,
                         onValueChanged = { value ->
                             beautyConfig.makeUp = FaceUnityBeautySDK.MakeUpItem(
-                                "makeup/diadiatu.bundle",
+                                "makeup/chuqiu.bundle",
                                 value
                             )
                         }
@@ -185,12 +185,12 @@ class FaceUnityControllerView : BeautyControllerView {
                         R.string.beauty_item_effect_hunxue,
                         R.mipmap.ic_beauty_effect_fu_hunxue,
                         withPadding = false,
-                        isSelected = beautyConfig.makeUp?.path == "makeup/hunxue.bundle",
-                        value = if (beautyConfig.makeUp?.path == "makeup/hunxue.bundle") beautyConfig.makeUp?.intensity
+                        isSelected = beautyConfig.makeUp?.path == "makeup/tianmei.bundle",
+                        value = if (beautyConfig.makeUp?.path == "makeup/tianmei.bundle") beautyConfig.makeUp?.intensity
                             ?: 0.8f else 0.8f,
                         onValueChanged = { value ->
                             beautyConfig.makeUp = FaceUnityBeautySDK.MakeUpItem(
-                                "makeup/hunxue.bundle",
+                                "makeup/tianmei.bundle",
                                 value
                             )
                         }
