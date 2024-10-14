@@ -133,13 +133,6 @@ interface FaceUnityBeautyAPI {
     fun onFrame(videoFrame: VideoFrame): Int
 
     /**
-     * 声网提供的美颜最佳默认参数
-     *
-     * @return 见ErrorCode
-     */
-    fun setBeautyPreset(preset: BeautyPreset = BeautyPreset.DEFAULT): Int
-
-    /**
      * 更新摄像头配置
      */
     fun updateCameraConfig(config: CameraConfig): Int

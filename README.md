@@ -11,7 +11,7 @@ This repository contains the following beauty scene APIs:
 | Beauty    | Platform | Language    | Location                                                 | RTC SDK Version | Beauty SDK Version |
 | --------- | -------- | ----------- | -------------------------------------------------------- |-----------------| ------------------ |
 | SenseTime | Android  | Java/Kotlin | [Android/lib_sensetime](Android/lib_sensetime)           | 4.2.6.5         | 9.3.1              |
-| FaceUnity | Android  | Java/Kotlin | [Android/lib_faceunity](Android/lib_faceunity)           | 4.2.6.5         | 8.7.0              |
+| FaceUnity | Android  | Java/Kotlin | [Android/lib_faceunity](Android/lib_faceunity)           | 4.2.6.5         | 8.11.0              |
 | ByteDance | Android  | Java/Kotlin | [Android/lib_bytedance](Android/lib_bytedance)           | 4.2.6.5         | 4.6.0              |
 | Cosmos    | Android  | Java/Kotlin | [Android/lib_cosmos](Android/lib_cosmos)                 | 4.2.6.5         | 3.7.0              |
 | SenseTime | iOS      | Swift/OC    | [iOS/BeautyAPi/SenseBeauty](iOS/BeautyAPi/SenseBeaufy)   | 4.2.6.5         | 9.3.1              |
