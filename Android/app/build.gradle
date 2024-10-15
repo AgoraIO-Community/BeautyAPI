@@ -12,8 +12,8 @@ android {
 //        applicationId "com.thankyo.hwgame"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 6
-        versionName "1.0.7"
+        versionCode 7
+        versionName "1.0.8"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -29,15 +29,27 @@ android {
         }
         buildConfigField "String", "AGORA_APP_ID", "\"$AGORA_APP_ID\""
     }
+    signingConfigs {
+        myConfig {
+            storeFile new File(rootProject.rootDir.absolutePath + "/keystore.key")
+            storePassword "965606"
+            keyAlias "agora"
+            keyPassword "965606"
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
 
     buildTypes {
         release {
             minifyEnabled false
+            signingConfig signingConfigs.myConfig
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
             debuggable true
             minifyEnabled false
+            signingConfig signingConfigs.myConfig
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
