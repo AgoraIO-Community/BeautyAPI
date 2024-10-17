@@ -30,16 +30,12 @@ import android.opengl.GLES20
 import android.view.SurfaceView
 import android.view.TextureView
 import android.view.View
-import com.faceunity.core.entity.FUBundleData
 import com.faceunity.core.entity.FURenderInputData
 import com.faceunity.core.enumeration.CameraFacingEnum
 import com.faceunity.core.enumeration.FUInputBufferEnum
 import com.faceunity.core.enumeration.FUInputTextureEnum
 import com.faceunity.core.enumeration.FUTransformMatrixEnum
-import com.faceunity.core.faceunity.FUAIKit
 import com.faceunity.core.faceunity.FURenderKit
-import com.faceunity.core.model.facebeauty.FaceBeauty
-import com.faceunity.core.model.facebeauty.FaceBeautyFilterEnum
 import io.agora.base.TextureBufferHelper
 import io.agora.base.VideoFrame
 import io.agora.base.VideoFrame.I420Buffer
@@ -49,7 +45,6 @@ import io.agora.base.internal.video.EglBase
 import io.agora.base.internal.video.YuvHelper
 import io.agora.beautyapi.faceunity.utils.APIReporter
 import io.agora.beautyapi.faceunity.utils.APIType
-import io.agora.beautyapi.faceunity.utils.FuDeviceUtils
 import io.agora.beautyapi.faceunity.utils.LogUtils
 import io.agora.beautyapi.faceunity.utils.StatsHelper
 import io.agora.beautyapi.faceunity.utils.egl.GLFrameBuffer
@@ -58,7 +53,6 @@ import io.agora.rtc2.Constants
 import io.agora.rtc2.gl.EglBaseProvider
 import io.agora.rtc2.video.IVideoFrameObserver
 import io.agora.rtc2.video.VideoCanvas
-import java.io.File
 import java.nio.ByteBuffer
 import java.util.Collections
 import java.util.concurrent.Callable
@@ -89,7 +83,6 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         I420
     }
     private var currProcessSourceType = ProcessSourceType.UNKNOWN
-    private var deviceLevel = FuDeviceUtils.DEVICEINFO_UNKNOWN
     private var isFrontCamera = true
     private var cameraConfig = CameraConfig()
     private var localVideoRenderMode = Constants.RENDER_MODE_HIDDEN
@@ -118,16 +111,6 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         }
         LogUtils.i(TAG, "initialize >> config = $config")
         LogUtils.i(TAG, "initialize >> beauty api version=$VERSION, beauty sdk version=${FURenderKit.getInstance().getVersion()}")
-
-        // config face beauty
-        if (deviceLevel == FuDeviceUtils.DEVICEINFO_UNKNOWN) {
-            deviceLevel = FuDeviceUtils.judgeDeviceLevel(config.context)
-            FUAIKit.getInstance().faceProcessorSetFaceLandmarkQuality(deviceLevel)
-            if (deviceLevel > FuDeviceUtils.DEVICE_LEVEL_MID) {
-                FUAIKit.getInstance().fuFaceProcessorSetDetectSmallFace(true)
-            }
-        }
-        LogUtils.i(TAG, "initialize >> FuDeviceUtils deviceLevel=$deviceLevel")
         apiReporter.reportFuncEvent(
             "initialize",
             mapOf(
@@ -252,72 +235,6 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             "beauty_mode" -> beautyMode = value.toInt()
             "enableTextureAsync" -> enableTextureAsync = value.toBoolean()
         }
-    }
-
-    override fun setBeautyPreset(preset: BeautyPreset): Int {
-        val conf = config
-        if(conf == null){
-            LogUtils.e(TAG, "setBeautyPreset >> The beauty api has not been initialized!")
-            return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
-        }
-        if (isReleased) {
-            LogUtils.e(TAG, "setBeautyPreset >> The beauty api has been released!")
-            return ErrorCode.ERROR_HAS_RELEASED.value
-        }
-
-        LogUtils.i(TAG, "setBeautyPreset >> preset = $preset")
-        apiReporter.reportFuncEvent("setBeautyPreset",
-            mapOf("preset" to preset),
-            emptyMap()
-        )
-        val recommendFaceBeauty = FaceBeauty(FUBundleData("graphics" + File.separator + "face_beautification.bundle"))
-        if (preset == BeautyPreset.DEFAULT) {
-            recommendFaceBeauty.filterName = FaceBeautyFilterEnum.FENNEN_1
-            recommendFaceBeauty.filterIntensity = 0.7
-            // 美牙
-            recommendFaceBeauty.toothIntensity = 0.3
-            // 亮眼
-            recommendFaceBeauty.eyeBrightIntensity = 0.3
-            // 大眼
-            recommendFaceBeauty.eyeEnlargingIntensity = 0.5
-            // 红润
-            recommendFaceBeauty.redIntensity = 0.5 * 2
-            // 美白
-            recommendFaceBeauty.colorIntensity = 0.75 * 2
-            // 磨皮
-            recommendFaceBeauty.blurIntensity = 0.75 * 6
-            if (deviceLevel > FuDeviceUtils.DEVICE_LEVEL_MID) {
-                val score = FUAIKit.getInstance().getFaceProcessorGetConfidenceScore(0)
-                if (score > 0.95) {
-                    recommendFaceBeauty.blurType = 3
-                    recommendFaceBeauty.enableBlurUseMask = true
-                } else {
-                    recommendFaceBeauty.blurType = 2
-                    recommendFaceBeauty.enableBlurUseMask = false
-                }
-            } else {
-                recommendFaceBeauty.blurType = 2
-                recommendFaceBeauty.enableBlurUseMask = false
-            }
-            // 嘴型
-            recommendFaceBeauty.mouthIntensity = 0.3
-            // 瘦鼻
-            recommendFaceBeauty.noseIntensity = 0.1
-            // 额头
-            recommendFaceBeauty.forHeadIntensity = 0.3
-            // 下巴
-            recommendFaceBeauty.chinIntensity = 0.0
-            // 瘦脸
-            recommendFaceBeauty.cheekThinningIntensity = 0.3
-            // 窄脸
-            recommendFaceBeauty.cheekNarrowIntensity = 0.0
-            // 小脸
-            recommendFaceBeauty.cheekSmallIntensity = 0.0
-            // v脸
-            recommendFaceBeauty.cheekVIntensity = 0.0
-        }
-        conf.fuRenderKit.faceBeauty = recommendFaceBeauty
-        return ErrorCode.ERROR_OK.value
     }
 
     override fun release(): Int {

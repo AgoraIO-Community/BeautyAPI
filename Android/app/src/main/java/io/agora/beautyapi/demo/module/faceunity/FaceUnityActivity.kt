@@ -202,9 +202,9 @@ class FaceUnityActivity : ComponentActivity() {
             }
             setFrameRateSelect(intent.getStringExtra(EXTRA_FRAME_RATE) ?: "")
             setOnFrameRateChangeListener { frameRate ->
-                mVideoEncoderConfiguration.frameRate = ReflectUtils.getStaticFiledValue(
-                    VideoEncoderConfiguration::class.java, frameRate
-                ) ?: 15
+                mVideoEncoderConfiguration.frameRate = ReflectUtils.getStaticFiledValue<FRAME_RATE>(
+                    FRAME_RATE::class.java, frameRate
+                )?.value ?: 15
                 mRtcEngine.setVideoEncoderConfiguration(mVideoEncoderConfiguration)
             }
         }
@@ -308,6 +308,7 @@ class FaceUnityActivity : ComponentActivity() {
 
     private fun initBeautyApi() {
         FaceUnityBeautySDK.beautyConfig.reset()
+        FaceUnityBeautySDK.configureFURenderKit()
         mFaceUnityApi.initialize(
             Config(
                 applicationContext,

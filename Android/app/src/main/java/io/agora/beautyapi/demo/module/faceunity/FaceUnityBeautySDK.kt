@@ -6,6 +6,11 @@ import android.util.Log
 import com.faceunity.core.callback.OperateCallback
 import com.faceunity.core.entity.FUBundleData
 import com.faceunity.core.enumeration.FUAITypeEnum
+import com.faceunity.core.faceunity.AICommonData.FUAIFACE_DISABLE_ARMESHV2
+import com.faceunity.core.faceunity.AICommonData.FUAIFACE_DISABLE_DEL_SPOT
+import com.faceunity.core.faceunity.AICommonData.FUAIFACE_DISABLE_FACE_OCCU
+import com.faceunity.core.faceunity.AICommonData.FUAIFACE_DISABLE_SKIN_SEG
+import com.faceunity.core.faceunity.AICommonData.FUAIFACE_ENABLE_ALL
 import com.faceunity.core.faceunity.FUAIKit
 import com.faceunity.core.faceunity.FURenderConfig.OPERATE_SUCCESS_AUTH
 import com.faceunity.core.faceunity.FURenderKit
@@ -15,6 +20,7 @@ import com.faceunity.core.model.makeup.SimpleMakeup
 import com.faceunity.core.model.prop.sticker.Sticker
 import com.faceunity.core.utils.FULogger
 import com.faceunity.wrapper.faceunity
+import io.agora.beautyapi.demo.module.faceunity.utils.FuDeviceUtils
 import io.agora.beautyapi.faceunity.FaceUnityBeautyAPI
 import java.io.File
 
@@ -33,6 +39,40 @@ object FaceUnityBeautySDK {
 
     private var authSuccess = false
 
+    /**
+     * 特效配置
+     */
+    fun configureFURenderKit() {
+        val fukit = FUAIKit.getInstance();
+        fukit.setFaceDelayLeaveEnable(FuDeviceUtils.Config.FACE_DELAY_LEAVE_ENABLE)
+        when (FuDeviceUtils.Config.DEVICE_LEVEL) {
+            FuDeviceUtils.DEVICE_LEVEL_MINUS_ONE, FuDeviceUtils.DEVICE_LEVEL_ONE -> fukit.fuSetFaceAlgorithmConfig(
+                FUAIFACE_DISABLE_FACE_OCCU or FUAIFACE_DISABLE_SKIN_SEG or FUAIFACE_DISABLE_DEL_SPOT or FUAIFACE_DISABLE_ARMESHV2
+            )
+
+            FuDeviceUtils.DEVICE_LEVEL_TWO -> fukit.fuSetFaceAlgorithmConfig(
+                FUAIFACE_DISABLE_SKIN_SEG or FUAIFACE_DISABLE_DEL_SPOT or FUAIFACE_DISABLE_ARMESHV2
+            )
+
+            FuDeviceUtils.DEVICE_LEVEL_THREE -> fukit.fuSetFaceAlgorithmConfig(
+                FUAIFACE_DISABLE_SKIN_SEG
+            )
+
+            FuDeviceUtils.DEVICE_LEVEL_FOUR -> fukit.fuSetFaceAlgorithmConfig(FUAIFACE_ENABLE_ALL)
+        }
+        fukit.loadAIProcessor(
+            FuDeviceUtils.Config.BUNDLE_AI_FACE,
+            FUAITypeEnum.FUAITYPE_FACEPROCESSOR
+        )
+        fukit.faceProcessorSetFaceLandmarkQuality(if (FuDeviceUtils.Config.DEVICE_LEVEL >= 2) 2 else 1)
+        FURenderKit.getInstance()
+            .setDynamicQualityControl(FuDeviceUtils.Config.DEVICE_LEVEL <= FuDeviceUtils.DEVICE_LEVEL_ONE)
+        //高端机开启小脸检测
+        if (FuDeviceUtils.Config.DEVICE_LEVEL > FuDeviceUtils.DEVICE_LEVEL_ONE) fukit.fuFaceProcessorSetDetectSmallFace(
+            true
+        )
+    }
+
     fun initBeauty(context: Context): Boolean {
         val auth = try {
             getAuth()
@@ -40,7 +80,8 @@ object FaceUnityBeautySDK {
             Log.w(TAG, e)
             return false
         } ?: return false
-
+        FuDeviceUtils.Config.DEVICE_LEVEL = FuDeviceUtils.judgeDeviceLevel(context)
+        FuDeviceUtils.Config.DEVICE_NAME = FuDeviceUtils.getDeviceName()
         FURenderManager.setKitDebug(FULogger.LogLevel.TRACE)
         FURenderManager.setCoreDebug(FULogger.LogLevel.ERROR)
         FURenderManager.registerFURender(context, auth, object : OperateCallback {
@@ -290,8 +331,7 @@ object FaceUnityBeautySDK {
                         fuRenderKit.makeup = null
                     } else {
                         val makeup =
-                            SimpleMakeup(FUBundleData("graphics" + File.separator + "face_makeup.bundle"))
-                        makeup.setCombinedConfig(FUBundleData("$resourceBase/${value.path}"))
+                            SimpleMakeup(FUBundleData("$resourceBase/${value.path}"))
                         makeup.makeupIntensity = value.intensity.toDouble()
                         fuRenderKit.makeup = makeup
                     }
@@ -321,7 +361,7 @@ object FaceUnityBeautySDK {
             sticker = null
         }
 
-        fun resume(){
+        fun resume() {
             smooth = smooth
             whiten = whiten
             thinFace = thinFace
