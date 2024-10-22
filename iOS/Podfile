@@ -14,14 +14,14 @@ target 'BeautyAPi' do
   pod 'AgoraRtcEngine_Special_iOS', '4.2.6.5'
 #  pod 'sdk', :path => 'sdk.podspec'
 #  pod 'BeautyAPI', :path => Dir.pwd() + '/BeautyAPi/BeautyAPI.podspec'
-  pod 'SenseLib', :path => 'sense.podspec'
+#  pod 'SenseLib', :path => 'sense.podspec'
   pod 'fuLib', :path => 'fu.podspec'
-  pod 'bytedEffect', :path => 'bytedEffect.podspec'
+#  pod 'bytedEffect', :path => 'bytedEffect.podspec'
   # pod 'CosmosEffect', :path => './CosmosEffect'
   
   #滚动视图
   pod 'JXCategoryView', '~> 1.6.1'
-
+  
 end
 
 post_install do |installer|

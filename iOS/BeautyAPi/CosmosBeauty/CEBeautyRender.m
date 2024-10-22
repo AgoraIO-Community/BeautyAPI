@@ -30,13 +30,13 @@
     self = [super init];
     if (self) {
 #if __has_include(<CosmosBeautyKit/CosmosBeautySDK.h>)
-//#error 替换授权信息，保证授权信息和Bundle ID对应
+//#Error Replace the authorization information to ensure that the authorization information and Bundle ID correspond
         CBRenderError ret1 = [CosmosBeautySDK initSDKWith:@"<#Input License#>"];
         
         CBRenderError ret2 = [CosmosBeautySDK setupCVModelPath:[[NSBundle mainBundle]pathForResource:@"cv" ofType:@"bundle"]];
         _isAuthSuccess = ret1 == CBRenderErrorNone && ret2 == CBRenderErrorNone;
         
-        NSLog(@"美颜初始化 path = %@",[NSBundle bundleForClass:[CBRenderModuleManager class]].bundlePath);
+        NSLog(@"Initialization of beauty path = %@",[NSBundle bundleForClass:[CBRenderModuleManager class]].bundlePath);
 
         CBRenderModuleManager *render = [[CBRenderModuleManager alloc] init];
         render.devicePosition = AVCaptureDevicePositionBack;
@@ -201,7 +201,7 @@
 - (void)clearSticker {
     [self.stickerDescriptor clear];
 }
-// 美妆效果
+
 - (void)clearMakeup {
     [self.beautyDescriptor clearMakeup];
 }
