@@ -41,8 +41,8 @@ dependencies {
     }
 
 
-    api 'com.faceunity:core:8.7.0'
-    api 'com.faceunity:model:8.7.0'
+    api 'com.faceunity:core:8.6.0'
+    api 'com.faceunity:model:8.6.0'
 }
 
 // Because the components are created only during the afterEvaluate phase, you must

@@ -19,9 +19,9 @@
         android:gravity="center">
 
         <TextView
-            android:layout_width="100dp"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
-            android:text="角色" />
+            android:text="@string/role" />
 
         <Spinner
             android:id="@+id/spRoleType"
@@ -42,9 +42,9 @@
         android:gravity="center">
 
         <TextView
-            android:layout_width="100dp"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
-            android:text="编码分辨率" />
+            android:text="@string/resolution" />
 
         <Spinner
             android:id="@+id/spResolution"
@@ -65,9 +65,9 @@
         android:gravity="center">
 
         <TextView
-            android:layout_width="100dp"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
-            android:text="编码帧率" />
+            android:text="@string/framerate" />
 
         <Spinner
             android:id="@+id/spFrameRate"
@@ -89,9 +89,9 @@
         android:gravity="center">
 
         <TextView
-            android:layout_width="100dp"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
-            android:text="美颜" />
+            android:text="@string/beauty_type" />
 
         <Spinner
             android:id="@+id/spBeautyType"
@@ -112,9 +112,9 @@
         android:gravity="center">
 
         <TextView
-            android:layout_width="100dp"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
-            android:text="美颜采集方式" />
+            android:text="@string/capture_type" />
 
         <Spinner
             android:id="@+id/spBeautyCaptureMode"
@@ -135,9 +135,9 @@
         android:gravity="center">
 
         <TextView
-            android:layout_width="150dp"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
-            android:text="美颜处理方式(测试用)" />
+            android:text="@string/beauty_process_type" />
 
         <Spinner
             android:id="@+id/spBeautyProcessMode"
@@ -157,7 +157,7 @@
         android:id="@+id/btnJoin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="加入频道" />
+        android:text="@string/join_channel" />
 
 
 </LinearLayout>
