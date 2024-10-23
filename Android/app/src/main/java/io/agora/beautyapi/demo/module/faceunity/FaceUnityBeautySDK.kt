@@ -22,11 +22,9 @@ object FaceUnityBeautySDK {
 
     private const val TAG = "FaceUnityBeautySDK"
 
-    /* AI道具*/
     private const val BUNDLE_AI_FACE = "model/ai_face_processor.bundle"
     private const val BUNDLE_AI_HUMAN = "model/ai_human_processor.bundle"
 
-    // 美颜配置
     val beautyConfig = BeautyConfig()
 
     private var beautyAPI: FaceUnityBeautyAPI? = null
@@ -99,7 +97,6 @@ object FaceUnityBeautySDK {
 
         private val fuRenderKit = FURenderKit.getInstance()
 
-        // 美颜配置
         private val faceBeauty: FaceBeauty
             get() {
                 var faceBeauty = fuRenderKit.faceBeauty
@@ -112,10 +109,8 @@ object FaceUnityBeautySDK {
             }
 
 
-        // 资源基础路径
         private val resourceBase = "beauty_faceunity"
 
-        // 磨皮
         var smooth = 0.65f
             set(value) {
                 field = value
@@ -124,7 +119,6 @@ object FaceUnityBeautySDK {
                 }
             }
 
-        // 美白
         var whiten = 0.65f
             set(value) {
                 field = value
@@ -133,7 +127,6 @@ object FaceUnityBeautySDK {
                 }
             }
 
-        // 瘦脸
         var thinFace = 0.3f
             set(value) {
                 field = value
@@ -142,7 +135,6 @@ object FaceUnityBeautySDK {
                 }
             }
 
-        // 大眼
         var enlargeEye = 0.0f
             set(value) {
                 field = value
@@ -151,7 +143,6 @@ object FaceUnityBeautySDK {
                 }
             }
 
-        // 红润
         var redden = 0.0f
             set(value) {
                 field = value
@@ -160,7 +151,6 @@ object FaceUnityBeautySDK {
                 }
             }
 
-        // 五官立体
         var faceThree = 0.0f
             set(value) {
                 field = value
@@ -169,7 +159,6 @@ object FaceUnityBeautySDK {
                 }
             }
 
-        // 瘦颧骨
         var shrinkCheekbone = 0.3f
             set(value) {
                 field = value
@@ -178,7 +167,6 @@ object FaceUnityBeautySDK {
                 }
             }
 
-        // 下颌骨
         var shrinkJawbone = 0.0f
             set(value) {
                 field = value
@@ -187,7 +175,6 @@ object FaceUnityBeautySDK {
                 }
             }
 
-        // 美牙
         var whiteTeeth = 0.0f
             set(value) {
                 field = value
@@ -196,7 +183,6 @@ object FaceUnityBeautySDK {
                 }
             }
 
-        // 额头
         var hairlineHeight = 0.0f
             set(value) {
                 field = value
@@ -205,7 +191,6 @@ object FaceUnityBeautySDK {
                 }
             }
 
-        // 瘦鼻
         var narrowNose = 0.0f
             set(value) {
                 field = value
@@ -214,7 +199,6 @@ object FaceUnityBeautySDK {
                 }
             }
 
-        // 嘴形
         var mouthSize = 0.0f
             set(value) {
                 field = value
@@ -223,7 +207,6 @@ object FaceUnityBeautySDK {
                 }
             }
 
-        // 下巴
         var chinLength = 0.0f
             set(value) {
                 field = value
@@ -232,7 +215,6 @@ object FaceUnityBeautySDK {
                 }
             }
 
-        // 亮眼
         var brightEye = 0.0f
             set(value) {
                 field = value
@@ -241,7 +223,6 @@ object FaceUnityBeautySDK {
                 }
             }
 
-        // 祛黑眼圈
         var darkCircles = 0.0f
             set(value) {
                 field = value
@@ -250,7 +231,6 @@ object FaceUnityBeautySDK {
                 }
             }
 
-        // 祛法令纹
         var nasolabialFolds = 0.0f
             set(value) {
                 field = value
@@ -259,7 +239,6 @@ object FaceUnityBeautySDK {
                 }
             }
 
-        // 锐化
         var sharpen = 0.0f
             set(value) {
                 field = value
@@ -268,7 +247,6 @@ object FaceUnityBeautySDK {
                 }
             }
 
-        // 贴纸
         var sticker: String? = null
             set(value) {
                 field = value
@@ -281,7 +259,6 @@ object FaceUnityBeautySDK {
                 }
             }
 
-        // 美妆
         var makeUp: MakeUpItem? = null
             set(value) {
                 field = value

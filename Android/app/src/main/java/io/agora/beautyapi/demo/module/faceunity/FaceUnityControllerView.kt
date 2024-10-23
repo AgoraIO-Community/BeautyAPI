@@ -241,9 +241,9 @@ class FaceUnityControllerView : BeautyControllerView {
                     ItemInfo(
                         R.string.beauty_item_sticker_zhu,
                         R.mipmap.ic_sticker_fu_zh_fenshu,
-                        isSelected = beautyConfig.sticker == "sticker/fu_zh_fenshu.bundle",
+                        isSelected = beautyConfig.sticker == "sticker/daisypig.bundle",
                         onValueChanged = { _ ->
-                            beautyConfig.sticker = "sticker/fu_zh_fenshu.bundle"
+                            beautyConfig.sticker = "sticker/daisypig.bundle"
                         }
                     )
                 )

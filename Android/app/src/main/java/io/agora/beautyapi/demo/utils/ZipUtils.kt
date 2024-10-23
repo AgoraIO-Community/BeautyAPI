@@ -43,7 +43,7 @@ object ZipUtils {
             unzipSuccess = true
             unzipWithException(zipFile, targetDir)
         } catch (e: Exception) {
-            Log.w(TAG, "unzip: 解压失败")
+            Log.w(TAG, "unzip failed")
             unzipSuccess = false
         }
         return unzipSuccess

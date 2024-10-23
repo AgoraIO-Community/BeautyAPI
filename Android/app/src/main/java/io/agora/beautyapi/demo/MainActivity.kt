@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
         }
         mBinding.btnJoin.setOnClickListener {
             if (TextUtils.isEmpty(mBinding.etChannelName.text)) {
-                Toast.makeText(this, "频道名不能为空", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.channel_is_empty), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             mPermissionHelp.checkCameraAndMicPerms(
@@ -59,7 +59,8 @@ class MainActivity : ComponentActivity() {
                     gotoBeautyActivity()
                 },
                 unGranted = {
-                    Toast.makeText(this, "没有直播权限", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this,
+                        getString(R.string.permission_not_granted), Toast.LENGTH_SHORT).show()
                 },
                 true
             )
