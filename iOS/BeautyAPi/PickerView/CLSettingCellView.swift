@@ -394,7 +394,7 @@ extension CLSettingCellView: UITableViewDelegate, UITableViewDataSource {
 class ActionSheetHeaderView: UIView {
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "标题"
+        label.text = "Title"
         label.font = .systemFont(ofSize: 13)
         label.textColor = UIColor(hex: "#6C7192", alpha: 1.0)
         label.textAlignment = .left
@@ -404,7 +404,7 @@ class ActionSheetHeaderView: UIView {
     }()
     private lazy var descLabel: UILabel = {
         let label = UILabel()
-        label.text = "描述"
+        label.text = "Describe"
         label.font = .systemFont(ofSize: 11)
         label.textColor = UIColor(hex: "#979CBB", alpha: 1.0)
         label.textAlignment = .right
@@ -476,7 +476,7 @@ class ActionSheetTextCell: UITableViewCell {
     }()
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "标题"
+        label.text = "Title"
         label.font = .systemFont(ofSize: 13)
         label.textColor = .black
         label.textAlignment = .left
@@ -486,7 +486,7 @@ class ActionSheetTextCell: UITableViewCell {
     }()
     private lazy var descLabel: UILabel = {
         let label = UILabel()
-        label.text = "描述"
+        label.text = "Describe"
         label.font = .systemFont(ofSize: 13)
         label.textColor = UIColor(hex: "#3C4267", alpha: 1.0)
         label.textAlignment = .right
@@ -672,7 +672,7 @@ class ActionSheetSwitchCell: UITableViewCell {
     }()
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "标题"
+        label.text = "Title"
         label.font = .systemFont(ofSize: 13)
         label.textColor = .black
         label.textAlignment = .left
@@ -781,7 +781,7 @@ class ActionSheetSliderCell: UITableViewCell {
     }()
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "标题"
+        label.text = "Title"
         label.font = .systemFont(ofSize: 13)
         label.textColor = .black
         label.textAlignment = .left
@@ -791,7 +791,7 @@ class ActionSheetSliderCell: UITableViewCell {
     }()
     private lazy var descLabel: UILabel = {
         let label = UILabel()
-        label.text = "描述"
+        label.text = "Describe"
         label.font = .systemFont(ofSize: 13)
         label.textColor = UIColor(hex: "#3C4267", alpha: 1.0)
         label.textAlignment = .right
@@ -895,7 +895,7 @@ class ActionSheetSegmentCell: UITableViewCell {
     }()
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "标题"
+        label.text = "Title"
         label.font = .systemFont(ofSize: 13)
         label.textColor = .black
         label.textAlignment = .left
@@ -905,7 +905,7 @@ class ActionSheetSegmentCell: UITableViewCell {
     }()
     private lazy var descLabel: UILabel = {
         let label = UILabel()
-        label.text = "描述"
+        label.text = "Describe"
         label.font = .systemFont(ofSize: 13)
         label.textColor = UIColor(hex: "#3C4267", alpha: 1.0)
         label.textAlignment = .right

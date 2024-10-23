@@ -33,27 +33,27 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithType:(EffectsType)type context:(EAGLContext *)glContext;
 
-/// 设置当前EAGLContext
-/// @param glContext 当前GLContext
+/// Set the current EAGLContext
+/// @param glContext Current GLContext
 - (void)setCurrentEAGLContext:(EAGLContext*)glContext;
 
 #if __has_include("st_mobile_common.h")
-/// 设置特效
-/// @param type 特效类型
-/// @param path 特效素材路径
+/// Set up special effects
+/// @param type Special effect type
+/// @param path Special effect material path
 - (st_result_t)setEffectType:(st_effect_beauty_type_t)type path:(NSString *)path;
 
 - (st_result_t)setEffectType:(st_effect_beauty_type_t)type model:(int)model;
 
-/// 设置特效程度值
-/// @param type 特效类型
-/// @param value 强度值
+/// Set the special effect degree value
+/// @param type Special effect type
+/// @param value Intensity value
 - (st_result_t)setEffectType:(st_effect_beauty_type_t)type value:(float)value;
 
-/// 设置风格强度
-/// @param packageId packageID
-/// @param type 类型
-/// @param value 强度值
+/// Set the style intensity
+/// @param package Id package ID
+/// @param type type
+/// @param value Intensity value
 - (st_result_t)setPackageId:(int)packageId groupType:(st_effect_beauty_group_t)type strength:(float)value;
 
 - (st_result_t)setTryon:(st_effect_tryon_info_t *)tryonInfo andTryonType:(st_effect_beauty_type_t)tryonType;
@@ -75,17 +75,17 @@ NS_ASSUME_NONNULL_BEGIN
 - (st_result_t)disableOverlap:(BOOL)isDisableOverlap;
 - (st_result_t)disableModuleReorder:(BOOL)isDisableModuleReorder;
 
-/// 设置贴纸
-/// @param stickerPath stickerPath 2D贴纸
-/// @param callback 回调Block
+/// Set up stickers
+/// @param stickerPath stickerPath 2D sticker
+/// @param callback Callback Block
 - (void)setStickerWithPath:(NSString *)stickerPath
                   callBack:(void(^)(st_result_t state, int stickerId, uint64_t action))callback;
 
 - (void)setStickerWithPath:(NSString *)stickerPath callBackCustomEventIncluded:(void(^)(st_result_t state, int stickerId, uint64_t action, uint64_t customEvent))callback;
 
-/// 添加贴纸
-/// @param stickerPath stickerPath 贴纸资源路径
-/// @param callback 回调Block
+/// Add stickers
+/// @param stickerPath stickerPath sticker resource path
+/// @param callback Callback Block
 - (void)addStickerWithPath:(NSString *)stickerPath
                   callBack:(void(^)(st_result_t state, int sticker, uint64_t action))callback;
 
@@ -93,32 +93,31 @@ NS_ASSUME_NONNULL_BEGIN
 
 -(void)changeStickerWithPath:(NSString *)stickerPath callBackCustomEventIncluded:(void(^)(st_result_t state, int stickerId, uint64_t action, uint64_t customEvent))callback;
 
-/// 获取获取素材的贴纸信息
+/// Get the sticker information of the material
 /// @param package_id package_id
-/// @param modules 贴纸信息
+/// @param modules Sticker Information
 -(st_result_t)getModulesInPackage:(int)package_id modules:(st_effect_module_info_t*)modules;
 
-/// 设置贴纸信息
-/// @param module_info 贴纸信息
+/// Set the sticker information
+/// @param module_info sticker information
 -(st_result_t)setModuleInfo:(st_effect_module_info_t *)module_info;
 
-/// 重新播放贴纸
+/// Replay the sticker
 /// @param packageId packageId
 -(void)replayStickerWithPackage:(int)packageId;
 
-
-/// 获取覆盖生效的美颜的信息
-/// @param callback 回调block
+/// Obtain the information of overwriting effective beauty
+/// @param callback callback block
 - (void)getOverLap:(void(^)(st_effect_beauty_info_t *beauty_info))callback;
 
-/// 获取覆盖生效的美颜的信息
+/// Get the information of overwriting effective beauty
 - (st_effect_beauty_info_t *)getOverlapInfo:(int *)count;
 
-/// 移除贴纸
-/// @param stickerId 贴纸Id
+/// Remove the sticker
+/// @param stickerId Sticker Id
 - (st_result_t)removeSticker:(int)stickerId;
 
-/// 清空贴纸
+/// Empty the sticker
 - (st_result_t)cleareStickers;
 
 - (uint64_t)getDetectConfig;

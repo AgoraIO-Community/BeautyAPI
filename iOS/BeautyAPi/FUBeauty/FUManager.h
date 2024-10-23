@@ -2,8 +2,6 @@
 //  FUManager.h
 //  FULiveDemo
 //
-//  Created by 刘洋 on 2017/8/18.
-//  Copyright © 2017年 刘洋. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -18,7 +16,7 @@
 
 @protocol FUManagerProtocol <NSObject>
 
-//用于检测是否有ai人脸和人形
+//It is used to detect whether there are AI faces and human figures.
 - (void)faceUnityManagerCheckAI;
 
 @end
@@ -29,10 +27,10 @@
 
 + (FUManager *)shareManager;
 
-/// 销毁全部道具
+/// Destroy all the props
 - (void)destoryItems;
 
-/// 更新美颜磨皮效果（根据人脸检测置信度设置不同磨皮效果）
+/// Update the beauty skin polishing effect (set different skin polishing effects according to the confidence of face detection)
 - (void)updateBeautyBlurEffect;
 
 - (void)setBuauty: (BOOL)isSelected;

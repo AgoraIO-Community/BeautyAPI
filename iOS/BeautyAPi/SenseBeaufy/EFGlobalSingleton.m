@@ -2,7 +2,6 @@
 //  EFGlobalSingleton.m
 //  SenseMeEffects
 //
-//  Created by 马浩萌 on 2021/11/30.
 //  Copyright © 2021 SoftSugar. All rights reserved.
 //
 

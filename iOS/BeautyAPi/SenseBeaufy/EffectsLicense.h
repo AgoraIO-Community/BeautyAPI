@@ -12,12 +12,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EffectsLicense : NSObject
 
-/// 鉴权
-/// @param licensePath 授权文件路径
+/// Authentication
+/// @param licensePath Authorization File Path
 + (BOOL)authorizeWithLicensePath:(NSString *)licensePath;
 
-/// 鉴权
-/// @param dataLicense 授权文件数据
+/// Authentication
+/// @param dataLicense Authorize file data
 + (BOOL)authorizeWithLicenseData:(NSData *)dataLicense;
 @end
 

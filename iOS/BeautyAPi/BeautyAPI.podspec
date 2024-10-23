@@ -8,7 +8,7 @@ Pod::Spec.new do |spec|
   spec.author       = { "ZYQ" => "zhaoyongqiang@agora.io" }
   spec.source       = { :git => "https://github.com/AgoraIO-Community/BeautyAPI.git", :tag => spec.version }
 
-  # 默认加载所有
+  # Load all by default
   spec.default_subspec = "Core"
 
   # All

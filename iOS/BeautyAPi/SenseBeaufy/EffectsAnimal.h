@@ -19,23 +19,23 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithType:(EffectsType)type;
 
 #if __has_include("st_mobile_effect.h")
-/// 动物检测函数
-/// @param pixelBuffer 每帧图像数据
-/// @param rotate 手机旋转方向
-/// @param detectResult 检测结果
+/// Animal detection function
+/// @param pixelBuffer image data per frame
+/// @param rotate the rotation direction of the mobile phone
+/// @param detectResult test results
 - (st_result_t)detectAnimalWithPixelbuffer:(CVPixelBufferRef)pixelBuffer
                                     rotate:(st_rotate_type)rotate
                                     config:(st_mobile_animal_type)config
                              detectResult:(st_mobile_animal_result_t *)detectResult;
 
-/// 动物检测函数
-/// @param buffer 每帧图像数据
-/// @param rotate 手机旋转方向
-/// @param pixelFormat 视频数据格式(YUV/RGBA/BGRA......)
-/// @param width 图像宽度
-/// @param height 图像高度
-/// @param stride 图像的stride
-/// @param detectResult 检测结果
+/// Animal detection function
+/// @param buffer Image data per frame
+/// @param rotate the rotation direction of the mobile phone
+/// @param pixelFormat Video Data Format (YUV/RGBA/BGRA...)
+/// @param width Image width
+/// @param height Image height
+/// @param stride The stride of the image
+/// @param detectResult test results
 - (st_result_t)detectAnimalWithBuffer:(unsigned char *)buffer
                                rotate:(st_rotate_type)rotate
                           pixelFormat:(st_pixel_format)pixelFormat

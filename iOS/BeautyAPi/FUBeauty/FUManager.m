@@ -2,8 +2,6 @@
 //  FUManager.m
 //  FULiveDemo
 //
-//  Created by 刘洋 on 2017/8/18.
-//  Copyright © 2017年 刘洋. All rights reserved.
 //
 
 #import "FUManager.h"
@@ -18,7 +16,7 @@ static FUManager *shareManager = NULL;
 @interface FUManager ()
 
 #if __has_include(<FURenderKit/FURenderKit.h>)
-/// 当前的贴纸
+/// Current stickers
 @property (nonatomic, strong) FUSticker *currentSticker;
 #endif
 
@@ -48,30 +46,30 @@ static FUManager *shareManager = NULL;
             setupConfig.controllerPath = controllerPath;
             setupConfig.controllerConfigPath = controllerConfigPath;
             
-            // 初始化 FURenderKit
+            // Initialize FURenderKit
             [FURenderKit setupWithSetupConfig:setupConfig];
             
             [FURenderKit setLogLevel:FU_LOG_LEVEL_ERROR];
             
-            // 加载人脸 AI 模型
+            // Load the face AI model
             NSString *faceAIPath = [[NSBundle mainBundle] pathForResource:@"ai_face_processor" ofType:@"bundle"];
             [FUAIKit loadAIModeWithAIType:FUAITYPE_FACEPROCESSOR dataPath:faceAIPath];
             
-            // 加载身体 AI 模型
+            // Load the body AI model
             NSString *bodyAIPath = [[NSBundle mainBundle] pathForResource:@"ai_human_processor" ofType:@"bundle"];
             [FUAIKit loadAIModeWithAIType:FUAITYPE_HUMAN_PROCESSOR dataPath:bodyAIPath];
             
             NSString *path = [[NSBundle mainBundle] pathForResource:@"tongue" ofType:@"bundle"];
             [FUAIKit loadTongueMode:path];
             
-            /* 设置嘴巴灵活度 默认= 0*/ //
+            /* Set the flexibility of the mouth by default= 0*/ //
             float flexible = 0.5;
             [FUAIKit setFaceTrackParam:@"mouth_expression_more_flexible" value:flexible];
             
-            // 设置人脸算法质量
+            // Set the quality of the face algorithm
             [FUAIKit shareKit].faceProcessorFaceLandmarkQuality = [FURenderKit devicePerformanceLevel] == FUDevicePerformanceLevelHigh ? FUFaceProcessorFaceLandmarkQualityHigh : FUFaceProcessorFaceLandmarkQualityMedium;
             
-            // 设置小脸检测
+            // Set up small face detection
             [FUAIKit shareKit].faceProcessorDetectSmallFace = [FURenderKit devicePerformanceLevel] == FUDevicePerformanceLevelHigh;
         });
         
@@ -96,7 +94,7 @@ static FUManager *shareManager = NULL;
     if (isSelected) {
         NSString *beautyPath = [[NSBundle mainBundle] pathForResource:@"face_beautification" ofType:@"bundle"];
         FUBeauty *beauty = [[FUBeauty alloc] initWithPath:beautyPath name:@"FUBeauty"];
-        // 默认均匀磨皮
+        // Default uniform skin grinding
         beauty.heavyBlur = 0;
         beauty.blurType = 3;
         [FURenderKit shareRenderKit].beauty = beauty;
@@ -155,7 +153,7 @@ static FUManager *shareManager = NULL;
     NSBundle *bundle = [BundleUtil bundleWithBundleName:@"FURenderKit" podName:@"fuLib"];
     NSString *path = [bundle pathForResource:[NSString stringWithFormat:@"贴纸/%@", stickerName] ofType:@"bundle"];
     if (!path) {
-        NSLog(@"FaceUnity：找不到贴纸路径");
+        NSLog(@"FaceUnity：Can't find the sticker path");
         return;
     }
 #if __has_include(<FURenderKit/FURenderKit.h>)
@@ -175,7 +173,7 @@ static FUManager *shareManager = NULL;
         return;
     }
     if ([FURenderKit devicePerformanceLevel] == FUDevicePerformanceLevelHigh) {
-        // 根据人脸置信度设置不同磨皮效果
+        // Set different skin polishing effects according to the confidence of the face
         CGFloat score = [FUAIKit fuFaceProcessorGetConfidenceScore:0];
         if (score > 0.95) {
             [FURenderKit shareRenderKit].beauty.blurType = 3;
@@ -185,7 +183,7 @@ static FUManager *shareManager = NULL;
             [FURenderKit shareRenderKit].beauty.blurUseMask = NO;
         }
     } else {
-        // 设置精细磨皮效果
+        // Set the fine abrasive effect
         [FURenderKit shareRenderKit].beauty.blurType = 2;
         [FURenderKit shareRenderKit].beauty.blurUseMask = NO;
     }
@@ -206,13 +204,13 @@ static FUManager *shareManager = NULL;
     }
     FURenderInput *input = [[FURenderInput alloc] init];
     input.pixelBuffer = frame;
-    //默认图片内部的人脸始终是朝上，旋转屏幕也无需修改该属性。
+    //The face inside the default picture is always facing up, and there is no need to modify the attribute when rotating the screen.。
     input.renderConfig.imageOrientation = FUImageOrientationUP;
-    //开启重力感应，内部会自动计算正确方向，设置fuSetDefaultRotationMode，无须外面设置
+    //Turn on gravity sensing, and the internal will automatically calculate the correct direction and set fuSetDefaultRotationMode without external setting.
     input.renderConfig.gravityEnable = YES;
-    //如果来源相机捕获的图片一定要设置，否则将会导致内部检测异常
+    //If the picture captured by the source camera must be set, otherwise it will lead to abnormal internal detection.
     input.renderConfig.isFromFrontCamera = YES;
-    //该属性是指系统相机是否做了镜像: 一般情况前置摄像头出来的帧都是设置过镜像，所以默认需要设置下。如果相机属性未设置镜像，改属性不用设置。
+    //This attribute refers to whether the system camera has been mirrored: in general, the frames from the front camera have been mirrored, so it needs to be set by default. If the mirror image is not set in the camera attributes, there is no need to change the attribute.
     input.renderConfig.isFromMirroredCamera = YES;
     FURenderOutput *output = [[FURenderKit shareRenderKit] renderWithInput:input];
     return output.pixelBuffer;

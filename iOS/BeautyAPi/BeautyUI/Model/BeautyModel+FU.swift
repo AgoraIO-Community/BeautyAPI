@@ -8,7 +8,7 @@
 import UIKit
 
 class FUBeautyModel: BeautyModel {
-    /// 是否v8.0.0之后新组合妆（只用一个bundle）
+    /// Is it a new combination makeup after v8.0.0 (only one bundle is used)
     var isCombined: Bool = false
 }
 

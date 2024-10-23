@@ -15,9 +15,9 @@
 NS_ASSUME_NONNULL_BEGIN
 
 typedef NS_ENUM(NSInteger, BeautyPresetMode) {
-    /// 默认美颜参数
+    /// Default beauty parameters
     BeautyPresetModeDefault = 0,
-    /// 外部自定义美颜参数, 外部自行设置
+    /// External custom beauty parameters, external self-setting
     BeautyPresetModeCustom = 1
 };
 
@@ -48,49 +48,49 @@ typedef NS_ENUM(NSInteger, CaptureMode) {
 };
 
 @interface BeautyStats : NSObject
-/// 美颜最小耗时
+/// The least time-consuming beauty
 @property (nonatomic, assign)double minCostMs;
-/// 美颜最大耗时
+/// Beauty is the most time-consuming
 @property (nonatomic, assign)double maxCostMs;
-/// 美颜平均耗时
+/// Beauty takes an average time.
 @property (nonatomic, assign)double averageCostMs;
 
 @end
 
 typedef NS_ENUM(NSInteger, MirrorMode) {
-    /// 本地远端都镜像，前置默认
+    /// The local remote end is mirrored, and the front default
     MirrorMode_LOCAL_REMOTE = 0,
-    /// 仅本地镜像，远端不镜像，用于打电话场景，电商直播场景(保证电商直播后面的告示牌文字是正的)；这种模式因为本地远端是反的，所以肯定有一边的文字贴纸方向会是反的
+    /// Only local mirroring, no mirroring at the remote end, used for phone call scenes, e-commerce live broadcast scenes (ensure that the bulletin board text behind the e-commerce live broadcast is positive); this mode is reversed because the local remote is reversed, so there must be a side of the direction of the text sticker.
     MirrorMode_LOCAL_ONLY = 1,
-    /// 仅远端镜像
+    /// Remote mirroring only
     MirrorMode_REMOTE_ONLY= 2,
-    /// 本地远端都不镜像，后置默认
+    /// The local remote end is not mirrored, and the back defaults.
     MirrorMode_NONE
 };
 
 @interface CameraConfig : NSObject
-// 前置默认镜像
+// Front default mirror image
 @property(nonatomic, assign) MirrorMode frontMirror;
-// 后置默认镜像
+// Rear default mirror image
 @property(nonatomic, assign) MirrorMode backMirror;
 @end
 
 @interface BeautyConfig : NSObject
 #if __has_include(<AgoraRtcKit/AgoraRtcKit.h>)
-// 由外部传入的rtc对象，不可为空
+// The rtc object passed in from the outside cannot be empty.
 @property(nonatomic, weak)AgoraRtcEngineKit *rtcEngine;
 #endif
-// 由外部传入的美颜SDK接口对象(不同厂家不一样)，不可为空
+// The beauty SDK interface object (different manufacturers are different) passed in from the outside cannot be empty.
 @property(nonatomic, weak)id<BeautyRenderDelegate>beautyRender;
-// 是否由内部自动注册祼数据回调处理
+// Whether to automatically register the data callback processing internally
 @property(nonatomic, assign)CaptureMode captureMode;
-// 事件回调，包含美颜耗时
+// Event callback, including beauty time-consuming
 @property(nonatomic, copy)void (^eventCallback)(BeautyStats *stats);
-// 统计区间 单位: 秒 默认: 1s
+// Statistical interval Unit: seconds Default: 1s
 @property(nonatomic, assign)NSInteger statsDuration;
-// 是否开启统计
+// Whether to turn on statistics
 @property(nonatomic, assign)BOOL statsEnable;
-// 配置摄像头镜像
+// Configure camera mirroring
 @property(nonatomic, strong)CameraConfig *cameraConfig;
 
 @end
@@ -103,93 +103,93 @@ typedef NS_ENUM(NSInteger, MirrorMode) {
 @property (nonatomic, weak) id<BeautyRenderDelegate>beautyRender;
 
 /**
- * 创建并初始化美颜场景化API，如果外部调用过registerVideoFrameObserver，那create必须在此之后调用
+ * Create and initialize the beauty scenario API. If registerVideoFrameObserver has been called externally, create must be called after that.
  *
- * @param config 配置
+ * @param config config
  *
- * @return 0: 成功, 非0: 见错误码
+ * @return 0: Success, Non 0: See error code
  **/
 - (int)initialize: (BeautyConfig *)config;
 
 /**
- * 美颜开关
+ * Beauty switch
  *
- * @param enable 是否打开美颜
+ * @param enable Whether to turn on the beauty
  *
- * @return 0: 成功, 非0: 见错误码
+ * @return 0: Success, Non 0: See error code
  **/
 - (int)enable: (BOOL)enable;
 
 /**
- * 读取美颜开关状态
+ * Read the status of the beauty switch
  **/
 @property (nonatomic, readonly, assign) BOOL isEnable;
 
 /**
- * 是否是前置摄像头
+ * Is it the front camera?
  **/
 @property (nonatomic, assign, readonly) BOOL isFrontCamera;
 
 /**
- * 切换摄像头
+ * Switch the camera
  *
  *
- * @return 0: 成功；非0：见错误码
+ * @return 0: Success; Non 0: See the error code
  **/
 - (int)switchCamera;
 
 /**
- * 设置摄像头镜像模式，注意前置和后置要单独控制
+ * Set the camera mirroring mode, and pay attention to the front and rear should be controlled separately.
  *
  *
- * @return 0: 成功；非0：见错误码
+ * @return 0: Success; Non 0: See the error code
  **/
 - (int)updateCameraConfig: (CameraConfig *)cameraConfig;
 
 /**
- * 本地视图渲染，由内部来处理镜像问题
+ * Local view rendering, internal to deal with mirroring problems
  *
- * @param view 渲染视图
- * @param renderMode 渲染缩放模式
- * @return 0: 成功, 非0: 见错误码
+ * @param view Rendering view
+ * @param renderMode Render zoom mode
+ * @return 0: Success, Non 0: See error code
  **/
 #if __has_include(<AgoraRtcKit/AgoraRtcKit.h>)
 - (int)setupLocalVideo: (UIView *)view renderMode: (AgoraVideoRenderMode)renderMode;
 #endif
 
 /**
- * 镜像处理方法，当useCustom为true时才需要调用
+ * The mirror processing method only needs to be called when useCustom is true.
  *
- * @return 采集时是否需要镜像
+ * @return Do you need mirroring when collecting?
  **/
 - (BOOL)getMirrorApplied;
 /**
- * 美颜处理方法，当useCustom为true时才需要调用，否则会报错
+ * The beauty processing method only needs to be called when useCustom is true, otherwise an error will be reported.
  *
  *
- * @return 0: 成功；非0：见错误码
+ * @return 0: Success; Non 0: See the error code
  **/
 - (int)onFrame: (CVPixelBufferRef)pixelBuffer callback: (void (^)(CVPixelBufferRef))callback;
 
 /**
- * 设置美颜最佳默认参数
+ * Set the best default parameters for beauty
  *
- * @param mode 美颜参数模式
+ * @param mode Beauty parameter mode
  *
- * @return 0: 成功；非0：见错误码
+ * @return 0: Success; Non 0: See the error code
  **/
 - (int)setBeautyPreset: (BeautyPresetMode)mode;
 
 /**
- * 销毁美颜场景化API。
- * 当创建useCustome=true时，会调用rtcEngine.registerVideoFrameObserver(null)将祼数据回调解绑。
+ * Destroy the beauty scene API.
+ * When creating useCustome=true, rtcEngine.registerVideoFrameObserver(null) will be called to mediate and bind the data.
  *
- * @return 0: 成功；非0: 见错误码表
+ * @return 0: Success; Non 0: See the error code table
  **/
 - (int)destroy;
 
 /**
- * @return 版本号
+ * @return Version number
  **/
 - (NSString *)getVersion;
 

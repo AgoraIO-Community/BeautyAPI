@@ -58,8 +58,8 @@ class BeautyViewController: UIViewController {
     }
     @IBAction func onClickSettingButton(_ sender: Any) {
         let settingView = CLSettingCellView()
-        settingView.title(title: "设置")
-            .switchCell(title: "美颜开关", isOn: beautyAPI?.isEnable ?? false)
+        settingView.title(title: "Set up")
+            .switchCell(title: "Beauty switch", isOn: beautyAPI?.isEnable ?? false)
             .config()
         settingView.show()
         settingView.didSwitchValueChangeClosure = { [weak self] _, isOn in
@@ -89,7 +89,7 @@ class BeautyViewController: UIViewController {
     }
     
     private func setupBeautyAPI() {
-        // 设置encode编码需要在初始化BeatuyAPI之前
+        // Setting encode coding needs to be done before initializing BeatuyAPI.
         updateVideoEncodeConfig()
         
         beautyAPI = BeautyManager.shareManager.initBeautyAPI(rtcEngine: rtcEngine,
@@ -107,7 +107,6 @@ class BeautyViewController: UIViewController {
             rtcEngine.startPreview()
         }
         
-        // captureMode为custom时需要注册delegate
         if capture == "Custom" {
             rtcEngine.setVideoFrameDelegate(self)
         }
@@ -163,7 +162,7 @@ class BeautyViewController: UIViewController {
     }
 }
 
-//MARK: captureMode为custom时才需要实现下面方法
+//MARK: The following method needs to be implemented only when captureMode is custom.
 extension BeautyViewController: AgoraVideoFrameDelegate {
     func onCapture(_ videoFrame: AgoraOutputVideoFrame, sourceType: AgoraVideoSourceType) -> Bool {
         guard let pixelBuffer = videoFrame.pixelBuffer else { return true }
