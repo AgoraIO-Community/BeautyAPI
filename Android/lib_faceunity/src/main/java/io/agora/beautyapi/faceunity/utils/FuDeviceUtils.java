@@ -290,12 +290,6 @@ public class FuDeviceUtils {
         return DEVICEINFO_UNKNOWN;
     }
 
-    /**
-     * 获取当前剩余内存(ram)
-     *
-     * @param context
-     * @return
-     */
     public static long getAvailMemory(Context context) {
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         ActivityManager.MemoryInfo mi = new ActivityManager.MemoryInfo();
@@ -303,29 +297,14 @@ public class FuDeviceUtils {
         return mi.availMem;
     }
 
-    /**
-     * 获取厂商信息
-     *
-     * @return
-     */
     public static String getBrand() {
         return Build.BRAND;
     }
 
-    /**
-     * 获取手机机型
-     *
-     * @return
-     */
     public static String getModel() {
         return Build.MODEL;
     }
 
-    /**
-     * 获取硬件信息(cpu型号)
-     *
-     * @return
-     */
     public static String getHardWare() {
         try {
             FileReader fr = new FileReader("/proc/cpuinfo");
@@ -376,10 +355,6 @@ public class FuDeviceUtils {
         return level;
     }
 
-    /**
-     * -1 不是特定的高低端机型
-     * @return
-     */
     private static int judgeDeviceLevelInDeviceName() {
         String currentDeviceName = getDeviceName();
         for (String deviceName:upscaleDevice) {
@@ -406,11 +381,6 @@ public class FuDeviceUtils {
     public static final String[] lowDevice = {};
     public static final String[] middleDevice = {"OPPO R11s","PAR-AL00","MI 8 Lite","ONEPLUS A6000","PRO 6","PRO 7 Plus"};
 
-    /**
-     * 评定内存的等级.
-     *
-     * @return
-     */
     private static int judgeMemory(Context context) {
         long ramMB = getTotalMemory(context) / (1024 * 1024);
         int level = -1;
@@ -428,11 +398,6 @@ public class FuDeviceUtils {
         return level;
     }
 
-    /**
-     * 评定CPU等级.（按频率和厂商型号综合判断）
-     *
-     * @return
-     */
     private static int judgeCPU() {
         int level = 0;
         String cpuName = getHardWare();
@@ -463,11 +428,6 @@ public class FuDeviceUtils {
         return level;
     }
 
-    /**
-     * 联发科芯片等级判定
-     *
-     * @return
-     */
     private static int judgeMTCPU(String cpuName, int freqMHz) {
         //P60之前的全是低端机 MT6771V/C
         int level = 0;
@@ -505,12 +465,6 @@ public class FuDeviceUtils {
         return level;
     }
 
-    /**
-     * 通过联发科CPU型号定义 -> 获取cpu version
-     *
-     * @param cpuName
-     * @return
-     */
     private static int getMTCPUVersion(String cpuName) {
         //截取MT后面的四位数字
         int cpuVersion = -1;
@@ -526,11 +480,6 @@ public class FuDeviceUtils {
         return cpuVersion;
     }
 
-    /**
-     * 高通骁龙芯片等级判定
-     *
-     * @return
-     */
     private static int judgeQualcommCPU(String cpuName, int freqMHz) {
         int level = 0;
         //xxxx inc MSM8937 比较老的芯片
@@ -558,12 +507,6 @@ public class FuDeviceUtils {
         return level;
     }
 
-    /**
-     * 麒麟芯片等级判定
-     *
-     * @param freqMHz
-     * @return
-     */
     private static int judgeSkinCPU(String cpuName, int freqMHz) {
         //型号 -> kirin710之后 & 最高核心频率
         int level = 0;
@@ -592,11 +535,6 @@ public class FuDeviceUtils {
 
     public static final String Nexus_6P = "Nexus 6P";
 
-    /**
-     * 获取设备名
-     *
-     * @return
-     */
     public static String getDeviceName() {
         String deviceName = "";
         if (Build.MODEL != null) deviceName = Build.MODEL;

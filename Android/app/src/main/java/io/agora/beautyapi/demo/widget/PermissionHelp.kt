@@ -113,11 +113,6 @@ class PermissionHelp(val activity: ComponentActivity) {
         }
 
 
-    /**
-     * 检查摄像头和麦克风权限
-     *
-     * @param force 是：如果权限被禁用则会跳转到系统应用权限设置页面
-     */
     fun checkCameraAndMicPerms(
         granted: () -> Unit,
         unGranted: () -> Unit,
@@ -128,11 +123,7 @@ class PermissionHelp(val activity: ComponentActivity) {
         }, unGranted, force)
     }
 
-    /**
-     * 检查麦克风权限
-     *
-     * @param force 是：如果权限被禁用则会跳转到系统应用权限设置页面
-     */
+
     fun checkMicPerm(
         granted: () -> Unit,
         unGranted: () -> Unit,
@@ -141,11 +132,7 @@ class PermissionHelp(val activity: ComponentActivity) {
         checkPermission(Manifest.permission.RECORD_AUDIO, granted, force, unGranted)
     }
 
-    /**
-     * 检查摄像头权限
-     *
-     * @param force 是：如果权限被禁用则会跳转到系统应用权限设置页面
-     */
+
     fun checkCameraPerm(
         granted: () -> Unit,
         unGranted: () -> Unit,
@@ -154,11 +141,7 @@ class PermissionHelp(val activity: ComponentActivity) {
         checkPermission(Manifest.permission.CAMERA, granted, force, unGranted)
     }
 
-    /**
-     * 检查外置存储权限
-     *
-     * @param force 是：如果权限被禁用则会跳转到系统应用权限设置页面
-     */
+
     fun checkStoragePerm(
         granted: () -> Unit,
         unGranted: () -> Unit,
