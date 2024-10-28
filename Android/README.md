@@ -40,9 +40,9 @@ AGORA_APP_ID=#YOUR APP ID#
       > | FaceUnity Beauty Resources                         | Location                                                                    |
       > |----------------------------------------------------|-----------------------------------------------------------------------------|
       > | graphics resource(e.g. face_beautification.bundle) | app/src/main/assets/beauty_faceunity/graphics                               |
-      > | makeup resource(e.g. naicha.bundle)                | app/src/main/assets/beauty_faceunity/makeup                                 |
+      > | makeup resource(e.g. diadiatu.bundle)              | app/src/main/assets/beauty_faceunity/makeup                                 |
       > | model resource(e.g. ai_face_processor.bundle)      | app/src/main/assets/beauty_faceunity/model                                  |
-      > | sticker resource(e.g. fashi.bundle)                | app/src/main/assets/beauty_faceunity/sticker                                |
+      > | sticker resource(e.g. sdlu.bundle)                 | app/src/main/assets/beauty_faceunity/sticker                                |
       > | authpack.java                                      | app/src/main/java/io/agora/beautyapi/demo/module/faceunity/authpack.java    |
 - Run
    > - Use AndroidStudio to open the `Android` project and click Run.
