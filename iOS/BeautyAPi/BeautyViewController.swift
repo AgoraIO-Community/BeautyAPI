@@ -29,7 +29,7 @@ class BeautyViewController: UIViewController {
     
     private var beautyAPI: BeautyAPI?
     
-    private lazy var beautyVC = BeautyBaseVC()
+    private var beautyVC = BeautyBaseVC()
     
     private var isBroascast: Bool {
         role == "Broascast"

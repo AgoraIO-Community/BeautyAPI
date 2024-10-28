@@ -103,6 +103,7 @@ class BeautyBaseVC: UIViewController {
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         modalPresentationStyle = .overCurrentContext
+        self.view.backgroundColor = .clear
     }
     
     required init?(coder: NSCoder) {
