@@ -10,7 +10,7 @@
         android:id="@+id/swBeauty"
         android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:text="美颜开关"/>
+        android:text="@string/beauty_switch"/>
 
 
     <View
@@ -22,7 +22,7 @@
         android:id="@+id/swColorEnhance"
         android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:text="视频增强"/>
+        android:text="@string/video_enhance"/>
 
     <View
         android:layout_width="match_parent"
@@ -33,7 +33,7 @@
         android:id="@+id/swI420"
         android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:text="I420开关(测试用)"/>
+        android:text="@string/i420_switch"/>
 
     <View
         android:layout_width="match_parent"
@@ -46,7 +46,7 @@
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:visibility="gone"
-        android:text="TextureAsync开关(测试用)"/>
+        android:text="@string/textureasync_switch"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -54,9 +54,9 @@
         android:gravity="center">
 
         <TextView
-            android:layout_width="100dp"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
-            android:text="编码分辨率"/>
+            android:text="@string/encoder_pix_fmt"/>
 
         <Spinner
             android:id="@+id/spResolution"
@@ -83,9 +83,9 @@
         android:gravity="center">
 
         <TextView
-            android:layout_width="100dp"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
-            android:text="编码帧率"/>
+            android:text="@string/encoder_framerate"/>
 
         <Spinner
             android:id="@+id/spFrameRate"
