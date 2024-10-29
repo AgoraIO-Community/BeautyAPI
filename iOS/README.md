@@ -34,9 +34,9 @@ _English | [中文](README.zh.md)
  
 - Open the pod 'fuLib' comment in Podfile.
    
-- Create FUlib folder under iOS root directory
+- Create FULib folder under iOS root directory
 
-- Add Resources folder such as "Animoji", "makeup", "sticker" under the iOS/FUlib directory
+- Add Resources folder such as "Animoji", "makeup", "sticker" under the iOS/FULib directory
 
 - Replace license in the BeautyAPI/FUBeauty/authpack.h, configure it with
     ```
