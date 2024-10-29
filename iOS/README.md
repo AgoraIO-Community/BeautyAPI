@@ -26,12 +26,26 @@ _English | [中文](README.zh.md)
 	>
 	> 3. Save the App Id from the Dashboard for later use.
 
-- Edit the KeyCenter.swift, configure it whth
+- Edit the KeyCenter.swift, configure it with
 
 	```
-	static let AppId: String = #YOUR APP ID#
+	static let AppId: String = <#YOUR AppId#>
 	```
+ 
+- Open the pod 'fuLib' comment in Podfile.
+   
+- Create FULib folder under iOS root directory
+
+- Add Resources folder such as "Animoji", "makeup", "sticker" under the iOS/FULib directory
+
+- Replace license in the BeautyAPI/FUBeauty/authpack.h, configure it with
+    ```
+    static char g_auth_package[]=<#YOUR g_auth_package Value#>;
+    ```
+    
 - Edit the `BeautyAPi Project`, change `Bundle Identifier` to your application id using to apply to beauty SDK.
+
+- Execute pod install
 
 - Run Project
 	
@@ -48,18 +62,6 @@ _English | [中文](README.zh.md)
 > | ByteDance | [Official website document](https://doc.shengwang.cn/doc/showroom/ios/advanced-features/beauty/bytedance/integrate) |
 > | Cosmos    | [Cosmos](./BeautyAPi/CosmosBeauty/README.md)                                                      |
 
----
-
-
-### Contact us
-
-> Plan 1: If you are already using Shengwang services or are in the process of docking, you can directly contact the docked sales or service.
->
-> Plan 2: Send an email to [support@agora.io](mailto:support@agora.io) for consultation
->
-> Plan 3: Scan the QR code to join our WeChat communication group to ask questions
->
-> <img src="https://download.agora.io/demo/release/SDHY_QA.jpg" width="360" height="360">
 ---
 
 ## License

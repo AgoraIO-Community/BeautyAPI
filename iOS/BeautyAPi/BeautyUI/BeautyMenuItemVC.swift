@@ -46,6 +46,7 @@ class BeautyMenuItemVC: UIViewController {
     init(type: BeautyMenuType) {
         super.init(nibName: nil, bundle: nil)
         self.type = type
+        self.view.backgroundColor = .clear
     }
     
     required init?(coder: NSCoder) {
@@ -56,6 +57,16 @@ class BeautyMenuItemVC: UIViewController {
         super.viewDidLoad()
         setUpUI()
         configDefaultSelect()
+        defaultHandler()
+    }
+    
+    func defaultHandler() {
+        if let index = dataArray.firstIndex(where: { $0.isSelected }) {
+            let model = dataArray[index]
+            selectedItemClosure?(model.value, model.key == nil)
+            defalutSelectIndex = index
+            changeValueHandler(value: model.value)
+        }
     }
     
     func changeValueHandler(value: CGFloat) {
@@ -96,7 +107,6 @@ class BeautyMenuItemVC: UIViewController {
     }
     
     private func setUpUI(){
-        // 列表
         view.addSubview(collectionView)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
@@ -105,7 +115,6 @@ class BeautyMenuItemVC: UIViewController {
         collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
     }
     
-    // 默认选中
     private func configDefaultSelect(){
         CATransaction.begin()
         CATransaction.setCompletionBlock {

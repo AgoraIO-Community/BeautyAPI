@@ -14,7 +14,6 @@
 @interface FUBeautyRender ()
 
 #if __has_include(FURenderMoudle)
-/// 当前的贴纸
 @property (nonatomic, strong) FUSticker *currentSticker;
 @property (nonatomic, strong) FUAnimoji *currentAnimoji;
 #endif
@@ -39,7 +38,6 @@
     FUSetupConfig *setupConfig = [[FUSetupConfig alloc] init];
     setupConfig.authPack = FUAuthPackMake(g_auth_package, sizeof(g_auth_package));
     
-    // 初始化 FURenderKit
     success = [FURenderKit setupWithSetupConfig:setupConfig];
 #endif
     return success;
