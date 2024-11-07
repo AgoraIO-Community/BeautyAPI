@@ -31,7 +31,6 @@ import android.opengl.GLES20;
 
 import java.nio.ByteBuffer;
 
-
 public class ProgramTexture2d extends Program {
 
     // Simple vertex shader, used for all programs.
@@ -187,19 +186,12 @@ public class ProgramTexture2d extends Program {
         return mFrameBufferTextures[0];
     }
 
-    /** {zh} 
-     * 读取渲染结果的buffer
-     * @param width 目标宽度
-     * @param height 目标高度
-     * @return 渲染结果的像素Buffer 格式RGBA
-     */
-    /** {en} 
+    /**
      * Read the buffer
      * @param width target width
      * @param height target height
      * @return pixel Buffer  format of the rendered result RGBA
      */
-
     private int mWidth = 0;
     private int mHeight = 0;
     private ByteBuffer mCaptureBuffer = null;
@@ -243,5 +235,4 @@ public class ProgramTexture2d extends Program {
         }
         return mCaptureBuffer;
     }
-
 }

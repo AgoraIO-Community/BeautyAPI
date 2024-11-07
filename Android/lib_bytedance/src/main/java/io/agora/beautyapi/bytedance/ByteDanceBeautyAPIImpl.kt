@@ -53,7 +53,14 @@ import java.util.concurrent.Executors
 
 class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
     private val TAG = "ByteDanceBeautyAPIImpl"
-    private var beautyMode = 0 // 0: 自动根据buffer类型切换，1：固定使用OES纹理，2：固定使用i420
+
+    /**
+     * Beauty mode
+     * 0: Automatically switch based on buffer type,
+     * 1: Fixed use of OES texture,
+     * 2: Fixed use of i420,
+     */
+    private var beautyMode = 0
 
 
     private var textureBufferHelper: TextureBufferHelper? = null
@@ -216,61 +223,72 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
                 config?.renderManager ?: return@runOnProcessThread
 
             val enable = preset == BeautyPreset.DEFAULT
+            // Smooth skin
             renderManager.updateComposerNodes(
                 beautyNodePath,
                 "smooth",
                 if (enable) 0.3f else 0f
-            )// 磨皮
+            )
+            // Whitening
             renderManager.updateComposerNodes(
                 beautyNodePath,
                 "whiten",
                 if (enable) 0.5f else 0f
-            )// 美白
+            )
+            // Slim face
             renderManager.updateComposerNodes(
                 reSharpNodePath,
                 "Internal_Deform_Overall",
                 if (enable) 0.15f else 0f
-            )//瘦脸
+            )
+            // Slim cheekbones
             renderManager.updateComposerNodes(
                 reSharpNodePath,
                 "Internal_Deform_Zoom_Cheekbone",
                 if (enable) 0.3f else 0f
-            )//瘦颧骨
+            )
+            // Jawbone
             renderManager.updateComposerNodes(
                 reSharpNodePath,
                 "Internal_Deform_Zoom_Jawbone",
                 if (enable) 0.46f else 0f
-            )//下颌骨
+            )
+            // Enlarged eyes
             renderManager.updateComposerNodes(
                 reSharpNodePath,
                 "Internal_Deform_Eye",
                 if (enable) 0.15f else 0f
-            )//大眼
+            )
+            // White teeth
             renderManager.updateComposerNodes(
                 beauty4ItemNodePath,
                 "BEF_BEAUTY_WHITEN_TEETH",
                 if (enable) 0.2f else 0f
-            )//美牙
+            )
+            // Hairline height
             renderManager.updateComposerNodes(
                 reSharpNodePath,
                 "Internal_Deform_Forehead",
                 if (enable) 0.4f else 0f
-            )//额头
+            )
+            // Slim nose
             renderManager.updateComposerNodes(
                 reSharpNodePath,
                 "Internal_Deform_Nose",
                 if (enable) 0.15f else 0f
-            )//瘦鼻
+            )
+            // Mouth shape
             renderManager.updateComposerNodes(
                 reSharpNodePath,
                 "Internal_Deform_ZoomMouth",
                 if (enable) 0.16f else 0f
-            )//嘴形
+            )
+            // Chin length
             renderManager.updateComposerNodes(
                 reSharpNodePath,
                 "Internal_Deform_Chin",
                 if (enable) 0.46f else 0f
-            )//下巴
+            )
         }
         return ErrorCode.ERROR_OK.value
     }

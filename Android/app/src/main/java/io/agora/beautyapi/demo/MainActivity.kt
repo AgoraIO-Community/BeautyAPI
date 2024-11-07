@@ -30,14 +30,8 @@ class MainActivity : ComponentActivity() {
         mBinding.etChannelName.setText((java.util.Random().nextInt(100) + 1000).toString())
         mBinding.spResolution.setSelection(2)
         mBinding.spRoleType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                val isAudience =
-                    mBinding.spRoleType.selectedItem.toString() == getString(R.string.audience)
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val isAudience = mBinding.spRoleType.selectedItem.toString() == getString(R.string.audience)
                 (mBinding.spResolution.parent as ViewGroup).isInvisible = isAudience
                 (mBinding.spBeautyType.parent as ViewGroup).isInvisible = isAudience
                 (mBinding.spFrameRate.parent as ViewGroup).isInvisible = isAudience
@@ -51,7 +45,7 @@ class MainActivity : ComponentActivity() {
         }
         mBinding.btnJoin.setOnClickListener {
             if (TextUtils.isEmpty(mBinding.etChannelName.text)) {
-                Toast.makeText(this, "频道名不能为空", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, R.string.beauty_channel_name_cannot_be_empty, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             mPermissionHelp.checkCameraAndMicPerms(
@@ -59,7 +53,7 @@ class MainActivity : ComponentActivity() {
                     gotoBeautyActivity()
                 },
                 unGranted = {
-                    Toast.makeText(this, "没有直播权限", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, R.string.beauty_no_permission_for_live_streaming, Toast.LENGTH_SHORT).show()
                 },
                 true
             )
@@ -108,8 +102,5 @@ class MainActivity : ComponentActivity() {
         } else {
             AudienceActivity.launch(this, mBinding.etChannelName.text.toString())
         }
-
     }
-
-
 }

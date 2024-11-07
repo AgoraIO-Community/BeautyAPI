@@ -52,7 +52,14 @@ import java.util.concurrent.Executors
 
 class CosmosBeautyAPIImpl : CosmosBeautyAPI, IVideoFrameObserver {
     private val TAG = "ByteDanceBeautyAPIImpl"
-    private var beautyMode = 0 // 0: 自动根据buffer类型切换，1：固定使用OES纹理，2：固定使用i420
+
+    /**
+     * Beauty mode
+     * 0: Automatically switch based on buffer type,
+     * 1: Fixed use of OES texture,
+     * 2: Fixed use of i420,
+     */
+    private var beautyMode = 0
 
 
     private var textureBufferHelper: TextureBufferHelper? = null

@@ -42,10 +42,10 @@ public class DeviceScoreUtils {
         CPUName = cpuName;
         DeviceScoreProvider provider = new DefaultScoreProvider();
         if (!TextUtils.isEmpty(cpuName)) {
-            //高通骁龙
+            // Qualcomm Snapdragon
             if (cpuName.contains("qcom") || cpuName.contains("Qualcomm")) {
                 provider = new QualcommScoreProvider();
-                //联发科
+                // MediaTek
             } else if (cpuName.contains("MT")) {
                 provider = new MTKScoreProvider();
             }
@@ -58,11 +58,11 @@ public class DeviceScoreUtils {
         OffLineRenderHandler.getInstance().onResume();
         final double[] score = new double[1];
         CountDownLatch countDownLatch = new CountDownLatch(1);
-        //有一些设备不符合下述的判断规则，则走一个机型判断模式
+        // Some devices do not meet the following judgment criteria, so a device model check mode will be used.
         OffLineRenderHandler.getInstance().queueEvent(() -> {
             DeviceScoreProvider provider;
-            String glRenderer = GLES20.glGetString(GLES20.GL_RENDERER);      //GPU 渲染器
-            String glVendor = GLES20.glGetString(GLES20.GL_VENDOR);          //GPU 供应商
+            String glRenderer = GLES20.glGetString(GLES20.GL_RENDERER);      // GPU Renderer
+            String glVendor = GLES20.glGetString(GLES20.GL_VENDOR);          // GPU Vendor
             GPUName = glRenderer;
             Log.d(TAG, "glRenderer: " + glRenderer + ",glVendor: " + glVendor);
             countDownLatch.countDown();
@@ -111,7 +111,7 @@ public class DeviceScoreUtils {
 
 
     /**
-     * 获取硬件信息(cpu型号)
+     * Retrieves hardware information (CPU model)
      *
      * @return String
      */
@@ -124,7 +124,7 @@ public class DeviceScoreUtils {
             while ((text = br.readLine()) != null) {
                 last = text;
             }
-            //一般机型的cpu型号都会在cpuinfo文件的最后一行
+            // The CPU model for general devices is usually found in the last line of the cpuinfo file
             if (last.contains("Hardware")) {
                 String[] hardWare = last.split(":\\s+", 2);
                 return hardWare[1];

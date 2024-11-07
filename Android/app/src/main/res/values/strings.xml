@@ -12,6 +12,20 @@
     <string name="beauty_capture_agora">Agora</string>
     <string name="beauty_capture_custom">Custom</string>
 
+    <string name="beauty_role">角色</string>
+    <string name="beauty_channel_name_cannot_be_empty">频道名不能为空</string>
+    <string name="beauty_no_permission_for_live_streaming">没有直播权限</string>
+    <string name="beauty_switch">美颜开关</string>
+    <string name="beauty_video_enhancement">视频增强</string>
+    <string name="beauty_i1420_switch">I420开关(测试用)</string>
+    <string name="beauty_texture_async_switch">TextureAsync开关(测试用)</string>
+    <string name="beauty_encoding_resolution">编码分辨率</string>
+    <string name="beauty_encoding_frame_rate">编码帧率</string>
+    <string name="beauty_collection_method">美颜采集方式</string>
+    <string name="beauty_processing_method">美颜处理方式(测试用)</string>
+    <string name="beauty_join_channel">加入频道</string>
+    <string name="beauty_channel_name">频道名</string>
+
     <string name="beauty_group_beauty">美颜</string>
     <string name="beauty_item_none">无</string>
     <string name="beauty_item_beauty_smooth">磨皮</string>
