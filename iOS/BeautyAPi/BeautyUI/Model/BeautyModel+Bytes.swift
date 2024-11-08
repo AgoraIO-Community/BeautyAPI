@@ -9,7 +9,7 @@ import UIKit
 
 extension BeautyModel {
     /*
-     * 字节美颜对应key官方文档
+     * Byte beauty corresponding key official document
      * https://cv-api.bytedance.com/doc/openapi/2036/99769
      */
     static func createByteBeautyData() -> [BeautyModel] {

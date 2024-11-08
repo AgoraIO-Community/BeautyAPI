@@ -25,18 +25,18 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)addSticker;
 - (void)removeSticker;
 
-// 如果是相机，需要传入前置/后置位置, 该参数仅在相机模式下设置
+// For camera mode, need to set front/back camera position. This parameter is only used in camera mode
 @property (nonatomic, assign) AVCaptureDevicePosition devicePosition;
 
 #if __has_include(<CosmosBeautyKit/CosmosBeautySDK.h>)
-// 目前摄像头相对于人脸的旋转角度, 该参数仅在相机模式下设置
+// Current camera rotation angle relative to face. This parameter is only used in camera mode
 @property (nonatomic, assign) CBRenderModuleCameraRotate cameraRotate;
 
-// 图像数据形式, 默认CERenderInputTypeStream。 相机或视频CERenderInputTypeStream，静态图片CERenderInputTypeStatic
+// Image data format, default is CERenderInputTypeStream. Camera or video use CERenderInputTypeStream, static image use CERenderInputTypeStatic
 @property (nonatomic, assign) CBRenderInputType inputType;
 
 
-// 设置美颜参数
+// Set beauty parameters
 - (void)setBeautyFactor:(float)value forKey:(CBBeautyFilterKey)key;
 #endif
 
@@ -49,18 +49,18 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setAutoBeautyWithType:(CBBeautyAutoType)type;
 #endif
 - (void)setMakeupLipsType:(NSUInteger)type;
-// 设置lookup素材路径
+// Set lookup material path
 - (void)setLookupPath:(NSString *)lookupPath;
-// 设置lookup滤镜浓度
+// Set lookup filter intensity
 - (void)setLookupIntensity:(CGFloat)intensity;
-// 清除滤镜效果
+// Clear filter effect
 - (void)clearLookup;
 
-// 设置贴纸资源路径
+// Set sticker resource path
 - (void)setMaskModelPath:(NSString *)path;
 - (void)clearSticker;
 
-// 美妆效果
+// Makeup effects
 - (void)addMakeupPath:(NSString *)path;
 - (void)clearMakeup;
 #if __has_include(<CosmosBeautyKit/CosmosBeautySDK.h>)

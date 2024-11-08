@@ -21,9 +21,9 @@
     if([bundleName containsString:@".bundle"]){
         bundleName=[bundleName componentsSeparatedByString:@".bundle"].firstObject;
     }
-    //没使用framwork的情况下
+    //Without using framwork
     NSURL *associateBundleURL = [[NSBundle mainBundle]URLForResource:bundleName withExtension:@"bundle"];
-    //使用framework形式
+    //Use framework form
     if (!associateBundleURL) {
         associateBundleURL = [[NSBundle mainBundle]URLForResource: @"Frameworks" withExtension:nil];
         associateBundleURL = [associateBundleURL URLByAppendingPathComponent:podName];
@@ -31,7 +31,7 @@
         NSBundle *associateBunle = [NSBundle bundleWithURL:associateBundleURL];
         associateBundleURL = [associateBunle URLForResource:bundleName withExtension:@"bundle"];
     }
-    //生产环境直接返回空
+    //The production environment directly returns empty.
     return associateBundleURL ? [NSBundle bundleWithURL:associateBundleURL]: nil;
 }
 

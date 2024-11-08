@@ -39,45 +39,45 @@
 
 @property (nonatomic, assign) EFDetectConfigMode configMode;
 
-/// 鉴权
-/// @param licensePath 授权文件路径
+/// Authorization
+/// @param licensePath License file path
 + (BOOL)authorizeWithLicensePath:(NSString *)licensePath;
 
-/// 鉴权
-/// @param licenseData 授权文件数据
+/// Authorization
+/// @param licenseData License file data
 + (BOOL)authorizeWithLicenseData:(NSData *)licenseData;
 
-/// 初始化对象
-/// @param type 类型
+/// Initialize object
+/// @param type Type
 - (instancetype)initWithType:(EffectsType)type  glContext:(EAGLContext *)glContext;
 
 #if __has_include("st_mobile_common.h")
-/// 加载模型
-/// @param modelPath 模型文件路径(可将多个模型放在一个文件中，SDK内部遍历加载Model)
+/// Load model
+/// @param modelPath Model file path (multiple models can be placed in one file, SDK will traverse and load models internally)
 - (st_result_t)setModelPath:(NSString *)modelPath;
 - (st_result_t)setModelPath:(NSString *)modelPath withFirstPhaseFinished:(void(^)(void))finishedCallback;
 
-/// 设置特效
-/// @param type 特效类型
-/// @param path 特效素材路径
+/// Set effect
+/// @param type Effect type
+/// @param path Effect material path
 - (st_result_t)setEffectType:(st_effect_beauty_type_t)type path:(NSString *)path;
 
-/// 设置特效
-/// @param type 特效类型
-/// @param model 特效素材model
+/// Set effect
+/// @param type Effect type
+/// @param model Effect material model
 - (st_result_t)setEffectType:(st_effect_beauty_type_t)type model:(int)model;
 
 
-/// 设置特效强度值
-/// @param type 特效类型
-/// @param value 强度值
+/// Set effect intensity value
+/// @param type Effect type
+/// @param value Intensity value
 - (st_result_t)setEffectType:(st_effect_beauty_type_t)type value:(float)value;
 
 
-/// 设置风格强度
+/// Set style intensity
 /// @param packageId packageID
-/// @param type 类型
-/// @param value 强度值
+/// @param type Type
+/// @param value Intensity value
 - (st_result_t)setPackageId:(int)packageId groupType:(st_effect_beauty_group_t)type strength:(float)value;
 
 - (st_result_t)setTryon:(st_effect_tryon_info_t *)tryonInfo andTryonType:(st_effect_beauty_type_t)tryonType;
@@ -98,21 +98,21 @@
 - (st_result_t)disableOverlap:(BOOL)isDisableOverlap;
 - (st_result_t)disableModuleReorder:(BOOL)isDisableModuleReorder;
 
-/// 设置贴纸
-/// @param stickerPath stickerPath 贴纸资源路径
-/// @param callback 回调Block
+/// Set sticker
+/// @param stickerPath Sticker resource path
+/// @param callback Callback Block
 - (void)setStickerWithPath:(NSString *)stickerPath
                   callBack:(void(^)(st_result_t state, int stickerId, uint64_t action))callback;
 
 - (void)setStickerWithPath:(NSString *)stickerPath callBackCustomEventIncluded:(void(^)(st_result_t state, int stickerId, uint64_t action, uint64_t customEvent))callback;
 
-/// 添加贴纸
-/// @param stickerPath stickerPath 贴纸资源路径
-/// @param callback 回调Block
+/// Add sticker
+/// @param stickerPath Sticker resource path
+/// @param callback Callback Block
 - (void)addStickerWithPath:(NSString *)stickerPath
                   callBack:(void(^)(st_result_t state, int sticker, uint64_t action))callback;
 
-/// 重新播放贴纸
+/// Replay sticker
 /// @param packageId packageId
 -(void)replayStickerWithPackage:(int)packageId;
 
@@ -120,28 +120,28 @@
 
 -(void)changeStickerWithPath:(NSString *)stickerPath callBackCustomEventIncluded:(void(^)(st_result_t state, int stickerId, uint64_t action, uint64_t customEvent))callback;
 
-/// 获取获取素材的贴纸信息
+/// Get sticker information from material
 /// @param package_id package_id
-/// @param modules 贴纸信息
+/// @param modules Sticker information
 -(st_result_t)getModulesInPackage:(int)package_id modules:(st_effect_module_info_t*)modules;
 
-/// 设置贴纸信息
-/// @param module_info 贴纸信息
+/// Set sticker information
+/// @param module_info Sticker information
 -(st_result_t)setModuleInfo:(st_effect_module_info_t *)module_info;
 
-/// 获取覆盖生效的美颜的信息
-/// @param callback 回调block
+/// Get information about overlapping beauty effects
+/// @param callback Callback block
 - (void)getOverLap:(void(^)(st_effect_beauty_info_t *beauty_info))callback;
 
-/// 获取覆盖生效的美颜的信息
+/// Get information about overlapping beauty effects
 /// If there is st_effect_beauty_info_t, release it when used it;
 - (st_effect_beauty_info_t *)getOverlapInfo:(int *)count;
 
-/// 移除贴纸
-/// @param stickerId 贴纸Id
+/// Remove sticker
+/// @param stickerId Sticker Id
 - (st_result_t)removeSticker:(int)stickerId;
 
-/// 清空贴纸
+/// Clear all stickers
 - (st_result_t)cleareStickers;
 
 - (st_result_t)detectWithPixelBuffer:(CVPixelBufferRef)pixelBuffer
@@ -167,13 +167,13 @@
 
 -(st_result_t)detectAttribute:(unsigned char *)imageData pixelFormat:(st_pixel_format)pixel_format imageWidth:(int)image_width imageHeight:(int)image_height detectResult:(st_mobile_human_action_t)detectResult withGenderCallback:(void(^)(BOOL isMale))callback;
 
-/// 处理视频数据
-/// @param pixelBuffer 视频数据
-/// @param rotate 当前手机的旋转方向
-/// @param position 当前手机摄像头方向
-/// @param outTexture 目标纹理, 仅支持RGBA纹理
-/// @param fmt_out 输出图片的类型,支持NV21,BGR,BGRA,NV12,RGBA,YUV420P格式
-/// @param img_out 输出图像数据数组,需要用户分配内存,如果是null, 不输出buffer
+/// Process video data
+/// @param pixelBuffer Video data
+/// @param rotate Current phone rotation direction
+/// @param position Current phone camera direction
+/// @param outTexture Target texture, only supports RGBA texture
+/// @param fmt_out Output image type, supports NV21, BGR, BGRA, NV12, RGBA, YUV420P formats
+/// @param img_out Output image data array, user needs to allocate memory, if null, no buffer output
 - (st_result_t)processPixelBuffer:(CVPixelBufferRef)pixelBuffer
                             rotate:(st_rotate_type)rotate
                     cameraPosition:(AVCaptureDevicePosition)position
@@ -181,17 +181,17 @@
                     outPixelFormat:(st_pixel_format)fmt_out
                            outData:(unsigned char *)img_out;
 
-/// 处理图像数据
-/// @param data     图像数据
-/// @param dataSize 图像数据大小
-/// @param width    图像宽度
-/// @param height   图像高度
-/// @param stride   图像数据跨度
-/// @param rotate   手机旋转方向
-/// @param pixelFormat 图像格式
-/// @param outTexture 输出纹理,仅支持RGBA纹理
-/// @param fmt_out 输出图片的类型,支持NV21,BGR,BGRA,NV12,RGBA,YUV420P格式
-/// @param outData  输出数据
+/// Process image data
+/// @param data Image data
+/// @param dataSize Image data size
+/// @param width Image width
+/// @param height Image height
+/// @param stride Image data stride
+/// @param rotate Phone rotation direction
+/// @param pixelFormat Image format
+/// @param outTexture Output texture, only supports RGBA texture
+/// @param fmt_out Output image type, supports NV21, BGR, BGRA, NV12, RGBA, YUV420P formats
+/// @param outData Output data
 - (st_result_t)processData:(unsigned char *)data
                        size:(int)dataSize
                       width:(int)width
@@ -205,16 +205,16 @@
                     outData:(unsigned char *)outData;
 
 
-/// 创建一个纹理
-/// @param width 纹理宽度
-/// @param height 纹理高度
+/// Create a texture
+/// @param width Texture width
+/// @param height Texture height
 - (GLuint)createTextureWidth:(int)width height:(int)height;
 
-/// 创建OpenGL对象
-/// @param width 像素宽
-/// @param height 像素高
-/// @param texture 纹理
-/// @param pixelBuffer 像素缓存
+/// Create OpenGL object
+/// @param width Pixel width
+/// @param height Pixel height
+/// @param texture Texture
+/// @param pixelBuffer Pixel buffer
 - (void)createGLObjectWith:(int)width
                     height:(int)height
                    texture:(GLuint *)texture
@@ -223,36 +223,36 @@
 
 - (id<MTLTexture>)createMetalTextureWithDevice:(id<MTLDevice>)metalDevice width:(int)width height:(int)height pixelBuffer:(CVPixelBufferRef)pixelBuffer;
 
-/// 删除一个纹理
-/// @param texture 纹理
+/// Delete a texture
+/// @param texture Texture
 - (void)deleteTexture:(GLuint *)texture
           pixelBuffer:(CVPixelBufferRef *)pixelBuffer
             cvTexture:(CVOpenGLESTextureRef *)cvTexture;;
 
-/// 获取纹理
-/// @param pixelBuffer 输入pixelBuffer
+/// Get texture
+/// @param pixelBuffer Input pixelBuffer
 - (GLuint)getTexutreWithPixelBuffer:(CVPixelBufferRef)pixelBuffer;
 
 
 
-/// 人脸检测
-/// @param pixelBuffer 像素缓存
-/// @ [out] 返回检测结果值
+/// Face detection
+/// @param pixelBuffer Pixel buffer
+/// @ [out] Returns detection result value
 - (st_mobile_human_action_t)detectHumanActionWithPixelBuffer:(CVPixelBufferRef)pixelBuffer;
 
 
-/// 获取人脸形状
-/// @param p_face 检测到的人脸信息
-/// @out  p_face_shape 人脸形状
+/// Get face shape
+/// @param p_face Detected face information
+/// @out p_face_shape Face shape
 - (st_face_shape_t)detectFaceShape:(st_mobile_face_t)p_face;
 
-/// 设置通用物体位置
-/// @param rect 物体方框
+/// Set generic object position
+/// @param rect Object frame
 - (void)setObjectTrackRect:(st_rect_t)rect;
 
 #endif
 
-/// 是否鉴权成功
+/// Whether authorization is successful
 - (BOOL)isAuthrized;
 
 -(void)getMeshList;

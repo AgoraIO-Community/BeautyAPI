@@ -11,7 +11,7 @@ import UIKit
 class PickerView: UIView {
     private lazy var cancelButton: UIButton = {
         let button = UIButton()
-        button.setTitle("取消", for: .normal)
+        button.setTitle("Cancel", for: .normal)
         button.backgroundColor = .blue
         button.layer.cornerRadius = 5
         button.setTitleColor(.white, for: .normal)
@@ -21,7 +21,7 @@ class PickerView: UIView {
     }()
     private lazy var sureButton: UIButton = {
         let button = UIButton()
-        button.setTitle("确定", for: .normal)
+        button.setTitle("Confirm", for: .normal)
         button.backgroundColor = .blue
         button.layer.cornerRadius = 5
         button.setTitleColor(.white, for: .normal)

@@ -49,7 +49,6 @@ class BeautyBaseVC: UIViewController {
         return true
     }).map({ BeautyMenuItemVC(type: $0) })
     
-    // 背景
     private lazy var bgView: UIView = {
         let bgView = UIView()
         bgView.backgroundColor = UIColor(hex: "#151325")
@@ -59,7 +58,6 @@ class BeautyBaseVC: UIViewController {
         return bgView
     }()
     
-    // 对比按钮
     private lazy var compareButton: UIButton = {
         let compareButton = UIButton(type: .custom)
         compareButton.setImage(UIImage.show_beautyImage(name: "show_beauty_compare"), for: .selected)
@@ -76,7 +74,6 @@ class BeautyBaseVC: UIViewController {
         return compareButton
     }()
     
-    // 指示条
     private lazy var indicator: JXCategoryIndicatorLineView = {
         let indicator = JXCategoryIndicatorLineView()
         indicator.indicatorWidth = 30
@@ -85,7 +82,6 @@ class BeautyBaseVC: UIViewController {
         return indicator
     }()
     
-    // 分类
     private lazy var segmentedView: JXCategoryTitleView = {
         let segmentedView = JXCategoryTitleView()
         segmentedView.isTitleColorGradientEnabled = true
@@ -139,7 +135,7 @@ class BeautyBaseVC: UIViewController {
         slider.heightAnchor.constraint(equalToConstant: 30).isActive = true
         slider.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -214).isActive = true
         
-        // 对比按钮
+        // Contrast button
         view.addSubview(compareButton)
         compareButton.translatesAutoresizingMaskIntoConstraints = false
         compareButton.centerYAnchor.constraint(equalTo: slider.centerYAnchor).isActive = true
@@ -186,7 +182,6 @@ extension BeautyBaseVC {
         dismissed?()
     }
     
-    // 点击对比按钮
     @objc private func didClickCompareButton(sender: UIButton){
         sender.isSelected = !sender.isSelected
         BeautyManager.shareManager.isEnableBeauty = sender.isSelected
