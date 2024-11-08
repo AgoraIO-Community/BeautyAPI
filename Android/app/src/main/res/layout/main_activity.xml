@@ -5,7 +5,7 @@
     android:fitsSystemWindows="true"
     android:gravity="center"
     android:orientation="vertical"
-    android:paddingHorizontal="20dp">
+    android:paddingHorizontal="12dp">
 
     <EditText
         android:id="@+id/etChannelName"
@@ -19,7 +19,7 @@
         android:gravity="center">
 
         <TextView
-            android:layout_width="100dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:text="@string/beauty_role" />
 
@@ -41,11 +41,11 @@
         android:gravity="center">
 
         <TextView
-            android:layout_width="100dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:text="@string/beauty_encoding_resolution" />
 
-        <Spinner
+        <androidx.appcompat.widget.AppCompatSpinner
             android:id="@+id/spResolution"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
         android:gravity="center">
 
         <TextView
-            android:layout_width="100dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:text="@string/beauty_encoding_frame_rate" />
 
@@ -86,7 +86,7 @@
         android:gravity="center">
 
         <TextView
-            android:layout_width="100dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:text="@string/beauty_group_beauty" />
 
@@ -109,7 +109,7 @@
         android:gravity="center">
 
         <TextView
-            android:layout_width="100dp"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:text="@string/beauty_collection_method" />
 
@@ -131,7 +131,7 @@
         android:gravity="center">
 
         <TextView
-            android:layout_width="150dp"
+            android:layout_width="260dp"
             android:layout_height="wrap_content"
             android:text="@string/beauty_processing_method" />
 
@@ -151,5 +151,6 @@
         android:id="@+id/btnJoin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textAllCaps="false"
         android:text="@string/beauty_join_channel" />
 </LinearLayout>

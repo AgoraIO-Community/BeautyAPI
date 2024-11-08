@@ -1,6 +1,6 @@
 # 美颜场景化API Demo
 
-[English](README.md) | 中文
+_[English](README.md) | 中文_
 
 > 本文档主要介绍如何快速跑通美颜场景化API示例代码。
 > 
@@ -25,7 +25,7 @@
   > - 点击创建应用
       > 
       > <img src="imgs/console_create_project.jpeg" width="1080" />
-  >
+  >[README.md](README.md)
   > - 选择调试模式并创建（本示例仅支持调试模式）
       >
       > <img src="imgs/console_init_project.png" width="1080" />
