@@ -116,6 +116,10 @@ _English | [中文](README.zh.md)_
    * [utils](/Android/lib_sensetime/src/main/java/io/agora/beautyapi/sensetime/utils/)
 	* [SenseTimeBeautyAPI.kt](/Android/lib_sensetime/src/main/java/io/agora/beautyapi/sensetime/SenseTimeBeautyAPI.kt)
 	* [SenseTimeBeautyAPIImpl.kt](/Android/lib_sensetime/src/main/java/io/agora/beautyapi/sensetime/SenseTimeBeautyAPIImpl.kt)
+  
+*Note:*
+
+      To facilitate future code upgrades, please avoid modifying the names and paths of these files you have added.
 
 ### Implement beauty effects.
 
@@ -173,7 +177,7 @@ private val mRtcEngine by lazy {
 
 #### 3.Initialize the Beauty API.
 
-- Call createSenseTimeBeautyAPI to create a Beauty API object. The Beauty API object is encapsulated based on STMobileEffectNative and STMobileHumanActionNative objects.
+- Call **createSenseTimeBeautyAPI** to create a Beauty API object. The Beauty API object is encapsulated based on STMobileEffectNative and STMobileHumanActionNative objects.
 ```kotlin
 private val mSenseTimeApi by lazy {
     createSenseTimeBeautyAPI()
@@ -386,13 +390,17 @@ RtcEngine.destroy()
 ## FaceUnity
 
 ### Configure beauty
-- Ensure you have contacted SenseTime technical support to obtain the latest Beauty SDK, resources, and certificates.
+- Ensure you have contacted FaceUnity technical support to obtain the latest Beauty SDK, resources, and certificates.
 - Configure beauty certificates and resources. -- [Configure](#1)
 - Integrate the Agora Beauty Scene API into your project. Add the files from the directory [faceunity](/Android/lib_faceunity/src/main/java/io/agora/beautyapi/faceunity/) to your project, including the following:
   
    * [utils](/Android/lib_faceunity/src/main/java/io/agora/beautyapi/faceunity/utils/)
 	* [FaceUnityBeautyAPI.kt](/Android/lib_faceunity/src/main/java/io/agora/beautyapi/faceunity/FaceUnityBeautyAPI.kt)
 	* [FaceUnityBeautyAPIImpl.kt](/Android/lib_faceunity/src/main/java/io/agora/beautyapi/faceunity/FaceUnityBeautyAPIImpl.kt)
+
+*Note:*
+
+      To facilitate future code upgrades, please avoid modifying the names and paths of these files you have added.
 
 ### Implement beauty effects.
 
@@ -468,7 +476,7 @@ object FaceUnityBeautySDK {
 
 #### 3.Initialize the Beauty API.
 
-- Call createFaceUnityBeautyAPI to create a Beauty API object. The Beauty API object is encapsulated based on FuRenderKit objects.
+- Call **createFaceUnityBeautyAPI** to create a Beauty API object. The Beauty API object is encapsulated based on FuRenderKit objects.
 ```kotlin
 private val mFaceUnityApi by lazy {
     createFaceUnityBeautyAPI()
@@ -657,12 +665,302 @@ RtcEngine.destroy()
 ```
 
 ## ByteDance
-   - Ensure you have contacted ByteDance technical team to obtain the latest Beauty SDK, resources, and certificates.
-   - Configure beauty certificates and resources. -- [Configure](#3)
+
+### Configure beauty
+- Ensure you have contacted ByteDance technical support to obtain the latest Beauty SDK, resources, and certificates.
+- Configure beauty certificates and resources. -- [Configure](#3)
+- Integrate the Agora Beauty Scene API into your project. Add the files from the directory [bytedance](/Android/lib_bytedance/src/main/java/io/agora/beautyapi/bytedance/) to your project, including the following:
+  
+   * [utils](/Android/lib_bytedance/src/main/java/io/agora/beautyapi/bytedance/utils/)
+	* [ByteDanceBeautyAPI.kt](/Android/lib_bytedance/src/main/java/io/agora/beautyapi/bytedance/ByteDanceBeautyAPI.kt)
+	* [ByteDanceBeautyAPIImpl.kt](/Android/lib_bytedance/src/main/java/io/agora/beautyapi/bytedance/ByteDanceBeautyAPIImpl.kt)
+
+*Note:*
+
+      To facilitate future code upgrades, please avoid modifying the names and paths of these files you have added.
+
+### Implement beauty effects.
+
+#### 1. Initialize the RtcEngine.
+```kotlin
+private val mRtcEngine by lazy {
+    RtcEngine.create(RtcEngineConfig().apply {
+        mContext = applicationContext
+        // Enter the APP ID of your Agora project obtained from the console.
+        mAppId = BuildConfig.AGORA_APP_ID
+        mEventHandler = object : IRtcEngineEventHandler() {}
+    })
+}
+```
+
+#### 2. Initialize the RenderManager
+
+- Copy the beauty certificate and beauty resources to the SD card storage.
+```kotlin
+fun initBeautySDK(context: Context){
+    val storagePath = context.getExternalFilesDir("")?.absolutePath ?: return
+    val assetsPath = "beauty_bytedance"
+
+    workerThread.execute {
+        // copy license
+        licensePath = "$storagePath/beauty_bytedance/LicenseBag.bundle/$LICENSE_NAME"
+        FileUtils.copyAssets(context, "$assetsPath/LicenseBag.bundle/$LICENSE_NAME", licensePath)
+
+        // copy models
+        modelsPath = "$storagePath/beauty_bytedance/ModelResource.bundle"
+        FileUtils.copyAssets(context, "$assetsPath/ModelResource.bundle", modelsPath)
+
+        // copy beauty node
+        beautyNodePath = "$storagePath/beauty_bytedance/ComposeMakeup.bundle/ComposeMakeup/beauty_Android_lite"
+        FileUtils.copyAssets(context, "$assetsPath/ComposeMakeup.bundle/ComposeMakeup/beauty_Android_lite", beautyNodePath)
+
+        // copy beauty 4items node
+        beauty4ItemsNodePath = "$storagePath/beauty_bytedance/ComposeMakeup.bundle/ComposeMakeup/beauty_4Items"
+        FileUtils.copyAssets(context, "$assetsPath/ComposeMakeup.bundle/ComposeMakeup/beauty_4Items", beauty4ItemsNodePath)
+
+        // copy resharp node
+        reSharpNodePath = "$storagePath/beauty_bytedance/ComposeMakeup.bundle/ComposeMakeup/reshape_lite"
+        FileUtils.copyAssets(context, "$assetsPath/ComposeMakeup.bundle/ComposeMakeup/reshape_lite", reSharpNodePath)
+
+        // copy makeup node
+        makeupTianmeiNodePath = "$storagePath/beauty_bytedance/ComposeMakeup.bundle/ComposeMakeup/style_makeup/tianmei"
+        FileUtils.copyAssets(context, "$assetsPath/ComposeMakeup.bundle/ComposeMakeup/style_makeup/tianmei", makeupTianmeiNodePath)
+
+        // copy stickers
+        stickerPath = "$storagePath/beauty_bytedance/StickerResource.bundle/stickers"
+        FileUtils.copyAssets(context, "$assetsPath/StickerResource.bundle/stickers", stickerPath)
+    }
+}
+
+```
+
+- Initialize the RenderManager instance by calling the initEffect method of the Beauty SDK within the GL thread (Graphics Library Thread).
+```kotlin
+// GL Thread
+// Initialize the RenderManager instance within the Beauty SDK.
+fun initEffect(context: Context){
+    val ret = renderManager.init(
+        context,
+        modelsPath, licensePath, false, false, 0
+    )
+    if(!checkResult("RenderManager init ", ret)){
+        return
+    }
+    renderManager.useBuiltinSensor(true)
+    renderManager.set3Buffer(false)
+    renderManager.appendComposerNodes(arrayOf(beautyNodePath, beauty4ItemsNodePath, reSharpNodePath))
+    renderManager.loadResourceWithTimeout(-1)
+}
+
+```
+
+#### 3.Initialize the Beauty API.
+
+- Call **createByteDanceBeautyAPI** to create a Beauty API object. The Beauty API object is encapsulated based on FuRenderKit objects.
+```kotlin
+private val mByteDanceApi by lazy {
+    createByteDanceBeautyAPI()
+}
+
+mByteDanceApi.initialize(
+    Config(
+        // Android context
+        context = mContext,
+        
+        // Agora RTC engine
+        rtcEngine = mRtcEngine,
+        
+        // Beauty SDK handler
+        renderManager = renderManager,
+        
+        // Agora: Use the internal raw data interface of Agora for processing.
+        // Custom: you need to call the [io.agora.rtc2.video.IVideoFrameObserver] interface yourself 
+        // to pass the raw video frame to the BeautyAPI for processing.
+        captureMode = if(isCustomCaptureMode) CaptureMode.Custom else CaptureMode.Agora,
+
+        // Stats interval duration
+        statsDuration = 1000,
+        
+        // Enable stats or not
+        statsEnable = true,
+        
+        // Camera mirror configuration
+        cameraConfig = CameraConfig(),
+
+        // Event callback
+        eventCallback = EventCallback(
+            onBeautyStats = { stats ->
+                Log.d(TAG, "BeautyStats stats = $stats")
+            },
+            onEffectInitialized = {
+               // Callback after effectManager initialization is completed in the GL thread.
+                ByteDanceBeautySDK.initEffect(ctx)
+            },
+            onEffectDestroyed = {
+               // Callback after effectManager destruction is completed in the GL thread.
+                ByteDanceBeautySDK.unInitEffect()
+            }
+        )
+    )
+)
+
+```
+
+#### 4. Enable Beauty Mode
+
+- Call the enable method of the Beauty API and set the parameter to true to activate beauty mode.
+```kotlin
+mByteDanceApi.enable(true)
+```
+
+#### 5.	Start Video Capture
+
+- Developers can use the Agora module for video capture or customize the video capture process. This section explains how to start video capture in both scenarios.
+
+**Using the Agora module for video capture**
+```kotlin
+// Enable video module
+mRtcEngine.enableVideo()
+
+// Set up the local view
+mFaceUnityApi.setupLocalVideo(
+    mBinding.localVideoView,
+    Constants.RENDER_MODE_FIT
+)
+```
+
+**Custom Video Capture**
+```kotlin
+// Enable video module
+mRtcEngine.enableVideo()
+// Register the raw video data observer
+// When custom video capture is enabled, that is, when CaptureMode is Custom, 
+// you need to register the raw video observer
+mRtcEngine.registerVideoFrameObserver(object : IVideoFrameObserver {
+
+    override fun onCaptureVideoFrame(
+        sourceType: Int,
+        videoFrame: VideoFrame?
+    ) = when (mFaceUnityApi.onFrame(videoFrame!!)) {
+       // When the processing result is SKIPPED, it means frame dropping, 
+        // i.e., the externally captured video data is not passed to the Agora RTC SDK
+        // For other processing results, the externally captured video data is passed to the Agora RTC SDK
+        ErrorCode.ERROR_FRAME_SKIPPED.value -> false
+        else -> true
+    }
+
+    // Set whether to mirror the original video data
+    override fun getMirrorApplied() = mByteDanceApi.getMirrorApplied()
+
+    // Set the observation point to the video data during local capture
+    override fun getObservedFramePosition() = IVideoFrameObserver.POSITION_POST_CAPTURER
+
+    // Override other callback functions in the video observer
+    ...
+})
+```
+
+#### 6.Join Channel
+
+```kotlin
+mRtcEngine.joinChannel(
+    null, 
+    mChannelName, 
+    0, 
+    ChannelMediaOptions().apply {
+        // Set channel profile as live broadcasting
+        channelProfile = Constants.CHANNEL_PROFILE_LIVE_BROADCASTING
+        
+        // Set user role as broadcaster, who can publish and subscribe to streams in the channel
+        clientRoleType = Constants.CLIENT_ROLE_BROADCASTER
+        
+        // Set whether to publish camera video stream (applies when using Agora's video capture)
+        publishCameraTrack = true
+        
+        // Set whether to publish custom video stream (applies when using custom video capture)
+        publishCustomVideoTrack = false
+        
+        // Set whether to publish microphone audio stream
+        publishMicrophoneTrack = false
+        
+        // Set whether to automatically subscribe to other users' audio streams when joining the channel
+        autoSubscribeAudio = false
+        
+        // Set whether to automatically subscribe to other users' video streams when joining the channel
+        autoSubscribeVideo = true
+    }
+)
+```
+
+#### 7. Update Camera Configuration(Optional)
+
+```kotlin
+val isFront = mSenseTimeApi.isFrontCamera()
+
+// Check if front camera is being used
+if (isFront) {
+    cameraConfig = CameraConfig(
+        // Configure front camera through frontMirror
+        frontMirror = when (cameraConfig.frontMirror) {
+            MirrorMode.MIRROR_LOCAL_REMOTE -> MirrorMode.MIRROR_LOCAL_ONLY
+            MirrorMode.MIRROR_LOCAL_ONLY -> MirrorMode.MIRROR_REMOTE_ONLY
+            MirrorMode.MIRROR_REMOTE_ONLY -> MirrorMode.MIRROR_NONE
+            MirrorMode.MIRROR_NONE -> MirrorMode.MIRROR_LOCAL_REMOTE
+        },
+        backMirror = cameraConfig.backMirror
+    )
+} else {
+    cameraConfig = CameraConfig(
+        frontMirror = cameraConfig.frontMirror,
+        // Configure rear camera through backMirror
+        backMirror = when (cameraConfig.backMirror) {
+            MirrorMode.MIRROR_NONE -> MirrorMode.MIRROR_LOCAL_REMOTE
+            MirrorMode.MIRROR_LOCAL_REMOTE -> MirrorMode.MIRROR_LOCAL_ONLY
+            MirrorMode.MIRROR_LOCAL_ONLY -> MirrorMode.MIRROR_REMOTE_ONLY
+            MirrorMode.MIRROR_REMOTE_ONLY -> MirrorMode.MIRROR_NONE
+        }
+    )
+}
+
+// Update camera configuration
+mByteDanceApi.updateCameraConfig(cameraConfig)
+```
+
+#### 8. Leave channel
+
+```kotlin
+mRtcEngine.leaveChannel()
+```
+
+#### 9. Destroy Resources
+
+- Call release on the Beauty API to destroy the Beauty API.
+
+```kotlin
+mByteDanceApi.release()
+```
+
+- Call the unInitEffect method of the Beauty SDK in the GL thread to destroy the RenderManager.
+
+```kotlin
+fun unInitEffect(){
+    renderManager.release()
+}
+
+```
+
+- Call destroy on RtcEngine to destroy RtcEngine.
+
+```kotlin
+RtcEngine.destroy()
+```
+
 
 ## Cosmos
    - Ensure you have contacted Cosmos technical team to obtain the latest Beauty SDK, resources, and certificates.
    - Configure beauty certificates and resources. -- [Configure](#4)
+  
+  [Reference](./lib_cosmos/README.md)
 
 
 ## 4. Contact us
