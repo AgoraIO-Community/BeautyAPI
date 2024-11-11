@@ -11,9 +11,9 @@ _English | [中文](README.zh.md)_
 
 ## 1. Prerequisites
 
-- Android 5.0（SDK API Level 21）Above
-- Android Studio 3.5+, Using java 11
-- Android 5.0 and above mobile devices.
+- Android 5.0 (SDK API Level 21) Above
+- Android Studio 3.5+, Using Java 11
+- Android 5.0 and above mobile devices
 
 ---
 
@@ -34,19 +34,19 @@ _English | [中文](README.zh.md)_
       
       <img src="imgs/console_copy_appid_en.png" width="1080" />
 
-- Create local.properties file in android root direction, and fill in the agora app id to the file:
+- Create local.properties file in Android root direction, and fill in the Agora App ID to the file:
 
    ```xml
    AGORA_APP_ID=#YOUR APP ID#
    ```
 
-- **Contact the beauty manufacturer to obtain the corresponding beauty certificate and resources, and make the following configurations** (If the beautification certificate and resources are not configured, the corresponding manufacturer’s beautification will display a black screen.)
+- **Contact the beauty manufacturer to obtain the corresponding beauty certificate and resources, and make the following configurations** (If the beautification certificate and resources are not configured, the corresponding manufacturer's beautification will display a black screen.)
   
-<h3 id="1">SenseTime(Optional)</h3>
+<h3 id="1">SenseTime (Optional)</h3>
 
-- Configure the package name *applicationId* corresponding to the certificate in [app/build.gradle](app/build.gradle)
+- Configure the package name *applicationId* corresponding to the certificate in [app/build.gradle](app/build.gradle).
 
--  Unzip the SenseTime Beauty SDK and copy the following files/directories to the corresponding path
+- Unzip the SenseTime Beauty SDK and copy the following files/directories to the corresponding path.
       
    | SenseTime Beauty SDK                                                 | Location                                                 |
    |----------------------------------------------------------------------|----------------------------------------------------------|
@@ -56,25 +56,25 @@ _English | [中文](README.zh.md)_
    | Android/smaple/SenseMeEffects/app/src/main/assets/makeup_lip         | app/src/main/assets/beauty_sensetime/makeup_lip          |
    | SenseME.lic                                                          | app/src/main/assets/beauty_sensetime/license/SenseME.lic |
 
-<h3 id="2">FaceUnity(Optional)</h3>
+<h3 id="2">FaceUnity (Optional)</h3>
 
-- Configure the package name applicationId corresponding to the certificate in [app/build.gradle](app/build.gradle)
+- Configure the package name applicationId corresponding to the certificate in [app/build.gradle](app/build.gradle).
        
-- Put the FaceUnity beauty resources into the corresponding path
+- Put the FaceUnity beauty resources into the corresponding path.
 
    | FaceUnity Beauty Resources          | Location                                                                  |
    |-------------------------------------|---------------------------------------------------------------------------|
-   | makeup resource(e.g. naicha.bundle) | app/src/main/assets/beauty_faceunity/makeup                               |
-   | sticker resource(e.g. fashi.bundle) | app/src/main/assets/beauty_faceunity/sticker                              |
+   | makeup resource (e.g. naicha.bundle) | app/src/main/assets/beauty_faceunity/makeup                               |
+   | sticker resource (e.g. fashi.bundle) | app/src/main/assets/beauty_faceunity/sticker                              |
    | authpack.java                       | app/src/main/java/io/agora/beautyapi/demo/module/faceunity/authpack.java  |
   
-<h3 id="3">ByteDance(Optional)</h3>
+<h3 id="3">ByteDance (Optional)</h3>
 
-- Configure the package name applicationId corresponding to the certificate in [app/build.gradle](app/build.gradle)
+- Configure the package name applicationId corresponding to the certificate in [app/build.gradle](app/build.gradle).
 
-- Modify the LICENSE_NAME in the [ByteDanceBeautySDK.kt](app/src/main/java/io/agora/beautyapi/demo/module/bytedance/ByteDanceBeautySDK.kt file to the name of the applied certificate file).
+- Modify the LICENSE_NAME in the [ByteDanceBeautySDK.kt](app/src/main/java/io/agora/beautyapi/demo/module/bytedance/ByteDanceBeautySDK.kt) file to the name of the applied certificate file.
 
-- Unzip the ByteDance beauty resource and copy the following files/directories to the corresponding path
+- Unzip the ByteDance beauty resource and copy the following files/directories to the corresponding path.
 
    | ByteDance Beauty Resources      | Location                             |
    |---------------------------------|--------------------------------------|
@@ -84,11 +84,11 @@ _English | [中文](README.zh.md)_
    | resource/StickerResource.bundle | app/src/main/assets/beauty_bytedance |
    | resource/StickerResource.bundle | app/src/main/assets/beauty_bytedance |
   
-<h3 id="4">Cosmos(Optional)</h3>
+<h3 id="4">Cosmos (Optional)</h3>
 
-- Configure the package name applicationId corresponding to the certificate in [app/build.gradle](app/build.gradle)
+- Configure the package name applicationId corresponding to the certificate in [app/build.gradle](app/build.gradle).
 
-- Unzip the Cosmos beauty resource and copy the following files/directories to the corresponding path
+- Unzip the Cosmos beauty resource and copy the following files/directories to the corresponding path.
       
    | Cosmos Beauty Resources                | Location                                         |
    |-------------------------------------------|--------------------------------------------------|
@@ -99,11 +99,9 @@ _English | [中文](README.zh.md)_
 **Run**
 - Use AndroidStudio to open the `Android` project and click Run.
 
---
-
 ## 3. Quick integration
 
-- Each beauty api can be integrated into your project separately     
+- Each beauty API can be integrated into your project separately.
                                                                   
 
 ## SenseTime
@@ -114,16 +112,16 @@ _English | [中文](README.zh.md)_
 - Integrate the Agora Beauty Scene API into your project. Add the files from the directory [sensetime](/Android/lib_sensetime/src/main/java/io/agora/beautyapi/sensetime/) to your project, including the following:
   
    * [utils](/Android/lib_sensetime/src/main/java/io/agora/beautyapi/sensetime/utils/)
-	* [SenseTimeBeautyAPI.kt](/Android/lib_sensetime/src/main/java/io/agora/beautyapi/sensetime/SenseTimeBeautyAPI.kt)
-	* [SenseTimeBeautyAPIImpl.kt](/Android/lib_sensetime/src/main/java/io/agora/beautyapi/sensetime/SenseTimeBeautyAPIImpl.kt)
+   * [SenseTimeBeautyAPI.kt](/Android/lib_sensetime/src/main/java/io/agora/beautyapi/sensetime/SenseTimeBeautyAPI.kt)
+   * [SenseTimeBeautyAPIImpl.kt](/Android/lib_sensetime/src/main/java/io/agora/beautyapi/sensetime/SenseTimeBeautyAPIImpl.kt)
   
-*Note:*
+**Note:**
 
       To facilitate future code upgrades, please avoid modifying the names and paths of these files you have added.
 
 ### Implement beauty effects.
 
-#### 1. Initialize the RtcEngine.
+#### 1. Initialize the RtcEngine
 ```kotlin
 private val mRtcEngine by lazy {
     RtcEngine.create(RtcEngineConfig().apply {
@@ -135,9 +133,9 @@ private val mRtcEngine by lazy {
 }
 ```
 
-#### 2.Initialize the beauty SDK.
+#### 2. Initialize the beauty SDK
 
-- Check license
+- Check license.
    ```kotlin
    private fun checkLicense(context: Context): Boolean {
       val license = FileUtils.getAssetsString(context,"$resourcePath/license/SenseME.lic")
@@ -150,7 +148,7 @@ private val mRtcEngine by lazy {
    }
    ``` 
 
-- Initialize effect handler   
+- Initialize effect handler.   
    ```kotlin
    private fun initMobileEffect(context: Context) {
       if (_mobileEffectNative != null) {
@@ -163,7 +161,7 @@ private val mRtcEngine by lazy {
    }
    ``` 
 
- - Initialize face recognition handler   
+ - Initialize face recognition handler. 
    ```kotlin
    private fun initHumanAction(context: Context) {
       if (_humanActionNative != null) {
@@ -175,9 +173,9 @@ private val mRtcEngine by lazy {
    }
    ``` 
 
-#### 3.Initialize the Beauty API.
+#### 3. Initialize the Beauty API
 
-- Call **createSenseTimeBeautyAPI** to create a Beauty API object. The Beauty API object is encapsulated based on STMobileEffectNative and STMobileHumanActionNative objects.
+- Call **createSenseTimeBeautyAPI** to create a Beauty API object, which is encapsulated based on STMobileEffectNative and STMobileHumanActionNative objects.
 ```kotlin
 private val mSenseTimeApi by lazy {
     createSenseTimeBeautyAPI()
@@ -217,19 +215,18 @@ mSenseTimeApi.initialize(
     )
 )
 ```
-
 #### 4. Enable Beauty Mode
 
-- Call the enable method of the Beauty API and set the parameter to true to activate beauty mode.
+- To activate beauty mode, call the enable method of the Beauty API and set the parameter to true.
 ```kotlin
 mSenseTimeApi.enable(true)
 ```
 
-#### 5.	Start Video Capture
+#### 5. Initiating Video Capture
 
-- Developers can use the Agora module for video capture or customize the video capture process. This section explains how to start video capture in both scenarios.
+- Developers have the option to utilize the Agora module for video capture or to customize the video capture process. This section provides guidance on how to initiate video capture in both scenarios.
 
-**Using the Agora module for video capture**
+**Utilizing the Agora Module for Video Capture**
 ```kotlin
 // Enable video module
 mRtcEngine.enableVideo()
@@ -241,7 +238,7 @@ mSenseTimeApi.setupLocalVideo(
 )
 ```
 
-**Custom Video Capture**
+**Custom Video Capture Mode**
 ```kotlin
 // Enable video module
 mRtcEngine.enableVideo()
@@ -287,7 +284,7 @@ mRtcEngine.registerVideoFrameObserver(object : IVideoFrameObserver {
 })
 ```
 
-#### 6.Join Channel
+#### 6. Joining a Channel
 
 ```kotlin
 mRtcEngine.joinChannel(
@@ -319,7 +316,7 @@ mRtcEngine.joinChannel(
 )
 ```
 
-#### 7. Update Camera Configuration(Optional)
+#### 7. Updating Camera Configuration (Optional)
 
 ```kotlin
 val isFront = mSenseTimeApi.isFrontCamera()
@@ -353,21 +350,21 @@ if (isFront) {
 mSenseTimeApi.updateCameraConfig(cameraConfig)
 ```
 
-#### 8. Leave channel
+#### 8. Leaving the Channel
 
 ```kotlin
 mRtcEngine.leaveChannel()
 ```
 
-#### 9. Destroy Resources
+#### 9. Destroying Resources
 
-- Call release on the Beauty API to destroy the Beauty API.
+- Call `release` on the Beauty API to destroy the Beauty API.
 
 ```kotlin
 mSenseTimeApi.release()
 ```
 
-- Call release on the Beauty SDK to destroy STHandlers.
+- Call `destroyInstance` on STMobileEffectNative to destroy it, and call `destroyInstance` on STMobileHumanActionNative to destroy it
 
 ```kotlin
 private fun unInitMobileEffect() {
@@ -381,7 +378,7 @@ private fun unInitHumanActionNative() {
 
 ```
 
-- Call destroy on RtcEngine to destroy RtcEngine.
+- Destroy RtcEngine by calling its destroy method.
 
 ```kotlin
 RtcEngine.destroy()
@@ -391,20 +388,20 @@ RtcEngine.destroy()
 
 ### Configure beauty
 - Ensure you have contacted FaceUnity technical support to obtain the latest Beauty SDK, resources, and certificates.
-- Configure beauty certificates and resources. -- [Configure](#1)
+- Configure beauty certificates and resources. -- [Configure](#2)
 - Integrate the Agora Beauty Scene API into your project. Add the files from the directory [faceunity](/Android/lib_faceunity/src/main/java/io/agora/beautyapi/faceunity/) to your project, including the following:
   
    * [utils](/Android/lib_faceunity/src/main/java/io/agora/beautyapi/faceunity/utils/)
-	* [FaceUnityBeautyAPI.kt](/Android/lib_faceunity/src/main/java/io/agora/beautyapi/faceunity/FaceUnityBeautyAPI.kt)
-	* [FaceUnityBeautyAPIImpl.kt](/Android/lib_faceunity/src/main/java/io/agora/beautyapi/faceunity/FaceUnityBeautyAPIImpl.kt)
+   * [FaceUnityBeautyAPI.kt](/Android/lib_faceunity/src/main/java/io/agora/beautyapi/faceunity/FaceUnityBeautyAPI.kt)
+   * [FaceUnityBeautyAPIImpl.kt](/Android/lib_faceunity/src/main/java/io/agora/beautyapi/faceunity/FaceUnityBeautyAPIImpl.kt)
 
-*Note:*
+**Note:**
 
-      To facilitate future code upgrades, please avoid modifying the names and paths of these files you have added.
+To facilitate future code upgrades, please avoid modifying the names and paths of these files you have added.
 
-### Implement beauty effects.
+### Implementing Beauty Effects
 
-#### 1. Initialize the RtcEngine.
+#### 1. Initialize the RtcEngine
 ```kotlin
 private val mRtcEngine by lazy {
     RtcEngine.create(RtcEngineConfig().apply {
@@ -416,14 +413,14 @@ private val mRtcEngine by lazy {
 }
 ```
 
-#### 2.Initialize the beauty SDK.
+#### 2. Initialize the beauty SDK
 
-- Initialize the FURenderKit object by calling the registerFURender method from the FaceUnity beauty SDK, passing in the following parameters:
-	- context: Android Context.
-	- getAuth(): A ByteArray returned by the getAuth method, containing the authentication field. This authentication field is linked to the local authpack.java certificate file, and successful validation is required to use the FaceUnity beauty SDK.
-	- object: Event callback.
+- Initialize the FURenderKit object by calling the `registerFURender` method from the FaceUnity Beauty SDK with the following parameters:
+	- `context`: Android Context
+	- `getAuth()`: A ByteArray returned by the `getAuth` method containing the authentication field. This authentication field is linked to the local `authpack.java` certificate file and requires successful validation to use the FaceUnity Beauty SDK.
+	- `object`: Event callback
 
-- Once the beauty SDK is initialized successfully, load AI props on a new thread by calling loadAIProcessor.
+- After successful initialization of the Beauty SDK, load AI props on a new thread by calling `loadAIProcessor`.
 ```kotlin
 object FaceUnityBeautySDK {
     private val TAG = "FaceUnityBeautySDK"
@@ -525,7 +522,7 @@ mFaceUnityApi.initialize(
 mFaceUnityApi.enable(true)
 ```
 
-#### 5.	Start Video Capture
+#### 5. Start Video Capture
 
 - Developers can use the Agora module for video capture or customize the video capture process. This section explains how to start video capture in both scenarios.
 
@@ -541,7 +538,7 @@ mFaceUnityApi.setupLocalVideo(
 )
 ```
 
-**Custom Video Capture**
+**Custom Video Capture Mode**
 ```kotlin
 // Enable video module
 mRtcEngine.enableVideo()
@@ -572,7 +569,7 @@ mRtcEngine.registerVideoFrameObserver(object : IVideoFrameObserver {
 })
 ```
 
-#### 6.Join Channel
+#### 6.Join a Channel
 
 ```kotlin
 mRtcEngine.joinChannel(
@@ -638,13 +635,13 @@ if (isFront) {
 mFaceUnityApi.updateCameraConfig(cameraConfig)
 ```
 
-#### 8. Leave channel
+#### 8. Leaving the Channel
 
 ```kotlin
 mRtcEngine.leaveChannel()
 ```
 
-#### 9. Destroy Resources
+#### 9. Destroying Resources
 
 - Call release on the Beauty API to destroy the Beauty API.
 
@@ -675,9 +672,9 @@ RtcEngine.destroy()
 	* [ByteDanceBeautyAPI.kt](/Android/lib_bytedance/src/main/java/io/agora/beautyapi/bytedance/ByteDanceBeautyAPI.kt)
 	* [ByteDanceBeautyAPIImpl.kt](/Android/lib_bytedance/src/main/java/io/agora/beautyapi/bytedance/ByteDanceBeautyAPIImpl.kt)
 
-*Note:*
+**Note:**
 
-      To facilitate future code upgrades, please avoid modifying the names and paths of these files you have added.
+To facilitate future code upgrades, please avoid modifying the names and paths of these files you have added.
 
 ### Implement beauty effects.
 
@@ -813,7 +810,7 @@ mByteDanceApi.initialize(
 mByteDanceApi.enable(true)
 ```
 
-#### 5.	Start Video Capture
+#### 5. Start Video Capture
 
 - Developers can use the Agora module for video capture or customize the video capture process. This section explains how to start video capture in both scenarios.
 
@@ -829,7 +826,7 @@ mFaceUnityApi.setupLocalVideo(
 )
 ```
 
-**Custom Video Capture**
+**Custom Video Capture Mode**
 ```kotlin
 // Enable video module
 mRtcEngine.enableVideo()
@@ -860,7 +857,7 @@ mRtcEngine.registerVideoFrameObserver(object : IVideoFrameObserver {
 })
 ```
 
-#### 6.Join Channel
+#### 6.Join a Channel
 
 ```kotlin
 mRtcEngine.joinChannel(
@@ -892,7 +889,7 @@ mRtcEngine.joinChannel(
 )
 ```
 
-#### 7. Update Camera Configuration(Optional)
+#### 7. Update Camera Configuration (Optional) 
 
 ```kotlin
 val isFront = mSenseTimeApi.isFrontCamera()
@@ -926,21 +923,21 @@ if (isFront) {
 mByteDanceApi.updateCameraConfig(cameraConfig)
 ```
 
-#### 8. Leave channel
+#### 8. Leaving the Channel
 
 ```kotlin
 mRtcEngine.leaveChannel()
 ```
 
-#### 9. Destroy Resources
+#### 9. Destroying Resources
 
-- Call release on the Beauty API to destroy the Beauty API.
+- Call `release` on the Beauty API to destroy the Beauty API.
 
 ```kotlin
 mByteDanceApi.release()
 ```
 
-- Call the unInitEffect method of the Beauty SDK in the GL thread to destroy the RenderManager.
+- Call the `unInitEffect` method of the Beauty SDK in the GL thread to destroy the RenderManager.
 
 ```kotlin
 fun unInitEffect(){
@@ -949,7 +946,7 @@ fun unInitEffect(){
 
 ```
 
-- Call destroy on RtcEngine to destroy RtcEngine.
+- Call `destroy` on RtcEngine to destroy RtcEngine.
 
 ```kotlin
 RtcEngine.destroy()
@@ -963,16 +960,17 @@ RtcEngine.destroy()
   [Reference](./lib_cosmos/README.md)
 
 
-## 4. Contact us
+## Feedback
 
-> Plan 1: If you are already using Shengwang services or are in the process of docking, you can directly contact the docked sales or service.
->
-> Plan 2: Send an email to [support@agora.io](mailto:support@agora.io) for consultation
->
-> Plan 3: Scan the QR code to join our WeChat communication group to ask questions
->
-> <img src="https://download.agora.io/demo/release/SDHY_QA.jpg" width="360" height="360">
----
+If you have any problems or suggestions regarding the sample projects, feel free to file an issue.
+
+## Related Resources
+
+- Check our [FAQ](https://docs.agora.io/en/faq) to see if your issue has been recorded.
+- Dive into [Agora SDK Samples](https://github.com/AgoraIO) to see more tutorials.
+- Take a look at [Agora Use Case](https://github.com/AgoraIO-usecase) for more complicated real use cases.
+- Repositories managed by developer communities can be found at [Agora Community](https://github.com/AgoraIO-Community).
+- If you encounter problems during integration, feel free to ask questions in [Stack Overflow](https://stackoverflow.com/questions/tagged/agora.io).
 
 ## 5. License
 
