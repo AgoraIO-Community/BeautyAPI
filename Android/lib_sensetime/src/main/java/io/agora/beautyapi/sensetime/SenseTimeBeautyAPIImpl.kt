@@ -60,7 +60,14 @@ import java.util.concurrent.Executors
 
 class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
     private val TAG = "SenseTimeBeautyAPIImpl"
-    private var beautyMode = 0 // 0: 自动根据buffer类型切换，1：固定使用OES纹理，2：固定使用i420
+
+    /**
+     * Beauty mode
+     * 0: Automatically switch based on buffer type,
+     * 1: Fixed use of OES texture,
+     * 2: Fixed use of i420,
+     */
+    private var beautyMode = 0
 
     private var textureBufferHelper: TextureBufferHelper? = null
     private var nv21ByteBuffer: ByteBuffer? = null
@@ -211,17 +218,17 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
 
         val enable = preset == BeautyPreset.DEFAULT
         workerThreadExecutor.submit {
-            // 锐化
+            // Sharpening
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_TONE_SHARPEN,
                 if(enable) 0.5f else 0.0f
             )
-            // 清晰度
+            // Clarity
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_TONE_CLEAR,
                 if(enable) 1.0f else 0.0f
             )
-            // 磨皮
+            // Smooth skin
             effectNative.setBeautyMode(
                 STEffectBeautyType.EFFECT_BEAUTY_BASE_FACE_SMOOTH,
                 STEffectBeautyType.SMOOTH2_MODE
@@ -230,7 +237,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
                 STEffectBeautyType.EFFECT_BEAUTY_BASE_FACE_SMOOTH,
                 if(enable) 0.55f else 0.0f
             )
-            // 美白
+            // Whitening
             effectNative.setBeautyMode(
                 STEffectBeautyType.EFFECT_BEAUTY_BASE_WHITTEN,
                 STEffectBeautyType.WHITENING3_MODE
@@ -239,77 +246,77 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
                 STEffectBeautyType.EFFECT_BEAUTY_BASE_WHITTEN,
                 if(enable) 0.2f else 0.0f
             )
-            // 瘦脸
+            // Slim face
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_PLASTIC_THIN_FACE,
                 if(enable) 0.4f else 0.0f
             )
-            // 大眼
+            // Enlarged eyes
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_RESHAPE_ENLARGE_EYE,
                 if(enable) 0.3f else 0.0f
             )
-            // 红润
+            // Reddening
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_BASE_REDDEN,
                 if(enable) 0.0f else 0.0f
             )
-            // 瘦颧骨
+            // Slim cheekbones
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_PLASTIC_SHRINK_CHEEKBONE,
                 if(enable) 0.0f else 0.0f
             )
-            // 下颌骨
+            // Jawbone
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_PLASTIC_SHRINK_JAWBONE,
                 if(enable) 0.0f else 0.0f
             )
-            // 美牙
+            // White teeth
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_PLASTIC_WHITE_TEETH,
                 if(enable) 0.0f else 0.0f
             )
-            // 额头
+            // Hairline height
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_PLASTIC_HAIRLINE_HEIGHT,
                 if(enable) 0.0f else 0.0f
             )
-            // 瘦鼻
+            // Slim nose
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_PLASTIC_NARROW_NOSE,
                 if(enable) 0.0f  else 0.0f
             )
-            // 嘴形
+            // Mouth shape
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_PLASTIC_MOUTH_SIZE,
                 if(enable) 0.0f else 0.0f
             )
-            // 下巴
+            // Chin length
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_PLASTIC_CHIN_LENGTH,
                 if(enable) 0.0f else 0.0f
             )
-            // 亮眼
+            // Bright eyes
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_PLASTIC_BRIGHT_EYE,
                 if(enable) 0.0f else 0.0f
             )
-            // 祛黑眼圈
+            // Dark circle removal
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_PLASTIC_REMOVE_DARK_CIRCLES,
                 if(enable) 0.0f else 0.0f
             )
-            // 祛法令纹
+            // Nasolabial folds removal
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_PLASTIC_REMOVE_NASOLABIAL_FOLDS,
                 if(enable) 0.0f else 0.0f
             )
-            // 饱和度
+            // Saturation
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_TONE_SATURATION,
                 if(enable) 0.0f else 0.0f
             )
-            // 对比度
+            // Contrast
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_TONE_CONTRAST,
                 if(enable) 0.0f else 0.0f
@@ -612,7 +619,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
 
     private fun processBeautyTexture(videoFrame: VideoFrame): Int{
         if (Build.VERSION.SDK_INT >= 26) {
-            // Android 8.0以上使用单纹理输入，内部使用HardwareBuffer转nv21
+            // For Android 8.0 and above, use single texture input. Internally, HardwareBuffer is used to convert to NV21 format.
             return processBeautyTextureAPI26(videoFrame)
         }
         val texBufferHelper = textureBufferHelper ?: return -1

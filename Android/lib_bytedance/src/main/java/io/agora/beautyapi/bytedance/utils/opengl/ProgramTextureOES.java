@@ -191,14 +191,7 @@ public class ProgramTextureOES extends Program {
         return mFrameBufferTextures[0];
     }
 
-
-    /** {zh} 
-     * 读取渲染结果的buffer
-     * @param width 目标宽度
-     * @param height 目标高度
-     * @return 渲染结果的像素Buffer 格式RGBA
-     */
-    /** {en} 
+    /**
      * Read the buffer
      * @param width target width
      * @param height target height

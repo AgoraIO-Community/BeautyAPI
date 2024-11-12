@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 /**
- * DESC： 联发科芯片
+ * DESC：MediaTek chips
  * Created on 2021/3/12
  */
 public class MTKScoreProvider implements DeviceScoreProvider {
@@ -70,7 +70,7 @@ public class MTKScoreProvider implements DeviceScoreProvider {
         if (TextUtils.isEmpty(glRenderer)) {
             return 65;
         }
-        // 处理个别低端设备
+        // Handle specific low-end devices
         for (String badDevice : badMTKGPUDevices){
             if (glRenderer.startsWith(badDevice)){
                 return 55;

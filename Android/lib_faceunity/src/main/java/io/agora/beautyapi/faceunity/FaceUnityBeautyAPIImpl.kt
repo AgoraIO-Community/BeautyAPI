@@ -59,8 +59,23 @@ import java.util.concurrent.Callable
 
 class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
     private val TAG = "FaceUnityBeautyAPIImpl"
-    private var beautyMode = 0 // 0: 自动根据buffer类型切换，1：固定使用OES纹理，2：固定使用i420，3: 单纹理模式
-    private var enableTextureAsync = false // 是否开启纹理+异步缓存处理。对于GPU性能好的手机可以减小美颜处理耗时，对于中端机开启后效果也不明显。
+
+    /**
+     * Beauty mode
+     * 0: Automatically switch based on buffer type,
+     * 1: Fixed use of OES texture,
+     * 2: Fixed use of i420,
+     * 3: Single texture mode
+     */
+    private var beautyMode = 0
+
+    /**
+     * Enable texture async
+     * Enable texture + asynchronous caching processing.
+     * For devices with strong GPU performance, this can reduce beauty processing time.
+     * However, on mid-range devices, enabling this may have minimal effect.
+     */
+    private var enableTextureAsync = false
 
     private var beautyTextureBufferHelper: TextureBufferHelper? = null
     private var byteBuffer: ByteBuffer? = null

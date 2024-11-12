@@ -1,10 +1,10 @@
 # BeautyAPI
 
-_English | [中文](README.zh.md)
+_English | [中文](README.zh.md)_
 
 ### Overview
 
-In order to reduce the difficulty for developers to integrate beauty, Shengwang provides a beauty scene-based API. The beauty scene API uses the **Shengwang RTC raw data interface** to encapsulate the beauty processing of different manufacturers, striving to provide the best beauty experience and minimize the beauty time as much as possible. You only need to call a few simple scene-based APIs to achieve smooth beautification effects.
+In order to reduce the difficulty for developers to integrate beauty, Agora provides a beauty scene-based API. The beauty scene API uses the **Agora RTC raw data interface** to encapsulate the beauty processing of different manufacturers, striving to provide the best beauty experience and minimize the beauty time as much as possible. You only need to call a few simple scene-based APIs to achieve smooth beautification effects.
 
 This repository contains the following beauty scene APIs:
 
@@ -26,16 +26,18 @@ You can refer to following demo to lean how to use the beauty api:
 | Android   | [Android/app](Android) |         |
 | iOS       | [iOS/BeautyAPi](iOS)   |         |
 
-### Contact us
+### Feedback
 
-> Plan 1: If you are already using Shengwang services or are in the process of docking, you can directly contact the docked sales or service.
+If you have any problems or suggestions regarding the sample projects, feel free to file an issue.
+
+### Related resources
 >
-> Plan 2: Send an email to [support@agora.io](mailto:support@agora.io) for consultation
->
-> Plan 3: Scan the QR code to join our WeChat communication group to ask questions
->
-> <img src="https://download.agora.io/demo/release/SDHY_QA.jpg" width="360" height="360">
----
+
+- Check our [FAQ](https://docs.agora.io/en/faq) to see if your issue has been recorded.
+- Dive into [Agora SDK Samples](https://github.com/AgoraIO) to see more tutorials.
+- Take a look at [Agora Use Case](https://github.com/AgoraIO-usecase) for more complicated real use case.
+- Repositories managed by developer communities can be found at [Agora Community](https://github.com/AgoraIO-Community).
+- If you encounter problems during integration, feel free to ask questions in [Stack Overflow](https://stackoverflow.com/questions/tagged/agora.io).
 
 ### License
 

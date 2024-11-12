@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 
 /**
- * DESC：高通芯片
+ * DESC：Qualcomm chipset
  * Created on 2021/3/12
  */
 public class QualcommScoreProvider implements DeviceScoreProvider {
@@ -80,7 +80,7 @@ public class QualcommScoreProvider implements DeviceScoreProvider {
             GPUVersion = Integer.parseInt(GPUVersionStr);
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            //可能是后面还包含了非数字的东西，那么截取三位
+            // It may contain non-numeric characters at the end, so extract the first three characters
             String GPUVersionStrNew = extractLeadingDigits(GPUVersionStr);
             GPUVersion = Integer.parseInt(GPUVersionStrNew);
         }
@@ -93,7 +93,7 @@ public class QualcommScoreProvider implements DeviceScoreProvider {
         if (matcher.find()) {
             return matcher.group();
         } else {
-            return "0"; // 如果没有找到数字，返回0
+            return "0"; // If no numbers are found, return 0
         }
     }
 }
