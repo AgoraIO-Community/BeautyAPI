@@ -6,7 +6,7 @@
 *.xcworkspacedata
 xcshareddata
 SenseLib/*
-FULib/*
+FULib/
 ByteEffectLib/*
 libs/*
 CosmosEffect
