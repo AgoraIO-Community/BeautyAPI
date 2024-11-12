@@ -49,6 +49,10 @@ class BeautyMenuItemCell: UICollectionViewCell {
     private func createSubviews(){
         contentView.addSubview(imageView)
         imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.widthAnchor.constraint(equalToConstant: 52).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: 52).isActive = true
+        imageView.layer.cornerRadius = 52 / 2.0
+        imageView.layer.masksToBounds = true
         
         contentView.addSubview(indicatorImgView)
         indicatorImgView.translatesAutoresizingMaskIntoConstraints = false

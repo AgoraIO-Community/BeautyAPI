@@ -135,7 +135,6 @@
 		F78068932CDE1AFA00DE3116 /* CEBeautyRender.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CEBeautyRender.m; sourceTree = "<group>"; };
 		F78068942CDE1AFA00DE3116 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		F78068952CDE1AFA00DE3116 /* README.zh.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.zh.md; sourceTree = "<group>"; };
-		F78068972CDE1AFA00DE3116 /* authpack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = authpack.h; sourceTree = "<group>"; };
 		F78068982CDE1AFA00DE3116 /* FUManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FUManager.h; sourceTree = "<group>"; };
 		F78068992CDE1AFA00DE3116 /* FUManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FUManager.m; sourceTree = "<group>"; };
 		F780689B2CDE1AFA00DE3116 /* AlertManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlertManager.swift; sourceTree = "<group>"; };
@@ -180,6 +179,7 @@
 		F78068C72CDE1AFA00DE3116 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		F78068C92CDE1AFA00DE3116 /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		F78068CA2CDE1AFA00DE3116 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		F78069162CE3077500DE3116 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/Main.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -389,7 +389,6 @@
 		F780689A2CDE1AFA00DE3116 /* FUBeauty */ = {
 			isa = PBXGroup;
 			children = (
-				F78068972CDE1AFA00DE3116 /* authpack.h */,
 				F78068982CDE1AFA00DE3116 /* FUManager.h */,
 				F78068992CDE1AFA00DE3116 /* FUManager.m */,
 			);
@@ -693,6 +692,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				F78068C72CDE1AFA00DE3116 /* Base */,
+				F78069162CE3077500DE3116 /* en */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -925,7 +925,7 @@
 					"-weak_framework",
 					"\"Photos\"",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.agora.test.entfull;
+				PRODUCT_BUNDLE_IDENTIFIER = io.agora.entfull;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1041,7 +1041,7 @@
 					"-weak_framework",
 					"\"Photos\"",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.agora.test.entfull;
+				PRODUCT_BUNDLE_IDENTIFIER = io.agora.entfull;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;

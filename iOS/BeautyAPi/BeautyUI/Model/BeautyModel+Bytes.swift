@@ -127,22 +127,6 @@ extension BeautyModel {
         dataArray.append(model)
         
         model = BeautyModel()
-        model.path = "/style_makeup/baixi"
-        model.key = "Makeup_ALL"
-        model.value = 0.6
-        model.name = "show_beauty_item_effect_baixi".beauty_localized
-        model.icon = "meiyan_fgz_baixi"
-        dataArray.append(model)
-        
-        model = BeautyModel()
-        model.path = "/style_makeup/tianmei"
-        model.key = "Makeup_ALL"
-        model.value = 0.6
-        model.name = "show_beauty_item_effect_tianmei".beauty_localized
-        model.icon = "meiyan_fgz_tianmei"
-        dataArray.append(model)
-        
-        model = BeautyModel()
         model.path = "/style_makeup/cwei"
         model.key = "Makeup_ALL"
         model.value = 0.6

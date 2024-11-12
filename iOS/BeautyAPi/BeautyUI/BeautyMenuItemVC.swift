@@ -46,6 +46,7 @@ class BeautyMenuItemVC: UIViewController {
     init(type: BeautyMenuType) {
         super.init(nibName: nil, bundle: nil)
         self.type = type
+        self.view.backgroundColor = .clear
     }
     
     required init?(coder: NSCoder) {
@@ -56,6 +57,7 @@ class BeautyMenuItemVC: UIViewController {
         super.viewDidLoad()
         setUpUI()
         configDefaultSelect()
+        defaultValueHandler()
     }
     
     func changeValueHandler(value: CGFloat) {
@@ -65,6 +67,15 @@ class BeautyMenuItemVC: UIViewController {
     
     func reloadData() {
         collectionView.reloadData()
+    }
+    
+    private func defaultValueHandler() {
+        if let index = dataArray.firstIndex(where: { $0.isSelected }) {
+            let model = dataArray[index]
+            selectedItemClosure?(model.value, model.key == nil)
+            defalutSelectIndex = index
+            changeValueHandler(value: model.value)
+        }
     }
     
     private func setBeautyHandler(value: CGFloat, isReset: Bool) {

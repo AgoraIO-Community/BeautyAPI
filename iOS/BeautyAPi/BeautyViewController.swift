@@ -29,10 +29,10 @@ class BeautyViewController: UIViewController {
     
     private var beautyAPI: BeautyAPI?
     
-    private lazy var beautyVC = BeautyBaseVC()
+    private var beautyVC = BeautyBaseVC()
     
-    private var isBroascast: Bool {
-        role == "Broascast"
+    private var isBroadcast: Bool {
+        role == "Broadcast"
     }
     public var channleName: String?
     public var resolution: CGSize = .zero
@@ -102,7 +102,7 @@ class BeautyViewController: UIViewController {
     }
     
     private func setupRTC() {
-        if isBroascast {
+        if isBroadcast {
             beautyAPI?.setupLocalVideo(localView, renderMode: .fit)
             rtcEngine.startPreview()
         }
@@ -112,7 +112,7 @@ class BeautyViewController: UIViewController {
         }
         
         let mediaOption = AgoraRtcChannelMediaOptions()
-        mediaOption.clientRoleType = isBroascast ? .broadcaster : .audience
+        mediaOption.clientRoleType = isBroadcast ? .broadcaster : .audience
         mediaOption.autoSubscribeAudio = true
         mediaOption.autoSubscribeVideo = true
         mediaOption.publishCameraTrack = mediaOption.clientRoleType == .broadcaster
@@ -149,10 +149,10 @@ class BeautyViewController: UIViewController {
         settingButton.setTitle("", for: .normal)
         settingButton.setImage(UIImage(systemName: "gearshape")?.withTintColor(.white, renderingMode: .alwaysOriginal), for: .normal)
         
-        cameraButton.isHidden = !isBroascast
-        settingButton.isHidden = !isBroascast
-        toolContainerView.isHidden = !isBroascast
-        cameraMirror.isHidden = !isBroascast
+        cameraButton.isHidden = !isBroadcast
+        settingButton.isHidden = !isBroadcast
+        toolContainerView.isHidden = !isBroadcast
+        cameraMirror.isHidden = !isBroadcast
     }
     
     deinit {
@@ -231,11 +231,11 @@ extension BeautyViewController: AgoraRtcEngineDelegate {
         let videoCanvas = AgoraRtcVideoCanvas()
         videoCanvas.uid = uid
         // the view to be binded
-        videoCanvas.view = isBroascast ? remoteView : localView
+        videoCanvas.view = isBroadcast ? remoteView : localView
         videoCanvas.renderMode = .hidden
 //        videoCanvas.mirrorMode = .disabled
         rtcEngine.setupRemoteVideo(videoCanvas)
-        remoteView.isHidden = !isBroascast
+        remoteView.isHidden = !isBroadcast
     }
     
     /// callback when a remote user is leaving the channel, note audience in live broadcast mode will NOT trigger this event

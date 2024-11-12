@@ -119,19 +119,19 @@ extension BeautyModel {
         dataArray.append(model)
      
         model = BeautyModel()
-        model.path = "qise.zip"
+        model.path = "oumei.zip"
         model.key = "Makeup_ALL"
         model.value = 0.5
-        model.name = "show_beauty_item_effect_cwei".beauty_localized
+        model.name = "show_beauty_item_effect_oumei".beauty_localized
         model.icon = "meiyan_fgz_cwei"
         dataArray.append(model)
         
         model = BeautyModel()
         model.key = "Makeup_ALL"
-        model.path = "wanneng.zip"
+        model.path = "hunxue.zip"
         model.value = 0.5
-        model.name = "show_beauty_item_effect_yuanqi".beauty_localized
-        model.icon = "meiyan_fgz_yuanqi"
+        model.name = "show_beauty_item_effect_hunxue".beauty_localized
+        model.icon = "meiyan_fgz_hunxue"
         dataArray.append(model)
         
         return dataArray
@@ -147,9 +147,9 @@ extension BeautyModel {
         dataArray.append(model)
         
         model = BeautyModel()
-        model.path = "lianxingface.zip"
-        model.name = "show_beauty_item_sticker_huahua".beauty_localized
-        model.icon = "meiyan_lj_naiyou"
+        model.path = "ShangBanLe.zip"
+        model.name = "show_beauty_item_sticker_shangbanle".beauty_localized
+        model.icon = "ic_beauty_sticker_shangbanle"
         dataArray.append(model)
         
         return dataArray

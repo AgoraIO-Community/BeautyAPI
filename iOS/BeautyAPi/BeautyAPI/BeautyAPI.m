@@ -209,7 +209,7 @@ static NSString *const beautyAPIVersion = @"1.0.7";
 #if __has_include(<AgoraRtcKit/AgoraRtcKit.h>)
     [self.config.rtcEngine setVideoFrameDelegate:nil];
 #endif
-    [self.config.beautyRender destroy];
+//    [self.config.beautyRender destroy];
     self.config = nil;
     [LogUtil log:@"destroy"];
     [self.reporter endDurationEventWithName:@"initialize-release" ext:@{}];

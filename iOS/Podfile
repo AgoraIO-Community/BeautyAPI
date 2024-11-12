@@ -6,7 +6,7 @@
 #plugin 'cocoapods-pod-sign'
 #skip_pod_bundle_sign # Used to skip Xcode's signature to bundle resources
 
-target 'BeautyAPi' do
+target 'BeautyAPI' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
 

@@ -36,7 +36,7 @@
     if (self = [super init]) {
         self.renderQueue = dispatch_queue_create("com.render.queue", DISPATCH_QUEUE_SERIAL);
         //effects
-        dispatch_async(self.renderQueue, ^{
+//        dispatch_async(self.renderQueue, ^{
 #if __has_include("st_mobile_common.h")
             self.glContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3];
             self.effectsProcess = [[EffectsProcess alloc] initWithType:EffectsTypeVideo glContext:self.glContext];
@@ -45,7 +45,7 @@
             [EAGLContext setCurrentContext:self.glContext];
 //            self.effectsProcess.detectConfig = ST_MOBILE_FACE_DETECT;
 #endif
-        });
+//        });
     }
     return self;
 }

@@ -72,7 +72,6 @@ class PickerView: UIView {
     
     private func setupUI() {
         translatesAutoresizingMaskIntoConstraints = false
-        backgroundColor = .white
         addSubview(cancelButton)
         addSubview(titleLabel)
         addSubview(sureButton)
@@ -94,7 +93,7 @@ class PickerView: UIView {
         
         sureButton.centerYAnchor.constraint(equalTo: cancelButton.centerYAnchor).isActive = true
         sureButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10).isActive = true
-        sureButton.widthAnchor.constraint(equalToConstant: 50).isActive = true
+        sureButton.widthAnchor.constraint(equalToConstant: 70).isActive = true
         sureButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
         
         pickerView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
