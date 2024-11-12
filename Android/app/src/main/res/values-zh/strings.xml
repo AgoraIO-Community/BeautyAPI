@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AgoraBeautyAPI</string>
+    <string name="app_name">BeautyAPI</string>
     <string name="beauty_sensetime">SenseTime</string>
     <string name="beauty_faceunity">FaceUnity</string>
     <string name="beauty_bytedance">ByteDance</string>
