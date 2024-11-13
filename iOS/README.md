@@ -40,7 +40,7 @@ This document provides a comprehensive guide on how to quickly set up and run th
 
 1. **Add Pod Dependency**: Update your Podfile with:
     ```ruby
-    pod 'SenseLib', :path => 'sense.podspec'
+    pod 'fuLib', :path => 'fu.podspec'
     ```
 
 2. **Install Pods**: Run the following command:
