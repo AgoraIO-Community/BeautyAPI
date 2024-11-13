@@ -198,16 +198,18 @@ This document provides a comprehensive guide on how to quickly set up and run th
 
 ---
 
-## Contact Us
+## Feedback
 
-- **Existing Users**: Contact your assigned sales or service representative.
-- **Email Support**: [support@agora.io](mailto:support@agora.io)
-- **WeChat Group**: Scan the QR code to join our community.
+If you have any problems or suggestions regarding the sample projects, feel free to file an issue.
 
-<img src="https://download.agora.io/demo/release/SDHY_QA.jpg" width="200" alt="WeChat QR Code" />
+## Related Resources
 
----
+- Check our [FAQ](https://docs.agora.io/en/faq) to see if your issue has been recorded.
+- Dive into [Agora SDK Samples](https://github.com/AgoraIO) to see more tutorials.
+- Take a look at [Agora Use Case](https://github.com/AgoraIO-usecase) for more complicated real use cases.
+- Repositories managed by developer communities can be found at [Agora Community](https://github.com/AgoraIO-Community).
+- If you encounter problems during integration, feel free to ask questions in [Stack Overflow](https://stackoverflow.com/questions/tagged/agora.io).
 
-## License
+## 5. License
 
-This project is licensed under the [MIT License](../LICENSE).
+The sample projects are under the [MIT license](../LICENSE).
