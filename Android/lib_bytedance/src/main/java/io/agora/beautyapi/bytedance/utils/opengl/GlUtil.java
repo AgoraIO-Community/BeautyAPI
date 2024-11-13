@@ -287,24 +287,24 @@ public abstract class GlUtil {
     }
 
     public static void createFBO(int[] fboTex, int[] fboId, int width, int height) {
-//generate fbo id
+        // generate fbo id
         GLES20.glGenFramebuffers(1, fboId, 0);
-//generate texture
+        // generate texture
         GLES20.glGenTextures(1, fboTex, 0);
 
-//Bind Frame buffer
+        // Bind Frame buffer
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, fboId[0]);
-//Bind texture
+        // Bind texture
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, fboTex[0]);
-//Define texture parameters
+        // Define texture parameters
         GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, width, height, 0, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, null);
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
-//Attach texture FBO color attachment
+        // Attach texture FBO color attachment
         GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, fboTex[0], 0);
-//we are done, reset
+        // we are done, reset
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
     }
@@ -494,6 +494,4 @@ public abstract class GlUtil {
 
         return texture[0];
     }
-
-
 }

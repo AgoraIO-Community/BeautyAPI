@@ -40,22 +40,22 @@ public class FuDeviceUtils {
 
 
     public static int judgeDeviceLevel(Context context) {
-        return judgeDeviceLevel(context,false);
+        return judgeDeviceLevel(context, false);
     }
 
     /**
-     * 判断设备级别
+     * Determine device level
      *
      * @return int
      */
-    public static int judgeDeviceLevel(Context context,boolean ignoreCache) {
+    public static int judgeDeviceLevel(Context context, boolean ignoreCache) {
         if (!ignoreCache) {
             int cacheDeviceLevel = getCacheDeviceLevel(context);
             if (cacheDeviceLevel > DEVICE_LEVEL_EMPTY) {
                 return cacheDeviceLevel;
             }
         }
-        //有一些设备不符合下述的判断规则，则走一个机型判断模式
+        // Some devices do not meet the following criteria, so use a device-specific model for judgment
         int specialDevice = judgeDeviceLevelInDeviceName();
         if (specialDevice > DEVICE_LEVEL_EMPTY) {
             return specialDevice;
@@ -74,13 +74,13 @@ public class FuDeviceUtils {
         if (score > DEVICE_SCORE_FOUR) {
             level = DEVICE_LEVEL_FOUR;
         }
-        saveCacheDeviceLevel(context,level);
+        saveCacheDeviceLevel(context, level);
         Log.d(TAG, "CPUName: " + DeviceScoreUtils.CPUName + " GPUName: " + DeviceScoreUtils.GPUName + " score: " + score + " level: " + level);
         return level;
     }
 
     /**
-     * -1 不是特定的高低端机型
+     * -1 indicates that the device is not classified as a specific high-end or low-end model
      *
      * @return
      */
@@ -110,7 +110,7 @@ public class FuDeviceUtils {
     }
 
     /**
-     * 获取设备名
+     * Get the device name
      *
      * @return String
      */
@@ -124,17 +124,17 @@ public class FuDeviceUtils {
     }
 
     /**
-     * 缓存设备等级
+     * Cache the device level
      *
      * @param level int
      */
-    public static void saveCacheDeviceLevel(Context context,int level) {
+    public static void saveCacheDeviceLevel(Context context, int level) {
         SharedPreferences sp = context.getSharedPreferences(DEVICE_LEVEL, MODE_PRIVATE);
         sp.edit().putInt(DEVICE_LEVEL, level).apply();
     }
 
     /**
-     * 获取设备等级
+     * Get the device level
      *
      * @return int
      */
@@ -143,26 +143,27 @@ public class FuDeviceUtils {
         return sp.getInt(DEVICE_LEVEL, DEVICE_LEVEL_EMPTY);
     }
 
-    public static class Config{
-        /************************** 算法Model  ******************************/
-        // 人脸识别
+    public static class Config {
+        /************************** Algorithm Models  ******************************/
+        // Face recognition model
         public static String BUNDLE_AI_FACE = "model" + File.separator + "ai_face_processor.bundle";
-        // 手势
+
+        // Gesture recognition model
         public static String BUNDLE_AI_HAND = "model" + File.separator + "ai_hand_processor.bundle";
-        // 人体
+
+        // Human body recognition model
         public static String BUNDLE_AI_HUMAN = "model" + File.separator + "ai_human_processor.bundle";
 
-        // 舌头
+        // Tongue model
         public static String BUNDLE_AI_TONGUE = "graphics" + File.separator + "tongue.bundle";
 
-        //设备等级默认为中级
+        // Default device level is set to medium
         public static int DEVICE_LEVEL = FuDeviceUtils.DEVICE_LEVEL_TWO;
 
-        //设备名称
+        // Device name
         public static String DEVICE_NAME = "";
 
-
-        //人脸离开之后是否延迟10帧移除人脸相关信息
+        // Whether to delay 10 frames after the face leaves before removing face-related information
         public static final boolean FACE_DELAY_LEAVE_ENABLE = false;
     }
 }

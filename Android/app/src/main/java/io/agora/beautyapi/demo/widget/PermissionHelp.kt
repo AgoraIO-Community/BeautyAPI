@@ -89,7 +89,7 @@ class PermissionHelp(val activity: ComponentActivity) {
 
     @RequiresApi(Build.VERSION_CODES.R)
     private val managerAllFileLauncher =
-        activity.registerForActivityResult(object : ActivityResultContract<String, Boolean>(){
+        activity.registerForActivityResult(object : ActivityResultContract<String, Boolean>() {
             override fun createIntent(context: Context, input: String): Intent {
                 return Intent().apply {
                     action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
@@ -99,7 +99,7 @@ class PermissionHelp(val activity: ComponentActivity) {
             override fun parseResult(resultCode: Int, intent: Intent?): Boolean {
                 return Environment.isExternalStorageManager()
             }
-        }){isGranted ->
+        }) { isGranted ->
             val granted = granted
             val unGranted = unGranted
             this.granted = null
@@ -114,60 +114,44 @@ class PermissionHelp(val activity: ComponentActivity) {
 
 
     /**
-     * 检查摄像头和麦克风权限
+     * Check camera and microphone permissions
      *
-     * @param force 是：如果权限被禁用则会跳转到系统应用权限设置页面
+     * @param force: If true, will navigate to the system application permission settings page if the permissions are disabled
      */
-    fun checkCameraAndMicPerms(
-        granted: () -> Unit,
-        unGranted: () -> Unit,
-        force: Boolean = false
-    ) {
+    fun checkCameraAndMicPerms(granted: () -> Unit, unGranted: () -> Unit, force: Boolean = false) {
         checkCameraPerm({
             checkMicPerm(granted, unGranted, force)
         }, unGranted, force)
     }
 
     /**
-     * 检查麦克风权限
+     * Check microphone permission
      *
-     * @param force 是：如果权限被禁用则会跳转到系统应用权限设置页面
+     * @param force: If true, will navigate to the system application permission settings page if the permission is disabled
      */
-    fun checkMicPerm(
-        granted: () -> Unit,
-        unGranted: () -> Unit,
-        force: Boolean = false
-    ) {
+    fun checkMicPerm(granted: () -> Unit, unGranted: () -> Unit, force: Boolean = false) {
         checkPermission(Manifest.permission.RECORD_AUDIO, granted, force, unGranted)
     }
 
     /**
-     * 检查摄像头权限
+     * Check camera permission
      *
-     * @param force 是：如果权限被禁用则会跳转到系统应用权限设置页面
+     * @param force: If true, will navigate to the system application permission settings page if the permission is disabled
      */
-    fun checkCameraPerm(
-        granted: () -> Unit,
-        unGranted: () -> Unit,
-        force: Boolean = false
-    ) {
+    fun checkCameraPerm(granted: () -> Unit, unGranted: () -> Unit, force: Boolean = false) {
         checkPermission(Manifest.permission.CAMERA, granted, force, unGranted)
     }
 
     /**
-     * 检查外置存储权限
+     * Check external storage permission
      *
-     * @param force 是：如果权限被禁用则会跳转到系统应用权限设置页面
+     * @param force: If true, will navigate to the system application permission settings page if the permission is disabled
      */
-    fun checkStoragePerm(
-        granted: () -> Unit,
-        unGranted: () -> Unit,
-        force: Boolean = false
-    ) {
+    fun checkStoragePerm(granted: () -> Unit, unGranted: () -> Unit, force: Boolean = false) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (Environment.isExternalStorageManager()) {
                 granted.invoke()
-            }else{
+            } else {
                 launchManagerFile(granted, unGranted)
             }
         } else {
@@ -180,80 +164,51 @@ class PermissionHelp(val activity: ComponentActivity) {
                 )
             }, force, unGranted)
         }
-
     }
 
-    private fun checkPermission(
-        perm: String,
-        granted: () -> Unit,
-        force: Boolean,
-        unGranted: () -> Unit
-    ) {
-            when {
-                ContextCompat.checkSelfPermission(
-                    activity,
-                    perm
-                ) == PackageManager.PERMISSION_GRANTED -> {
-                    // You can use the API that requires the permission.
-                    granted.invoke()
-                }
+    private fun checkPermission(perm: String, granted: () -> Unit, force: Boolean, unGranted: () -> Unit) {
+        when {
+            ContextCompat.checkSelfPermission(activity, perm) == PackageManager.PERMISSION_GRANTED -> {
+                // You can use the API that requires the permission.
+                granted.invoke()
+            }
 
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                        activity.shouldShowRequestPermissionRationale(perm) -> {
-                    // In an educational UI, explain to the user why your app requires this
-                    // permission for a specific feature to behave as expected, and what
-                    // features are disabled if it's declined. In this UI, include a
-                    // "cancel" or "no thanks" button that lets the user continue
-                    // using your app without granting the permission.
-                    // showInContextUI(...)
-                    if (force) {
-                        launchAppSetting(
-                            perm,
-                            granted,
-                            unGranted
-                        )
-                    } else {
-                        unGranted.invoke()
-                    }
-                }
-
-                else -> {
-                    // You can directly ask for the permission.
-                    // The registered ActivityResultCallback gets the result of this request.
-                    launchPermissionRequest(
-                        perm,
-                        granted,
-                        unGranted
-                    )
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && activity.shouldShowRequestPermissionRationale(perm) -> {
+                // In an educational UI, explain to the user why your app requires this
+                // permission for a specific feature to behave as expected, and what
+                // features are disabled if it's declined. In this UI, include a
+                // "cancel" or "no thanks" button that lets the user continue
+                // using your app without granting the permission.
+                // showInContextUI(...)
+                if (force) {
+                    launchAppSetting(perm, granted, unGranted)
+                } else {
+                    unGranted.invoke()
                 }
             }
+
+            else -> {
+                // You can directly ask for the permission.
+                // The registered ActivityResultCallback gets the result of this request.
+                launchPermissionRequest(perm, granted, unGranted)
+            }
+        }
     }
 
-    private fun launchPermissionRequest(
-        perm: String,
-        granted: () -> Unit,
-        unGranted: () -> Unit
-    ) {
+    private fun launchPermissionRequest(perm: String, granted: () -> Unit, unGranted: () -> Unit) {
         this.granted = granted
         this.unGranted = unGranted
         requestPermissionLauncher.launch(perm)
     }
 
-    private fun launchAppSetting(
-        perm: String,
-        granted: () -> Unit,
-        unGranted: () -> Unit
-    ) {
+    private fun launchAppSetting(perm: String, granted: () -> Unit, unGranted: () -> Unit) {
         this.granted = granted
         this.unGranted = unGranted
         appSettingLauncher.launch(perm)
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
-    private fun launchManagerFile(
-        granted: () -> Unit,
-        unGranted: () -> Unit
-    ) {
+    private fun launchManagerFile(granted: () -> Unit, unGranted: () -> Unit) {
         this.granted = granted
         this.unGranted = unGranted
         managerAllFileLauncher.launch("")

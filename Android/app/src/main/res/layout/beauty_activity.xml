@@ -67,6 +67,4 @@
         app:layout_constraintEnd_toStartOf="@id/ivSetting"
         app:layout_constraintBottom_toBottomOf="parent"
         android:src="@drawable/ic_camera"/>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

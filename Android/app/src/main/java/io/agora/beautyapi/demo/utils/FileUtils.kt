@@ -43,7 +43,7 @@ object FileUtils {
         val sb = StringBuilder()
         var isr: InputStreamReader? = null
         var br: BufferedReader? = null
-        // 读取license文件内容
+        // Read the contents of the license file
         try {
             isr = InputStreamReader(context.resources.assets.open(path))
             br = BufferedReader(isr)
@@ -73,9 +73,9 @@ object FileUtils {
     }
 
     fun copyAssets(context: Context, assetsPath: String, targetPath: String) {
-        // 获取assets目录assetDir下一级所有文件以及文件夹
+        // Retrieve all files and folders at the top level of the 'assetDir' directory in assets
         val fileNames = context.resources.assets.list(assetsPath)
-        // 如果是文件夹(目录),则继续递归遍历
+        // If it’s a folder (directory), continue with recursive traversal.
         if (fileNames?.isNotEmpty() == true) {
             val targetFile = File(targetPath)
             if (!targetFile.exists() && !targetFile.mkdirs()) {

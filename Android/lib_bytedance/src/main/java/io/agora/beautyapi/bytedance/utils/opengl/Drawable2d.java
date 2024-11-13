@@ -68,11 +68,8 @@ public class Drawable2d {
         -0.5f,  0.5f,   // 2 top left
          0.5f,  0.5f,   // 3 top right
     };
-    /** {zh} 
-     * FrameBuffer 与屏幕的坐标系是垂直镜像的，所以在将纹理绘制到一个 FrameBuffer 或屏幕上
-     * 的时候，他们用的纹理顶点坐标是不同的，需要注意。
-     */
-    /** {en} 
+
+    /**
      * The coordinate system of the FrameBuffer and the screen is mirrored vertically, so when drawing the texture to a FrameBuffer or screen
      * , the vertex coordinates of the texture they use are different, which needs attention.
      */
@@ -109,11 +106,8 @@ public class Drawable2d {
         -1.0f,  1.0f,   // 2 top left
          1.0f,  1.0f,   // 3 top right
     };
-    /** {zh} 
-     * FrameBuffer 与屏幕的坐标系是垂直镜像的，所以在将纹理绘制到一个 FrameBuffer 或屏幕上
-     * 的时候，他们用的纹理顶点坐标是不同的，需要注意。
-     */
-    /** {en} 
+
+    /**
      * The coordinate system of the FrameBuffer and the screen is mirrored vertically, so when drawing the texture to a FrameBuffer or screen
      * , the vertex coordinates of the texture they use are different, which needs attention.
      */
@@ -211,13 +205,9 @@ public class Drawable2d {
         return mTexCoordArray;
     }
 
-    /** {zh} 
-     * @brief 返回 frameBuffer 绘制用 texture coordinates
-     */
-    /** {en} 
+    /**
      * @brief Returns texture coordinates for drawing frameBuffer
      */
-
     public FloatBuffer getTexCoorArrayFB() {
         return mTexCoordArrayFB;
     }
