@@ -41,7 +41,11 @@ class ByteBeautyManager {
     }
     
     init() {
-        if render.checkLicense() { return }
+        let notificationName = Notification.Name("kBESdkErrorNotification")
+        NotificationCenter.default.addObserver(self, selector: #selector(licenseAuthFailedCallback), name: notificationName, object: nil)
+    }
+    
+    @objc private func licenseAuthFailedCallback() {
         AUIToast.show(text: "Auth Failed, Please check your license file")
     }
     

@@ -15,7 +15,7 @@ class Configs: NSObject {
                                                "VD_840X480": CGSize(width: 480, height: 840),
                                                "VD_640X360": CGSize(width: 360, height: 640)]
     static let fps: [String] = ["FPS_15", "FPS_24", "FPS_30", "FPS_60"]
-    static let roles: [String] = ["Broascast", "Audience"]
+    static let roles: [String] = ["Broadcast", "Audience"]
     static let captures: [String] = ["Agora", "Custom"]
     @objc
     static var beautyTypes: [String] = []//["sensetime", "fu", "bytes", "cosmos"]

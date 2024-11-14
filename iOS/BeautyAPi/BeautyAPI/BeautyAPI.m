@@ -74,11 +74,11 @@ static NSString *const beautyAPIVersion = @"1.0.7";
         self.config.statsDuration = 1;
     }
     if (config == nil) {
-        [LogUtil log:@"缺少配置信息" level:(LogLevelError)];
+        [LogUtil log:@"Lack of configuration information" level:(LogLevelError)];
         return -1;
     }
     if (config.beautyRender == nil) {
-        [LogUtil log:@"beautyRender 为空" level:(LogLevelError)];
+        [LogUtil log:@"beautyRender is Empty" level:(LogLevelError)];
         return -1;
     }
     [LogUtil log:[NSString stringWithFormat:@"beautyRender == %@", config.beautyRender.description]];
@@ -100,7 +100,7 @@ static NSString *const beautyAPIVersion = @"1.0.7";
         [self rtcReportWithEvent:@"initialize" label:dict];
         [self setupMirror];
 #else
-        [LogUtil log:@"rtc 未导入" level:(LogLevelError)];
+        [LogUtil log:@"Rtc has not been imported" level:(LogLevelError)];
         return -1;
 #endif
     } else {
@@ -209,7 +209,7 @@ static NSString *const beautyAPIVersion = @"1.0.7";
 #if __has_include(<AgoraRtcKit/AgoraRtcKit.h>)
     [self.config.rtcEngine setVideoFrameDelegate:nil];
 #endif
-    [self.config.beautyRender destroy];
+//    [self.config.beautyRender destroy];
     self.config = nil;
     [LogUtil log:@"destroy"];
     [self.reporter endDurationEventWithName:@"initialize-release" ext:@{}];
@@ -218,7 +218,7 @@ static NSString *const beautyAPIVersion = @"1.0.7";
 
 - (void)rtcReportWithEvent: (NSString *)event label: (NSDictionary *)label {
     if (self.config.rtcEngine == nil) {
-        [LogUtil log:@"rtc 不能为空" level:(LogLevelError)];
+        [LogUtil log:@"Rtc cannot be empty" level:(LogLevelError)];
         return;
     }
     [self.reporter reportFuncEventWithName:event value:label ext:@{}];
@@ -337,7 +337,6 @@ static NSString *const beautyAPIVersion = @"1.0.7";
                            [self getCurrentTime],
                            [self getLogPrefixForLevel:level],
                            message];
-    // 写入文件
     NSString *logFile = [NSString stringWithFormat:@"%@/agora_beautyapi.log", NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject];
     [self checkLogFileSizeWithPath: logFile];
     NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingAtPath:logFile];
@@ -361,7 +360,7 @@ static NSString *const beautyAPIVersion = @"1.0.7";
     if (fileAttributes) {
         NSNumber *fileSizeNumber = [fileAttributes objectForKey:NSFileSize];
         long long fileSize = [fileSizeNumber longLongValue];
-        if (fileSize > 1024 * 1024 * 2) { // 文件大于2M
+        if (fileSize > 1024 * 1024 * 2) { 
             [fileManager removeItemAtPath:filePath error:&error];
         }
     }

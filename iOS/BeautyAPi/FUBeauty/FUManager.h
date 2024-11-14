@@ -18,7 +18,7 @@
 
 @protocol FUManagerProtocol <NSObject>
 
-//用于检测是否有ai人脸和人形
+// Used to detect AI faces and human shapes
 - (void)faceUnityManagerCheckAI;
 
 @end
@@ -29,10 +29,10 @@
 
 + (FUManager *)shareManager;
 
-/// 销毁全部道具
+/// Destroy all props
 - (void)destoryItems;
 
-/// 更新美颜磨皮效果（根据人脸检测置信度设置不同磨皮效果）
+/// Update beauty skin smoothing effect (set different smoothing effects based on face detection confidence)
 - (void)updateBeautyBlurEffect;
 
 - (void)setBuauty: (BOOL)isSelected;

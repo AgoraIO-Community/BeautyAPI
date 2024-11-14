@@ -8,7 +8,7 @@
 import UIKit
 
 class FUBeautyModel: BeautyModel {
-    /// 是否v8.0.0之后新组合妆（只用一个bundle）
+    /// Is it a new combination makeup after v8.0.0 (only one bundle is used)
     var isCombined: Bool = false
 }
 
@@ -124,22 +124,6 @@ extension BeautyModel {
         dataArray.append(model)
         
         model = FUBeautyModel()
-        model.path = "face_makeup"
-        model.key = "makeup/xinggan"
-        model.value = 0.5
-        model.name = "show_beauty_item_effect_sexy".beauty_localized
-        model.icon = "meiyan_fgz_cwei"
-        dataArray.append(model)
-        
-        model = FUBeautyModel()
-        model.path = "face_makeup"
-        model.key = "makeup/tianmei"
-        model.value = 0.5
-        model.name = "show_beauty_item_effect_sweet".beauty_localized
-        model.icon = "meiyan_fgz_cwei"
-        dataArray.append(model)
-        
-        model = FUBeautyModel()
         model.path = ""
         model.key = "makeup/diadiatu"
         model.value = 0.8
@@ -147,6 +131,16 @@ extension BeautyModel {
         model.icon = "meiyan_fgz_cwei"
         model.isCombined = true
         dataArray.append(model)
+        
+        model = FUBeautyModel()
+        model.path = ""
+        model.key = "makeup/hunxue"
+        model.value = 0.5
+        model.name = "show_beauty_item_effect_hunxue".beauty_localized
+        model.icon = "meiyan_fgz_hunxue"
+        model.isCombined = true
+        dataArray.append(model)
+        
         
         return dataArray
     }

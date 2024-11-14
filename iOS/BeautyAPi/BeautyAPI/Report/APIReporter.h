@@ -9,26 +9,26 @@
 #import <AgoraRtcKit/AgoraRtcEngineKit.h>
 
 typedef NS_ENUM(NSInteger, APIType) {
-    APITypeKTV = 1,  //K歌
-    APITypeCall = 2,  //呼叫
-    APITypeBeauty = 3,  //美颜
-    APITypeVideoLoader = 4, //秒开/秒切
-    APITypePK = 5, //团战
+    APITypeKTV = 1,  //KTV/Karaoke
+    APITypeCall = 2,  //Call
+    APITypeBeauty = 3,  //Beauty
+    APITypeVideoLoader = 4, //Quick Start/Switch
+    APITypePK = 5, //Team Battle
     APITypeVitualSpace = 6,
-    APITypeScreenSpace = 7, //屏幕共享
-    APITypeAudioScenario = 8  //音频scenario
+    APITypeScreenSpace = 7, //Screen Sharing
+    APITypeAudioScenario = 8  //Audio Scenario
 };
 
 typedef NS_ENUM(NSInteger, APIEventType) {
-    APIEventTypeAPI = 0, //api事件
-    APIEventTypeCost,    //耗时事件
-    APIEventTypeCustom   //自定义事件
+    APIEventTypeAPI = 0, //API Event
+    APIEventTypeCost,    //Cost Event
+    APIEventTypeCustom   //Custom Event
 };
 
 typedef NS_ENUM(NSInteger, APICostEvent) {
-    APICostEventChannelUsage = 0, //频道使用耗时
-    APICostEventFirstFrameActual,  //首帧实际耗时
-    APICostEventFirstFramePerceived //首帧感官耗时
+    APICostEventChannelUsage = 0, //Channel Usage Time
+    APICostEventFirstFrameActual,  //Actual First Frame Time
+    APICostEventFirstFramePerceived //Perceived First Frame Time
 };
 
 NS_ASSUME_NONNULL_BEGIN

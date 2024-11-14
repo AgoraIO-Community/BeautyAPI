@@ -12,12 +12,12 @@ static NSString * const EFGlobalSingletonMaleKey = @"EFGlobalSingletonMaleKey";
 
 @interface EFGlobalSingleton : NSObject
 
-@property (nonatomic, assign) int efTouchTriggerAction; // 点击屏幕触发事件保存
-@property (nonatomic, assign) BOOL efHasSegmentCapability; // 标识是否有皮肤分割capability
-@property (nonatomic, assign) BOOL isMale; // 标识当前用户性别（不同默认参数）
-@property (nonatomic, assign) BOOL needDelay; // 是否是tryon试鞋/试表需要开启未来帧
-@property (nonatomic, assign) BOOL isTryonShoes; // 是否是tryon试鞋(光脚提示)
-@property (nonatomic, assign) BOOL isPortraitOnly; // 是否是gan image（只支持横屏）
+@property (nonatomic, assign) int efTouchTriggerAction; // Save screen touch trigger event
+@property (nonatomic, assign) BOOL efHasSegmentCapability; // Flag indicating whether skin segmentation capability exists
+@property (nonatomic, assign) BOOL isMale; // Flag indicating current user gender (different default parameters)
+@property (nonatomic, assign) BOOL needDelay; // Whether tryon shoes/watch needs to enable future frames
+@property (nonatomic, assign) BOOL isTryonShoes; // Whether it is tryon shoes (barefoot prompt)
+@property (nonatomic, assign) BOOL isPortraitOnly; // Whether it is gan image (landscape only)
 
 +(instancetype)sharedInstance;
 -(instancetype)init NS_UNAVAILABLE;

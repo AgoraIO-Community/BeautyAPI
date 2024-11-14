@@ -20,20 +20,20 @@ NS_ASSUME_NONNULL_BEGIN
 #if __has_include("st_mobile_common.h")
 - (void)setObjectRect:(st_rect_t)rect;
 
-/// 通用物体跟踪
-/// @param pixelBuffer 每帧图像数据
-/// @param rect 通用物体位置
+/// Generic object tracking
+/// @param pixelBuffer Image data for each frame
+/// @param rect Generic object position
 - (st_result_t)detectObjectWithPixelbuffer:(CVPixelBufferRef)pixelBuffer
                                       rect:(st_rect_t*)rect
                                      score:(float*)score;
 
-/// 设置通用物体跟踪
-/// @param buffer 每帧图像数据
-/// @param pixelFormat 视频数据格式(YUV/RGBA/BGRA......)
-/// @param width 图像宽度
-/// @param height 图像高度
-/// @param stride 图像的stride
-/// @param rect 通用物体位置
+/// Set generic object tracking
+/// @param buffer Image data for each frame
+/// @param pixelFormat Video data format (YUV/RGBA/BGRA......)
+/// @param width Image width
+/// @param height Image height
+/// @param stride Image stride
+/// @param rect Generic object position
 - (st_result_t)setObjectWithBuffer:(unsigned char *)buffer
                        pixelFormat:(st_pixel_format)pixelFormat
                              width:(int)width
@@ -41,13 +41,13 @@ NS_ASSUME_NONNULL_BEGIN
                             stride:(int)stride
                               rect:(st_rect_t*)rect;
 
-/// 通用物体跟踪
-/// @param buffer 每帧图像数据
-/// @param pixelFormat 视频数据格式(YUV/RGBA/BGRA......)
-/// @param width 图像宽度
-/// @param height 图像高度
-/// @param stride 图像的stride
-/// @param rect 通用物体位置
+/// Generic object tracking
+/// @param buffer Image data for each frame
+/// @param pixelFormat Video data format (YUV/RGBA/BGRA......)
+/// @param width Image width
+/// @param height Image height
+/// @param stride Image stride
+/// @param rect Generic object position
 - (st_result_t)detectObjectWithBuffer:(unsigned char *)buffer
                           pixelFormat:(st_pixel_format)pixelFormat
                                 width:(int)width

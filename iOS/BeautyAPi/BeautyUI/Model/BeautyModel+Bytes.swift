@@ -9,7 +9,7 @@ import UIKit
 
 extension BeautyModel {
     /*
-     * 字节美颜对应key官方文档
+     * Byte beauty corresponding key official document
      * https://cv-api.bytedance.com/doc/openapi/2036/99769
      */
     static func createByteBeautyData() -> [BeautyModel] {
@@ -124,22 +124,6 @@ extension BeautyModel {
         model.name = "show_beauty_item_none".beauty_localized
         model.icon = "show_beauty_none"
         model.isSelected = true
-        dataArray.append(model)
-        
-        model = BeautyModel()
-        model.path = "/style_makeup/baixi"
-        model.key = "Makeup_ALL"
-        model.value = 0.6
-        model.name = "show_beauty_item_effect_baixi".beauty_localized
-        model.icon = "meiyan_fgz_baixi"
-        dataArray.append(model)
-        
-        model = BeautyModel()
-        model.path = "/style_makeup/tianmei"
-        model.key = "Makeup_ALL"
-        model.value = 0.6
-        model.name = "show_beauty_item_effect_tianmei".beauty_localized
-        model.icon = "meiyan_fgz_tianmei"
         dataArray.append(model)
         
         model = BeautyModel()

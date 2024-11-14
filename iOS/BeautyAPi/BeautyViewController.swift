@@ -29,10 +29,10 @@ class BeautyViewController: UIViewController {
     
     private var beautyAPI: BeautyAPI?
     
-    private lazy var beautyVC = BeautyBaseVC()
+    private var beautyVC = BeautyBaseVC()
     
-    private var isBroascast: Bool {
-        role == "Broascast"
+    private var isBroadcast: Bool {
+        role == "Broadcast"
     }
     public var channleName: String?
     public var resolution: CGSize = .zero
@@ -58,8 +58,8 @@ class BeautyViewController: UIViewController {
     }
     @IBAction func onClickSettingButton(_ sender: Any) {
         let settingView = CLSettingCellView()
-        settingView.title(title: "设置")
-            .switchCell(title: "美颜开关", isOn: beautyAPI?.isEnable ?? false)
+        settingView.title(title: "Set up")
+            .switchCell(title: "Beauty switch", isOn: beautyAPI?.isEnable ?? false)
             .config()
         settingView.show()
         settingView.didSwitchValueChangeClosure = { [weak self] _, isOn in
@@ -89,7 +89,7 @@ class BeautyViewController: UIViewController {
     }
     
     private func setupBeautyAPI() {
-        // 设置encode编码需要在初始化BeatuyAPI之前
+        // Setting encode coding needs to be done before initializing BeatuyAPI.
         updateVideoEncodeConfig()
         
         beautyAPI = BeautyManager.shareManager.initBeautyAPI(rtcEngine: rtcEngine,
@@ -102,18 +102,17 @@ class BeautyViewController: UIViewController {
     }
     
     private func setupRTC() {
-        if isBroascast {
+        if isBroadcast {
             beautyAPI?.setupLocalVideo(localView, renderMode: .fit)
             rtcEngine.startPreview()
         }
         
-        // captureMode为custom时需要注册delegate
         if capture == "Custom" {
             rtcEngine.setVideoFrameDelegate(self)
         }
         
         let mediaOption = AgoraRtcChannelMediaOptions()
-        mediaOption.clientRoleType = isBroascast ? .broadcaster : .audience
+        mediaOption.clientRoleType = isBroadcast ? .broadcaster : .audience
         mediaOption.autoSubscribeAudio = true
         mediaOption.autoSubscribeVideo = true
         mediaOption.publishCameraTrack = mediaOption.clientRoleType == .broadcaster
@@ -150,10 +149,10 @@ class BeautyViewController: UIViewController {
         settingButton.setTitle("", for: .normal)
         settingButton.setImage(UIImage(systemName: "gearshape")?.withTintColor(.white, renderingMode: .alwaysOriginal), for: .normal)
         
-        cameraButton.isHidden = !isBroascast
-        settingButton.isHidden = !isBroascast
-        toolContainerView.isHidden = !isBroascast
-        cameraMirror.isHidden = !isBroascast
+        cameraButton.isHidden = !isBroadcast
+        settingButton.isHidden = !isBroadcast
+        toolContainerView.isHidden = !isBroadcast
+        cameraMirror.isHidden = !isBroadcast
     }
     
     deinit {
@@ -163,7 +162,6 @@ class BeautyViewController: UIViewController {
     }
 }
 
-//MARK: captureMode为custom时才需要实现下面方法
 extension BeautyViewController: AgoraVideoFrameDelegate {
     func onCapture(_ videoFrame: AgoraOutputVideoFrame, sourceType: AgoraVideoSourceType) -> Bool {
         guard let pixelBuffer = videoFrame.pixelBuffer else { return true }
@@ -233,11 +231,11 @@ extension BeautyViewController: AgoraRtcEngineDelegate {
         let videoCanvas = AgoraRtcVideoCanvas()
         videoCanvas.uid = uid
         // the view to be binded
-        videoCanvas.view = isBroascast ? remoteView : localView
+        videoCanvas.view = isBroadcast ? remoteView : localView
         videoCanvas.renderMode = .hidden
 //        videoCanvas.mirrorMode = .disabled
         rtcEngine.setupRemoteVideo(videoCanvas)
-        remoteView.isHidden = !isBroascast
+        remoteView.isHidden = !isBroadcast
     }
     
     /// callback when a remote user is leaving the channel, note audience in live broadcast mode will NOT trigger this event

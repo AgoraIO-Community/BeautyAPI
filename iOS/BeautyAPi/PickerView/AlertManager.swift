@@ -77,10 +77,10 @@ class AlertManager: NSObject {
         } else {
             showAlertPostion(alertPostion: alertPostion, view: view)
         }
-        //注册键盘出现通知
+        //Register keyboard show notification
 //        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name:  UIResponder.keyboardWillShowNotification, object: nil)
         
-        //注册键盘隐藏通知
+        //Register keyboard hide notification
 //        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name:  UIResponder.keyboardWillHideNotification, object: nil)
     }
 
@@ -173,7 +173,7 @@ class AlertManager: NSObject {
     }
     
     private static var originFrame:CGRect = .zero
-    // 键盘显示
+    // Keyboard show
     @objc private static func keyboardWillShow(notification: Notification) {
         originFrame = containerView!.frame
         let keyboardHeight = (notification.userInfo?["UIKeyboardBoundsUserInfoKey"] as? CGRect)?.height
@@ -182,7 +182,7 @@ class AlertManager: NSObject {
             containerView?.frame.origin.y = y
         }
     }
-    // 键盘隐藏
+    // Keyboard hide
     @objc private static func keyboardWillHide(notification: Notification) {
         UIView.animate(withDuration: 0.25) {
 //            containerView?.frame = originFrame
