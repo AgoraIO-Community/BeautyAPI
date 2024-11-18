@@ -8,6 +8,25 @@
 
 /* Begin PBXBuildFile section */
 		8D48A74AC76B9B0E6C7402D7 /* Pods_BeautyAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C56A5B4C64380B75806439B9 /* Pods_BeautyAPI.framework */; };
+		F7426C622CEB266A008384BF /* Effects.m in Sources */ = {isa = PBXBuildFile; fileRef = F7426C382CEB266A008384BF /* Effects.m */; };
+		F7426C632CEB266A008384BF /* EffectsAnimal.m in Sources */ = {isa = PBXBuildFile; fileRef = F7426C3A2CEB266A008384BF /* EffectsAnimal.m */; };
+		F7426C642CEB266A008384BF /* EffectsAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = F7426C3C2CEB266A008384BF /* EffectsAttribute.m */; };
+		F7426C652CEB266A008384BF /* EffectsCommonObject.m in Sources */ = {isa = PBXBuildFile; fileRef = F7426C3E2CEB266A008384BF /* EffectsCommonObject.m */; };
+		F7426C662CEB266A008384BF /* EffectsDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = F7426C402CEB266A008384BF /* EffectsDetector.m */; };
+		F7426C672CEB266A008384BF /* EffectsLicense.m in Sources */ = {isa = PBXBuildFile; fileRef = F7426C422CEB266A008384BF /* EffectsLicense.m */; };
+		F7426C682CEB266A008384BF /* EffectsProcess.m in Sources */ = {isa = PBXBuildFile; fileRef = F7426C442CEB266A008384BF /* EffectsProcess.m */; };
+		F7426C692CEB266A008384BF /* EFGlobalSingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = F7426C462CEB266A008384BF /* EFGlobalSingleton.m */; };
+		F7426C6A2CEB266A008384BF /* EFMotionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F7426C482CEB266A008384BF /* EFMotionManager.m */; };
+		F7426C6B2CEB266A008384BF /* VideoProcessingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F7426C4A2CEB266A008384BF /* VideoProcessingManager.m */; };
+		F7426C6C2CEB266A008384BF /* BEEffectManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = F7426C4D2CEB266A008384BF /* BEEffectManager.mm */; };
+		F7426C6D2CEB266A008384BF /* BEEffectResourceHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = F7426C4F2CEB266A008384BF /* BEEffectResourceHelper.m */; };
+		F7426C6E2CEB266A008384BF /* BEGLTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = F7426C512CEB266A008384BF /* BEGLTexture.m */; };
+		F7426C6F2CEB266A008384BF /* BEGLUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = F7426C532CEB266A008384BF /* BEGLUtils.m */; };
+		F7426C702CEB266A008384BF /* BEHttpRequestProvider.mm in Sources */ = {isa = PBXBuildFile; fileRef = F7426C552CEB266A008384BF /* BEHttpRequestProvider.mm */; };
+		F7426C712CEB266A008384BF /* BEImageUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = F7426C572CEB266A008384BF /* BEImageUtils.m */; };
+		F7426C722CEB266A008384BF /* BELicenseHelper.mm in Sources */ = {isa = PBXBuildFile; fileRef = F7426C592CEB266A008384BF /* BELicenseHelper.mm */; };
+		F7426C732CEB266A008384BF /* BEOpenGLRenderHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = F7426C5B2CEB266A008384BF /* BEOpenGLRenderHelper.m */; };
+		F7426C742CEB266A008384BF /* BETimeRecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = F7426C5D2CEB266A008384BF /* BETimeRecoder.m */; };
 		F78068CC2CDE1AFA00DE3116 /* BytesBeautyRender.m in Sources */ = {isa = PBXBuildFile; fileRef = F78068552CDE1AFA00DE3116 /* BytesBeautyRender.m */; };
 		F78068CD2CDE1AFA00DE3116 /* CosmosBeautyRender.m in Sources */ = {isa = PBXBuildFile; fileRef = F78068582CDE1AFA00DE3116 /* CosmosBeautyRender.m */; };
 		F78068CE2CDE1AFA00DE3116 /* FUBeautyRender.m in Sources */ = {isa = PBXBuildFile; fileRef = F780685B2CDE1AFA00DE3116 /* FUBeautyRender.m */; };
@@ -31,15 +50,6 @@
 		F78068E02CDE1AFA00DE3116 /* BeautyMenuItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F78068782CDE1AFA00DE3116 /* BeautyMenuItemCell.swift */; };
 		F78068E12CDE1AFA00DE3116 /* BeautyMenuItemVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F78068792CDE1AFA00DE3116 /* BeautyMenuItemVC.swift */; };
 		F78068E22CDE1AFA00DE3116 /* BeautyResource.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F780687A2CDE1AFA00DE3116 /* BeautyResource.bundle */; };
-		F78068E32CDE1AFA00DE3116 /* BEEffectManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = F780687D2CDE1AFA00DE3116 /* BEEffectManager.mm */; };
-		F78068E42CDE1AFA00DE3116 /* BEEffectResourceHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = F780687F2CDE1AFA00DE3116 /* BEEffectResourceHelper.m */; };
-		F78068E52CDE1AFA00DE3116 /* BEGLTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = F78068812CDE1AFA00DE3116 /* BEGLTexture.m */; };
-		F78068E62CDE1AFA00DE3116 /* BEGLUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = F78068832CDE1AFA00DE3116 /* BEGLUtils.m */; };
-		F78068E72CDE1AFA00DE3116 /* BEHttpRequestProvider.mm in Sources */ = {isa = PBXBuildFile; fileRef = F78068852CDE1AFA00DE3116 /* BEHttpRequestProvider.mm */; };
-		F78068E82CDE1AFA00DE3116 /* BEImageUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = F78068872CDE1AFA00DE3116 /* BEImageUtils.m */; };
-		F78068E92CDE1AFA00DE3116 /* BELicenseHelper.mm in Sources */ = {isa = PBXBuildFile; fileRef = F78068892CDE1AFA00DE3116 /* BELicenseHelper.mm */; };
-		F78068EA2CDE1AFA00DE3116 /* BEOpenGLRenderHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = F780688B2CDE1AFA00DE3116 /* BEOpenGLRenderHelper.m */; };
-		F78068EB2CDE1AFA00DE3116 /* BETimeRecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = F780688D2CDE1AFA00DE3116 /* BETimeRecoder.m */; };
 		F78068EC2CDE1AFA00DE3116 /* CEBeautyRender.m in Sources */ = {isa = PBXBuildFile; fileRef = F78068932CDE1AFA00DE3116 /* CEBeautyRender.m */; };
 		F78068ED2CDE1AFA00DE3116 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = F78068942CDE1AFA00DE3116 /* README.md */; };
 		F78068EE2CDE1AFA00DE3116 /* README.zh.md in Resources */ = {isa = PBXBuildFile; fileRef = F78068952CDE1AFA00DE3116 /* README.zh.md */; };
@@ -47,16 +57,6 @@
 		F78068F02CDE1AFA00DE3116 /* AlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F780689B2CDE1AFA00DE3116 /* AlertManager.swift */; };
 		F78068F12CDE1AFA00DE3116 /* CLSettingCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F780689C2CDE1AFA00DE3116 /* CLSettingCellView.swift */; };
 		F78068F22CDE1AFA00DE3116 /* PickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F780689D2CDE1AFA00DE3116 /* PickerView.swift */; };
-		F78068F32CDE1AFA00DE3116 /* Effects.m in Sources */ = {isa = PBXBuildFile; fileRef = F78068A12CDE1AFA00DE3116 /* Effects.m */; };
-		F78068F42CDE1AFA00DE3116 /* EffectsAnimal.m in Sources */ = {isa = PBXBuildFile; fileRef = F78068A32CDE1AFA00DE3116 /* EffectsAnimal.m */; };
-		F78068F52CDE1AFA00DE3116 /* EffectsAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = F78068A52CDE1AFA00DE3116 /* EffectsAttribute.m */; };
-		F78068F62CDE1AFA00DE3116 /* EffectsCommonObject.m in Sources */ = {isa = PBXBuildFile; fileRef = F78068A72CDE1AFA00DE3116 /* EffectsCommonObject.m */; };
-		F78068F72CDE1AFA00DE3116 /* EffectsDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = F78068A92CDE1AFA00DE3116 /* EffectsDetector.m */; };
-		F78068F82CDE1AFA00DE3116 /* EffectsLicense.m in Sources */ = {isa = PBXBuildFile; fileRef = F78068AB2CDE1AFA00DE3116 /* EffectsLicense.m */; };
-		F78068F92CDE1AFA00DE3116 /* EffectsProcess.m in Sources */ = {isa = PBXBuildFile; fileRef = F78068AD2CDE1AFA00DE3116 /* EffectsProcess.m */; };
-		F78068FA2CDE1AFA00DE3116 /* EFGlobalSingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = F78068AF2CDE1AFA00DE3116 /* EFGlobalSingleton.m */; };
-		F78068FB2CDE1AFA00DE3116 /* EFMotionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F78068B12CDE1AFA00DE3116 /* EFMotionManager.m */; };
-		F78068FC2CDE1AFA00DE3116 /* VideoProcessingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F78068B32CDE1AFA00DE3116 /* VideoProcessingManager.m */; };
 		F78068FD2CDE1AFA00DE3116 /* AUIToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = F78068B52CDE1AFA00DE3116 /* AUIToast.swift */; };
 		F78068FE2CDE1AFA00DE3116 /* BundleUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = F78068B82CDE1AFA00DE3116 /* BundleUtil.m */; };
 		F78068FF2CDE1AFA00DE3116 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F78068BA2CDE1AFA00DE3116 /* AppDelegate.swift */; };
@@ -83,6 +83,48 @@
 		E72D78122A25963500C9134C /* BeautyAPI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BeautyAPI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F7426C322CE5EAB9008384BF /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/Main.storyboard; sourceTree = "<group>"; };
 		F7426C332CE5EAC7008384BF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		F7426C362CEB266A008384BF /* EffectMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EffectMacro.h; sourceTree = "<group>"; };
+		F7426C372CEB266A008384BF /* Effects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Effects.h; sourceTree = "<group>"; };
+		F7426C382CEB266A008384BF /* Effects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Effects.m; sourceTree = "<group>"; };
+		F7426C392CEB266A008384BF /* EffectsAnimal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EffectsAnimal.h; sourceTree = "<group>"; };
+		F7426C3A2CEB266A008384BF /* EffectsAnimal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EffectsAnimal.m; sourceTree = "<group>"; };
+		F7426C3B2CEB266A008384BF /* EffectsAttribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EffectsAttribute.h; sourceTree = "<group>"; };
+		F7426C3C2CEB266A008384BF /* EffectsAttribute.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EffectsAttribute.m; sourceTree = "<group>"; };
+		F7426C3D2CEB266A008384BF /* EffectsCommonObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EffectsCommonObject.h; sourceTree = "<group>"; };
+		F7426C3E2CEB266A008384BF /* EffectsCommonObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EffectsCommonObject.m; sourceTree = "<group>"; };
+		F7426C3F2CEB266A008384BF /* EffectsDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EffectsDetector.h; sourceTree = "<group>"; };
+		F7426C402CEB266A008384BF /* EffectsDetector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EffectsDetector.m; sourceTree = "<group>"; };
+		F7426C412CEB266A008384BF /* EffectsLicense.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EffectsLicense.h; sourceTree = "<group>"; };
+		F7426C422CEB266A008384BF /* EffectsLicense.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EffectsLicense.m; sourceTree = "<group>"; };
+		F7426C432CEB266A008384BF /* EffectsProcess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EffectsProcess.h; sourceTree = "<group>"; };
+		F7426C442CEB266A008384BF /* EffectsProcess.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EffectsProcess.m; sourceTree = "<group>"; };
+		F7426C452CEB266A008384BF /* EFGlobalSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EFGlobalSingleton.h; sourceTree = "<group>"; };
+		F7426C462CEB266A008384BF /* EFGlobalSingleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EFGlobalSingleton.m; sourceTree = "<group>"; };
+		F7426C472CEB266A008384BF /* EFMotionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EFMotionManager.h; sourceTree = "<group>"; };
+		F7426C482CEB266A008384BF /* EFMotionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EFMotionManager.m; sourceTree = "<group>"; };
+		F7426C492CEB266A008384BF /* VideoProcessingManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoProcessingManager.h; sourceTree = "<group>"; };
+		F7426C4A2CEB266A008384BF /* VideoProcessingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoProcessingManager.m; sourceTree = "<group>"; };
+		F7426C4C2CEB266A008384BF /* BEEffectManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEEffectManager.h; sourceTree = "<group>"; };
+		F7426C4D2CEB266A008384BF /* BEEffectManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BEEffectManager.mm; sourceTree = "<group>"; };
+		F7426C4E2CEB266A008384BF /* BEEffectResourceHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEEffectResourceHelper.h; sourceTree = "<group>"; };
+		F7426C4F2CEB266A008384BF /* BEEffectResourceHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEEffectResourceHelper.m; sourceTree = "<group>"; };
+		F7426C502CEB266A008384BF /* BEGLTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEGLTexture.h; sourceTree = "<group>"; };
+		F7426C512CEB266A008384BF /* BEGLTexture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEGLTexture.m; sourceTree = "<group>"; };
+		F7426C522CEB266A008384BF /* BEGLUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEGLUtils.h; sourceTree = "<group>"; };
+		F7426C532CEB266A008384BF /* BEGLUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEGLUtils.m; sourceTree = "<group>"; };
+		F7426C542CEB266A008384BF /* BEHttpRequestProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEHttpRequestProvider.h; sourceTree = "<group>"; };
+		F7426C552CEB266A008384BF /* BEHttpRequestProvider.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BEHttpRequestProvider.mm; sourceTree = "<group>"; };
+		F7426C562CEB266A008384BF /* BEImageUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEImageUtils.h; sourceTree = "<group>"; };
+		F7426C572CEB266A008384BF /* BEImageUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEImageUtils.m; sourceTree = "<group>"; };
+		F7426C582CEB266A008384BF /* BELicenseHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BELicenseHelper.h; sourceTree = "<group>"; };
+		F7426C592CEB266A008384BF /* BELicenseHelper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BELicenseHelper.mm; sourceTree = "<group>"; };
+		F7426C5A2CEB266A008384BF /* BEOpenGLRenderHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEOpenGLRenderHelper.h; sourceTree = "<group>"; };
+		F7426C5B2CEB266A008384BF /* BEOpenGLRenderHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEOpenGLRenderHelper.m; sourceTree = "<group>"; };
+		F7426C5C2CEB266A008384BF /* BETimeRecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BETimeRecoder.h; sourceTree = "<group>"; };
+		F7426C5D2CEB266A008384BF /* BETimeRecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BETimeRecoder.m; sourceTree = "<group>"; };
+		F7426C5E2CEB266A008384BF /* Config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Config.h; sourceTree = "<group>"; };
+		F7426C5F2CEB266A008384BF /* Core.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Core.h; sourceTree = "<group>"; };
+		F7426C602CEB266A008384BF /* macro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = macro.h; sourceTree = "<group>"; };
 		F78068542CDE1AFA00DE3116 /* BytesBeautyRender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BytesBeautyRender.h; sourceTree = "<group>"; };
 		F78068552CDE1AFA00DE3116 /* BytesBeautyRender.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BytesBeautyRender.m; sourceTree = "<group>"; };
 		F78068572CDE1AFA00DE3116 /* CosmosBeautyRender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CosmosBeautyRender.h; sourceTree = "<group>"; };
@@ -112,27 +154,6 @@
 		F78068782CDE1AFA00DE3116 /* BeautyMenuItemCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeautyMenuItemCell.swift; sourceTree = "<group>"; };
 		F78068792CDE1AFA00DE3116 /* BeautyMenuItemVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeautyMenuItemVC.swift; sourceTree = "<group>"; };
 		F780687A2CDE1AFA00DE3116 /* BeautyResource.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = BeautyResource.bundle; sourceTree = "<group>"; };
-		F780687C2CDE1AFA00DE3116 /* BEEffectManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEEffectManager.h; sourceTree = "<group>"; };
-		F780687D2CDE1AFA00DE3116 /* BEEffectManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BEEffectManager.mm; sourceTree = "<group>"; };
-		F780687E2CDE1AFA00DE3116 /* BEEffectResourceHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEEffectResourceHelper.h; sourceTree = "<group>"; };
-		F780687F2CDE1AFA00DE3116 /* BEEffectResourceHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEEffectResourceHelper.m; sourceTree = "<group>"; };
-		F78068802CDE1AFA00DE3116 /* BEGLTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEGLTexture.h; sourceTree = "<group>"; };
-		F78068812CDE1AFA00DE3116 /* BEGLTexture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEGLTexture.m; sourceTree = "<group>"; };
-		F78068822CDE1AFA00DE3116 /* BEGLUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEGLUtils.h; sourceTree = "<group>"; };
-		F78068832CDE1AFA00DE3116 /* BEGLUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEGLUtils.m; sourceTree = "<group>"; };
-		F78068842CDE1AFA00DE3116 /* BEHttpRequestProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEHttpRequestProvider.h; sourceTree = "<group>"; };
-		F78068852CDE1AFA00DE3116 /* BEHttpRequestProvider.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BEHttpRequestProvider.mm; sourceTree = "<group>"; };
-		F78068862CDE1AFA00DE3116 /* BEImageUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEImageUtils.h; sourceTree = "<group>"; };
-		F78068872CDE1AFA00DE3116 /* BEImageUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEImageUtils.m; sourceTree = "<group>"; };
-		F78068882CDE1AFA00DE3116 /* BELicenseHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BELicenseHelper.h; sourceTree = "<group>"; };
-		F78068892CDE1AFA00DE3116 /* BELicenseHelper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BELicenseHelper.mm; sourceTree = "<group>"; };
-		F780688A2CDE1AFA00DE3116 /* BEOpenGLRenderHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEOpenGLRenderHelper.h; sourceTree = "<group>"; };
-		F780688B2CDE1AFA00DE3116 /* BEOpenGLRenderHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEOpenGLRenderHelper.m; sourceTree = "<group>"; };
-		F780688C2CDE1AFA00DE3116 /* BETimeRecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BETimeRecoder.h; sourceTree = "<group>"; };
-		F780688D2CDE1AFA00DE3116 /* BETimeRecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BETimeRecoder.m; sourceTree = "<group>"; };
-		F780688E2CDE1AFA00DE3116 /* Config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Config.h; sourceTree = "<group>"; };
-		F780688F2CDE1AFA00DE3116 /* Core.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Core.h; sourceTree = "<group>"; };
-		F78068902CDE1AFA00DE3116 /* macro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = macro.h; sourceTree = "<group>"; };
 		F78068922CDE1AFA00DE3116 /* CEBeautyRender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CEBeautyRender.h; sourceTree = "<group>"; };
 		F78068932CDE1AFA00DE3116 /* CEBeautyRender.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CEBeautyRender.m; sourceTree = "<group>"; };
 		F78068942CDE1AFA00DE3116 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -142,27 +163,6 @@
 		F780689B2CDE1AFA00DE3116 /* AlertManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlertManager.swift; sourceTree = "<group>"; };
 		F780689C2CDE1AFA00DE3116 /* CLSettingCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CLSettingCellView.swift; sourceTree = "<group>"; };
 		F780689D2CDE1AFA00DE3116 /* PickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PickerView.swift; sourceTree = "<group>"; };
-		F780689F2CDE1AFA00DE3116 /* EffectMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EffectMacro.h; sourceTree = "<group>"; };
-		F78068A02CDE1AFA00DE3116 /* Effects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Effects.h; sourceTree = "<group>"; };
-		F78068A12CDE1AFA00DE3116 /* Effects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Effects.m; sourceTree = "<group>"; };
-		F78068A22CDE1AFA00DE3116 /* EffectsAnimal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EffectsAnimal.h; sourceTree = "<group>"; };
-		F78068A32CDE1AFA00DE3116 /* EffectsAnimal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EffectsAnimal.m; sourceTree = "<group>"; };
-		F78068A42CDE1AFA00DE3116 /* EffectsAttribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EffectsAttribute.h; sourceTree = "<group>"; };
-		F78068A52CDE1AFA00DE3116 /* EffectsAttribute.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EffectsAttribute.m; sourceTree = "<group>"; };
-		F78068A62CDE1AFA00DE3116 /* EffectsCommonObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EffectsCommonObject.h; sourceTree = "<group>"; };
-		F78068A72CDE1AFA00DE3116 /* EffectsCommonObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EffectsCommonObject.m; sourceTree = "<group>"; };
-		F78068A82CDE1AFA00DE3116 /* EffectsDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EffectsDetector.h; sourceTree = "<group>"; };
-		F78068A92CDE1AFA00DE3116 /* EffectsDetector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EffectsDetector.m; sourceTree = "<group>"; };
-		F78068AA2CDE1AFA00DE3116 /* EffectsLicense.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EffectsLicense.h; sourceTree = "<group>"; };
-		F78068AB2CDE1AFA00DE3116 /* EffectsLicense.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EffectsLicense.m; sourceTree = "<group>"; };
-		F78068AC2CDE1AFA00DE3116 /* EffectsProcess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EffectsProcess.h; sourceTree = "<group>"; };
-		F78068AD2CDE1AFA00DE3116 /* EffectsProcess.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EffectsProcess.m; sourceTree = "<group>"; };
-		F78068AE2CDE1AFA00DE3116 /* EFGlobalSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EFGlobalSingleton.h; sourceTree = "<group>"; };
-		F78068AF2CDE1AFA00DE3116 /* EFGlobalSingleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EFGlobalSingleton.m; sourceTree = "<group>"; };
-		F78068B02CDE1AFA00DE3116 /* EFMotionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EFMotionManager.h; sourceTree = "<group>"; };
-		F78068B12CDE1AFA00DE3116 /* EFMotionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EFMotionManager.m; sourceTree = "<group>"; };
-		F78068B22CDE1AFA00DE3116 /* VideoProcessingManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoProcessingManager.h; sourceTree = "<group>"; };
-		F78068B32CDE1AFA00DE3116 /* VideoProcessingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoProcessingManager.m; sourceTree = "<group>"; };
 		F78068B52CDE1AFA00DE3116 /* AUIToast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AUIToast.swift; sourceTree = "<group>"; };
 		F78068B72CDE1AFA00DE3116 /* BundleUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BundleUtil.h; sourceTree = "<group>"; };
 		F78068B82CDE1AFA00DE3116 /* BundleUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BundleUtil.m; sourceTree = "<group>"; };
@@ -230,6 +230,62 @@
 				E72D78122A25963500C9134C /* BeautyAPI.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		F7426C4B2CEB266A008384BF /* SenseBeauty */ = {
+			isa = PBXGroup;
+			children = (
+				F7426C362CEB266A008384BF /* EffectMacro.h */,
+				F7426C372CEB266A008384BF /* Effects.h */,
+				F7426C382CEB266A008384BF /* Effects.m */,
+				F7426C392CEB266A008384BF /* EffectsAnimal.h */,
+				F7426C3A2CEB266A008384BF /* EffectsAnimal.m */,
+				F7426C3B2CEB266A008384BF /* EffectsAttribute.h */,
+				F7426C3C2CEB266A008384BF /* EffectsAttribute.m */,
+				F7426C3D2CEB266A008384BF /* EffectsCommonObject.h */,
+				F7426C3E2CEB266A008384BF /* EffectsCommonObject.m */,
+				F7426C3F2CEB266A008384BF /* EffectsDetector.h */,
+				F7426C402CEB266A008384BF /* EffectsDetector.m */,
+				F7426C412CEB266A008384BF /* EffectsLicense.h */,
+				F7426C422CEB266A008384BF /* EffectsLicense.m */,
+				F7426C432CEB266A008384BF /* EffectsProcess.h */,
+				F7426C442CEB266A008384BF /* EffectsProcess.m */,
+				F7426C452CEB266A008384BF /* EFGlobalSingleton.h */,
+				F7426C462CEB266A008384BF /* EFGlobalSingleton.m */,
+				F7426C472CEB266A008384BF /* EFMotionManager.h */,
+				F7426C482CEB266A008384BF /* EFMotionManager.m */,
+				F7426C492CEB266A008384BF /* VideoProcessingManager.h */,
+				F7426C4A2CEB266A008384BF /* VideoProcessingManager.m */,
+			);
+			path = SenseBeauty;
+			sourceTree = "<group>";
+		};
+		F7426C612CEB266A008384BF /* ByteBeauty */ = {
+			isa = PBXGroup;
+			children = (
+				F7426C4C2CEB266A008384BF /* BEEffectManager.h */,
+				F7426C4D2CEB266A008384BF /* BEEffectManager.mm */,
+				F7426C4E2CEB266A008384BF /* BEEffectResourceHelper.h */,
+				F7426C4F2CEB266A008384BF /* BEEffectResourceHelper.m */,
+				F7426C502CEB266A008384BF /* BEGLTexture.h */,
+				F7426C512CEB266A008384BF /* BEGLTexture.m */,
+				F7426C522CEB266A008384BF /* BEGLUtils.h */,
+				F7426C532CEB266A008384BF /* BEGLUtils.m */,
+				F7426C542CEB266A008384BF /* BEHttpRequestProvider.h */,
+				F7426C552CEB266A008384BF /* BEHttpRequestProvider.mm */,
+				F7426C562CEB266A008384BF /* BEImageUtils.h */,
+				F7426C572CEB266A008384BF /* BEImageUtils.m */,
+				F7426C582CEB266A008384BF /* BELicenseHelper.h */,
+				F7426C592CEB266A008384BF /* BELicenseHelper.mm */,
+				F7426C5A2CEB266A008384BF /* BEOpenGLRenderHelper.h */,
+				F7426C5B2CEB266A008384BF /* BEOpenGLRenderHelper.m */,
+				F7426C5C2CEB266A008384BF /* BETimeRecoder.h */,
+				F7426C5D2CEB266A008384BF /* BETimeRecoder.m */,
+				F7426C5E2CEB266A008384BF /* Config.h */,
+				F7426C5F2CEB266A008384BF /* Core.h */,
+				F7426C602CEB266A008384BF /* macro.h */,
+			);
+			path = ByteBeauty;
 			sourceTree = "<group>";
 		};
 		F78068562CDE1AFA00DE3116 /* BytesRender */ = {
@@ -347,34 +403,6 @@
 			path = BeautyUI;
 			sourceTree = "<group>";
 		};
-		F78068912CDE1AFA00DE3116 /* ByteBeaufy */ = {
-			isa = PBXGroup;
-			children = (
-				F780687C2CDE1AFA00DE3116 /* BEEffectManager.h */,
-				F780687D2CDE1AFA00DE3116 /* BEEffectManager.mm */,
-				F780687E2CDE1AFA00DE3116 /* BEEffectResourceHelper.h */,
-				F780687F2CDE1AFA00DE3116 /* BEEffectResourceHelper.m */,
-				F78068802CDE1AFA00DE3116 /* BEGLTexture.h */,
-				F78068812CDE1AFA00DE3116 /* BEGLTexture.m */,
-				F78068822CDE1AFA00DE3116 /* BEGLUtils.h */,
-				F78068832CDE1AFA00DE3116 /* BEGLUtils.m */,
-				F78068842CDE1AFA00DE3116 /* BEHttpRequestProvider.h */,
-				F78068852CDE1AFA00DE3116 /* BEHttpRequestProvider.mm */,
-				F78068862CDE1AFA00DE3116 /* BEImageUtils.h */,
-				F78068872CDE1AFA00DE3116 /* BEImageUtils.m */,
-				F78068882CDE1AFA00DE3116 /* BELicenseHelper.h */,
-				F78068892CDE1AFA00DE3116 /* BELicenseHelper.mm */,
-				F780688A2CDE1AFA00DE3116 /* BEOpenGLRenderHelper.h */,
-				F780688B2CDE1AFA00DE3116 /* BEOpenGLRenderHelper.m */,
-				F780688C2CDE1AFA00DE3116 /* BETimeRecoder.h */,
-				F780688D2CDE1AFA00DE3116 /* BETimeRecoder.m */,
-				F780688E2CDE1AFA00DE3116 /* Config.h */,
-				F780688F2CDE1AFA00DE3116 /* Core.h */,
-				F78068902CDE1AFA00DE3116 /* macro.h */,
-			);
-			path = ByteBeaufy;
-			sourceTree = "<group>";
-		};
 		F78068962CDE1AFA00DE3116 /* CosmosBeauty */ = {
 			isa = PBXGroup;
 			children = (
@@ -405,34 +433,6 @@
 			path = PickerView;
 			sourceTree = "<group>";
 		};
-		F78068B42CDE1AFA00DE3116 /* SenseBeaufy */ = {
-			isa = PBXGroup;
-			children = (
-				F780689F2CDE1AFA00DE3116 /* EffectMacro.h */,
-				F78068A02CDE1AFA00DE3116 /* Effects.h */,
-				F78068A12CDE1AFA00DE3116 /* Effects.m */,
-				F78068A22CDE1AFA00DE3116 /* EffectsAnimal.h */,
-				F78068A32CDE1AFA00DE3116 /* EffectsAnimal.m */,
-				F78068A42CDE1AFA00DE3116 /* EffectsAttribute.h */,
-				F78068A52CDE1AFA00DE3116 /* EffectsAttribute.m */,
-				F78068A62CDE1AFA00DE3116 /* EffectsCommonObject.h */,
-				F78068A72CDE1AFA00DE3116 /* EffectsCommonObject.m */,
-				F78068A82CDE1AFA00DE3116 /* EffectsDetector.h */,
-				F78068A92CDE1AFA00DE3116 /* EffectsDetector.m */,
-				F78068AA2CDE1AFA00DE3116 /* EffectsLicense.h */,
-				F78068AB2CDE1AFA00DE3116 /* EffectsLicense.m */,
-				F78068AC2CDE1AFA00DE3116 /* EffectsProcess.h */,
-				F78068AD2CDE1AFA00DE3116 /* EffectsProcess.m */,
-				F78068AE2CDE1AFA00DE3116 /* EFGlobalSingleton.h */,
-				F78068AF2CDE1AFA00DE3116 /* EFGlobalSingleton.m */,
-				F78068B02CDE1AFA00DE3116 /* EFMotionManager.h */,
-				F78068B12CDE1AFA00DE3116 /* EFMotionManager.m */,
-				F78068B22CDE1AFA00DE3116 /* VideoProcessingManager.h */,
-				F78068B32CDE1AFA00DE3116 /* VideoProcessingManager.m */,
-			);
-			path = SenseBeaufy;
-			sourceTree = "<group>";
-		};
 		F78068B62CDE1AFA00DE3116 /* ToastView */ = {
 			isa = PBXGroup;
 			children = (
@@ -453,13 +453,13 @@
 		F78068CB2CDE1AFA00DE3116 /* BeautyAPI */ = {
 			isa = PBXGroup;
 			children = (
+				F7426C612CEB266A008384BF /* ByteBeauty */,
+				F7426C4B2CEB266A008384BF /* SenseBeauty */,
 				F78068662CDE1AFA00DE3116 /* BeautyAPI */,
 				F780687B2CDE1AFA00DE3116 /* BeautyUI */,
-				F78068912CDE1AFA00DE3116 /* ByteBeaufy */,
 				F78068962CDE1AFA00DE3116 /* CosmosBeauty */,
 				F780689A2CDE1AFA00DE3116 /* FUBeauty */,
 				F780689E2CDE1AFA00DE3116 /* PickerView */,
-				F78068B42CDE1AFA00DE3116 /* SenseBeaufy */,
 				F78068B62CDE1AFA00DE3116 /* ToastView */,
 				F78068B92CDE1AFA00DE3116 /* Util */,
 				F78068BA2CDE1AFA00DE3116 /* AppDelegate.swift */,
@@ -620,38 +620,38 @@
 			buildActionMask = 2147483647;
 			files = (
 				F78068CE2CDE1AFA00DE3116 /* FUBeautyRender.m in Sources */,
-				F78068EA2CDE1AFA00DE3116 /* BEOpenGLRenderHelper.m in Sources */,
-				F78068E52CDE1AFA00DE3116 /* BEGLTexture.m in Sources */,
-				F78068EB2CDE1AFA00DE3116 /* BETimeRecoder.m in Sources */,
-				F78068E72CDE1AFA00DE3116 /* BEHttpRequestProvider.mm in Sources */,
 				F78068DA2CDE1AFA00DE3116 /* BeautyModel.swift in Sources */,
 				F78068D52CDE1AFA00DE3116 /* BeautyManager.swift in Sources */,
 				F78068D32CDE1AFA00DE3116 /* UIColor+Hex.swift in Sources */,
 				F78068DE2CDE1AFA00DE3116 /* BeautyModel+Sense.swift in Sources */,
 				F78068D82CDE1AFA00DE3116 /* FUBeautyManager.swift in Sources */,
-				F78068E82CDE1AFA00DE3116 /* BEImageUtils.m in Sources */,
 				F780690A2CDE1AFA00DE3116 /* SceneDelegate.swift in Sources */,
 				F78068FF2CDE1AFA00DE3116 /* AppDelegate.swift in Sources */,
-				F78068E62CDE1AFA00DE3116 /* BEGLUtils.m in Sources */,
 				F78068CC2CDE1AFA00DE3116 /* BytesBeautyRender.m in Sources */,
 				F780690B2CDE1AFA00DE3116 /* ViewController.swift in Sources */,
-				F78068F72CDE1AFA00DE3116 /* EffectsDetector.m in Sources */,
+				F7426C742CEB266A008384BF /* BETimeRecoder.m in Sources */,
+				F7426C6C2CEB266A008384BF /* BEEffectManager.mm in Sources */,
 				F78068D12CDE1AFA00DE3116 /* BeautyAPI.m in Sources */,
 				F78068D42CDE1AFA00DE3116 /* UIImage+Show.swift in Sources */,
-				F78068E32CDE1AFA00DE3116 /* BEEffectManager.mm in Sources */,
-				F78068F62CDE1AFA00DE3116 /* EffectsCommonObject.m in Sources */,
+				F7426C732CEB266A008384BF /* BEOpenGLRenderHelper.m in Sources */,
 				F78068DD2CDE1AFA00DE3116 /* BeautyModel+FU.swift in Sources */,
+				F7426C662CEB266A008384BF /* EffectsDetector.m in Sources */,
+				F7426C6F2CEB266A008384BF /* BEGLUtils.m in Sources */,
+				F7426C6D2CEB266A008384BF /* BEEffectResourceHelper.m in Sources */,
+				F7426C702CEB266A008384BF /* BEHttpRequestProvider.mm in Sources */,
 				F78068D02CDE1AFA00DE3116 /* APIReporter.m in Sources */,
 				F78068F02CDE1AFA00DE3116 /* AlertManager.swift in Sources */,
 				F78068D62CDE1AFA00DE3116 /* ByteBeautyManager.swift in Sources */,
+				F7426C652CEB266A008384BF /* EffectsCommonObject.m in Sources */,
 				F78068F22CDE1AFA00DE3116 /* PickerView.swift in Sources */,
 				F78069062CDE1AFA00DE3116 /* KeyCenter.swift in Sources */,
 				F78068CF2CDE1AFA00DE3116 /* SenseBeautyRender.m in Sources */,
 				F78068D92CDE1AFA00DE3116 /* SenseBeautyManager.swift in Sources */,
-				F78068E42CDE1AFA00DE3116 /* BEEffectResourceHelper.m in Sources */,
 				F78068D72CDE1AFA00DE3116 /* CosmosBeautyManager.swift in Sources */,
 				F78069032CDE1AFA00DE3116 /* BeautyViewController.swift in Sources */,
+				F7426C6E2CEB266A008384BF /* BEGLTexture.m in Sources */,
 				F78069042CDE1AFA00DE3116 /* Configs.swift in Sources */,
+				F7426C722CEB266A008384BF /* BELicenseHelper.mm in Sources */,
 				F78068DC2CDE1AFA00DE3116 /* BeautyModel+Cosmos.swift in Sources */,
 				F78068E02CDE1AFA00DE3116 /* BeautyMenuItemCell.swift in Sources */,
 				F78068F12CDE1AFA00DE3116 /* CLSettingCellView.swift in Sources */,
@@ -659,21 +659,21 @@
 				F78068FE2CDE1AFA00DE3116 /* BundleUtil.m in Sources */,
 				F78068E12CDE1AFA00DE3116 /* BeautyMenuItemVC.swift in Sources */,
 				F78068D22CDE1AFA00DE3116 /* String+Localizable.swift in Sources */,
-				F78068FA2CDE1AFA00DE3116 /* EFGlobalSingleton.m in Sources */,
 				F78068DB2CDE1AFA00DE3116 /* BeautyModel+Bytes.swift in Sources */,
-				F78068FB2CDE1AFA00DE3116 /* EFMotionManager.m in Sources */,
-				F78068FC2CDE1AFA00DE3116 /* VideoProcessingManager.m in Sources */,
-				F78068F32CDE1AFA00DE3116 /* Effects.m in Sources */,
+				F7426C692CEB266A008384BF /* EFGlobalSingleton.m in Sources */,
 				F78068EF2CDE1AFA00DE3116 /* FUManager.m in Sources */,
+				F7426C6A2CEB266A008384BF /* EFMotionManager.m in Sources */,
+				F7426C6B2CEB266A008384BF /* VideoProcessingManager.m in Sources */,
+				F7426C622CEB266A008384BF /* Effects.m in Sources */,
 				F78068FD2CDE1AFA00DE3116 /* AUIToast.swift in Sources */,
-				F78068F42CDE1AFA00DE3116 /* EffectsAnimal.m in Sources */,
-				F78068F52CDE1AFA00DE3116 /* EffectsAttribute.m in Sources */,
+				F7426C632CEB266A008384BF /* EffectsAnimal.m in Sources */,
+				F7426C642CEB266A008384BF /* EffectsAttribute.m in Sources */,
+				F7426C682CEB266A008384BF /* EffectsProcess.m in Sources */,
+				F7426C672CEB266A008384BF /* EffectsLicense.m in Sources */,
+				F7426C712CEB266A008384BF /* BEImageUtils.m in Sources */,
 				F78069082CDE1AFA00DE3116 /* LoadUtil.m in Sources */,
-				F78068F92CDE1AFA00DE3116 /* EffectsProcess.m in Sources */,
-				F78068F82CDE1AFA00DE3116 /* EffectsLicense.m in Sources */,
 				F78068EC2CDE1AFA00DE3116 /* CEBeautyRender.m in Sources */,
 				F78068DF2CDE1AFA00DE3116 /* BeautyBaseVC.swift in Sources */,
-				F78068E92CDE1AFA00DE3116 /* BELicenseHelper.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
