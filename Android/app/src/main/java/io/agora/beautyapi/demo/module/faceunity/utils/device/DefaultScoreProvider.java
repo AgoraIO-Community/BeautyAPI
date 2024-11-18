@@ -44,7 +44,7 @@ public class DefaultScoreProvider implements DeviceScoreProvider {
 
     @Override
     public double getGpuScore(String glRenderer) {
-        // 处理个别低端设备
+        // Handle specific low-end devices
         for (String badDevice : badOtherGPUDevices){
             if (glRenderer.startsWith(badDevice)){
                 return 55;

@@ -58,20 +58,20 @@ object CosmosBeautyWrapSDK {
 
     @Volatile
     private var authSuccess = false
-    // 滤镜
+    // Filter
     private var lookupModule: ILookupModule? = null
-    // 美妆
+    // Makeup
     private var makeupModule: IMakeupBeautyModule? = null
-    // 美颜
+    // Beauty
     private var beautyModule: IBeautyModule? = null
-    // 贴纸
+    // Sticker
     private var stickerModule: IStickerModule? = null
-    // 资源根路径
+    // Root path for resources
     private var cosmosPath = ""
 
     private var beautyAPI: CosmosBeautyAPI? = null
 
-    // 美颜渲染句柄
+    // Beauty rendering handle
     var renderModuleManager: IMMRenderModuleManager? = null
         get() {
             if(field == null){
@@ -80,7 +80,7 @@ object CosmosBeautyWrapSDK {
             return field
         }
 
-    // 美颜配置
+    // Beauty configuration
     var beautyConfig = BeautyConfig()
 
     fun initBeautySDK(context: Context) {
@@ -111,10 +111,10 @@ object CosmosBeautyWrapSDK {
                     context, LICENSE, modelAllPath
                 )
                 if (result.isSucceed) {
-                    Log.d(TAG, "授权成功")
+                    Log.d(TAG, "Authorization successful")
                     authSuccess = true
                 } else {
-                    Log.e(TAG, "授权失败 ${result.msg}")
+                    Log.e(TAG, "Authorization failed ${result.msg}")
                 }
                 letch.countDown()
             }
@@ -170,7 +170,7 @@ object CosmosBeautyWrapSDK {
 
     class BeautyConfig {
 
-        // 磨皮
+        // Smooth skin
         var smooth = 0.65f
             set(value) {
                 field = value
@@ -182,7 +182,7 @@ object CosmosBeautyWrapSDK {
                 }
             }
 
-        // 美白
+        // Whitening
         var whiten = 0.65f
             set(value) {
                 field = value
@@ -194,7 +194,7 @@ object CosmosBeautyWrapSDK {
                 }
             }
 
-        // 瘦脸
+        // Slim face
         var thinFace = 0.3f
             set(value) {
                 field = value
@@ -206,7 +206,7 @@ object CosmosBeautyWrapSDK {
                 }
             }
 
-        // 大眼
+        // Enlarged eyes
         var enlargeEye = 0.0f
             set(value) {
                 field = value
@@ -218,7 +218,7 @@ object CosmosBeautyWrapSDK {
                 }
             }
 
-        // 红润
+        // Reddening
         var redden = 0.0f
             set(value) {
                 field = value
@@ -231,7 +231,7 @@ object CosmosBeautyWrapSDK {
             }
 
 
-        // 瘦颧骨
+        // Slim cheekbones
         var shrinkCheekbone = 0.3f
             set(value) {
                 field = value
@@ -243,7 +243,7 @@ object CosmosBeautyWrapSDK {
                 }
             }
 
-        // 下颌骨
+        // Jawbone
         var shrinkJawbone = 0.0f
             set(value) {
                 field = value
@@ -255,7 +255,7 @@ object CosmosBeautyWrapSDK {
                 }
             }
 
-        // 美牙
+        // White teeth
         var whiteTeeth = 0.0f
             set(value) {
                 field = value
@@ -267,7 +267,7 @@ object CosmosBeautyWrapSDK {
                 }
             }
 
-        // 额头
+        // Hairline height
         var hairlineHeight = 0.0f
             set(value) {
                 field = value
@@ -279,7 +279,7 @@ object CosmosBeautyWrapSDK {
                 }
             }
 
-        // 瘦鼻
+        // Slim nose
         var narrowNose = 0.0f
             set(value) {
                 field = value
@@ -291,7 +291,7 @@ object CosmosBeautyWrapSDK {
                 }
             }
 
-        // 嘴形
+        // Mouth shape
         var mouthSize = 0.0f
             set(value) {
                 field = value
@@ -303,7 +303,7 @@ object CosmosBeautyWrapSDK {
                 }
             }
 
-        // 下巴
+        // Chin length
         var chinLength = 0.0f
             set(value) {
                 field = value
@@ -315,7 +315,7 @@ object CosmosBeautyWrapSDK {
                 }
             }
 
-        // 亮眼
+        // Bright eyes
         var brightEye = 0.0f
             set(value) {
                 field = value
@@ -328,7 +328,7 @@ object CosmosBeautyWrapSDK {
             }
 
 
-        // 祛法令纹
+        // Nasolabial folds removal
         var nasolabialFolds = 0.0f
             set(value) {
                 field = value
@@ -340,7 +340,7 @@ object CosmosBeautyWrapSDK {
                 }
             }
 
-        // 锐化
+        // Sharpening
         var sharpen = 0.0f
             set(value) {
                 field = value
@@ -352,7 +352,7 @@ object CosmosBeautyWrapSDK {
                 }
             }
 
-        // 贴纸
+        // Sticker
         var sticker: String? = null
             set(value) {
                 if(field == value){
@@ -367,7 +367,7 @@ object CosmosBeautyWrapSDK {
                 }
             }
 
-        // 美妆
+        // Makeup
         var makeUp: MakeUpItem? = null
             set(value) {
                 if (field?.path != value?.path) {

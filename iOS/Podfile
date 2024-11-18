@@ -4,9 +4,9 @@
  platform :ios, '11.0'
 
 #plugin 'cocoapods-pod-sign'
-#skip_pod_bundle_sign # 用来跳过Xcode对bundle资源的签名
+#skip_pod_bundle_sign # Used to skip Xcode's signature to bundle resources
 
-target 'BeautyAPi' do
+target 'BeautyAPI' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
 
@@ -19,7 +19,6 @@ target 'BeautyAPi' do
   pod 'bytedEffect', :path => 'bytedEffect.podspec'
   # pod 'CosmosEffect', :path => './CosmosEffect'
   
-  #滚动视图
   pod 'JXCategoryView', '~> 1.6.1'
 
 end

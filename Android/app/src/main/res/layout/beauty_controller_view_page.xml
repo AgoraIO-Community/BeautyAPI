@@ -17,7 +17,6 @@
         android:paddingHorizontal="12dp"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="1"
-        tools:background="@drawable/bg_bottom_dark_dialog"
-        tools:listitem="@layout/beauty_dialog_item" />
+        tools:background="@drawable/bg_bottom_dark_dialog" />
 
 </FrameLayout>

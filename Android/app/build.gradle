@@ -9,11 +9,10 @@ android {
 
     defaultConfig {
         applicationId "io.agora.test.entfull"
-//        applicationId "com.thankyo.hwgame"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 7
-        versionName "1.0.8"
+        versionCode 8
+        versionName "1.0.9"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -25,7 +24,7 @@ android {
         properties.load(rootProject.file("local.properties").newDataInputStream())
         final def AGORA_APP_ID = "${properties.getProperty("AGORA_APP_ID", "")}"
         if(AGORA_APP_ID == ""){
-            throw new GradleException("请在项目根目录下local.properties文件里正确配置：AGORA_APP_ID=<您的声网AppId>")
+            throw new GradleException("Please configure the local.properties file in the root directory of the project as follows：AGORA_APP_ID=<Your Agora App ID>")
         }
         buildConfigField "String", "AGORA_APP_ID", "\"$AGORA_APP_ID\""
     }
