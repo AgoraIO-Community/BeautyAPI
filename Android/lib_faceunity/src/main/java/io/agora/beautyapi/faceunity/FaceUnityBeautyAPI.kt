@@ -31,7 +31,7 @@ import io.agora.base.VideoFrame
 import io.agora.rtc2.Constants
 import io.agora.rtc2.RtcEngine
 
-const val VERSION = "1.0.8"
+const val VERSION = "1.0.9"
 
 enum class CaptureMode {
     /**
