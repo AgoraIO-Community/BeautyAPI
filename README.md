@@ -15,7 +15,7 @@ This repository contains the following beauty scene APIs:
 | ByteDance | Android  | Java/Kotlin | [Android/lib_bytedance](Android/lib_bytedance)           | 4.2.6.5         | 4.6.0              |
 | Cosmos    | Android  | Java/Kotlin | [Android/lib_cosmos](Android/lib_cosmos)                 | 4.2.6.5         | 3.7.0              |
 | SenseTime | iOS      | Swift/OC    | [iOS/BeautyAPI/SenseBeauty](iOS/BeautyAPI/SenseBeaufy)   | 4.2.6.5         | 9.3.1              |
-| FaceUnity | iOS      | Swift/OC    | [iOS/BeautyAPI/FUBeauty](iOS/BeautyAPI/FUBeauty)         | 4.2.6.5         | 8.7.0              |
+| FaceUnity | iOS      | Swift/OC    | [iOS/BeautyAPI/FUBeauty](iOS/BeautyAPI/FUBeauty)         | 4.2.6.5         | 8.11.1             |
 | ByteDance | iOS      | Swift/OC    | [iOS/BeautyAPI/ByteBeauty](iOS/BeautyAPI/ByteBeaufy)     | 4.2.6.5         | 4.5.1              |
 | Cosmos    | iOS      | Swift/OC    | [iOS/BeautyAPI/CosmosBeauty](iOS/BeautyAPI/CosmosBeauty) | 4.2.6.5         | 3.7.1              |
 
