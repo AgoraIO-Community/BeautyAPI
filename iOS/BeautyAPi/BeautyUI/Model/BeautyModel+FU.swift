@@ -180,15 +180,15 @@ extension BeautyModel {
         dataArray.append(model)
         
         model = BeautyModel()
-        model.path = "CatSparks"
-        model.name = "show_beauty_item_sticker_cat".beauty_localized
-        model.icon = "CatSparks"
-        dataArray.append(model)
-        
-        model = BeautyModel()
         model.path = "sdlu"
         model.name = "show_beauty_item_sticker_milu".beauty_localized
         model.icon = "sdlu"
+        dataArray.append(model)
+        
+        model = BeautyModel()
+        model.path = "daisypig"
+        model.name = "show_beauty_item_sticker_pig".beauty_localized
+        model.icon = "ic_sticker_fu_zhuzhu"
         dataArray.append(model)
         
         return dataArray

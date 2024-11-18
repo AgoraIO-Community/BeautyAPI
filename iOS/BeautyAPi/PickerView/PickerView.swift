@@ -71,6 +71,7 @@ class PickerView: UIView {
     }
     
     private func setupUI() {
+        self.backgroundColor = .white
         translatesAutoresizingMaskIntoConstraints = false
         addSubview(cancelButton)
         addSubview(titleLabel)

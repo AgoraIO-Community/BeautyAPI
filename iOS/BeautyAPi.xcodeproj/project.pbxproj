@@ -81,6 +81,8 @@
 		CACFFB8C6920B2F182A1B575 /* Pods-BeautyAPI.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BeautyAPI.debug.xcconfig"; path = "Target Support Files/Pods-BeautyAPI/Pods-BeautyAPI.debug.xcconfig"; sourceTree = "<group>"; };
 		E726BFEE2A8CAA61006870E2 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		E72D78122A25963500C9134C /* BeautyAPI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BeautyAPI.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F7426C322CE5EAB9008384BF /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/Main.storyboard; sourceTree = "<group>"; };
+		F7426C332CE5EAC7008384BF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		F78068542CDE1AFA00DE3116 /* BytesBeautyRender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BytesBeautyRender.h; sourceTree = "<group>"; };
 		F78068552CDE1AFA00DE3116 /* BytesBeautyRender.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BytesBeautyRender.m; sourceTree = "<group>"; };
 		F78068572CDE1AFA00DE3116 /* CosmosBeautyRender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CosmosBeautyRender.h; sourceTree = "<group>"; };
@@ -176,10 +178,8 @@
 		F78068C32CDE1AFA00DE3116 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F78068C52CDE1AFA00DE3116 /* LoadUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadUtil.h; sourceTree = "<group>"; };
 		F78068C62CDE1AFA00DE3116 /* LoadUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadUtil.m; sourceTree = "<group>"; };
-		F78068C72CDE1AFA00DE3116 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		F78068C92CDE1AFA00DE3116 /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		F78068CA2CDE1AFA00DE3116 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		F78069162CE3077500DE3116 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/Main.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -691,8 +691,8 @@
 		F78068C82CDE1AFA00DE3116 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				F78068C72CDE1AFA00DE3116 /* Base */,
-				F78069162CE3077500DE3116 /* en */,
+				F7426C322CE5EAB9008384BF /* en */,
+				F7426C332CE5EAC7008384BF /* Base */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
