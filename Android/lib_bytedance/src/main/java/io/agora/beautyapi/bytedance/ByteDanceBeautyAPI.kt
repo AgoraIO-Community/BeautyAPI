@@ -149,7 +149,7 @@ interface ByteDanceBeautyAPI {
      *
      * @param view SurfaceView or TextureView for rendering the video
      * @param renderMode Scaling mode for rendering (e.g., Constants.RENDER_MODE_HIDDEN)
-     * @return ErrorCode corresponding to the result of the operation
+     * @return [ErrorCode] corresponding to the result of the operation
      */
     fun setupLocalVideo(view: View, renderMode: Int = Constants.RENDER_MODE_HIDDEN): Int
 
@@ -215,7 +215,7 @@ interface ByteDanceBeautyAPI {
     /**
      * Releases resources. Once released, this instance can no longer be used.
      *
-     * @return Refer to ErrorCode
+     * @return [ErrorCode] corresponding to the result of the operation
      */
     fun release(): Int
 
