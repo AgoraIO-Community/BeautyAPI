@@ -1,9 +1,10 @@
 package io.agora.beautyapi.bytedance.utils
 
-import android.util.Log
 import io.agora.rtc2.Constants
 import io.agora.rtc2.RtcEngine
 import org.json.JSONObject
+import java.util.concurrent.Executors
+import java.lang.ref.WeakReference
 
 enum class APIType(val value: Int) {
     KTV(1),             // Karaoke
@@ -39,12 +40,14 @@ object ApiCostEvent {
 class APIReporter(
     private val type: APIType,
     private val version: String,
-    private val rtcEngine: RtcEngine
+    rtcEngine: RtcEngine
 ) {
     private val tag = "APIReporter"
     private val messageId = "agora:scenarioAPI"
     private val durationEventStartMap = HashMap<String, Long>()
     private val category = "${type.value}_Android_$version"
+    private val executorService = Executors.newSingleThreadExecutor()
+    private val rtcEngineRef = WeakReference(rtcEngine)
 
     init {
         configParameters()
@@ -52,21 +55,22 @@ class APIReporter(
 
     // Report regular scenario API
     fun reportFuncEvent(name: String, value: Map<String, Any>, ext: Map<String, Any>) {
-        Log.d(tag, "reportFuncEvent: $name value: $value ext: $ext")
-        val eventMap = mapOf(ApiEventKey.TYPE to ApiEventType.API.value, ApiEventKey.DESC to name)
-        val labelMap = mapOf(ApiEventKey.API_VALUE to value, ApiEventKey.TIMESTAMP to getCurrentTs(), ApiEventKey.EXT to ext)
-        val event = convertToJSONString(eventMap) ?: ""
-        val label = convertToJSONString(labelMap) ?: ""
-        rtcEngine.sendCustomReportMessage(messageId, category, event, label, 0)
+        executorService.submit {
+            rtcEngineRef.get()?.let {
+                val eventMap = mapOf(ApiEventKey.TYPE to ApiEventType.API.value, ApiEventKey.DESC to name)
+                val labelMap = mapOf(ApiEventKey.API_VALUE to value, ApiEventKey.TIMESTAMP to getCurrentTs(), ApiEventKey.EXT to ext)
+                val event = convertToJSONString(eventMap) ?: ""
+                val label = convertToJSONString(labelMap) ?: ""
+                it.sendCustomReportMessage(messageId, category, event, label, 0)
+            }
+        }
     }
 
     fun startDurationEvent(name: String) {
-        Log.d(tag, "startDurationEvent: $name")
         durationEventStartMap[name] = getCurrentTs()
     }
 
     fun endDurationEvent(name: String, ext: Map<String, Any>) {
-        Log.d(tag, "endDurationEvent: $name")
         val beginTs = durationEventStartMap[name] ?: return
         durationEventStartMap.remove(name)
         val ts = getCurrentTs()
@@ -88,16 +92,19 @@ class APIReporter(
 
     // Report custom information
     fun reportCustomEvent(name: String, ext: Map<String, Any>) {
-        Log.d(tag, "reportCustomEvent: $name ext: $ext")
-        val eventMap = mapOf(ApiEventKey.TYPE to ApiEventType.CUSTOM.value, ApiEventKey.DESC to name)
-        val labelMap = mapOf(ApiEventKey.TIMESTAMP to getCurrentTs(), ApiEventKey.EXT to ext)
-        val event = convertToJSONString(eventMap) ?: ""
-        val label = convertToJSONString(labelMap) ?: ""
-        rtcEngine.sendCustomReportMessage(messageId, category, event, label, 0)
+        executorService.submit {
+            rtcEngineRef.get()?.let {
+                val eventMap = mapOf(ApiEventKey.TYPE to ApiEventType.CUSTOM.value, ApiEventKey.DESC to name)
+                val labelMap = mapOf(ApiEventKey.TIMESTAMP to getCurrentTs(), ApiEventKey.EXT to ext)
+                val event = convertToJSONString(eventMap) ?: ""
+                val label = convertToJSONString(labelMap) ?: ""
+                it.sendCustomReportMessage(messageId, category, event, label, 0)
+            }
+        }
     }
 
-    fun writeLog(content: String, level: Int) {
-        rtcEngine.writeLog(level, content)
+    private fun writeLog(content: String, level: Int) {
+        rtcEngineRef.get()?.writeLog(level, content)
     }
 
     fun cleanCache() {
@@ -107,11 +114,15 @@ class APIReporter(
     // ---------------------- private ----------------------
 
     private fun configParameters() {
-        // rtcEngine.setParameters("{\"rtc.qos_for_test_purpose\": true}") // Used for test environment
-        // Data reporting
-        rtcEngine.setParameters("{\"rtc.direct_send_custom_event\": true}")
-        // Log writing
-        rtcEngine.setParameters("{\"rtc.log_external_input\": true}")
+        executorService.submit {
+            rtcEngineRef.get()?.let {
+                // it.setParameters("{\"rtc.qos_for_test_purpose\": true}") // Used for test environment
+                // Data reporting
+                it.setParameters("{\"rtc.direct_send_custom_event\": true}")
+                // Log writing
+                it.setParameters("{\"rtc.log_external_input\": true}")
+            }
+        }
     }
 
     private fun getCurrentTs(): Long {
@@ -119,13 +130,16 @@ class APIReporter(
     }
 
     private fun innerReportCostEvent(ts: Long, name: String, cost: Int, ext: Map<String, Any>) {
-        Log.d(tag, "reportCostEvent: $name cost: $cost ms ext: $ext")
-        writeLog("reportCostEvent: $name cost: $cost ms", Constants.LOG_LEVEL_INFO)
-        val eventMap = mapOf(ApiEventKey.TYPE to ApiEventType.COST.value, ApiEventKey.DESC to name)
-        val labelMap = mapOf(ApiEventKey.TIMESTAMP to ts, ApiEventKey.EXT to ext)
-        val event = convertToJSONString(eventMap) ?: ""
-        val label = convertToJSONString(labelMap) ?: ""
-        rtcEngine.sendCustomReportMessage(messageId, category, event, label, cost)
+        executorService.submit {
+            rtcEngineRef.get()?.let {
+                writeLog("reportCostEvent: $name cost: $cost ms", Constants.LOG_LEVEL_INFO)
+                val eventMap = mapOf(ApiEventKey.TYPE to ApiEventType.COST.value, ApiEventKey.DESC to name)
+                val labelMap = mapOf(ApiEventKey.TIMESTAMP to ts, ApiEventKey.EXT to ext)
+                val event = convertToJSONString(eventMap) ?: ""
+                val label = convertToJSONString(labelMap) ?: ""
+                it.sendCustomReportMessage(messageId, category, event, label, cost)
+            }
+        }
     }
 
     private fun convertToJSONString(dictionary: Map<String, Any>): String? {
