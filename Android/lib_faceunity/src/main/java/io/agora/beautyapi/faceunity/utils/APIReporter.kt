@@ -1,6 +1,5 @@
 package io.agora.beautyapi.faceunity.utils
 
-import io.agora.rtc2.Constants
 import io.agora.rtc2.RtcEngine
 import org.json.JSONObject
 import java.util.concurrent.Executors
@@ -58,7 +57,11 @@ class APIReporter(
         executorService.submit {
             rtcEngineRef.get()?.let {
                 val eventMap = mapOf(ApiEventKey.TYPE to ApiEventType.API.value, ApiEventKey.DESC to name)
-                val labelMap = mapOf(ApiEventKey.API_VALUE to value, ApiEventKey.TIMESTAMP to getCurrentTs(), ApiEventKey.EXT to ext)
+                val labelMap = mapOf(
+                    ApiEventKey.API_VALUE to value,
+                    ApiEventKey.TIMESTAMP to getCurrentTs(),
+                    ApiEventKey.EXT to ext
+                )
                 val event = convertToJSONString(eventMap) ?: ""
                 val label = convertToJSONString(labelMap) ?: ""
                 it.sendCustomReportMessage(messageId, category, event, label, 0)
@@ -132,7 +135,7 @@ class APIReporter(
     private fun innerReportCostEvent(ts: Long, name: String, cost: Int, ext: Map<String, Any>) {
         executorService.submit {
             rtcEngineRef.get()?.let {
-                writeLog("reportCostEvent: $name cost: $cost ms", Constants.LOG_LEVEL_INFO)
+//                writeLog("reportCostEvent: $name cost: $cost ms", Constants.LOG_LEVEL_INFO)
                 val eventMap = mapOf(ApiEventKey.TYPE to ApiEventType.COST.value, ApiEventKey.DESC to name)
                 val labelMap = mapOf(ApiEventKey.TIMESTAMP to ts, ApiEventKey.EXT to ext)
                 val event = convertToJSONString(eventMap) ?: ""
@@ -146,7 +149,7 @@ class APIReporter(
         return try {
             JSONObject(dictionary).toString()
         } catch (e: Exception) {
-            writeLog("[$tag]convert to json fail: $e dictionary: $dictionary", Constants.LOG_LEVEL_WARNING)
+            LogUtils.e(tag, "convert to json fail: $e dictionary: $dictionary")
             null
         }
     }
