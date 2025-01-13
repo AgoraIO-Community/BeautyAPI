@@ -75,6 +75,7 @@ class SenseTimeActivity : ComponentActivity() {
         private const val EXTRA_FRAME_RATE = "FrameRate"
         private const val EXTRA_CAPTURE_MODE = "CaptureMode"
         private const val EXTRA_PROCESS_MODE = "ProcessMode"
+        private const val EXTRA_ENABLE_FENCE = "EnableFence"
 
         fun launch(
             context: Context,
@@ -82,7 +83,8 @@ class SenseTimeActivity : ComponentActivity() {
             resolution: String,
             frameRate: String,
             captureMode: String,
-            processMode: String
+            processMode: String,
+            enableFence: Boolean
         ) {
             Intent(context, SenseTimeActivity::class.java).apply {
                 putExtra(EXTRA_CHANNEL_NAME, channelName)
@@ -90,6 +92,7 @@ class SenseTimeActivity : ComponentActivity() {
                 putExtra(EXTRA_FRAME_RATE, frameRate)
                 putExtra(EXTRA_CAPTURE_MODE, captureMode)
                 putExtra(EXTRA_PROCESS_MODE, processMode)
+                putExtra(EXTRA_ENABLE_FENCE, enableFence)
                 context.startActivity(this)
             }
         }
@@ -342,6 +345,9 @@ class SenseTimeActivity : ComponentActivity() {
         // Config RtcEngine
         mRtcEngine.addHandler(mRtcHandler)
         mRtcEngine.setVideoEncoderConfiguration(mVideoEncoderConfiguration)
+        mRtcEngine.setParameters("{\"rtc.debug.enable\":true}");
+        mRtcEngine.setParameters("{\"che.video.observer_texture.copy_enable\": ${intent.getBooleanExtra(EXTRA_ENABLE_FENCE, false)}}")
+        mRtcEngine.setParameters("{\"che.video.enable_gl_fence\": ${intent.getBooleanExtra(EXTRA_ENABLE_FENCE, false)}}")
         mRtcEngine.enableVideo()
 
         // join channel

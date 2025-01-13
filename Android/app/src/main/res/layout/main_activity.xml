@@ -147,6 +147,28 @@
             android:textAlignment="viewEnd" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="EnableFence(测试用)" />
+
+        <Switch
+            android:id="@+id/swFence"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:checked="true"
+            android:paddingVertical="8dp"/>
+
+    </LinearLayout>
+
     <Button
         android:id="@+id/btnJoin"
         android:layout_width="match_parent"

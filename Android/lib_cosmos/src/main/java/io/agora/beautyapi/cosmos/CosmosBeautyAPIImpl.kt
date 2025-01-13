@@ -26,6 +26,7 @@ package io.agora.beautyapi.cosmos
 
 import android.graphics.Matrix
 import android.opengl.GLES20
+import android.opengl.GLES30
 import android.view.SurfaceView
 import android.view.TextureView
 import android.view.View
@@ -497,6 +498,18 @@ class CosmosBeautyAPIImpl : CosmosBeautyAPI, IVideoFrameObserver {
             return false
         }
 
+        val newFence = textureBufferHelper?.invoke {
+            val texBuffer = videoFrame.buffer as? TextureBuffer ?: return@invoke 0L
+            val fenceOpen = GLES30.glIsSync(texBuffer.fenceObject)
+            if (fenceOpen) {
+                val glFenceSync = GLES30.glFenceSync(GLES30.GL_SYNC_GPU_COMMANDS_COMPLETE, 0)
+                GLES20.glFlush()
+                return@invoke glFenceSync
+            }
+            GLES20.glFinish()
+            return@invoke 0L
+        } ?: 0L
+
         apiReporter.endDurationEvent("first_beauty_frame", emptyMap())
 
         val processBuffer: TextureBuffer = textureBufferHelper?.wrapTextureBuffer(
@@ -504,6 +517,7 @@ class CosmosBeautyAPIImpl : CosmosBeautyAPI, IVideoFrameObserver {
             videoFrame.rotatedHeight,
             TextureBuffer.Type.RGB,
             processTexId,
+            newFence,
             Matrix()
         ) ?: return false
         videoFrame.replaceBuffer(processBuffer, 0, videoFrame.timestampNs)
