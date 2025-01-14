@@ -339,6 +339,12 @@ class CosmosActivity : ComponentActivity() {
         // Config RtcEngine
         mRtcEngine.addHandler(mRtcHandler)
         mRtcEngine.setVideoEncoderConfiguration(mVideoEncoderConfiguration)
+
+        // enable glFence: Set before enabling the camera and joining the channel.
+        // Version 4.4.0, Special Versions for 4.2 and 4.1.1
+        // setParameters("{\"che.video.enable_gl_fence\": true}")
+        // setParameters("{\"che.video.observer_texture.copy_enable\": true}")
+        // From 4.5 onward, no need to set private parameters.
         mRtcEngine.setParameters("{\"che.video.observer_texture.copy_enable\": ${intent.getBooleanExtra(EXTRA_ENABLE_FENCE, false)}}")
         mRtcEngine.setParameters("{\"che.video.enable_gl_fence\": ${intent.getBooleanExtra(EXTRA_ENABLE_FENCE, false)}}")
         mRtcEngine.enableVideo()
