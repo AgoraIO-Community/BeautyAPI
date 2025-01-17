@@ -41,7 +41,7 @@ class MApplication: Application() {
         ByteDanceBeautySDK.initBeautySDK(this)
         CosmosBeautyWrapSDK.initBeautySDK(this)
 
-        CrashReport.initCrashReport(this, "96866f635f", true, CrashReport.UserStrategy(this).apply {
+        CrashReport.initCrashReport(this, BuildConfig.BUGLY_APP_ID, true, CrashReport.UserStrategy(this).apply {
             isEnableCatchAnrTrace = true
             isEnableANRCrashMonitor = true
             isEnableRecordAnrMainStack = true

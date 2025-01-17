@@ -11,8 +11,8 @@ android {
         applicationId "io.agora.test.entfull"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 8
-        versionName "1.0.9"
+        versionCode 9
+        versionName "1.0.10"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -27,6 +27,8 @@ android {
             throw new GradleException("Please configure the local.properties file in the root directory of the project as follows：AGORA_APP_ID=<Your Agora App ID>")
         }
         buildConfigField "String", "AGORA_APP_ID", "\"$AGORA_APP_ID\""
+        final def BUGLY_APP_ID = "${properties.getProperty("BUGLY_APP_ID", "")}"
+        buildConfigField "String", "BUGLY_APP_ID", "\"$BUGLY_APP_ID\""
     }
     signingConfigs {
         myConfig {

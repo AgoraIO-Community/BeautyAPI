@@ -26,6 +26,7 @@ package io.agora.beautyapi.cosmos.utils
 
 import android.opengl.GLES20
 import io.agora.base.VideoFrame
+import io.agora.base.internal.video.EglBase
 import io.agora.base.internal.video.GlRectDrawer
 import io.agora.base.internal.video.GlTextureFrameBuffer
 import io.agora.base.internal.video.RendererCommon.GlDrawer
@@ -55,10 +56,12 @@ class AgoraImageHelper {
         frameBuffer.setSize(width, height)
 
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.frameBufferId)
-        if(texType == VideoFrame.TextureBuffer.Type.OES){
-            drawer.drawOes(texId, transform, width, height, 0, 0, width, height)
-        }else{
-            drawer.drawRgb(texId, transform, width, height, 0, 0, width, height)
+        synchronized(EglBase.lock) {
+            if (texType == VideoFrame.TextureBuffer.Type.OES) {
+                drawer.drawOes(texId, 0, transform, width, height, 0, 0, width, height, 0)
+            } else {
+                drawer.drawRgb(texId, 0, transform, width, height, 0, 0, width, height, 0)
+            }
         }
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0)
         GLES20.glFinish()

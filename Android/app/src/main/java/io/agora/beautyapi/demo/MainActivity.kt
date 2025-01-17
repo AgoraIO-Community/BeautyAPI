@@ -70,6 +70,7 @@ class MainActivity : ComponentActivity() {
                     mBinding.spFrameRate.selectedItem.toString(),
                     mBinding.spBeautyCaptureMode.selectedItem.toString(),
                     mBinding.spBeautyProcessMode.selectedItem.toString(),
+                    mBinding.swFence.isChecked
                 )
 
                 getString(R.string.beauty_faceunity) -> FaceUnityActivity.launch(
@@ -78,7 +79,8 @@ class MainActivity : ComponentActivity() {
                     mBinding.spResolution.selectedItem.toString(),
                     mBinding.spFrameRate.selectedItem.toString(),
                     mBinding.spBeautyCaptureMode.selectedItem.toString(),
-                    mBinding.spBeautyProcessMode.selectedItem.toString()
+                    mBinding.spBeautyProcessMode.selectedItem.toString(),
+                    mBinding.swFence.isChecked
                 )
 
                 getString(R.string.beauty_bytedance) -> ByteDanceActivity.launch(
@@ -87,7 +89,8 @@ class MainActivity : ComponentActivity() {
                     mBinding.spResolution.selectedItem.toString(),
                     mBinding.spFrameRate.selectedItem.toString(),
                     mBinding.spBeautyCaptureMode.selectedItem.toString(),
-                    mBinding.spBeautyProcessMode.selectedItem.toString()
+                    mBinding.spBeautyProcessMode.selectedItem.toString(),
+                    mBinding.swFence.isChecked
                 )
 
                 getString(R.string.beauty_cosmos) -> CosmosActivity.launch(
@@ -96,7 +99,8 @@ class MainActivity : ComponentActivity() {
                     mBinding.spResolution.selectedItem.toString(),
                     mBinding.spFrameRate.selectedItem.toString(),
                     mBinding.spBeautyCaptureMode.selectedItem.toString(),
-                    mBinding.spBeautyProcessMode.selectedItem.toString()
+                    mBinding.spBeautyProcessMode.selectedItem.toString(),
+                    mBinding.swFence.isChecked
                 )
             }
         } else {

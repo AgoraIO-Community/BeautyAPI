@@ -25,6 +25,8 @@
 package io.agora.beautyapi.bytedance
 
 import android.graphics.Matrix
+import android.opengl.GLES20
+import android.opengl.GLES30
 import android.view.SurfaceView
 import android.view.TextureView
 import android.view.View
@@ -593,11 +595,24 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
 
         apiReporter.endDurationEvent("first_beauty_frame", emptyMap())
 
+        val newFence = textureBufferHelper?.invoke {
+            val texBuffer = videoFrame.buffer as? TextureBuffer ?: return@invoke 0L
+            val fenceOpen = GLES30.glIsSync(texBuffer.fenceObject)
+            if (fenceOpen) {
+                val glFenceSync = GLES30.glFenceSync(GLES30.GL_SYNC_GPU_COMMANDS_COMPLETE, 0)
+                GLES20.glFlush()
+                return@invoke glFenceSync
+            }
+            GLES20.glFinish()
+            return@invoke 0L
+        } ?: 0L
+
         val processBuffer: TextureBuffer = textureBufferHelper?.wrapTextureBuffer(
             videoFrame.rotatedWidth,
             videoFrame.rotatedHeight,
             TextureBuffer.Type.RGB,
             processTexId,
+            newFence,
             Matrix().apply {
                 preTranslate(0.5f, 0.5f)
                 preScale(1.0f, -1.0f)

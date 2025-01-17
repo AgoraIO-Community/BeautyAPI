@@ -71,6 +71,7 @@ class ByteDanceActivity : ComponentActivity() {
         private const val EXTRA_FRAME_RATE = "FrameRate"
         private const val EXTRA_CAPTURE_MODE = "CaptureMode"
         private const val EXTRA_PROCESS_MODE = "ProcessMode"
+        private const val EXTRA_ENABLE_FENCE = "EnableFence"
 
         fun launch(
             context: Context,
@@ -78,7 +79,8 @@ class ByteDanceActivity : ComponentActivity() {
             resolution: String,
             frameRate: String,
             captureMode: String,
-            processMode: String
+            processMode: String,
+            enableFence: Boolean
         ) {
             Intent(context, ByteDanceActivity::class.java).apply {
                 putExtra(EXTRA_CHANNEL_NAME, channelName)
@@ -86,6 +88,7 @@ class ByteDanceActivity : ComponentActivity() {
                 putExtra(EXTRA_FRAME_RATE, frameRate)
                 putExtra(EXTRA_CAPTURE_MODE, captureMode)
                 putExtra(EXTRA_PROCESS_MODE, processMode)
+                putExtra(EXTRA_ENABLE_FENCE, enableFence)
                 context.startActivity(this)
             }
         }
@@ -332,6 +335,14 @@ class ByteDanceActivity : ComponentActivity() {
         // Config RtcEngine
         mRtcEngine.addHandler(mRtcHandler)
         mRtcEngine.setVideoEncoderConfiguration(mVideoEncoderConfiguration)
+
+        // enable glFence: Set before enabling the camera and joining the channel.
+        // Version 4.4.0, Special Versions for 4.2 and 4.1.1
+        // setParameters("{\"che.video.enable_gl_fence\": true}")
+        // setParameters("{\"che.video.observer_texture.copy_enable\": true}")
+        // From 4.5 onward, no need to set private parameters.
+        mRtcEngine.setParameters("{\"che.video.observer_texture.copy_enable\": ${intent.getBooleanExtra(EXTRA_ENABLE_FENCE, false)}}")
+        mRtcEngine.setParameters("{\"che.video.enable_gl_fence\": ${intent.getBooleanExtra(EXTRA_ENABLE_FENCE, false)}}")
         mRtcEngine.enableVideo()
 
         // join channel
