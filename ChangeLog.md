@@ -1,8 +1,11 @@
 # Beauty API Change Log
 # 美颜场景化 API 更新日志
 
+## 1.0.10
+1. Android:  Add gl fence. / Android: 增加 gl fence
+
 ## 1.0.9.1
-1. Fix crash issue when writing logs / 修复写日志导致崩溃问题
+1. Android: Fix crash issue when writing logs / Android: 修复写日志导致崩溃问题
 
 ## 1.0.9
 1. iOS: Upgrade and adapt to FaceUnity beauty SDK 8.11.1 / iOS：升级适配相芯美颜 8.11.1 版本
