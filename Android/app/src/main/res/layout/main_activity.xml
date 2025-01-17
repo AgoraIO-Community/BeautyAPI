@@ -11,6 +11,7 @@
         android:id="@+id/etChannelName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="14sp"
         android:hint="@string/beauty_channel_name" />
 
     <LinearLayout
@@ -19,8 +20,10 @@
         android:gravity="center">
 
         <TextView
-            android:layout_width="150dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:layout_weight="1"
             android:text="@string/beauty_role" />
 
         <Spinner
@@ -41,7 +44,9 @@
         android:gravity="center">
 
         <TextView
-            android:layout_width="150dp"
+            android:layout_width="0dp"
+            android:textSize="14sp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="@string/beauty_encoding_resolution" />
 
@@ -63,7 +68,9 @@
         android:gravity="center">
 
         <TextView
-            android:layout_width="150dp"
+            android:layout_width="0dp"
+            android:textSize="14sp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="@string/beauty_encoding_frame_rate" />
 
@@ -86,8 +93,10 @@
         android:gravity="center">
 
         <TextView
-            android:layout_width="150dp"
+            android:layout_width="0dp"
+            android:textSize="14sp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="@string/beauty_group_beauty" />
 
         <Spinner
@@ -109,7 +118,9 @@
         android:gravity="center">
 
         <TextView
-            android:layout_width="200dp"
+            android:layout_width="0dp"
+            android:textSize="14sp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="@string/beauty_collection_method" />
 
@@ -131,7 +142,9 @@
         android:gravity="center">
 
         <TextView
-            android:layout_width="260dp"
+            android:layout_width="0dp"
+            android:textSize="14sp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="@string/beauty_processing_method" />
 
@@ -153,7 +166,9 @@
         android:gravity="center">
 
         <TextView
-            android:layout_width="150dp"
+            android:layout_width="0dp"
+            android:textSize="14sp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="EnableFence(测试用)" />
 
@@ -171,6 +186,7 @@
 
     <Button
         android:id="@+id/btnJoin"
+        android:textSize="16sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAllCaps="false"
