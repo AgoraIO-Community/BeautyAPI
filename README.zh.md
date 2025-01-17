@@ -9,11 +9,11 @@
 本仓库包含以下美颜场景 API：
 
 | 美颜   | 平台       | 语言           | 路径                                                         | RTC SDK 版本 | Beauty SDK 版本 |
-|------|----------|--------------|------------------------------------------------------------|------------|---------------|
-| 商汤   | Android  | Java/Kotlin  | [Android/lib_sensetime](Android/lib_sensetime) | 4.2.6.5    | 9.3.1         |
-| 相芯   | Android  | Java/Kotlin  | [Android/lib_faceunity](Android/lib_faceunity) | 4.2.6.5    | 8.11.0         |
-| 字节火山 | Android  | Java/Kotlin  | [Android/lib_bytedance](Android/lib_bytedance) | 4.2.6.5    | 4.6.0         |
-| 宇宙   | Android  | Java/Kotlin  | [Android/lib_cosmos](Android/lib_cosmos)    | 4.2.6.5    | 3.7.0         |
+|---------|----------|--------------|------------------------------------------------------------|------------|---------------|
+| 商汤    | Android  | Java/Kotlin  | [Android/lib_sensetime](Android/lib_sensetime) | 4.4.1.132    | 9.3.1         |
+| 相芯   | Android  | Java/Kotlin  | [Android/lib_faceunity](Android/lib_faceunity) | 4.4.1.132    | 8.11.0         |
+| 字节火山 | Android  | Java/Kotlin  | [Android/lib_bytedance](Android/lib_bytedance) | 4.4.1.132    | 4.6.0         |
+| 宇宙   | Android  | Java/Kotlin  | [Android/lib_cosmos](Android/lib_cosmos)    | 4.4.1.132    | 3.7.0         |
 | 商汤   | iOS      | Swift/OC     | [iOS/BeautyAPI/SenseBeauty](iOS/BeautyAPI/SenseBeauty) | 4.2.6.5    | 9.3.1         |
 | 相芯   | iOS      | Swift/OC     | [iOS/BeautyAPI/FUBeauty](iOS/BeautyAPI/FUBeauty) | 4.2.6.5    | 8.11.1         |
 | 字节火山 | iOS      | Swift/OC     | [iOS/BeautyAPI/ByteBeauty](iOS/BeautyAPI/ByteBeauty) | 4.2.6.5    | 4.5.1         |
