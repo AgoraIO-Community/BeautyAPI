@@ -7,7 +7,7 @@
 
 #import "FUBeautyRender.h"
 #import "BundleUtil.h"
-#if __has_include("FUManager.h")
+#if __has_include("authpack.h")
 #import "authpack.h"
 #endif
 
@@ -36,8 +36,9 @@
     BOOL success = NO;
 #if __has_include(FURenderMoudle)
     FUSetupConfig *setupConfig = [[FUSetupConfig alloc] init];
+#if __has_include("authpack.h")
     setupConfig.authPack = FUAuthPackMake(g_auth_package, sizeof(g_auth_package));
-    
+#endif
     success = [FURenderKit setupWithSetupConfig:setupConfig];
 #endif
     return success;
