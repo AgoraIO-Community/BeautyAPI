@@ -8,8 +8,11 @@
 
 #import "FUManager.h"
 #import "BundleUtil.h"
-#if __has_include(<FURenderKit/FURenderKit.h>)
+#if __has_include("authpack.h")
 #import "authpack.h"
+#endif
+
+#if __has_include(<FURenderKit/FURenderKit.h>)
 #import <FURenderKit/FURenderKit.h>
 #endif
 
@@ -44,7 +47,9 @@ static FUManager *shareManager = NULL;
             NSString *controllerPath = [[NSBundle mainBundle] pathForResource:@"controller_cpp" ofType:@"bundle"];
             NSString *controllerConfigPath = [[NSBundle mainBundle] pathForResource:@"controller_config" ofType:@"bundle"];
             FUSetupConfig *setupConfig = [[FUSetupConfig alloc] init];
+#if __has_include("authpack.h")
             setupConfig.authPack = FUAuthPackMake(g_auth_package, sizeof(g_auth_package));
+#endif
             setupConfig.controllerPath = controllerPath;
             setupConfig.controllerConfigPath = controllerConfigPath;
             
