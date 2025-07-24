@@ -37,6 +37,7 @@ import io.agora.base.VideoFrame
 import io.agora.base.VideoFrame.I420Buffer
 import io.agora.base.VideoFrame.TextureBuffer
 import io.agora.base.internal.video.RendererCommon
+import io.agora.base.internal.video.TextureBufferPool
 import io.agora.base.internal.video.YuvHelper
 import io.agora.beautyapi.bytedance.utils.APIReporter
 import io.agora.beautyapi.bytedance.utils.APIType
@@ -676,6 +677,9 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
 
         return texBufferHelper.invoke(Callable {
             val renderManager = config?.renderManager ?: return@Callable -1
+
+            TextureBufferPool.waitFenceSignal2(buffer.fenceObject, "BeautyProcess")
+
             var mirror = isFront
             if((isFrontCamera && !captureMirror) || (!isFrontCamera && captureMirror)){
                 mirror = !mirror

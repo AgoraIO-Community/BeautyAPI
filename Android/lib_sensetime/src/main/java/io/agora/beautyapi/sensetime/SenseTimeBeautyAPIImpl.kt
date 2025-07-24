@@ -41,6 +41,7 @@ import io.agora.base.VideoFrame.I420Buffer
 import io.agora.base.VideoFrame.SourceType
 import io.agora.base.VideoFrame.TextureBuffer
 import io.agora.base.internal.video.RendererCommon
+import io.agora.base.internal.video.TextureBufferPool
 import io.agora.base.internal.video.YuvConverter
 import io.agora.base.internal.video.YuvHelper
 import io.agora.beautyapi.sensetime.utils.APIReporter
@@ -817,6 +818,8 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
             RendererCommon.convertMatrixFromAndroidGraphicsMatrix(buffer.transformMatrix)
         return texBufferHelper.invoke(Callable {
             mayCreateBeautyProcess()
+
+            TextureBufferPool.waitFenceSignal2(buffer.fenceObject, "BeautyProcess")
             return@Callable beautyProcessor?.process(
                 InputInfo(
                     width = width,

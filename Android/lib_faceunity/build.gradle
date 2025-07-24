@@ -3,12 +3,12 @@ apply plugin: 'maven-publish'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 31
-    buildToolsVersion "30.0.3"
+    namespace 'io.agora.beautyapi.faceunity'
+    compileSdk 35
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 31
+        targetSdk 34
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -21,19 +21,19 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
     }
 }
 
 dependencies {
 
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
     if (new File("$AGORA_RTC_SDK").exists()) {
         api fileTree(dir: "${AGORA_RTC_SDK}", include: ['*.jar', '*.aar'])
     } else {
@@ -41,8 +41,8 @@ dependencies {
     }
 
 
-    api 'com.faceunity:core:8.11.0'
-    api 'com.faceunity:model:8.11.0'
+    api 'com.faceunity:core:8.14.0'
+    api 'com.faceunity:model:8.14.0'
 }
 
 // Because the components are created only during the afterEvaluate phase, you must
