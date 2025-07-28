@@ -213,6 +213,12 @@ interface ByteDanceBeautyAPI {
     fun runOnProcessThread(run: ()->Unit)
 
     /**
+     * Resets the beauty cache and state to prevent old frames from affecting the current channel's beauty effects.
+     * This method should be called when switching RTC channels, switching cameras, or restarting video calls.
+     */
+    fun reset()
+
+    /**
      * Releases resources. Once released, this instance can no longer be used.
      *
      * @return [ErrorCode] corresponding to the result of the operation

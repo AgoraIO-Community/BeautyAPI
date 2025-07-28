@@ -469,6 +469,22 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         }
     }
 
+    override fun reset() {
+        LogUtils.i(TAG, "reset >> Resetting beauty cache and state")
+        textureBufferHelper?.let {
+            beautyProcessor?.reset()
+        }
+        // 清空NV21缓冲区缓存
+        nv21ByteBuffer = null
+        // 清空待处理任务列表
+        pendingProcessRunList.clear()
+        // 重置处理类型
+        currProcessSourceType = ProcessSourceType.UNKNOWN
+        // 重置统计
+        statsHelper?.reset()
+        LogUtils.i(TAG, "reset >> Beauty cache and state reset completed")
+    }
+
     /**
      * Releases resources. Once released, this instance can no longer be used.
      * 释放资源。一旦释放，该实例将无法再使用。

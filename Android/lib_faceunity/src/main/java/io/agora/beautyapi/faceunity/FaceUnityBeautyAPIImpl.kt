@@ -340,6 +340,30 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         }
     }
 
+    override fun reset() {
+        LogUtils.i(TAG, "reset >> Resetting beauty cache and state")
+        // 重置异步纹理处理助手
+        asyncTextureBufferHelper?.invoke {
+            asyncTextureProcessHelper?.reset()
+        }
+        // 重置美颜纹理缓冲助手
+        beautyTextureBufferHelper?.invoke {
+            skipFrame = 2
+            outGLFrameBuffer.resetTexture()
+            transformGLFrameBuffer.resetTexture()
+            null
+        }
+        // 清空字节缓冲区缓存
+        byteBuffer = null
+        // 清空待处理任务列表
+        pendingProcessRunList.clear()
+        // 重置处理类型
+        currProcessSourceType = ProcessSourceType.UNKNOWN
+        // 重置统计
+        statsHelper?.reset()
+        LogUtils.i(TAG, "reset >> Beauty cache and state reset completed")
+    }
+
     /**
      * Releases resources. Once released, this instance can no longer be used.
      * 释放资源。一旦释放，该实例将无法再使用。

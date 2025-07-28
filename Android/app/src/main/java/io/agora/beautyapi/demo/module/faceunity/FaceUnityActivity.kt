@@ -125,6 +125,20 @@ class FaceUnityActivity : ComponentActivity() {
             Log.e(TAG, "Rtc error code=$err, msg=${RtcEngine.getErrorDescription(err)}")
         }
 
+        override fun onJoinChannelSuccess(channel: String?, uid: Int, elapsed: Int) {
+            super.onJoinChannelSuccess(channel, uid, elapsed)
+            runOnUiThread {
+                Log.d(TAG, "onJoinChannelSuccess, channel=$channel, uid=$uid")
+            }
+        }
+
+        override fun onLeaveChannel(stats: RtcStats?) {
+            super.onLeaveChannel(stats)
+            runOnUiThread {
+                Log.d(TAG, "onLeaveChannel")
+            }
+        }
+
         override fun onUserJoined(uid: Int, elapsed: Int) {
             super.onUserJoined(uid, elapsed)
             runOnUiThread {
@@ -277,6 +291,7 @@ class FaceUnityActivity : ComponentActivity() {
     }
 
     private fun initView() {
+        mBinding.tvChannel.text = "Channel:$mChannelName"
         mBinding.ivCamera.setOnClickListener {
             mRtcEngine.switchCamera()
         }
@@ -315,6 +330,24 @@ class FaceUnityActivity : ComponentActivity() {
             }
             mFaceUnityApi.updateCameraConfig(cameraConfig)
         }
+        mBinding.ivSwitchChannel.setOnClickListener {
+            switchRandomChannel()
+        }
+    }
+
+    private fun switchRandomChannel(){
+        val newChannel = java.util.Random().nextInt(10000) + 100000
+        mRtcEngine.leaveChannel()
+        mBinding.tvChannel.text = "Channel:$newChannel"
+        // join channel
+        mRtcEngine.joinChannel(null, newChannel.toString(), 0, ChannelMediaOptions().apply {
+            channelProfile = Constants.CHANNEL_PROFILE_LIVE_BROADCASTING
+            clientRoleType = Constants.CLIENT_ROLE_BROADCASTER
+            publishCameraTrack = true
+            publishMicrophoneTrack = false
+            autoSubscribeAudio = false
+            autoSubscribeVideo = true
+        })
     }
 
     private fun initBeautyApi() {

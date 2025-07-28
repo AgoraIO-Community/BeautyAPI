@@ -420,6 +420,32 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
      */
     override fun isFrontCamera() = isFrontCamera
 
+    override fun reset() {
+        LogUtils.i(TAG, "reset >> Resetting beauty cache and state")
+        textureBufferHelper?.let {
+            // 重置跳帧计数，确保新的视频流稳定后再开始美颜处理
+            skipFrame = 2
+            // 释放图像处理工具的缓存资源
+            imageUtils?.release()
+            agoraImageHelper?.release()
+            // 重新创建图像处理工具以清理内部状态
+            imageUtils = ImageUtil()
+            agoraImageHelper = AgoraImageHelper()
+        }
+        // 清空NV21缓冲区缓存
+        nv21ByteBuffer = null
+        // 清空待处理任务列表
+        pendingProcessRunList.clear()
+        // 重置帧尺寸缓存
+        frameWidth = 0
+        frameHeight = 0
+        // 重置处理类型
+        currBeautyProcessType = BeautyProcessType.UNKNOWN
+        // 重置统计
+        statsHelper?.reset()
+        LogUtils.i(TAG, "reset >> Beauty cache and state reset completed")
+    }
+
     /**
      * Releases resources. Once released, this instance can no longer be used.
      * 释放资源。一旦释放，该实例将无法再使用。

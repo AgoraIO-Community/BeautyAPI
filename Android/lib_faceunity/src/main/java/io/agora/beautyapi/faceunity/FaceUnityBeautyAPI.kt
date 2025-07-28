@@ -191,6 +191,12 @@ interface FaceUnityBeautyAPI {
     fun setParameters(key: String, value: String)
 
     /**
+     * Resets the beauty cache and state to prevent old frames from affecting the current channel's beauty effects.
+     * This method should be called when switching RTC channels, switching cameras, or restarting video calls.
+     */
+    fun reset()
+
+    /**
      * Releases resources. Once released, this instance can no longer be used.
      *
      * @return Refer to ErrorCode
