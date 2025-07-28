@@ -338,6 +338,7 @@ class FaceUnityActivity : ComponentActivity() {
     private fun switchRandomChannel(){
         val newChannel = java.util.Random().nextInt(10000) + 100000
         mRtcEngine.leaveChannel()
+        mFaceUnityApi.reset()
         mBinding.tvChannel.text = "Channel:$newChannel"
         // join channel
         mRtcEngine.joinChannel(null, newChannel.toString(), 0, ChannelMediaOptions().apply {
