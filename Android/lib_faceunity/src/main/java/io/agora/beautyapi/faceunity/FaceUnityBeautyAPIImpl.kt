@@ -57,6 +57,7 @@ import io.agora.rtc2.video.VideoCanvas
 import java.nio.ByteBuffer
 import java.util.Collections
 import java.util.concurrent.Callable
+import java.util.concurrent.atomic.AtomicBoolean
 
 class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
     private val TAG = "FaceUnityBeautyAPIImpl"
@@ -122,6 +123,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
 
     private var asyncTextureProcessHelper: TextureProcessHelper? = null
     private var asyncTextureBufferHelper: TextureBufferHelper? = null
+    private val isResetting = AtomicBoolean(false)
 
     /**
      * Initializes the API.
@@ -341,27 +343,48 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
     }
 
     override fun reset() {
-        LogUtils.i(TAG, "reset >> Resetting beauty cache and state")
-        // 重置异步纹理处理助手
-        asyncTextureBufferHelper?.invoke {
-            asyncTextureProcessHelper?.reset()
+        if (!isResetting.compareAndSet(false, true)) {
+            LogUtils.w(TAG, "reset >> Reset already in progress, skipping")
+            return
         }
-        // 重置美颜纹理缓冲助手
-        beautyTextureBufferHelper?.invoke {
-            skipFrame = 2
-            outGLFrameBuffer.resetTexture()
-            transformGLFrameBuffer.resetTexture()
-            null
+        
+        try {
+            LogUtils.i(TAG, "reset >> Resetting beauty cache and state")
+            // 重置异步纹理处理助手
+            asyncTextureBufferHelper?.let {
+                asyncTextureBufferHelper = null
+                it.invoke {
+                    asyncTextureProcessHelper?.release()
+                    asyncTextureProcessHelper = null
+                }
+                it.dispose()
+            }
+            beautyTextureBufferHelper?.let {
+                beautyTextureBufferHelper = null
+                it.handler.removeCallbacksAndMessages(null)
+                it.invoke {
+                    config?.fuRenderKit?.let { fuRender->
+                        fuRender.releaseEGLContext()
+                        fuRender.release()
+                    }
+                    transformGLFrameBuffer.release()
+                    outGLFrameBuffer.release()
+                    null
+                }
+                it.dispose()
+            }
+            // 清空字节缓冲区缓存
+            byteBuffer = null
+            // 清空待处理任务列表
+            pendingProcessRunList.clear()
+            // 重置处理类型
+            currProcessSourceType = ProcessSourceType.UNKNOWN
+            // 重置统计
+            statsHelper?.reset()
+            LogUtils.i(TAG, "reset >> Beauty cache and state reset completed")
+        } finally {
+            isResetting.set(false)
         }
-        // 清空字节缓冲区缓存
-        byteBuffer = null
-        // 清空待处理任务列表
-        pendingProcessRunList.clear()
-        // 重置处理类型
-        currProcessSourceType = ProcessSourceType.UNKNOWN
-        // 重置统计
-        statsHelper?.reset()
-        LogUtils.i(TAG, "reset >> Beauty cache and state reset completed")
     }
 
     /**
@@ -390,6 +413,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         apiReporter.endDurationEvent("initialize-release", emptyMap())
 
         isReleased = true
+        isResetting.set(false)
         beautyTextureBufferHelper?.let {
             beautyTextureBufferHelper = null
             it.handler.removeCallbacksAndMessages(null)
@@ -427,6 +451,11 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
     private fun processBeauty(videoFrame: VideoFrame): Boolean {
         if (isReleased) {
             LogUtils.e(TAG, "processBeauty >> The beauty api has been released!")
+            return false
+        }
+        
+        if (isResetting.get()) {
+            LogUtils.w(TAG, "processBeauty >> Reset in progress, skipping frame")
             return false
         }
 
