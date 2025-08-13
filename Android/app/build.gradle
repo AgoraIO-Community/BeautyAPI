@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 
-
 android {
     namespace 'io.agora.beautyapi.demo'
     compileSdk 35
@@ -18,12 +17,12 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
-        ndk.abiFilters 'armeabi-v7a','arm64-v8a'//, 'x86', 'x86-64'
+        ndk.abiFilters 'armeabi-v7a', 'arm64-v8a'//, 'x86', 'x86-64'
 
         def properties = new Properties()
         properties.load(rootProject.file("local.properties").newDataInputStream())
         final def AGORA_APP_ID = "${properties.getProperty("AGORA_APP_ID", "")}"
-        if(AGORA_APP_ID == ""){
+        if (AGORA_APP_ID == "") {
             throw new GradleException("Please configure the local.properties file in the root directory of the project as follows：AGORA_APP_ID=<Your Agora App ID>")
         }
         buildConfigField "String", "AGORA_APP_ID", "\"$AGORA_APP_ID\""
@@ -78,7 +77,7 @@ android {
     sourceSets {
         main {
             jniLibs.srcDirs += 'src/main/jniLibs'
-            if(new File("${AGORA_RTC_SDK}").exists()){
+            if (new File("${AGORA_RTC_SDK}").exists()) {
                 jniLibs.srcDirs += "${AGORA_RTC_SDK}"
             }
         }
@@ -108,36 +107,9 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
     implementation 'com.tencent.bugly:crashreport:4.0.4'
-    if (new File("${rootProject.rootDir}/maven").exists()) {
-        def beautyApiVersion = "$LIB_VERSION"
-        implementation("com.github.AgoraIO-Community.BeautyAPI:ByteDance:$beautyApiVersion"){
-            // exclude group:'io.agora.rtc', module: 'full-sdk'
-            // exclude group:'io.agora.rtc', module: 'agora-special-full'
-            // exclude group:'com.github.AgoraIO-Community.BeautyAPI', module: 'ByteDance-LibEffectAAR'
-        }
-        implementation("com.github.AgoraIO-Community.BeautyAPI:FaceUnity:$beautyApiVersion"){
-            // exclude group:'io.agora.rtc', module: 'full-sdk'
-            // exclude group:'io.agora.rtc', module: 'agora-special-full'
-            // exclude group:'com.faceunity', module: 'core'
-            // exclude group:'com.faceunity', module: 'model'
-        }
-        implementation("com.github.AgoraIO-Community.BeautyAPI:SenseTime:$beautyApiVersion"){
-            // exclude group:'io.agora.rtc', module: 'full-sdk'
-            // exclude group:'io.agora.rtc', module: 'agora-special-full'
-            // exclude group:'com.github.AgoraIO-Community.BeautyAPI', module: 'SenseTime-LibHardwareBuffer'
-            // exclude group:'com.github.AgoraIO-Community.BeautyAPI', module: 'SenseTime-LibSenseArSourceManager'
-            // exclude group:'com.github.AgoraIO-Community.BeautyAPI', module: 'SenseTime-LibSTMobileJNI'
-        }
-        implementation("com.github.AgoraIO-Community.BeautyAPI:Cosmos:$beautyApiVersion"){
-            // exclude group:'io.agora.rtc', module: 'full-sdk'
-            // exclude group:'io.agora.rtc', module: 'agora-special-full'
-            // exclude group:'com.github.AgoraIO-Community.BeautyAPI', module: 'Cosmos-LibBeautySDK'
-        }
-    } else {
-        implementation project(":lib_sensetime")
-        implementation project(":lib_faceunity")
-        implementation project(":lib_bytedance")
-        implementation project(":lib_cosmos")
-    }
 
+    implementation project(":lib_sensetime")
+    implementation project(":lib_faceunity")
+    implementation project(":lib_bytedance")
+    implementation project(":lib_cosmos")
 }
