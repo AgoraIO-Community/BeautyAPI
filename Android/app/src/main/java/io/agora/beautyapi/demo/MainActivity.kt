@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(mBinding.root)
 
-        mBinding.etChannelName.setText((java.util.Random().nextInt(100) + 1000).toString())
+        mBinding.etChannelName.setText((java.util.Random().nextInt(10000) + 100000).toString())
         mBinding.spResolution.setSelection(2)
         mBinding.spRoleType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {

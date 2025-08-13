@@ -37,6 +37,7 @@ import android.view.View.OnClickListener
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import io.agora.base.VideoFrame
 import io.agora.beautyapi.bytedance.CameraConfig
 import io.agora.beautyapi.bytedance.CaptureMode
@@ -357,6 +358,7 @@ class ByteDanceActivity : ComponentActivity() {
     }
 
     private fun initView() {
+        mBinding.tvChannel.text = "Channel:$mChannelName"
         mBinding.ivCamera.setOnClickListener {
             mRtcEngine.switchCamera()
         }

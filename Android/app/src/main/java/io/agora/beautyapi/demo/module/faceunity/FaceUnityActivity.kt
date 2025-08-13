@@ -37,6 +37,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import com.faceunity.core.faceunity.FURenderKit
 import io.agora.base.VideoFrame
 import io.agora.beautyapi.demo.BuildConfig
@@ -123,6 +124,20 @@ class FaceUnityActivity : ComponentActivity() {
         override fun onError(err: Int) {
             super.onError(err)
             Log.e(TAG, "Rtc error code=$err, msg=${RtcEngine.getErrorDescription(err)}")
+        }
+
+        override fun onJoinChannelSuccess(channel: String?, uid: Int, elapsed: Int) {
+            super.onJoinChannelSuccess(channel, uid, elapsed)
+            runOnUiThread {
+                Log.d(TAG, "onJoinChannelSuccess, channel=$channel, uid=$uid")
+            }
+        }
+
+        override fun onLeaveChannel(stats: RtcStats?) {
+            super.onLeaveChannel(stats)
+            runOnUiThread {
+                Log.d(TAG, "onLeaveChannel")
+            }
         }
 
         override fun onUserJoined(uid: Int, elapsed: Int) {
@@ -217,16 +232,20 @@ class FaceUnityActivity : ComponentActivity() {
         intent.getStringExtra(EXTRA_CAPTURE_MODE) == getString(R.string.beauty_capture_custom)
     }
 
-    private val mBeautyDialog by lazy {
-        BottomAlertDialog(this@FaceUnityActivity).apply {
-            val view = FaceUnityControllerView(this@FaceUnityActivity)
-            view.beautyOpenClickListener = View.OnClickListener {
-                beautyEnable = !beautyEnable
-                mFaceUnityApi.enable(beautyEnable)
+    private var mBeautyDialog: BottomAlertDialog? = null
+        get() {
+            if (field == null) {
+                field = BottomAlertDialog(this@FaceUnityActivity).apply {
+                    val view = FaceUnityControllerView(this@FaceUnityActivity)
+                    view.beautyOpenClickListener = View.OnClickListener {
+                        beautyEnable = !beautyEnable
+                        mFaceUnityApi.enable(beautyEnable)
+                    }
+                    setContentView(view)
+                }
             }
-            setContentView(view)
+            return field
         }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -277,6 +296,8 @@ class FaceUnityActivity : ComponentActivity() {
     }
 
     private fun initView() {
+        mBinding.tvChannel.text = "Channel:$mChannelName"
+        mBinding.ivSwitchChannel.isVisible = true
         mBinding.ivCamera.setOnClickListener {
             mRtcEngine.switchCamera()
         }
@@ -284,7 +305,7 @@ class FaceUnityActivity : ComponentActivity() {
             mSettingDialog.show()
         }
         mBinding.ivBeauty.setOnClickListener {
-            mBeautyDialog.show()
+            mBeautyDialog?.show()
         }
         mBinding.ivMirror.setOnClickListener {
             val isFront = mFaceUnityApi.isFrontCamera()
@@ -315,6 +336,38 @@ class FaceUnityActivity : ComponentActivity() {
             }
             mFaceUnityApi.updateCameraConfig(cameraConfig)
         }
+        mBinding.ivSwitchChannel.setOnClickListener {
+            switchRandomChannel()
+        }
+    }
+
+    private fun switchRandomChannel() {
+        val newChannel = java.util.Random().nextInt(10000) + 100000
+        mRtcEngine.leaveChannel()
+        mFaceUnityApi.reset()
+        FaceUnityBeautySDK.beautyConfig.reset()
+        mBinding.tvChannel.text = "Channel:$newChannel"
+        
+        // Recreate beauty dialog to refresh UI state after reset
+        mBeautyDialog?.dismiss()
+        mBeautyDialog = BottomAlertDialog(this@FaceUnityActivity).apply {
+            val view = FaceUnityControllerView(this@FaceUnityActivity)
+            view.beautyOpenClickListener = View.OnClickListener {
+                beautyEnable = !beautyEnable
+                mFaceUnityApi.enable(beautyEnable)
+            }
+            setContentView(view)
+        }
+        
+        // join channel
+        mRtcEngine.joinChannel(null, newChannel.toString(), 0, ChannelMediaOptions().apply {
+            channelProfile = Constants.CHANNEL_PROFILE_LIVE_BROADCASTING
+            clientRoleType = Constants.CLIENT_ROLE_BROADCASTER
+            publishCameraTrack = true
+            publishMicrophoneTrack = false
+            autoSubscribeAudio = false
+            autoSubscribeVideo = true
+        })
     }
 
     private fun initBeautyApi() {
