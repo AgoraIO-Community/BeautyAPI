@@ -103,21 +103,6 @@ AGORA_APP_ID=你的声网AppID
 | resource/ComposeMakeup.bundle | app/src/main/assets/beauty_bytedance |
 | resource/StickerResource.bundle | app/src/main/assets/beauty_bytedance |
 
-#### 宇宙美颜（可选）
-
-> - 在 [app/build.gradle](app/build.gradle) 里配置证书对应的包名 applicationId
-> 
-> - **SDK 集成方式**：将宇宙美颜资源文件放置在指定目录下
-> 
-> - 修改 [CosmosBeautyWrapSDK.kt](app/src/main/java/io/agora/beautyapi/demo/module/cosmos/CosmosBeautyWrapSDK.kt) 文件里 LICENSE 为申请到的证书
-> 
-> - 获取宇宙美颜资源并复制以下文件到对应路径下
-
-| 宇宙SDK文件/目录 | 项目路径 |
-|------------------|----------|
-| sample/app/src/main/assets/model-all.zip | app/src/main/assets/beauty_cosmos/model-all.zip |
-| sample/app/src/main/assets/cosmos.zip | app/src/main/assets/beauty_cosmos/cosmos.zip |
-
 ### 2.4 运行项目
 
 > - 使用 Android Studio 打开 `Android` 项目，点击运行即可
@@ -135,7 +120,6 @@ AGORA_APP_ID=你的声网AppID
 | 商汤 | [官网文档](https://doc.shengwang.cn/doc/showroom/android/advanced-features/beauty/sensetime/integrate) |
 | 相芯 | [官网文档](https://doc.shengwang.cn/doc/showroom/android/advanced-features/beauty/faceunity/integrate) |
 | 字节火山 | [官网文档](https://doc.shengwang.cn/doc/showroom/android/advanced-features/beauty/bytedance/integrate) |
-| 宇宙 | [宇宙美颜](./lib_cosmos/README.zh.md) |
 
 ---
 

@@ -11,7 +11,6 @@ import androidx.activity.ComponentActivity
 import androidx.core.view.isInvisible
 import io.agora.beautyapi.demo.databinding.MainActivityBinding
 import io.agora.beautyapi.demo.module.bytedance.ByteDanceActivity
-import io.agora.beautyapi.demo.module.cosmos.CosmosActivity
 import io.agora.beautyapi.demo.module.faceunity.FaceUnityActivity
 import io.agora.beautyapi.demo.module.sensetime.SenseTimeActivity
 import io.agora.beautyapi.demo.widget.PermissionHelp
@@ -84,16 +83,6 @@ class MainActivity : ComponentActivity() {
                 )
 
                 getString(R.string.beauty_bytedance) -> ByteDanceActivity.launch(
-                    this,
-                    mBinding.etChannelName.text.toString(),
-                    mBinding.spResolution.selectedItem.toString(),
-                    mBinding.spFrameRate.selectedItem.toString(),
-                    mBinding.spBeautyCaptureMode.selectedItem.toString(),
-                    mBinding.spBeautyProcessMode.selectedItem.toString(),
-                    mBinding.swFence.isChecked
-                )
-
-                getString(R.string.beauty_cosmos) -> CosmosActivity.launch(
                     this,
                     mBinding.etChannelName.text.toString(),
                     mBinding.spResolution.selectedItem.toString(),
