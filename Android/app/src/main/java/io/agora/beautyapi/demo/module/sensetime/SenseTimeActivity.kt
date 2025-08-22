@@ -37,6 +37,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.softsugar.stmobile.STCommonNative
 import io.agora.base.VideoFrame
 import io.agora.beautyapi.demo.BuildConfig
 import io.agora.beautyapi.demo.R
@@ -368,6 +369,7 @@ class SenseTimeActivity : ComponentActivity() {
     }
 
     private fun initView() {
+        mBinding.tvBeautySdk.text = "Version:${STCommonNative.getVersion()}"
         mBinding.tvChannel.text = "Channel:$mChannelName"
         mBinding.ivCamera.setOnClickListener {
             mRtcEngine.switchCamera()

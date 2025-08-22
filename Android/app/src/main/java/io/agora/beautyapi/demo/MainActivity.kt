@@ -1,5 +1,6 @@
 package io.agora.beautyapi.demo
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -14,6 +15,7 @@ import io.agora.beautyapi.demo.module.bytedance.ByteDanceActivity
 import io.agora.beautyapi.demo.module.faceunity.FaceUnityActivity
 import io.agora.beautyapi.demo.module.sensetime.SenseTimeActivity
 import io.agora.beautyapi.demo.widget.PermissionHelp
+import io.agora.rtc2.RtcEngine
 
 class MainActivity : ComponentActivity() {
 
@@ -22,6 +24,7 @@ class MainActivity : ComponentActivity() {
     }
     private val mPermissionHelp = PermissionHelp(this)
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(mBinding.root)
@@ -57,6 +60,7 @@ class MainActivity : ComponentActivity() {
                 true
             )
         }
+        mBinding.tvVersion.text = "Version:${BuildConfig.VERSION_NAME}-${RtcEngine.getSdkVersion()}"
     }
 
     private fun gotoBeautyActivity() {

@@ -1,6 +1,11 @@
 # Beauty API Change Log
 # 美颜场景化 API 更新日志
 
+## 1.0.11
+1. Android:  Adapt to RTC version 4.6.0. / Android: 适配 RTC 4.6.0
+2. Android:  Add "reset" method to FaceUnity beauty. / Android: 相芯美颜增加 reset 方法
+3. Android:  Remove cosmic beauty and Maven upload. / Android: 移除宇宙美颜，移除 maven 上传
+
 ## 1.0.10
 1. Android:  Add gl fence. / Android: 增加 gl fence
 

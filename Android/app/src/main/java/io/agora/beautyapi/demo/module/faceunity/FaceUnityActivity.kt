@@ -296,6 +296,7 @@ class FaceUnityActivity : ComponentActivity() {
     }
 
     private fun initView() {
+        mBinding.tvBeautySdk.text = "Version:${FURenderKit.getInstance().getVersion()}"
         mBinding.tvChannel.text = "Channel:$mChannelName"
         mBinding.ivSwitchChannel.isVisible = true
         mBinding.ivCamera.setOnClickListener {

@@ -38,6 +38,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
+import com.effectsar.labcv.effectsdk.RenderManager
 import io.agora.base.VideoFrame
 import io.agora.beautyapi.bytedance.CameraConfig
 import io.agora.beautyapi.bytedance.CaptureMode
@@ -358,6 +359,7 @@ class ByteDanceActivity : ComponentActivity() {
     }
 
     private fun initView() {
+        mBinding.tvBeautySdk.text = "Version:${RenderManager.getSDKVersion()}"
         mBinding.tvChannel.text = "Channel:$mChannelName"
         mBinding.ivCamera.setOnClickListener {
             mRtcEngine.switchCamera()

@@ -90,4 +90,14 @@
         android:layout_marginTop="64dp"
         android:textColor="@color/white"
         tools:text="Channel:9527"/>
+
+    <TextView
+        android:id="@+id/tvBeautySdk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/white"
+        android:layout_margin="8dp"
+        tools:text="1.0.0"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
