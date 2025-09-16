@@ -40,4 +40,11 @@
         <item name="backgroundTint">@android:color/transparent</item>
     </style>
 
+    <style name="beauty_TextShadowStyle">
+        <item name="android:shadowColor">#0F14142B</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">2</item>
+        <item name="android:shadowRadius">6</item>
+    </style>
+
 </resources>

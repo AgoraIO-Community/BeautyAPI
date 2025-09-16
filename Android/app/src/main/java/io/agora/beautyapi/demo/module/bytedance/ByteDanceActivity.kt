@@ -164,6 +164,7 @@ class ByteDanceActivity : ComponentActivity() {
     private var beautyEnable = true
     private val mSettingDialog by lazy {
         SettingsDialog(this).apply {
+            setBeautySdk(RenderManager.getSDKVersion())
             setBeautyEnable(beautyEnable)
             setOnBeautyChangeListener { enable ->
                 beautyEnable = enable
@@ -359,8 +360,10 @@ class ByteDanceActivity : ComponentActivity() {
     }
 
     private fun initView() {
-        mBinding.tvBeautySdk.text = "Version:${RenderManager.getSDKVersion()}"
         mBinding.tvChannel.text = "Channel:$mChannelName"
+        mBinding.btnBack.setOnClickListener {
+            finish()
+        }
         mBinding.ivCamera.setOnClickListener {
             mRtcEngine.switchCamera()
         }

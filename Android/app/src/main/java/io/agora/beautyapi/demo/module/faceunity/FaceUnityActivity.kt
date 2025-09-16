@@ -185,6 +185,7 @@ class FaceUnityActivity : ComponentActivity() {
     private var beautyEnable = true
     private val mSettingDialog by lazy {
         SettingsDialog(this).apply {
+            setBeautySdk(FURenderKit.getInstance().getVersion())
             setBeautyEnable(beautyEnable)
             setOnBeautyChangeListener { enable ->
                 beautyEnable = enable
@@ -296,8 +297,10 @@ class FaceUnityActivity : ComponentActivity() {
     }
 
     private fun initView() {
-        mBinding.tvBeautySdk.text = "Version:${FURenderKit.getInstance().getVersion()}"
         mBinding.tvChannel.text = "Channel:$mChannelName"
+        mBinding.btnBack.setOnClickListener {
+            finish()
+        }
         mBinding.ivSwitchChannel.isVisible = true
         mBinding.ivCamera.setOnClickListener {
             mRtcEngine.switchCamera()
@@ -343,6 +346,15 @@ class FaceUnityActivity : ComponentActivity() {
     }
 
     private fun switchRandomChannel() {
+        if (mBinding.remoteVideoView.tag != null) {
+            val uid: Int = mBinding.remoteVideoView.tag as Int
+            mBinding.remoteVideoView.tag = null
+            mBinding.remoteVideoView.removeAllViews()
+            mRtcEngine.setupRemoteVideo(
+                VideoCanvas(null, Constants.RENDER_MODE_HIDDEN, uid)
+            )
+        }
+
         val newChannel = java.util.Random().nextInt(10000) + 100000
         mRtcEngine.leaveChannel()
         mFaceUnityApi.reset()

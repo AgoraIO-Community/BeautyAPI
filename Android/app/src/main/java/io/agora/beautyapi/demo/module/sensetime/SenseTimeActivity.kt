@@ -179,6 +179,7 @@ class SenseTimeActivity : ComponentActivity() {
 
     private val mSettingDialog by lazy {
         SettingsDialog(this).apply {
+            setBeautySdk(STCommonNative.getVersion())
             setBeautyEnable(beautyEnable)
             setOnBeautyChangeListener { enable ->
                 beautyEnable = enable
@@ -369,8 +370,10 @@ class SenseTimeActivity : ComponentActivity() {
     }
 
     private fun initView() {
-        mBinding.tvBeautySdk.text = "Version:${STCommonNative.getVersion()}"
         mBinding.tvChannel.text = "Channel:$mChannelName"
+        mBinding.btnBack.setOnClickListener {
+            finish()
+        }
         mBinding.ivCamera.setOnClickListener {
             mRtcEngine.switchCamera()
         }

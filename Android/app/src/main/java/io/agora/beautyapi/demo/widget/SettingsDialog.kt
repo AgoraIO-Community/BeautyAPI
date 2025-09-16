@@ -21,6 +21,10 @@ class SettingsDialog(private val context: Context) {
         }
     }
 
+    fun setBeautySdk(version: String) {
+        mBinding.tvBeautySdk.text = version
+    }
+
     fun setBeautyEnable(enable: Boolean) {
         mBinding.swBeauty.isChecked = enable
     }
