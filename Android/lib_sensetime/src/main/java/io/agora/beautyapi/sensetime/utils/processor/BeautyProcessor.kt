@@ -290,10 +290,9 @@ class BeautyProcessor : IBeautyProcessor {
             return null
         }
 
-
+        glTextureBufferQueue.setMinCacheCount(input.diffBetweenBytesAndTexture + 1)
 
         val diff = glTextureBufferQueue.size() - mFaceDetector.size()
-        glTextureBufferQueue.setMinCacheCount(diff)
         if(diff < input.diffBetweenBytesAndTexture){
             glTextureBufferQueue.enqueue(
                 GLTextureBufferQueue.TextureIn(

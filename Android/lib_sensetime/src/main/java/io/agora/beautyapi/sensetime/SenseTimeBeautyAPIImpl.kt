@@ -56,6 +56,7 @@ import io.agora.rtc2.Constants
 import io.agora.rtc2.gl.EglBaseProvider
 import io.agora.rtc2.video.IVideoFrameObserver
 import io.agora.rtc2.video.VideoCanvas
+import java.io.File
 import java.nio.ByteBuffer
 import java.util.Collections
 import java.util.concurrent.Callable
@@ -972,11 +973,29 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
 
         private var sDiffBetweenBytesAndTexture: Int = -1
 
+        fun isArm64SoLoaded(): Boolean {
+            var isArm64 = false
+            try {
+                val mapsFile = File("/proc/self/maps")
+                mapsFile.forEachLine { line ->
+                    // 检查行中包含".so"且路径中有'arm64'或'lib64'字样
+                    if (line.contains(".so") && (line.contains("arm64") || line.contains("lib64"))) {
+                        isArm64 = true
+                        return@forEachLine
+                    }
+                }
+            } catch (e: Exception) {
+               Logging.e("BeautyAPIUtil", "isArm64SoLoaded", e)
+            }
+            Logging.d("BeautyAPIUtil", "isArm64SoLoaded: $isArm64")
+            return isArm64
+        }
+
         private fun getDiffBetweenBytesAndTexture(videoFrame: VideoFrame): Int {
             if (sDiffBetweenBytesAndTexture != -1) {
                 return sDiffBetweenBytesAndTexture;
             }
-            if (videoFrame.buffer is TextureBuffer) {
+            if (videoFrame.buffer is TextureBuffer && isArm64SoLoaded()) {
                 try {
                     val enablePboOpt = YuvConverter::class.java.getDeclaredField("enablePboOpt")
                     enablePboOpt.isAccessible = true
@@ -985,7 +1004,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
                     }
                 } catch (e: Exception) {
                     Logging.w(
-                        "DiffBetweenBytesAndTexture",
+                        "BeautyAPIUtil",
                         "getDiffBetweenBytesAndTexture >> enablePboOpt not found. $e"
                     )
                 }
@@ -998,11 +1017,12 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
                         sDiffBetweenBytesAndTexture = 0
                     }
                 } catch (e: Exception) {
-                    Logging.w("DiffBetweenBytesAndTexture", "enableHardwareBuffer not found. $e")
+                    Logging.w("BeautyAPIUtil", "getDiffBetweenBytesAndTexture >> enableHardwareBuffer not found. $e")
                 }
+            } else {
+                sDiffBetweenBytesAndTexture = 0
             }
             return sDiffBetweenBytesAndTexture
         }
     }
-
 }
