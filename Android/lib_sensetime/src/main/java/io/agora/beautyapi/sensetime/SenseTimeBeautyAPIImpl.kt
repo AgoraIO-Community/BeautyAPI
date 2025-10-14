@@ -40,11 +40,13 @@ import io.agora.base.VideoFrame
 import io.agora.base.VideoFrame.I420Buffer
 import io.agora.base.VideoFrame.SourceType
 import io.agora.base.VideoFrame.TextureBuffer
+import io.agora.base.internal.Logging
 import io.agora.base.internal.video.RendererCommon
 import io.agora.base.internal.video.YuvConverter
 import io.agora.base.internal.video.YuvHelper
 import io.agora.beautyapi.sensetime.utils.APIReporter
 import io.agora.beautyapi.sensetime.utils.APIType
+import io.agora.beautyapi.sensetime.utils.ByteArrayPool
 import io.agora.beautyapi.sensetime.utils.LogUtils
 import io.agora.beautyapi.sensetime.utils.StatsHelper
 import io.agora.beautyapi.sensetime.utils.processor.IBeautyProcessor
@@ -89,10 +91,10 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
     private var isFrontCamera = true
     private var cameraConfig = CameraConfig()
     private var localVideoRenderMode = Constants.RENDER_MODE_HIDDEN
-    private val pendingProcessRunList = Collections.synchronizedList(mutableListOf<()->Unit>())
+    private val pendingProcessRunList = Collections.synchronizedList(mutableListOf<() -> Unit>())
     private val apiReporter by lazy { APIReporter(APIType.BEAUTY, VERSION, config!!.rtcEngine) }
 
-    private enum class ProcessSourceType{
+    private enum class ProcessSourceType {
         UNKNOWN,
         TEXTURE_OES_API26,
         TEXTURE_2D_API26,
@@ -100,6 +102,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         TEXTURE_2D,
         I420,
     }
+
     private var currProcessSourceType = ProcessSourceType.UNKNOWN
 
     /**
@@ -126,7 +129,10 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         }
         cameraConfig = CameraConfig(config.cameraConfig.frontMirror, config.cameraConfig.backMirror)
         LogUtils.i(TAG, "initialize >> config = $config")
-        LogUtils.i(TAG, "initialize >> beauty api version=$VERSION, beauty sdk version=${STCommonNative.getVersion()}")
+        LogUtils.i(
+            TAG,
+            "initialize >> beauty api version=$VERSION, beauty sdk version=${STCommonNative.getVersion()}"
+        )
         apiReporter.reportFuncEvent(
             "initialize",
             mapOf(
@@ -160,7 +166,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
             LogUtils.e(TAG, "enable >> The beauty api has been released!")
             return ErrorCode.ERROR_HAS_RELEASED.value
         }
-        if(config?.captureMode == CaptureMode.Custom){
+        if (config?.captureMode == CaptureMode.Custom) {
             skipFrame = 2
             LogUtils.i(TAG, "enable >> skipFrame = $skipFrame")
         }
@@ -170,7 +176,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
             emptyMap()
         )
 
-        if(this.enable != enable){
+        if (this.enable != enable) {
             this.enable = enable
             this.enableChange = true
             LogUtils.i(TAG, "enable >> enableChange")
@@ -192,7 +198,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
      */
     override fun setupLocalVideo(view: View, renderMode: Int): Int {
         val rtcEngine = config?.rtcEngine
-        if(rtcEngine == null){
+        if (rtcEngine == null) {
             LogUtils.e(TAG, "setupLocalVideo >> The beauty api has not been initialized!")
             return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
         }
@@ -203,7 +209,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
             mapOf("view" to view, "renderMode" to renderMode),
             emptyMap()
         )
-        if(view is TextureView || view is SurfaceView){
+        if (view is TextureView || view is SurfaceView) {
             val canvas = VideoCanvas(view, renderMode, 0)
             canvas.mirrorMode = Constants.VIDEO_MIRROR_MODE_DISABLED
             rtcEngine.setupLocalVideo(canvas)
@@ -223,7 +229,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
      */
     override fun onFrame(videoFrame: VideoFrame): Int {
         val conf = config
-        if(conf == null){
+        if (conf == null) {
             LogUtils.e(TAG, "onFrame >> The beauty api has not been initialized!")
             return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
         }
@@ -253,7 +259,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
      */
     override fun setBeautyPreset(preset: BeautyPreset): Int {
         val effectNative = config?.stHandlers?.effectNative
-        if(effectNative == null){
+        if (effectNative == null) {
             LogUtils.e(TAG, "setBeautyPreset >> The beauty api has not been initialized!")
             return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
         }
@@ -274,13 +280,13 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
             // 锐化
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_TONE_SHARPEN,
-                if(enable) 0.5f else 0.0f
+                if (enable) 0.5f else 0.0f
             )
             // Clarity
             // 清晰度
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_TONE_CLEAR,
-                if(enable) 1.0f else 0.0f
+                if (enable) 1.0f else 0.0f
             )
             // Smooth skin
             // 磨皮
@@ -290,7 +296,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
             )
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_BASE_FACE_SMOOTH,
-                if(enable) 0.55f else 0.0f
+                if (enable) 0.55f else 0.0f
             )
             // Whitening
             // 美白
@@ -300,97 +306,97 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
             )
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_BASE_WHITTEN,
-                if(enable) 0.2f else 0.0f
+                if (enable) 0.2f else 0.0f
             )
             // Slim face
             // 瘦脸
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_PLASTIC_THIN_FACE,
-                if(enable) 0.4f else 0.0f
+                if (enable) 0.4f else 0.0f
             )
             // Enlarged eyes
             // 大眼
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_RESHAPE_ENLARGE_EYE,
-                if(enable) 0.3f else 0.0f
+                if (enable) 0.3f else 0.0f
             )
             // Reddening
             // 红润
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_BASE_REDDEN,
-                if(enable) 0.0f else 0.0f
+                if (enable) 0.0f else 0.0f
             )
             // Slim cheekbones
             // 瘦脸颊
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_PLASTIC_SHRINK_CHEEKBONE,
-                if(enable) 0.0f else 0.0f
+                if (enable) 0.0f else 0.0f
             )
             // Jawbone
             // 下颌骨
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_PLASTIC_SHRINK_JAWBONE,
-                if(enable) 0.0f else 0.0f
+                if (enable) 0.0f else 0.0f
             )
             // White teeth
             // 美牙
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_PLASTIC_WHITE_TEETH,
-                if(enable) 0.0f else 0.0f
+                if (enable) 0.0f else 0.0f
             )
             // Hairline height
             // 额头
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_PLASTIC_HAIRLINE_HEIGHT,
-                if(enable) 0.0f else 0.0f
+                if (enable) 0.0f else 0.0f
             )
             // Slim nose
             // 瘦鼻
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_PLASTIC_NARROW_NOSE,
-                if(enable) 0.0f  else 0.0f
+                if (enable) 0.0f else 0.0f
             )
             // Mouth shape
             // 嘴形
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_PLASTIC_MOUTH_SIZE,
-                if(enable) 0.0f else 0.0f
+                if (enable) 0.0f else 0.0f
             )
             // Chin length
             // 下巴
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_PLASTIC_CHIN_LENGTH,
-                if(enable) 0.0f else 0.0f
+                if (enable) 0.0f else 0.0f
             )
             // Bright eyes
             // 亮眼
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_PLASTIC_BRIGHT_EYE,
-                if(enable) 0.0f else 0.0f
+                if (enable) 0.0f else 0.0f
             )
             // Dark circle removal
             // 祛黑眼圈
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_PLASTIC_REMOVE_DARK_CIRCLES,
-                if(enable) 0.0f else 0.0f
+                if (enable) 0.0f else 0.0f
             )
             // Nasolabial folds removal
             // 祛法令纹
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_PLASTIC_REMOVE_NASOLABIAL_FOLDS,
-                if(enable) 0.0f else 0.0f
+                if (enable) 0.0f else 0.0f
             )
             // Saturation
             // 饱和度
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_TONE_SATURATION,
-                if(enable) 0.0f else 0.0f
+                if (enable) 0.0f else 0.0f
             )
             // Contrast
             // 对比度
             effectNative.setBeautyStrength(
                 STEffectBeautyType.EFFECT_BEAUTY_TONE_CONTRAST,
-                if(enable) 0.0f else 0.0f
+                if (enable) 0.0f else 0.0f
             )
         }
         return ErrorCode.ERROR_OK.value
@@ -431,7 +437,10 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
      *                     对应操作结果的错误代码
      */
     override fun updateCameraConfig(config: CameraConfig): Int {
-        LogUtils.i(TAG, "updateCameraConfig >> oldCameraConfig=$cameraConfig, newCameraConfig=$config")
+        LogUtils.i(
+            TAG,
+            "updateCameraConfig >> oldCameraConfig=$cameraConfig, newCameraConfig=$config"
+        )
         cameraConfig = CameraConfig(config.frontMirror, config.backMirror)
         apiReporter.reportFuncEvent(
             "updateCameraConfig",
@@ -463,8 +472,12 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
      *              参数值。
      */
     override fun setParameters(key: String, value: String) {
-        apiReporter.reportFuncEvent("setParameters", mapOf("key" to key, "value" to value), emptyMap())
-        when(key){
+        apiReporter.reportFuncEvent(
+            "setParameters",
+            mapOf("key" to key, "value" to value),
+            emptyMap()
+        )
+        when (key) {
             "beauty_mode" -> beautyMode = value.toInt()
         }
     }
@@ -476,9 +489,10 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
      * @return Refer to ErrorCode
      *         参考 ErrorCode
      */
+    @Synchronized
     override fun release(): Int {
         val conf = config
-        if(conf == null){
+        if (conf == null) {
             LogUtils.e(TAG, "release >> The beauty api has not been initialized!")
             return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
         }
@@ -507,6 +521,10 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         statsHelper?.reset()
         statsHelper = null
         pendingProcessRunList.clear()
+        LogUtils.i(TAG, "ByteArrayPool current size=" + ByteArrayPool.get().currentSize)
+        ByteArrayPool.get().clean()
+        LogUtils.i(TAG, "Last sDiffBetweenBytesAndTexture=$sDiffBetweenBytesAndTexture")
+        sDiffBetweenBytesAndTexture = -1
         return ErrorCode.ERROR_OK.value
     }
 
@@ -519,6 +537,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
      * @return true if processing was successful, false otherwise.
      *         如果处理成功则返回 true，否则返回 false。
      */
+    @Synchronized
     private fun processBeauty(videoFrame: VideoFrame): Boolean {
         if (isReleased) {
             LogUtils.e(TAG, "processBeauty >> The beauty api has been released!")
@@ -559,13 +578,16 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
                 }
             }
         if (captureMirror != cMirror || renderMirror != rMirror) {
-            LogUtils.w(TAG, "processBeauty >> enable=$enable, captureMirror=$captureMirror->$cMirror, renderMirror=$renderMirror->$rMirror")
+            LogUtils.w(
+                TAG,
+                "processBeauty >> enable=$enable, captureMirror=$captureMirror->$cMirror, renderMirror=$renderMirror->$rMirror"
+            )
             captureMirror = cMirror
-            if(renderMirror != rMirror){
+            if (renderMirror != rMirror) {
                 renderMirror = rMirror
                 config?.rtcEngine?.setLocalRenderMode(
                     localVideoRenderMode,
-                    if(renderMirror) Constants.VIDEO_MIRROR_MODE_ENABLED else Constants.VIDEO_MIRROR_MODE_DISABLED
+                    if (renderMirror) Constants.VIDEO_MIRROR_MODE_ENABLED else Constants.VIDEO_MIRROR_MODE_DISABLED
                 )
             }
             textureBufferHelper?.invoke {
@@ -577,19 +599,22 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
 
         val oldIsFrontCamera = isFrontCamera
         isFrontCamera = videoFrame.sourceType == SourceType.kFrontCamera
-        if(oldIsFrontCamera != isFrontCamera){
-            LogUtils.w(TAG, "processBeauty >> oldIsFrontCamera=$oldIsFrontCamera, isFrontCamera=$isFrontCamera")
+        if (oldIsFrontCamera != isFrontCamera) {
+            LogUtils.w(
+                TAG,
+                "processBeauty >> oldIsFrontCamera=$oldIsFrontCamera, isFrontCamera=$isFrontCamera"
+            )
             return false
         }
 
-        if(enableChange){
+        if (enableChange) {
             enableChange = false
             textureBufferHelper?.invoke {
                 beautyProcessor?.reset()
             }
         }
 
-        if(!enable){
+        if (!enable) {
             return true
         }
 
@@ -599,9 +624,9 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
                 EglBaseProvider.instance().rootEglBase.eglBaseContext
             )
             textureBufferHelper?.invoke {
-                synchronized(pendingProcessRunList){
+                synchronized(pendingProcessRunList) {
                     val iterator = pendingProcessRunList.iterator()
-                    while (iterator.hasNext()){
+                    while (iterator.hasNext()) {
                         iterator.next().invoke()
                         iterator.remove()
                     }
@@ -612,12 +637,12 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
 
         val startTime = System.currentTimeMillis()
 
-        val processTexId = when(beautyMode){
+        val processTexId = when (beautyMode) {
             1 -> processBeautyTexture(videoFrame)
             2 -> processBeautyI420(videoFrame)
             else -> processBeautyAuto(videoFrame)
         }
-        if(config?.statsEnable == true){
+        if (config?.statsEnable == true) {
             val costTime = System.currentTimeMillis() - startTime
             statsHelper?.once(costTime)
         }
@@ -627,8 +652,8 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
             return false
         }
 
-        if(skipFrame > 0){
-            skipFrame --
+        if (skipFrame > 0) {
+            skipFrame--
             LogUtils.w(TAG, "processBeauty >> skipFrame=$skipFrame")
             return false
         }
@@ -670,17 +695,17 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
      */
     private fun processBeautyAuto(videoFrame: VideoFrame): Int {
         val buffer = videoFrame.buffer
-        return if(buffer is TextureBuffer){
+        return if (buffer is TextureBuffer) {
             processBeautyTexture(videoFrame)
         } else {
             processBeautyI420(videoFrame)
         }
     }
 
-    private fun mayCreateBeautyProcess(){
+    private fun mayCreateBeautyProcess() {
         val stHandlers = config?.stHandlers ?: return
 
-        if(beautyProcessor == null){
+        if (beautyProcessor == null) {
             beautyProcessor = createBeautyProcessor().apply {
                 initialize(stHandlers.effectNative, stHandlers.humanActionNative)
             }
@@ -697,22 +722,29 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
      *         处理后的纹理 ID
      */
     @TargetApi(26)
-    private fun processBeautyTextureAPI26(videoFrame: VideoFrame): Int{
+    private fun processBeautyTextureAPI26(videoFrame: VideoFrame): Int {
         val texBufferHelper = textureBufferHelper ?: return -1
         val buffer = videoFrame.buffer as? TextureBuffer ?: return -1
         val width = buffer.width
         val height = buffer.height
 
-        when(buffer.type){
+        when (buffer.type) {
             TextureBuffer.Type.OES -> {
-                if(currProcessSourceType != ProcessSourceType.TEXTURE_OES_API26){
-                    LogUtils.i(TAG, "processBeautyAuto >> process source type change old=$currProcessSourceType, new=${ProcessSourceType.TEXTURE_OES_API26}")
+                if (currProcessSourceType != ProcessSourceType.TEXTURE_OES_API26) {
+                    LogUtils.i(
+                        TAG,
+                        "processBeautyAuto >> process source type change old=$currProcessSourceType, new=${ProcessSourceType.TEXTURE_OES_API26}"
+                    )
                     currProcessSourceType = ProcessSourceType.TEXTURE_OES_API26
                 }
             }
+
             else -> {
-                if(currProcessSourceType != ProcessSourceType.TEXTURE_2D_API26){
-                    LogUtils.i(TAG, "processBeautyAuto >> process source type change old=$currProcessSourceType, new=${ProcessSourceType.TEXTURE_2D_API26}")
+                if (currProcessSourceType != ProcessSourceType.TEXTURE_2D_API26) {
+                    LogUtils.i(
+                        TAG,
+                        "processBeautyAuto >> process source type change old=$currProcessSourceType, new=${ProcessSourceType.TEXTURE_2D_API26}"
+                    )
                     currProcessSourceType = ProcessSourceType.TEXTURE_2D_API26
                 }
             }
@@ -736,7 +768,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
                     },
                     textureMatrix = matrix,
                 )
-            )?.textureId ?:  -1
+            )?.textureId ?: -1
         })
     }
 
@@ -749,15 +781,18 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
      * @return The texture ID after processing
      *         处理后的纹理 ID
      */
-    private fun processBeautyI420(videoFrame: VideoFrame): Int{
+    private fun processBeautyI420(videoFrame: VideoFrame): Int {
         val texBufferHelper = textureBufferHelper ?: return -1
         val nv21ByteArray = getNV21Buffer(videoFrame) ?: return -1
         val buffer = videoFrame.buffer
         val width = buffer.width
         val height = buffer.height
 
-        if(currProcessSourceType != ProcessSourceType.I420){
-            LogUtils.i(TAG, "processBeautyAuto >> process source type change old=$currProcessSourceType, new=${ProcessSourceType.I420}")
+        if (currProcessSourceType != ProcessSourceType.I420) {
+            LogUtils.i(
+                TAG,
+                "processBeautyAuto >> process source type change old=$currProcessSourceType, new=${ProcessSourceType.I420}"
+            )
             currProcessSourceType = ProcessSourceType.I420
         }
 
@@ -787,27 +822,34 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
      * @return The texture ID after processing
      *         处理后的纹理 ID
      */
-    private fun processBeautyTexture(videoFrame: VideoFrame): Int{
-        if (Build.VERSION.SDK_INT >= 26) {
-            // For Android 8.0 and above, use single texture input. Internally, HardwareBuffer is used to convert to NV21 format.
-            return processBeautyTextureAPI26(videoFrame)
-        }
+    private fun processBeautyTexture(videoFrame: VideoFrame): Int {
+//        if (Build.VERSION.SDK_INT >= 26) {
+//            // For Android 8.0 and above, use single texture input. Internally, HardwareBuffer is used to convert to NV21 format.
+//            return processBeautyTextureAPI26(videoFrame)
+//        }
         val texBufferHelper = textureBufferHelper ?: return -1
         val buffer = videoFrame.buffer as? TextureBuffer ?: return -1
         val nv21ByteArray = getNV21Buffer(videoFrame) ?: return -1
         val width = buffer.width
         val height = buffer.height
 
-        when(buffer.type){
+        when (buffer.type) {
             TextureBuffer.Type.OES -> {
-                if(currProcessSourceType != ProcessSourceType.TEXTURE_OES){
-                    LogUtils.i(TAG, "processBeautyAuto >> process source type change old=$currProcessSourceType, new=${ProcessSourceType.TEXTURE_OES}")
+                if (currProcessSourceType != ProcessSourceType.TEXTURE_OES) {
+                    LogUtils.i(
+                        TAG,
+                        "processBeautyAuto >> process source type change old=$currProcessSourceType, new=${ProcessSourceType.TEXTURE_OES}"
+                    )
                     currProcessSourceType = ProcessSourceType.TEXTURE_OES
                 }
             }
+
             else -> {
-                if(currProcessSourceType != ProcessSourceType.TEXTURE_2D){
-                    LogUtils.i(TAG, "processBeautyAuto >> process source type change old=$currProcessSourceType, new=${ProcessSourceType.TEXTURE_2D}")
+                if (currProcessSourceType != ProcessSourceType.TEXTURE_2D) {
+                    LogUtils.i(
+                        TAG,
+                        "processBeautyAuto >> process source type change old=$currProcessSourceType, new=${ProcessSourceType.TEXTURE_2D}"
+                    )
                     currProcessSourceType = ProcessSourceType.TEXTURE_2D
                 }
             }
@@ -833,7 +875,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
                         else -> GLES20.GL_TEXTURE_2D
                     },
                     textureMatrix = matrix,
-                    diffBetweenBytesAndTexture = 1
+                    diffBetweenBytesAndTexture = getDiffBetweenBytesAndTexture(videoFrame)
                 )
             )?.textureId ?: -1
         })
@@ -848,7 +890,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
      * @return ByteArray? The NV21 buffer as a byte array, or null if it cannot be retrieved.
      *                    NV21 缓冲区的字节数组，如果无法获取则返回 null。
      */
-    private fun getNV21Buffer(videoFrame: VideoFrame) : ByteArray? {
+    private fun getNV21Buffer(videoFrame: VideoFrame): ByteArray? {
         val buffer = videoFrame.buffer
         YuvConverter.setEnablePboOpt(true)
         YuvConverter.setEnableConvertPerLog(true)
@@ -861,7 +903,8 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
             nv21ByteBuffer = ByteBuffer.allocateDirect(nv21Size)
             return null
         }
-        val nv21ByteArray = ByteArray(nv21Size)
+
+        val nv21ByteArray = ByteArrayPool.get().getBuf(nv21Size)
 
         YuvHelper.I420ToNV12(
             i420Buffer.dataY, i420Buffer.strideY,
@@ -895,7 +938,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         return processBeauty(videoFrame)
     }
 
-    override fun onPreEncodeVideoFrame(sourceType: Int, videoFrame: VideoFrame?) : Boolean {
+    override fun onPreEncodeVideoFrame(sourceType: Int, videoFrame: VideoFrame?): Boolean {
         return true
     }
 
@@ -923,5 +966,43 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
     override fun getMirrorApplied() = captureMirror && !enable
 
     override fun getObservedFramePosition() = IVideoFrameObserver.POSITION_POST_CAPTURER
+
+
+    private companion object {
+
+        private var sDiffBetweenBytesAndTexture: Int = -1
+
+        private fun getDiffBetweenBytesAndTexture(videoFrame: VideoFrame): Int {
+            if (sDiffBetweenBytesAndTexture != -1) {
+                return sDiffBetweenBytesAndTexture;
+            }
+            if (videoFrame.buffer is TextureBuffer) {
+                try {
+                    val enablePboOpt = YuvConverter::class.java.getDeclaredField("enablePboOpt")
+                    enablePboOpt.isAccessible = true
+                    if (enablePboOpt.getBoolean(null)) {
+                        sDiffBetweenBytesAndTexture = 1
+                    }
+                } catch (e: Exception) {
+                    Logging.w(
+                        "DiffBetweenBytesAndTexture",
+                        "getDiffBetweenBytesAndTexture >> enablePboOpt not found. $e"
+                    )
+                }
+
+                try {
+                    val enableHardwareBuffer =
+                        YuvConverter::class.java.getDeclaredField("enableHardwareBuffer")
+                    enableHardwareBuffer.isAccessible = true
+                    if (enableHardwareBuffer.getBoolean(null)) {
+                        sDiffBetweenBytesAndTexture = 0
+                    }
+                } catch (e: Exception) {
+                    Logging.w("DiffBetweenBytesAndTexture", "enableHardwareBuffer not found. $e")
+                }
+            }
+            return sDiffBetweenBytesAndTexture
+        }
+    }
 
 }

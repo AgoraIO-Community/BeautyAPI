@@ -16,6 +16,7 @@ import com.softsugar.stmobile.model.STEffectTexture
 import com.softsugar.stmobile.model.STQuaternion
 import com.softsugar.stmobile.params.STEffectParam
 import com.softsugar.stmobile.sticker_module_types.STCustomEvent
+import io.agora.beautyapi.sensetime.utils.ByteArrayPool
 import io.agora.beautyapi.sensetime.utils.LogUtils
 import io.agora.beautyapi.sensetime.utils.egl.GLCopyHelper
 import io.agora.beautyapi.sensetime.utils.egl.GLFrameBuffer
@@ -292,6 +293,7 @@ class BeautyProcessor : IBeautyProcessor {
 
 
         val diff = glTextureBufferQueue.size() - mFaceDetector.size()
+        glTextureBufferQueue.setMinCacheCount(diff)
         if(diff < input.diffBetweenBytesAndTexture){
             glTextureBufferQueue.enqueue(
                 GLTextureBufferQueue.TextureIn(
@@ -305,10 +307,12 @@ class BeautyProcessor : IBeautyProcessor {
                     input.textureMatrix
                 )
             )
+            ByteArrayPool.get().returnBuf(input.bytes)
             return null
         } else if(diff > input.diffBetweenBytesAndTexture){
             mFaceDetector.reset()
             glTextureBufferQueue.reset()
+            ByteArrayPool.get().returnBuf(input.bytes)
             return null
         } else {
             glTextureBufferQueue.enqueue(
@@ -324,6 +328,18 @@ class BeautyProcessor : IBeautyProcessor {
                 )
             )
         }
+
+        mFaceDetector.enqueue(
+            FaceDetector.DetectorIn(
+                input.bytes,
+                input.bytesType,
+                input.width,
+                input.height,
+                input.isFrontCamera,
+                input.isMirror,
+                input.cameraOrientation
+            )
+        )
 
         val detectorOut = mFaceDetector.dequeue()
         var out : OutputInfo? = null
@@ -349,17 +365,6 @@ class BeautyProcessor : IBeautyProcessor {
                 LogUtils.e(TAG, "The face detector out can not found its texture out!")
             }
         }
-        mFaceDetector.enqueue(
-            FaceDetector.DetectorIn(
-                input.bytes,
-                input.bytesType,
-                input.width,
-                input.height,
-                input.isFrontCamera,
-                input.isMirror,
-                input.cameraOrientation
-            )
-        )
 
         if(skipFrame > 0){
             skipFrame --
@@ -485,6 +490,7 @@ class BeautyProcessor : IBeautyProcessor {
             GLES20.glDeleteTextures(1, intArrayOf(finalOutTextureId), 0)
             finalOutTextureId = -1
         }
+        ByteArrayPool.get().clean()
     }
 
 

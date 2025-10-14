@@ -32,6 +32,7 @@ import com.softsugar.stmobile.STMobileHumanActionNative
 import com.softsugar.stmobile.model.STHumanAction
 import com.softsugar.stmobile.model.STMobileAnimalResult
 import com.softsugar.stmobile.params.STRotateType
+import io.agora.beautyapi.sensetime.utils.ByteArrayPool
 import io.agora.beautyapi.sensetime.utils.LogUtils
 import java.util.concurrent.Callable
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -47,7 +48,7 @@ class FaceDetector(
     private val workerThread = Executors.newSingleThreadExecutor()
     private var accelerometer: Accelerometer? = null
 
-    private val cacheSize = 2
+    private val cacheSize = 0
     private var cacheIndex = 0
     private val cacheFutureQueue = ConcurrentLinkedQueue<Future<Int>>()
     private var isDequeBegin = false
@@ -95,7 +96,7 @@ class FaceDetector(
                     return@Callable index
                 })
             )
-            cacheIndex = (cacheIndex + 1) % cacheSize
+            cacheIndex = if(cacheSize >0) (cacheIndex + 1) % cacheSize else 0
         } else {
             LogUtils.e(TAG, "Detector queue is full!!")
         }
@@ -171,6 +172,8 @@ class FaceDetector(
 
 
         humanActionNative.updateNativeHumanActionCache(index)
+
+        ByteArrayPool.get().returnBuf(iN.bytes)
     }
 
 

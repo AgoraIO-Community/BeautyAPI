@@ -28,16 +28,35 @@ import android.opengl.GLES20
 import android.util.Size
 import io.agora.beautyapi.sensetime.utils.LogUtils
 import java.util.concurrent.ConcurrentLinkedQueue
+import kotlin.math.max
 
 class GLTextureBufferQueue(
     private val glFrameBuffer: GLFrameBuffer,
-    private val cacheCount: Int = 6
+    private var cacheCount: Int = 1
 ) {
     private val TAG = "GLTextureBufferQueue"
 
+    init {
+        // 最小必须有一个texture cache
+        cacheCount = max(cacheCount, 1)
+    }
+
     private var cacheIndex = 0
-    private val cacheTextureOuts = arrayOfNulls<TextureOut>(cacheCount)
+    private var cacheTextureOuts = arrayOfNulls<TextureOut>(cacheCount)
     private val textureIdQueue = ConcurrentLinkedQueue<TextureOut>()
+
+    fun setMinCacheCount(count: Int) {
+        if (count <= cacheCount) {
+            return
+        }
+
+        cacheCount = count
+        val oldCacheTextureOuts = cacheTextureOuts;
+        cacheTextureOuts = arrayOfNulls(cacheCount)
+        oldCacheTextureOuts.forEachIndexed { index, textureOut ->
+            cacheTextureOuts[index] = textureOut
+        }
+    }
 
 
     fun enqueue(iN: TextureIn): Int {
@@ -71,7 +90,7 @@ class GLTextureBufferQueue(
                     iN.isFrontCamera
                 )
                 cacheTextureOuts[cacheIndex] = out
-            } else if(out.isFrontCamera != iN.isFrontCamera){
+            } else if (out.isFrontCamera != iN.isFrontCamera) {
                 out = TextureOut(
                     0,
                     out.textureId,
@@ -95,10 +114,10 @@ class GLTextureBufferQueue(
             } else {
                 flipH = !iN.isFrontCamera
             }
-            if(iN.isMirror){
+            if (iN.isMirror) {
                 flipH = !flipH
             }
-            if(iN.rotation == 0 || iN.rotation == 180){
+            if (iN.rotation == 0 || iN.rotation == 180) {
                 flipV = !flipV
                 flipH = !flipH
             }
