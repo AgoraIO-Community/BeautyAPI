@@ -11,6 +11,8 @@
     <string name="beauty_process_texture">Texture</string>
     <string name="beauty_capture_agora">Agora</string>
     <string name="beauty_capture_custom">Custom</string>
+    <string name="beauty_convert_sdk">Sdk</string>
+    <string name="beauty_convert_beauty">Beauty</string>
 
     <string name="beauty_role">角色</string>
     <string name="beauty_channel_name_cannot_be_empty">频道名不能为空</string>
@@ -23,6 +25,8 @@
     <string name="beauty_encoding_frame_rate">编码帧率</string>
     <string name="beauty_collection_method">美颜采集方式</string>
     <string name="beauty_processing_method">美颜处理方式(测试用)</string>
+    <string name="beauty_cache_size">美颜缓存数量(测试用)</string>
+    <string name="beauty_texture_convert_type">美颜纹理转换方式(测试用)</string>
     <string name="beauty_join_channel">加入频道</string>
     <string name="beauty_channel_name">频道名</string>
 

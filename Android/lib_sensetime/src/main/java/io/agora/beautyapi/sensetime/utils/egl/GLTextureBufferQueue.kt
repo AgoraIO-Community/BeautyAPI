@@ -32,36 +32,34 @@ import kotlin.math.max
 
 class GLTextureBufferQueue(
     private val glFrameBuffer: GLFrameBuffer,
-    private var cacheCount: Int = 1
+    private var cacheSize: Int = 1
 ) {
     private val TAG = "GLTextureBufferQueue"
+    private val MIN_CACHE_SIZE = 1 // 最小必须有一个texture cache
 
     init {
-        // 最小必须有一个texture cache
-        cacheCount = max(cacheCount, 1)
+        cacheSize = max(cacheSize, MIN_CACHE_SIZE)
     }
 
     private var cacheIndex = 0
-    private var cacheTextureOuts = arrayOfNulls<TextureOut>(cacheCount)
+    private var cacheTextureOuts = arrayOfNulls<TextureOut>(cacheSize)
     private val textureIdQueue = ConcurrentLinkedQueue<TextureOut>()
 
-    fun setMinCacheCount(count: Int) {
-        if (count <= cacheCount) {
+    fun setCacheSize(size: Int) {
+        val size_ = max(size, MIN_CACHE_SIZE)
+        if (size_ == cacheSize) {
             return
         }
-
-        cacheCount = count
-        val oldCacheTextureOuts = cacheTextureOuts;
-        cacheTextureOuts = arrayOfNulls(cacheCount)
-        oldCacheTextureOuts.forEachIndexed { index, textureOut ->
-            cacheTextureOuts[index] = textureOut
-        }
+        reset()
+        cacheSize = size_
+        cacheTextureOuts = arrayOfNulls<TextureOut>(cacheSize)
     }
 
+    fun getCacheSize() = cacheSize
 
     fun enqueue(iN: TextureIn): Int {
         var size = textureIdQueue.size
-        if (size < cacheCount) {
+        if (size < cacheSize) {
             var out = cacheTextureOuts[cacheIndex]
             val outSize = when (iN.rotation) {
                 90, 270 -> Size(iN.height, iN.width)
@@ -127,7 +125,7 @@ class GLTextureBufferQueue(
             GLES20.glFinish()
             out.index = cacheIndex
             textureIdQueue.offer(out)
-            cacheIndex = (cacheIndex + 1) % cacheCount
+            cacheIndex = (cacheIndex + 1) % cacheSize
             size++
 
         } else {
@@ -138,19 +136,12 @@ class GLTextureBufferQueue(
     }
 
     fun dequeue(): TextureOut? {
-        val size = textureIdQueue.size
-        val poll = textureIdQueue.poll()
-        return poll
+        return textureIdQueue.poll()
     }
 
     fun size() = textureIdQueue.size
 
     fun reset() {
-        cacheIndex = 0
-        textureIdQueue.clear()
-    }
-
-    fun release() {
         cacheIndex = 0
         cacheTextureOuts.forEachIndexed { index, textureOut ->
             if (textureOut != null) {
@@ -159,6 +150,10 @@ class GLTextureBufferQueue(
             }
         }
         textureIdQueue.clear()
+    }
+
+    fun release() {
+        reset()
     }
 
     data class TextureIn(

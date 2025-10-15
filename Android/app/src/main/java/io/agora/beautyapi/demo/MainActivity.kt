@@ -70,7 +70,9 @@ class MainActivity : ComponentActivity() {
                     mBinding.spFrameRate.selectedItem.toString(),
                     mBinding.spBeautyCaptureMode.selectedItem.toString(),
                     mBinding.spBeautyProcessMode.selectedItem.toString(),
-                    mBinding.swFence.isChecked
+                    mBinding.swFence.isChecked,
+                    mBinding.spBeautyCacheSize.selectedItem.toString().toInt(),
+                    mBinding.spBeautyConvertType.selectedItem.toString()
                 )
 
                 getString(R.string.beauty_faceunity) -> FaceUnityActivity.launch(

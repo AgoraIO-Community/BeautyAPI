@@ -22,13 +22,14 @@ import io.agora.beautyapi.sensetime.utils.egl.GLCopyHelper
 import io.agora.beautyapi.sensetime.utils.egl.GLFrameBuffer
 import io.agora.beautyapi.sensetime.utils.egl.GLTextureBufferQueue
 import io.agora.beautyapi.sensetime.utils.processor.Accelerometer.CLOCKWISE_ANGLE
+import kotlin.math.max
 
 class BeautyProcessor : IBeautyProcessor {
     private val TAG = this::class.java.simpleName
 
     private val glCopyHelper = GLCopyHelper()
     private val glFrameBuffer = GLFrameBuffer()
-    private val glTextureBufferQueue = GLTextureBufferQueue(glFrameBuffer)
+
 
     private var mProcessWidth = 0
     private var mProcessHeight = 0
@@ -38,6 +39,8 @@ class BeautyProcessor : IBeautyProcessor {
 
     private lateinit var mSTMobileEffectNative: STMobileEffectNative
     private lateinit var mFaceDetector: FaceDetector
+    private lateinit var glTextureBufferQueue : GLTextureBufferQueue
+
     private var mSTMobileColorConvertNative: STMobileColorConvertNative? = null
     private var mSTMobileHardwareBufferNative: STMobileHardwareBufferNative? = null
 
@@ -60,10 +63,17 @@ class BeautyProcessor : IBeautyProcessor {
 
     override fun initialize(
         effectNative: STMobileEffectNative,
-        humanActionNative: STMobileHumanActionNative
+        humanActionNative: STMobileHumanActionNative,
+        cacheSize: Int
     ) {
         this.mSTMobileEffectNative = effectNative
-        mFaceDetector = FaceDetector(humanActionNative, effectNative)
+        mFaceDetector = FaceDetector(humanActionNative, effectNative, cacheSize)
+        glTextureBufferQueue = GLTextureBufferQueue(glFrameBuffer, cacheSize)
+    }
+
+    override fun setCacheSize(size: Int) {
+        mFaceDetector.setCacheSize(size)
+        glTextureBufferQueue.setCacheSize(size)
     }
 
     override fun release() {
@@ -184,7 +194,8 @@ class BeautyProcessor : IBeautyProcessor {
         glFrameBuffer.setFlipV(true)
         glFrameBuffer.process(input.textureId, input.textureType)
 
-        val outBuffer = ByteArray(width * height * 4)
+        val size = width * height * 4
+        val outBuffer = ByteArrayPool.get().getBuf(size)
         mSTMobileHardwareBufferNative?.let {
             glCopyHelper.copy2DTextureToOesTexture(
                 processInTextureId,
@@ -290,10 +301,12 @@ class BeautyProcessor : IBeautyProcessor {
             return null
         }
 
-        glTextureBufferQueue.setMinCacheCount(input.diffBetweenBytesAndTexture + 1)
-
+        val expectDiff = max(0, input.diffBetweenBytesAndTexture)
         val diff = glTextureBufferQueue.size() - mFaceDetector.size()
-        if(diff < input.diffBetweenBytesAndTexture){
+        if(diff < expectDiff) {
+            glTextureBufferQueue.setCacheSize(
+                max(mFaceDetector.getCacheSize() + expectDiff, glTextureBufferQueue.getCacheSize())
+            )
             glTextureBufferQueue.enqueue(
                 GLTextureBufferQueue.TextureIn(
                     input.textureId,
@@ -306,11 +319,6 @@ class BeautyProcessor : IBeautyProcessor {
                     input.textureMatrix
                 )
             )
-            ByteArrayPool.get().returnBuf(input.bytes)
-            return null
-        } else if(diff > input.diffBetweenBytesAndTexture){
-            mFaceDetector.reset()
-            glTextureBufferQueue.reset()
             ByteArrayPool.get().returnBuf(input.bytes)
             return null
         } else {

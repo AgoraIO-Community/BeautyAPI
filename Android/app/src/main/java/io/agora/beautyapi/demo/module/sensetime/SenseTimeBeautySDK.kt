@@ -228,7 +228,7 @@ object SenseTimeBeautySDK {
 
 
         // Enlarged eyes
-        var enlargeEye = 0.0f
+        var enlargeEye = 0.75f
             set(value) {
                 field = value
                 val effectNative = _mobileEffectNative ?: return
@@ -241,7 +241,7 @@ object SenseTimeBeautySDK {
             }
 
         // Reddening
-        var redden = 0.0f
+        var redden = 0.75f
             set(value) {
                 field = value
                 val effectNative = _mobileEffectNative ?: return
@@ -268,7 +268,7 @@ object SenseTimeBeautySDK {
             }
 
         // Jawbone
-        var shrinkJawbone = 0.0f
+        var shrinkJawbone = 0.75f
             set(value) {
                 field = value
                 val effectNative = _mobileEffectNative ?: return
@@ -281,7 +281,7 @@ object SenseTimeBeautySDK {
             }
 
         // White teeth
-        var whiteTeeth = 0.0f
+        var whiteTeeth = 0.75f
             set(value) {
                 field = value
                 val effectNative = _mobileEffectNative ?: return
@@ -294,7 +294,7 @@ object SenseTimeBeautySDK {
             }
 
         // Hairline height
-        var hairlineHeight = 0.0f
+        var hairlineHeight = 0.75f
             set(value) {
                 field = value
                 val effectNative = _mobileEffectNative ?: return
@@ -307,7 +307,7 @@ object SenseTimeBeautySDK {
             }
 
         // Slim nose
-        var narrowNose = 0.0f
+        var narrowNose = 0.75f
             set(value) {
                 field = value
                 val effectNative = _mobileEffectNative ?: return
@@ -320,7 +320,7 @@ object SenseTimeBeautySDK {
             }
 
         // Slim nose
-        var mouthSize = 0.0f
+        var mouthSize = 0.75f
             set(value) {
                 field = value
                 val effectNative = _mobileEffectNative ?: return
@@ -334,7 +334,7 @@ object SenseTimeBeautySDK {
 
 
         // Chin length
-        var chinLength = 0.0f
+        var chinLength = 0.75f
             set(value) {
                 field = value
                 val effectNative = _mobileEffectNative ?: return
@@ -346,7 +346,7 @@ object SenseTimeBeautySDK {
             }
 
         // Bright eyes
-        var brightEye = 0.0f
+        var brightEye = 0.75f
             set(value) {
                 field = value
                 val effectNative = _mobileEffectNative ?: return
@@ -359,7 +359,7 @@ object SenseTimeBeautySDK {
             }
 
         // Dark circle removal
-        var darkCircles = 0.0f
+        var darkCircles = 0.75f
             set(value) {
                 field = value
                 val effectNative = _mobileEffectNative ?: return
@@ -372,7 +372,7 @@ object SenseTimeBeautySDK {
             }
 
         // Nasolabial folds removal
-        var nasolabialFolds = 0.0f
+        var nasolabialFolds = 0.75f
             set(value) {
                 field = value
                 val effectNative = _mobileEffectNative ?: return
@@ -385,7 +385,7 @@ object SenseTimeBeautySDK {
             }
 
         // Saturation
-        var saturation = 0.0f
+        var saturation = 0f
             set(value) {
                 field = value
                 val effectNative = _mobileEffectNative ?: return
@@ -398,7 +398,7 @@ object SenseTimeBeautySDK {
             }
 
         // Contrast
-        var contrast = 0.0f
+        var contrast = 0f
             set(value) {
                 field = value
                 val effectNative = _mobileEffectNative ?: return
@@ -411,7 +411,7 @@ object SenseTimeBeautySDK {
             }
 
         // Sharpening
-        var sharpen = 0.0f
+        var sharpen = 0.75f
             set(value) {
                 field = value
                 val effectNative = _mobileEffectNative ?: return
@@ -425,7 +425,7 @@ object SenseTimeBeautySDK {
 
 
         // Clarity
-        var clear = 0.0f
+        var clear = 0.75f
             set(value) {
                 field = value
                 val effectNative = _mobileEffectNative ?: return
@@ -485,22 +485,22 @@ object SenseTimeBeautySDK {
             smooth = 0.75f
             whiten = 0.75f
             thinFace = 0.3f
-            enlargeEye = 0.0f
-            sharpen = 0.0f
-            clear = 0.0f
-            redden = 0.0f
+            enlargeEye = 0.75f
+            sharpen = 0.75f
+            clear = 0.75f
+            redden = 0.75f
             shrinkCheekbone = 0.3f
-            shrinkJawbone = 0.0f
-            whiteTeeth = 0.0f
-            hairlineHeight = 0.0f
-            narrowNose = 0.0f
-            mouthSize = 0.0f
-            chinLength = 0.0f
-            brightEye = 0.0f
-            darkCircles = 0.0f
-            nasolabialFolds = 0.0f
-            saturation = 0.0f
-            contrast = 0.0f
+            shrinkJawbone = 0.75f
+            whiteTeeth = 0.75f
+            hairlineHeight = 0.75f
+            narrowNose = 0.75f
+            mouthSize = 0.75f
+            chinLength = 0.75f
+            brightEye = 0.75f
+            darkCircles = 0.75f
+            nasolabialFolds = 0.75f
+            saturation = 0f
+            contrast = 0f
 
             makeUp = null
             sticker = null

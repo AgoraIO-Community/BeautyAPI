@@ -76,6 +76,8 @@ class SenseTimeActivity : ComponentActivity() {
         private const val EXTRA_CAPTURE_MODE = "CaptureMode"
         private const val EXTRA_PROCESS_MODE = "ProcessMode"
         private const val EXTRA_ENABLE_FENCE = "EnableFence"
+        private const val EXTRA_CACHE_SIZE = "CacheSize"
+        private const val EXTRA_TEXTURE_COVERT_TYPE = "TextureConvertType"
 
         fun launch(
             context: Context,
@@ -84,7 +86,9 @@ class SenseTimeActivity : ComponentActivity() {
             frameRate: String,
             captureMode: String,
             processMode: String,
-            enableFence: Boolean
+            enableFence: Boolean,
+            cacheSize: Int,
+            textureConvertType: String
         ) {
             Intent(context, SenseTimeActivity::class.java).apply {
                 putExtra(EXTRA_CHANNEL_NAME, channelName)
@@ -93,6 +97,8 @@ class SenseTimeActivity : ComponentActivity() {
                 putExtra(EXTRA_CAPTURE_MODE, captureMode)
                 putExtra(EXTRA_PROCESS_MODE, processMode)
                 putExtra(EXTRA_ENABLE_FENCE, enableFence)
+                putExtra(EXTRA_CACHE_SIZE, cacheSize)
+                putExtra(EXTRA_TEXTURE_COVERT_TYPE, textureConvertType)
                 context.startActivity(this)
             }
         }
@@ -292,6 +298,20 @@ class SenseTimeActivity : ComponentActivity() {
                 "2"
             )
         }
+
+        when (intent.getStringExtra(EXTRA_TEXTURE_COVERT_TYPE)) {
+            getString(R.string.beauty_convert_sdk) -> mSenseTimeApi.setParameters(
+                "beauty_texture_convert_type",
+                "0"
+            )
+
+            getString(R.string.beauty_convert_beauty) -> mSenseTimeApi.setParameters(
+                "beauty_texture_convert_type",
+                "1"
+            )
+        }
+
+        mSenseTimeApi.setParameters("beauty_cache_size", intent.getIntExtra(EXTRA_CACHE_SIZE, 1).toString())
 
         if (isCustomCaptureMode) {
             mRtcEngine.registerVideoFrameObserver(object : IVideoFrameObserver {

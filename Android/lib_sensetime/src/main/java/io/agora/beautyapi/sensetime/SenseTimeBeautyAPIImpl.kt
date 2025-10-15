@@ -30,6 +30,7 @@ import android.opengl.GLES11Ext
 import android.opengl.GLES20
 import android.opengl.GLES30
 import android.os.Build
+import android.util.Log
 import android.view.SurfaceView
 import android.view.TextureView
 import android.view.View
@@ -40,7 +41,6 @@ import io.agora.base.VideoFrame
 import io.agora.base.VideoFrame.I420Buffer
 import io.agora.base.VideoFrame.SourceType
 import io.agora.base.VideoFrame.TextureBuffer
-import io.agora.base.internal.Logging
 import io.agora.base.internal.video.RendererCommon
 import io.agora.base.internal.video.YuvConverter
 import io.agora.base.internal.video.YuvHelper
@@ -76,6 +76,17 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
      *    固定使用 i420。
      */
     private var beautyMode = 0
+
+    /**
+     * 美颜最小缓存buffer数量，内部最小使用1个纹理缓存和1个人脸数据缓存。
+     * 例如配置3，则内部最少使用3个纹理缓存和3个人脸数据缓存
+     */
+    private var beautyCacheSize = 2
+
+    /**
+     * 纹理转成raw data方式，0：优先使用sdk内部的buffer.toI420方法，1：优先使用美颜自带的转换方法
+     */
+    private var textureConvertType = 1
 
     private var textureBufferHelper: TextureBufferHelper? = null
     private var nv21ByteBuffer: ByteBuffer? = null
@@ -478,8 +489,11 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
             mapOf("key" to key, "value" to value),
             emptyMap()
         )
+        Log.i(TAG, "Beauty setParameters: key=$key, value=$value")
         when (key) {
             "beauty_mode" -> beautyMode = value.toInt()
+            "beauty_cache_size" -> beautyCacheSize = value.toInt()
+            "beauty_texture_convert_type" -> textureConvertType = value.toInt()
         }
     }
 
@@ -524,8 +538,6 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         pendingProcessRunList.clear()
         LogUtils.i(TAG, "ByteArrayPool current size=" + ByteArrayPool.get().currentSize)
         ByteArrayPool.get().clean()
-        LogUtils.i(TAG, "Last sDiffBetweenBytesAndTexture=$sDiffBetweenBytesAndTexture")
-        sDiffBetweenBytesAndTexture = -1
         return ErrorCode.ERROR_OK.value
     }
 
@@ -708,7 +720,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
 
         if (beautyProcessor == null) {
             beautyProcessor = createBeautyProcessor().apply {
-                initialize(stHandlers.effectNative, stHandlers.humanActionNative)
+                initialize(stHandlers.effectNative, stHandlers.humanActionNative, beautyCacheSize)
             }
         }
     }
@@ -824,10 +836,10 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
      *         处理后的纹理 ID
      */
     private fun processBeautyTexture(videoFrame: VideoFrame): Int {
-//        if (Build.VERSION.SDK_INT >= 26) {
-//            // For Android 8.0 and above, use single texture input. Internally, HardwareBuffer is used to convert to NV21 format.
-//            return processBeautyTextureAPI26(videoFrame)
-//        }
+        if (textureConvertType == 1 && Build.VERSION.SDK_INT >= 26) {
+            // For Android 8.0 and above, use single texture input. Internally, HardwareBuffer is used to convert to NV21 format.
+            return processBeautyTextureAPI26(videoFrame)
+        }
         val texBufferHelper = textureBufferHelper ?: return -1
         val buffer = videoFrame.buffer as? TextureBuffer ?: return -1
         val nv21ByteArray = getNV21Buffer(videoFrame) ?: return -1
@@ -985,9 +997,9 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
                     }
                 }
             } catch (e: Exception) {
-               Logging.e("BeautyAPIUtil", "isArm64SoLoaded", e)
+               LogUtils.e("BeautyAPIUtil", "isArm64SoLoaded", e)
             }
-            Logging.d("BeautyAPIUtil", "isArm64SoLoaded: $isArm64")
+            LogUtils.d("BeautyAPIUtil", "isArm64SoLoaded: $isArm64")
             return isArm64
         }
 
@@ -1003,7 +1015,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
                         sDiffBetweenBytesAndTexture = 1
                     }
                 } catch (e: Exception) {
-                    Logging.w(
+                    LogUtils.w(
                         "BeautyAPIUtil",
                         "getDiffBetweenBytesAndTexture >> enablePboOpt not found. $e"
                     )
@@ -1017,7 +1029,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
                         sDiffBetweenBytesAndTexture = 0
                     }
                 } catch (e: Exception) {
-                    Logging.w("BeautyAPIUtil", "getDiffBetweenBytesAndTexture >> enableHardwareBuffer not found. $e")
+                    LogUtils.w("BeautyAPIUtil", "getDiffBetweenBytesAndTexture >> enableHardwareBuffer not found. $e")
                 }
             } else {
                 sDiffBetweenBytesAndTexture = 0

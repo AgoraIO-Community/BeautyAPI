@@ -38,20 +38,25 @@ import java.util.concurrent.Callable
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
+import kotlin.math.max
 
 class FaceDetector(
     private val humanActionNative: STMobileHumanActionNative,
-    private val effectNative: STMobileEffectNative
+    private val effectNative: STMobileEffectNative,
+    private var cacheSize: Int = 0
 ) {
     private val TAG = "FaceDetector"
+    private val MIN_CACHE_SIZE = 1
+
+    init {
+        cacheSize = max(cacheSize, MIN_CACHE_SIZE)
+    }
 
     private val workerThread = Executors.newSingleThreadExecutor()
     private var accelerometer: Accelerometer? = null
 
-    private val cacheSize = 0
     private var cacheIndex = 0
     private val cacheFutureQueue = ConcurrentLinkedQueue<Future<Int>>()
-    private var isDequeBegin = false
 
     fun enableSensor(context: Context, enable: Boolean) {
         if (enable) {
@@ -68,11 +73,21 @@ class FaceDetector(
         }
     }
 
+    fun setCacheSize(size: Int) {
+        val size_ = max(size, MIN_CACHE_SIZE)
+        if (size_ == cacheSize) {
+            return
+        }
+        reset()
+        cacheSize = size_
+    }
+
+    fun getCacheSize() = cacheSize
+
     fun getAccelerometer() = accelerometer
 
     fun reset() {
         cacheIndex = 0
-        isDequeBegin = false
         var future = cacheFutureQueue.poll()
         while (future != null){
             future.cancel(true)
@@ -89,14 +104,14 @@ class FaceDetector(
     fun enqueue(iN: DetectorIn): Int {
         val index = cacheIndex
         val size = cacheFutureQueue.size
-        if (size <= cacheSize) {
+        if (size < cacheSize) {
             cacheFutureQueue.offer(
                 workerThread.submit(Callable {
                     detectHuman(iN, index)
                     return@Callable index
                 })
             )
-            cacheIndex = if(cacheSize >0) (cacheIndex + 1) % cacheSize else 0
+            cacheIndex = (cacheIndex + 1) % cacheSize
         } else {
             LogUtils.e(TAG, "Detector queue is full!!")
         }
@@ -105,8 +120,7 @@ class FaceDetector(
 
     fun dequeue(): DetectorOut? {
         val size = cacheFutureQueue.size
-        if(isDequeBegin || size >= cacheSize){
-            isDequeBegin = true
+        if(size >= cacheSize) {
             val future = cacheFutureQueue.poll()
             if(future != null){
                 try {

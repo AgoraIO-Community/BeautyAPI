@@ -37,7 +37,10 @@ interface IBeautyProcessor {
     fun initialize(
         effectNative: STMobileEffectNative, // Beauty effect processing handle
         humanActionNative: STMobileHumanActionNative, // Face detection handle
+        cacheSize: Int = 1
     )
+
+    fun setCacheSize(size: Int)
 
     fun process(input: InputInfo): OutputInfo?
 
