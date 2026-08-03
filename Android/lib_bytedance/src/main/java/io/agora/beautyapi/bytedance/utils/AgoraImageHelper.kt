@@ -26,7 +26,7 @@ package io.agora.beautyapi.bytedance.utils
 
 import android.opengl.GLES20
 import io.agora.base.VideoFrame
-import io.agora.base.internal.video.EglBase
+import io.agora.base.internal.video.EglBaseLock
 import io.agora.base.internal.video.GlRectDrawer
 import io.agora.base.internal.video.GlTextureFrameBuffer
 import io.agora.base.internal.video.RendererCommon.GlDrawer
@@ -56,7 +56,7 @@ class AgoraImageHelper {
         frameBuffer.setSize(width, height)
 
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBuffer.frameBufferId)
-        synchronized(EglBase.lock) {
+        EglBaseLock.lock {
             if (texType == VideoFrame.TextureBuffer.Type.OES) {
                 drawer.drawOes(texId, 0, transform, width, height, 0, 0, width, height, 0)
             } else {

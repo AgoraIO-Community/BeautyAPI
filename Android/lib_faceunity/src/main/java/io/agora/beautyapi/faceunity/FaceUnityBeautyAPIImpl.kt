@@ -42,7 +42,7 @@ import io.agora.base.VideoFrame
 import io.agora.base.VideoFrame.I420Buffer
 import io.agora.base.VideoFrame.SourceType
 import io.agora.base.VideoFrame.TextureBuffer
-import io.agora.base.internal.video.EglBase
+import io.agora.base.internal.video.EglBaseLock
 import io.agora.base.internal.video.YuvHelper
 import io.agora.beautyapi.faceunity.utils.APIReporter
 import io.agora.beautyapi.faceunity.utils.APIType
@@ -658,9 +658,11 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
                     return@setFilter -1
                 }
                 val ret = texBufferHelper.invoke {
-                    synchronized(EglBase.lock) {
-                        return@invoke fuRenderKit.renderWithInput(input).texture?.texId ?: -1
+                    var result = -1
+                    EglBaseLock.lock {
+                        result = fuRenderKit.renderWithInput(input).texture?.texId ?: -1
                     }
+                    result
                 }
                 return@setFilter ret ?: -1
             }
@@ -772,7 +774,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
                 return@invoke -1
             }
             var fuTexId = -1
-            synchronized(EglBase.lock) {
+            EglBaseLock.lock {
                 fuTexId = fuRenderKit.renderWithInput(input).texture?.texId ?: -1
             }
             outGLFrameBuffer.setSize(videoFrame.rotatedWidth, videoFrame.rotatedHeight)
@@ -898,7 +900,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             }
 
             var fuTexId = -1
-            synchronized(EglBase.lock) {
+            EglBaseLock.lock {
                 fuTexId = fuRenderKit.renderWithInput(input).texture?.texId ?: -1
             }
             outGLFrameBuffer.setSize(videoFrame.rotatedWidth, videoFrame.rotatedHeight)
