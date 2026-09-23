@@ -55,6 +55,12 @@ import io.agora.rtc2.Constants
 import io.agora.rtc2.gl.EglBaseProvider
 import io.agora.rtc2.video.IVideoFrameObserver
 import io.agora.rtc2.video.VideoCanvas
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import java.nio.ByteBuffer
 import java.util.Collections
 import java.util.concurrent.Callable
@@ -95,6 +101,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
     private var config: Config? = null
     private var enable: Boolean = false
     private var enableChange: Boolean = false
+    @Volatile
     private var isReleased: Boolean = false
     private var captureMirror = false
     private var renderMirror = false
@@ -126,6 +133,8 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
     private var asyncTextureBufferHelper: TextureBufferHelper? = null
 
     private val isResetting = AtomicBoolean(false)
+    private val rtcControlScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+    private var updateLocalRenderModeJob: Job? = null
 
 
     /**
@@ -409,13 +418,15 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             return ErrorCode.ERROR_HAS_RELEASED.value
         }
         LogUtils.i(TAG, "release")
+        isReleased = true
+        updateLocalRenderModeJob?.cancel()
+        rtcControlScope.cancel()
         if (conf.captureMode == CaptureMode.Agora) {
             conf.rtcEngine.registerVideoFrameObserver(null)
         }
         apiReporter.reportFuncEvent("release", emptyMap(), emptyMap())
         apiReporter.endDurationEvent("initialize-release", emptyMap())
 
-        isReleased = true
         isResetting.set(false)
         beautyTextureBufferHelper?.let {
             beautyTextureBufferHelper = null
@@ -503,10 +514,21 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             captureMirror = cMirror
             if (renderMirror != rMirror) {
                 renderMirror = rMirror
-                config?.rtcEngine?.setLocalRenderMode(
-                    localVideoRenderMode,
-                    if (renderMirror) Constants.VIDEO_MIRROR_MODE_ENABLED else Constants.VIDEO_MIRROR_MODE_DISABLED
-                )
+                updateLocalRenderModeJob?.cancel()
+                updateLocalRenderModeJob = rtcControlScope.launch {
+                    val conf = config ?: return@launch
+                    if (isReleased) {
+                        return@launch
+                    }
+                    conf.rtcEngine.setLocalRenderMode(
+                        localVideoRenderMode,
+                        if (renderMirror) {
+                            Constants.VIDEO_MIRROR_MODE_ENABLED
+                        } else {
+                            Constants.VIDEO_MIRROR_MODE_DISABLED
+                        }
+                    )
+                }
             }
             asyncTextureBufferHelper?.invoke {
                 asyncTextureProcessHelper?.reset()

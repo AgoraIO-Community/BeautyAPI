@@ -43,4 +43,5 @@ dependencies {
 
     api 'com.faceunity:core:8.14.0'
     api 'com.faceunity:model:8.14.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
 }

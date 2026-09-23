@@ -467,13 +467,13 @@ class FaceUnityActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        mRtcEngine.leaveChannel()
-        mRtcEngine.stopPreview()
         if (isCustomCaptureMode) {
             mRtcEngine.registerVideoFrameObserver(null)
         }
         FaceUnityBeautySDK.setBeautyAPI(null)
         mFaceUnityApi.release()
+        mRtcEngine.leaveChannel()
+        mRtcEngine.stopPreview()
         RtcEngine.destroy()
     }
 
