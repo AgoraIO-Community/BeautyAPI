@@ -239,7 +239,15 @@ static NSString *const beautyAPIVersion = @"1.0.7";
     if (!self.isFirstFrame) {
         [self.reporter startDurationEventWithName:@"first_beauty_frame"];
     }
+    if (videoFrame.pixelBuffer == nil) {
+        return NO;
+    }
     CVPixelBufferRef pixelBuffer = [self.config.beautyRender onCapture:videoFrame.pixelBuffer];
+    if (pixelBuffer == nil ||
+        CVPixelBufferGetWidth(pixelBuffer) != CVPixelBufferGetWidth(videoFrame.pixelBuffer) ||
+        CVPixelBufferGetHeight(pixelBuffer) != CVPixelBufferGetHeight(videoFrame.pixelBuffer)) {
+        return NO;
+    }
     if (!self.isFirstFrame) {
         [self.reporter endDurationEventWithName:@"first_beauty_frame" ext:@{
             @"width": @(CVPixelBufferGetWidth(pixelBuffer)),

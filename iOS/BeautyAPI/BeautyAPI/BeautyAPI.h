@@ -23,7 +23,7 @@ typedef NS_ENUM(NSInteger, BeautyPresetMode) {
 
 @protocol BeautyRenderDelegate <NSObject>
 
-- (CVPixelBufferRef)onCapture: (CVPixelBufferRef)pixelBuffer;
+- (CVPixelBufferRef _Nullable)onCapture: (CVPixelBufferRef)pixelBuffer;
 #if __has_include(<AgoraRtcKit/AgoraRtcKit.h>)
 - (AgoraVideoFormat)getVideoFormatPreference;
 #endif

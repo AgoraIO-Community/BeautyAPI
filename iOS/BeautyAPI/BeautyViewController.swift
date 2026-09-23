@@ -165,10 +165,17 @@ class BeautyViewController: UIViewController {
 extension BeautyViewController: AgoraVideoFrameDelegate {
     func onCapture(_ videoFrame: AgoraOutputVideoFrame, sourceType: AgoraVideoSourceType) -> Bool {
         guard let pixelBuffer = videoFrame.pixelBuffer else { return true }
-        beautyAPI?.onFrame(pixelBuffer) { pixelBuffer in
-            videoFrame.pixelBuffer = pixelBuffer
+        guard let beautyAPI = beautyAPI else { return true }
+        var processedPixelBuffer: CVPixelBuffer?
+        beautyAPI.onFrame(pixelBuffer) { outputPixelBuffer in
+            processedPixelBuffer = outputPixelBuffer
         }
-        
+        guard let processedPixelBuffer = processedPixelBuffer else { return false }
+        if CVPixelBufferGetWidth(processedPixelBuffer) != CVPixelBufferGetWidth(pixelBuffer) ||
+            CVPixelBufferGetHeight(processedPixelBuffer) != CVPixelBufferGetHeight(pixelBuffer) {
+            return false
+        }
+        videoFrame.pixelBuffer = processedPixelBuffer
         return true
     }
     
@@ -278,4 +285,3 @@ extension BeautyViewController: AgoraRtcEngineDelegate {
         
     }
 }
-

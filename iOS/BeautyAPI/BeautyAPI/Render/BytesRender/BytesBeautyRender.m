@@ -65,32 +65,45 @@
 #endif
 }
 
-- (nonnull CVPixelBufferRef)onCapture:(nonnull CVPixelBufferRef)pixelBuffer {
+- (_Nullable CVPixelBufferRef)onCapture:(nonnull CVPixelBufferRef)pixelBuffer {
 #if __has_include(BytesMoudle)
     double timeStamp = [[NSDate date] timeIntervalSince1970];
     BEPixelBufferInfo *pixelBufferInfo = [self.imageUtils getCVPixelBufferInfo:pixelBuffer];
-    if (pixelBufferInfo.format != BE_BGRA) {
-        pixelBuffer = [self.imageUtils transforCVPixelBufferToCVPixelBuffer:pixelBuffer
-                                                               outputFormat:pixelBufferInfo.format];
-    }
+    // if (pixelBufferInfo.format != BE_BGRA) {
+    //     pixelBuffer = [self.imageUtils transforCVPixelBufferToCVPixelBuffer:pixelBuffer
+    //                                                            outputFormat:pixelBufferInfo.format];
+    // }
     
-    if ([self getDeviceOrientation] != BEF_AI_CLOCKWISE_ROTATE_0) {
-        pixelBuffer = [self.imageUtils rotateCVPixelBuffer:pixelBuffer rotation:BEF_AI_CLOCKWISE_ROTATE_0];
-    }
+    // if ([self getDeviceOrientation] != BEF_AI_CLOCKWISE_ROTATE_0) {
+    //     pixelBuffer = [self.imageUtils rotateCVPixelBuffer:pixelBuffer rotation:BEF_AI_CLOCKWISE_ROTATE_0];
+    // }
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    if ([EAGLContext currentContext] != self.effectManager.glContext) {
-        [EAGLContext setCurrentContext: self.effectManager.glContext];
-    }
+    // 声网 onCaptureVideoFrame 回调不保证每次在相同线程
+        // 通常情况下 previousContext 为空，这一帧处理完之后需要 setCurrentContext 恢复，避免下一帧 setCurrentContext 失败
+        EAGLContext *previousContext = [EAGLContext currentContext];
+        BOOL bindSuccess = NO;
+        if (previousContext != self.effectManager.glContext) {
+            bindSuccess = [EAGLContext setCurrentContext:self.effectManager.glContext];
+            if (!bindSuccess) {
+                NSLog(@"[onCapture] setCurrentContext failed");
+                [EAGLContext setCurrentContext:previousContext];
+                return nil;
+            }
+        }
 #pragma clang diagnostic pop
     id<BEGLTexture> texture = [self.imageUtils transforCVPixelBufferToTexture:pixelBuffer];
     BEPixelBufferGLTexture *outTexture = nil;
 
-    outTexture = [self.imageUtils getOutputPixelBufferGLTextureWithWidth:texture.width
-                                                                  height:texture.height
+    outTexture = [self.imageUtils getOutputPixelBufferGLTextureWithWidth:pixelBufferInfo.width
+                                                                  height:pixelBufferInfo.height
                                                                   format:pixelBufferInfo.format
                                                             withPipeline:self.effectManager.usePipeline];
-    self.outTexture = outTexture;
+    if (!texture || !outTexture) {
+        NSLog(@"[onCapture] texture allocation failed");
+        if (bindSuccess) [EAGLContext setCurrentContext:previousContext];
+        return nil;
+    }
     int ret = [self.effectManager processTexture:texture.texture
                                    outputTexture:outTexture.texture
                                            width:pixelBufferInfo.width
@@ -98,9 +111,35 @@
                                           rotate:[self getDeviceOrientation]
                                        timeStamp:timeStamp];
     if (ret != BEF_RESULT_SUC) {
-        outTexture = texture;
+        NSLog(@"[onCapture] processTexture failed, ret=%d", ret);
+        // 不使用原图，跳过这一帧
+        // outTexture = (BEPixelBufferGLTexture *)texture;
+        if (bindSuccess) {
+            [EAGLContext setCurrentContext:previousContext];
+        }
+        return nil; 
     }
-    return [(BEPixelBufferGLTexture *)outTexture pixelBuffer];
+
+
+    glFlush();
+    // 如有偶现花屏、画面撕裂等，可尝试把 glFlush 改成 fence 栏栅; 下面写法依赖 OpenGL ES 3.0，需确认 self.effectManager.glContext 版本 
+    // GLsync fence = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+    // GLenum waitResult = glClientWaitSync(fence, GL_SYNC_FLUSH_COMMANDS_BIT, 30 * 1000000);
+    // glDeleteSync(fence);
+    // if (waitResult == GL_TIMEOUT_EXPIRED) {
+    //     NSLog(@"[onCapture] fence wait timeout");
+    // }
+
+
+    self.outTexture = outTexture;
+
+
+    if (bindSuccess) {
+        [EAGLContext setCurrentContext:previousContext];
+    }
+
+
+    return [outTexture pixelBuffer];
 #else
     return pixelBuffer;
 #endif
