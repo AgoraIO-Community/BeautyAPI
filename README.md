@@ -6,6 +6,8 @@ _English | [中文](README.zh.md)_
 
 In order to reduce the difficulty for developers to integrate beauty, Agora provides a beauty scene-based API. The beauty scene API uses the **Agora RTC raw data interface** to encapsulate the beauty processing of different manufacturers, striving to provide the best beauty experience and minimize the beauty time as much as possible. You only need to call a few simple scene-based APIs to achieve smooth beautification effects.
 
+For the latest iOS implementation, refer to the [`dev/CS`](https://github.com/AgoraIO-Community/BeautyAPI/tree/dev/CS) branch.
+
 This repository contains the following beauty scene APIs:
 
 | Beauty    | Platform | Language    | Location                                                 | RTC SDK Version | Beauty SDK Version |
@@ -42,4 +44,3 @@ If you have any problems or suggestions regarding the sample projects, feel free
 ### License
 
 The sample projects are under the [MIT license](LICENSE).
-

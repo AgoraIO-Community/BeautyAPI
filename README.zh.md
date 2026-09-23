@@ -6,6 +6,8 @@
 
 为降低开发者的集成美颜的难度，声网提供了美颜场景化 API。美颜场景化 API 使用**声网 RTC 祼数据接口**对**不同厂商的美颜处理**进行封装，力求提供最佳的美颜体验，将美颜耗时尽可能降到最低。你只需要调用简单几个场景化 API 即可实现流畅的美颜效果。
 
+iOS 最新代码请参考 [`dev/CS`](https://github.com/AgoraIO-Community/BeautyAPI/tree/dev/CS) 分支。
+
 本仓库包含以下美颜场景 API：
 
 | 美颜   | 平台       | 语言           | 路径                                                         | RTC SDK 版本 | Beauty SDK 版本 |
