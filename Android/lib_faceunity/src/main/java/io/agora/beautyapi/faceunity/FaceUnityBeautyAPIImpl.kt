@@ -104,6 +104,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
     @Volatile
     private var isReleased: Boolean = false
     private var captureMirror = false
+    @Volatile
     private var renderMirror = false
     private val identityMatrix = Matrix()
     private var statsHelper: StatsHelper? = null
@@ -240,7 +241,12 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         )
         if (view is TextureView || view is SurfaceView) {
             val canvas = VideoCanvas(view, renderMode, 0)
-            canvas.mirrorMode = Constants.VIDEO_MIRROR_MODE_DISABLED
+            canvas.mirrorMode =
+                if (renderMirror) {
+                    Constants.VIDEO_MIRROR_MODE_ENABLED
+                } else {
+                    Constants.VIDEO_MIRROR_MODE_DISABLED
+                }
             rtcEngine.setupLocalVideo(canvas)
             return ErrorCode.ERROR_OK.value
         }
