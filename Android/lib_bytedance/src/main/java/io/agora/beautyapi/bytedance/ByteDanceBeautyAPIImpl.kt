@@ -27,6 +27,7 @@ package io.agora.beautyapi.bytedance
 import android.graphics.Matrix
 import android.opengl.GLES20
 import android.opengl.GLES30
+import android.os.SystemClock
 import android.view.SurfaceView
 import android.view.TextureView
 import android.view.View
@@ -76,6 +77,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
     private var nv21ByteBuffer: ByteBuffer? = null
     private var config: Config? = null
     private var enable: Boolean = false
+    @Volatile
     private var isReleased: Boolean = false
     private var captureMirror = true
     private var renderMirror = true
@@ -87,6 +89,8 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
     private var cameraConfig = CameraConfig()
     private var localVideoRenderMode = Constants.RENDER_MODE_HIDDEN
     private val pendingProcessRunList = Collections.synchronizedList(mutableListOf<()->Unit>())
+    // 仅标记 BeautyAPI 业务任务，避免取消 SDK 的转换和纹理归还任务。
+    private val processTaskToken = Any()
     private var frameWidth = 0
     private var frameHeight = 0
     private val apiReporter by lazy {
@@ -379,10 +383,19 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
             LogUtils.e(TAG, "runOnProcessThread >> The beauty api has been released!")
             return
         }
-        if (textureBufferHelper?.handler?.looper?.thread == Thread.currentThread()) {
+        val helper = textureBufferHelper
+        if (helper?.handler?.looper?.thread == Thread.currentThread()) {
             run.invoke()
-        } else if (textureBufferHelper != null) {
-            textureBufferHelper?.handler?.post(run)
+        } else if (helper != null) {
+            helper.handler.postAtTime(
+                {
+                    if (!isReleased && textureBufferHelper === helper) {
+                        run.invoke()
+                    }
+                },
+                processTaskToken,
+                SystemClock.uptimeMillis()
+            )
         } else {
             pendingProcessRunList.add(run)
         }
@@ -448,7 +461,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
         workerThreadExecutor.shutdown()
         textureBufferHelper?.let {
             textureBufferHelper = null
-            it.handler.removeCallbacksAndMessages(null)
+            it.handler.removeCallbacksAndMessages(processTaskToken)
             it.invoke {
                 imageUtils?.release()
                 agoraImageHelper?.release()

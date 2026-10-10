@@ -80,6 +80,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
     private var config: Config? = null
     private var enable: Boolean = false
     private var enableChange: Boolean = false
+    @Volatile
     private var isReleased: Boolean = false
     private var captureMirror = true
     private var renderMirror = false
@@ -413,10 +414,16 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
             LogUtils.e(TAG, "runOnProcessThread >> The beauty api has been released!")
             return
         }
-        if (textureBufferHelper?.handler?.looper?.thread == Thread.currentThread()) {
+        val helper = textureBufferHelper
+        if (helper?.handler?.looper?.thread == Thread.currentThread()) {
             run.invoke()
-        } else if (textureBufferHelper != null) {
-            textureBufferHelper?.invoke(run)
+        } else if (helper != null) {
+            helper.invoke {
+                if (!isReleased && textureBufferHelper === helper) {
+                    run.invoke()
+                }
+                null
+            }
         } else {
             pendingProcessRunList.add(run)
         }
@@ -498,7 +505,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         workerThreadExecutor.shutdown()
         textureBufferHelper?.let {
             textureBufferHelper = null
-            // it.handler.removeCallbacksAndMessages(null)
+            // 保留同步 invoke、SDK 转换和纹理归还任务，避免调用方无限等待。
             it.invoke {
                 beautyProcessor?.release()
                 null

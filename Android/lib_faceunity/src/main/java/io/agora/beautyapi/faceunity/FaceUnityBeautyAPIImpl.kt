@@ -28,6 +28,7 @@ import android.graphics.Matrix
 import android.opengl.GLES11Ext
 import android.opengl.GLES20
 import android.opengl.GLES30
+import android.os.SystemClock
 import android.view.SurfaceView
 import android.view.TextureView
 import android.view.View
@@ -124,6 +125,8 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
     private var cameraConfig = CameraConfig()
     private var localVideoRenderMode = Constants.RENDER_MODE_HIDDEN
     private val pendingProcessRunList = Collections.synchronizedList(mutableListOf<() -> Unit>())
+    // 仅标记 BeautyAPI 业务任务，避免取消 SDK 的转换和纹理归还任务。
+    private val processTaskToken = Any()
     private val transformGLFrameBuffer = GLFrameBuffer()
     private val outGLFrameBuffer = GLFrameBuffer()
     private val apiReporter by lazy {
@@ -319,10 +322,22 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             LogUtils.e(TAG, "runOnProcessThread >> The beauty api has been released!")
             return
         }
-        if (beautyTextureBufferHelper?.handler?.looper?.thread == Thread.currentThread()) {
+        val helper = beautyTextureBufferHelper
+        if (helper?.handler?.looper?.thread == Thread.currentThread()) {
             run.invoke()
-        } else if (beautyTextureBufferHelper != null) {
-            beautyTextureBufferHelper?.handler?.post(run)
+        } else if (helper != null) {
+            helper.handler.postAtTime(
+                {
+                    if (!isReleased &&
+                        !isResetting.get() &&
+                        beautyTextureBufferHelper === helper
+                    ) {
+                        run.invoke()
+                    }
+                },
+                processTaskToken,
+                SystemClock.uptimeMillis()
+            )
         } else {
             pendingProcessRunList.add(run)
         }
@@ -379,7 +394,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             }
             beautyTextureBufferHelper?.let {
                 beautyTextureBufferHelper = null
-                it.handler.removeCallbacksAndMessages(null)
+                it.handler.removeCallbacksAndMessages(processTaskToken)
                 it.invoke {
                     config?.fuRenderKit?.let { fuRender->
                         fuRender.releaseEGLContext()
@@ -436,7 +451,7 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         isResetting.set(false)
         beautyTextureBufferHelper?.let {
             beautyTextureBufferHelper = null
-            it.handler.removeCallbacksAndMessages(null)
+            it.handler.removeCallbacksAndMessages(processTaskToken)
             it.invoke {
                 fuRenderer.release()
                 transformGLFrameBuffer.release()
