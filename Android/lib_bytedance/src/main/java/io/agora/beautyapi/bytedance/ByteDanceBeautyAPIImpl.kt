@@ -596,7 +596,8 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
 
         apiReporter.endDurationEvent("first_beauty_frame", emptyMap())
 
-        val newFence = textureBufferHelper?.invoke {
+        val helper = textureBufferHelper ?: return false
+        val newFence = helper.invoke {
             val texBuffer = videoFrame.buffer as? TextureBuffer ?: return@invoke 0L
             val fenceOpen = GLES30.glIsSync(texBuffer.fenceObject)
             if (fenceOpen) {
@@ -608,18 +609,20 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
             return@invoke 0L
         } ?: 0L
 
-        val processBuffer: TextureBuffer = textureBufferHelper?.wrapTextureBuffer(
-            videoFrame.rotatedWidth,
-            videoFrame.rotatedHeight,
-            TextureBuffer.Type.RGB,
-            processTexId,
-            newFence,
-            Matrix().apply {
-                preTranslate(0.5f, 0.5f)
-                preScale(1.0f, -1.0f)
-                preTranslate(-0.5f, -0.5f)
-            }
-        ) ?: return false
+        val processBuffer: TextureBuffer = helper.invoke {
+            helper.wrapTextureBuffer(
+                videoFrame.rotatedWidth,
+                videoFrame.rotatedHeight,
+                TextureBuffer.Type.RGB,
+                processTexId,
+                newFence,
+                Matrix().apply {
+                    preTranslate(0.5f, 0.5f)
+                    preScale(1.0f, -1.0f)
+                    preTranslate(-0.5f, -0.5f)
+                }
+            )
+        } ?: return false
         videoFrame.replaceBuffer(processBuffer, 0, videoFrame.timestampNs)
         return true
     }

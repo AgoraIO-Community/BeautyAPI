@@ -634,7 +634,8 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
             return false
         }
 
-        val newFence = textureBufferHelper?.invoke {
+        val helper = textureBufferHelper ?: return false
+        val newFence = helper.invoke {
             val texBuffer = videoFrame.buffer as? TextureBuffer ?: return@invoke 0L
             val fenceOpen = GLES30.glIsSync(texBuffer.fenceObject)
             if (fenceOpen) {
@@ -648,14 +649,16 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
 
         apiReporter.endDurationEvent("first_beauty_frame", emptyMap())
 
-        val processBuffer: TextureBuffer = textureBufferHelper?.wrapTextureBuffer(
-            videoFrame.rotatedWidth,
-            videoFrame.rotatedHeight,
-            TextureBuffer.Type.RGB,
-            processTexId,
-            newFence,
-            Matrix()
-        ) ?: return false
+        val processBuffer: TextureBuffer = helper.invoke {
+            helper.wrapTextureBuffer(
+                videoFrame.rotatedWidth,
+                videoFrame.rotatedHeight,
+                TextureBuffer.Type.RGB,
+                processTexId,
+                newFence,
+                Matrix()
+            )
+        } ?: return false
         videoFrame.replaceBuffer(processBuffer, 0, videoFrame.timestampNs)
         return true
     }

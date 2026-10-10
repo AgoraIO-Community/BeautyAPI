@@ -612,7 +612,8 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             return false
         }
 
-        val newFence = beautyTextureBufferHelper?.invoke {
+        val textureBufferHelper = beautyTextureBufferHelper ?: return false
+        val newFence = textureBufferHelper.invoke {
             val texBuffer = videoFrame.buffer as? TextureBuffer ?: return@invoke 0L
             val fenceOpen = GLES30.glIsSync(texBuffer.fenceObject)
             if (fenceOpen) {
@@ -634,14 +635,16 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             )
         )
 
-        val processBuffer: TextureBuffer = beautyTextureBufferHelper?.wrapTextureBuffer(
-            videoFrame.rotatedWidth,
-            videoFrame.rotatedHeight,
-            TextureBuffer.Type.RGB,
-            processTexId,
-            newFence,
-            identityMatrix
-        ) ?: return false
+        val processBuffer: TextureBuffer = textureBufferHelper.invoke {
+            textureBufferHelper.wrapTextureBuffer(
+                videoFrame.rotatedWidth,
+                videoFrame.rotatedHeight,
+                TextureBuffer.Type.RGB,
+                processTexId,
+                newFence,
+                identityMatrix
+            )
+        } ?: return false
         videoFrame.replaceBuffer(processBuffer, 0, videoFrame.timestampNs)
         return true
     }
