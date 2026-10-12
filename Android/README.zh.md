@@ -12,9 +12,9 @@ _[English](README.md) | 中文_
 
 ## 1. 环境准备
 
-- 最低兼容 Android 5.0（SDK API Level 21）
-- Android Studio 3.5及以上版本，使用Java 11
-- Android 5.0 及以上的手机设备
+- 最低兼容 Android 6.0（SDK API Level 23）
+- Android Studio Hedgehog（2023.1.1）及以上版本，使用 JDK 17
+- Android 6.0 及以上的手机设备
 
 ---
 
@@ -76,6 +76,10 @@ AGORA_APP_ID=你的声网AppID
 > - 在 [app/build.gradle](app/build.gradle) 里配置证书对应的包名 applicationId
 > 
 > - **SDK 集成方式**：通过 `lib_faceunity/build.gradle` 文件中的依赖配置
+> - 如果将源码复制到自己的项目中，请在 app module 中添加源码所需的协程依赖：
+>   ```gradle
+>   implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
+>   ```
 > 
 > - 将相芯美颜资源放入对应路径下
 

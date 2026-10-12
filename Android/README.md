@@ -11,9 +11,9 @@ _English | [中文](README.zh.md)_
 
 ## 1. Prerequisites
 
-- Android 5.0 (SDK API Level 21) Above
-- Android Studio 3.5+, Using Java 11
-- Android 5.0 and above mobile devices
+- Android 6.0 (SDK API Level 23) and above
+- Android Studio Hedgehog (2023.1.1) or newer, using JDK 17
+- Android 6.0 and above mobile devices
 
 ---
 
@@ -73,6 +73,12 @@ _English | [中文](README.zh.md)_
    * [utils](/Android/lib_faceunity/src/main/java/io/agora/beautyapi/faceunity/utils/)
    * [FaceUnityBeautyAPI.kt](/Android/lib_faceunity/src/main/java/io/agora/beautyapi/faceunity/FaceUnityBeautyAPI.kt)
    * [FaceUnityBeautyAPIImpl.kt](/Android/lib_faceunity/src/main/java/io/agora/beautyapi/faceunity/FaceUnityBeautyAPIImpl.kt)
+
+- Add the coroutine dependency required by the copied FaceUnity implementation to your app module:
+
+   ```gradle
+   implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
+   ```
 
 **Note:**
 
