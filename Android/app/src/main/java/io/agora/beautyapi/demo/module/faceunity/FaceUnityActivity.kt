@@ -37,7 +37,6 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.isVisible
 import com.faceunity.core.faceunity.FURenderKit
 import io.agora.base.VideoFrame
 import io.agora.beautyapi.demo.BuildConfig
@@ -297,7 +296,6 @@ class FaceUnityActivity : ComponentActivity() {
 
     private fun initView() {
         mBinding.tvChannel.text = "Channel:$mChannelName"
-        mBinding.ivSwitchChannel.isVisible = true
         mBinding.ivCamera.setOnClickListener {
             mRtcEngine.switchCamera()
         }
@@ -336,38 +334,6 @@ class FaceUnityActivity : ComponentActivity() {
             }
             mFaceUnityApi.updateCameraConfig(cameraConfig)
         }
-        mBinding.ivSwitchChannel.setOnClickListener {
-            switchRandomChannel()
-        }
-    }
-
-    private fun switchRandomChannel() {
-        val newChannel = java.util.Random().nextInt(10000) + 100000
-        mRtcEngine.leaveChannel()
-        mFaceUnityApi.reset()
-        FaceUnityBeautySDK.beautyConfig.reset()
-        mBinding.tvChannel.text = "Channel:$newChannel"
-        
-        // Recreate beauty dialog to refresh UI state after reset
-        mBeautyDialog?.dismiss()
-        mBeautyDialog = BottomAlertDialog(this@FaceUnityActivity).apply {
-            val view = FaceUnityControllerView(this@FaceUnityActivity)
-            view.beautyOpenClickListener = View.OnClickListener {
-                beautyEnable = !beautyEnable
-                mFaceUnityApi.enable(beautyEnable)
-            }
-            setContentView(view)
-        }
-        
-        // join channel
-        mRtcEngine.joinChannel(null, newChannel.toString(), 0, ChannelMediaOptions().apply {
-            channelProfile = Constants.CHANNEL_PROFILE_LIVE_BROADCASTING
-            clientRoleType = Constants.CLIENT_ROLE_BROADCASTER
-            publishCameraTrack = true
-            publishMicrophoneTrack = false
-            autoSubscribeAudio = false
-            autoSubscribeVideo = true
-        })
     }
 
     private fun initBeautyApi() {

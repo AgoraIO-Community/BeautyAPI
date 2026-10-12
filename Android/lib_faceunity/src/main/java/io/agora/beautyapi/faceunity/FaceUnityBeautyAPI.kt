@@ -191,11 +191,6 @@ interface FaceUnityBeautyAPI {
     fun setParameters(key: String, value: String)
 
     /**
-     * Resets the beauty parameters to the default values.
-     */
-    fun reset()
-
-    /**
      * Releases resources. Once released, this instance can no longer be used.
      *
      * @return Refer to ErrorCode
