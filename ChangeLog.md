@@ -1,6 +1,29 @@
 # Beauty API Change Log
 # 美颜场景化 API 更新日志
 
+## 1.0.12
+### Breaking changes / 不兼容变更
+1. Android: Remove the FaceUnity reset() method added in 1.0.11, and remove channel switching from the demo / Android：移除 1.0.11 新增的相芯 reset() 方法，同时移除 Demo 中的切换频道功能
+2. Android: Raise minSdk to 23 (Android 6.0) for the demo and all beauty modules / Android：Demo 及各美颜模块的 minSdk 提升至 23（Android 6.0）
+
+### Updates / 更新
+1. Android: Adapt to RTC SDK 4.6.4 / Android：适配 RTC SDK 4.6.4 版本
+
+### Fixes / 修复
+1. Android: SenseTime, FaceUnity and ByteDance call setLocalRenderMode on the main thread, and cancel pending updates on release / Android：商汤、相芯、字节火山在主线程调用 setLocalRenderMode，release 时取消未执行的更新
+2. Android: SenseTime, FaceUnity and ByteDance keep the current local mirror mode when setupLocalVideo is called after the first frame / Android：商汤、相芯、字节火山在首帧之后调用 setupLocalVideo 时保留当前本地镜像模式
+3. Android: ByteDance keeps the render mode passed to setupLocalVideo when the local mirror mode changes / Android：字节火山本地镜像变化时保留 setupLocalVideo 传入的渲染模式
+4. Android: SenseTime, FaceUnity and ByteDance run wrapTextureBuffer on the beauty GL thread / Android：商汤、相芯、字节火山在美颜 GL 线程中执行 wrapTextureBuffer
+5. Android: FaceUnity and ByteDance release only removes BeautyAPI's own pending tasks and keeps the RTC SDK's tasks on the beauty GL thread; for all three vendors, tasks queued by runOnProcessThread are skipped after release / Android：相芯、字节火山 release 时只移除 BeautyAPI 自身的待执行任务，保留 RTC SDK 在美颜 GL 线程上的任务；三家美颜 release 后都不再执行 runOnProcessThread 投递的任务
+6. Android Demo: The FaceUnity page releases BeautyAPI before leaveChannel / stopPreview on exit / Android Demo：相芯页面退出时先 release BeautyAPI，再 leaveChannel / stopPreview
+7. Android: ByteDance now mirrors the local preview for MIRROR_LOCAL_ONLY / MIRROR_REMOTE_ONLY on the front camera, and no longer drops the first frames at startup with the default mirror config / Android：字节火山前置摄像头配置为 MIRROR_LOCAL_ONLY / MIRROR_REMOTE_ONLY 时本地预览正确镜像，默认镜像配置下开播不再丢弃开头几帧
+8. Android: SenseTime and ByteDance start the first_beauty_frame report when the beauty GL thread is created, the same as FaceUnity, so it is reported with every mirror config / Android：商汤、字节火山与相芯一致，在创建美颜 GL 线程时开始 first_beauty_frame 统计，任何镜像配置下都会上报
+
+## 1.0.11
+1. Android:  Adapt to RTC version 4.6.0. / Android: 适配 RTC 4.6.0
+2. Android:  Add "reset" method to FaceUnity beauty. / Android: 相芯美颜增加 reset 方法
+3. Android:  Remove cosmic beauty and Maven upload. / Android: 移除宇宙美颜，移除 maven 上传
+
 ## 1.0.10
 1. Android:  Add gl fence. / Android: 增加 gl fence
 

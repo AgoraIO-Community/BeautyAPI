@@ -10,8 +10,8 @@ android {
         applicationId "io.agora.test.entfull"
         minSdk 23
         targetSdk 35
-        versionCode 9
-        versionName "1.0.11"
+        versionCode 10
+        versionName "1.0.12"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

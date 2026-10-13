@@ -74,12 +74,6 @@ _English | [中文](README.zh.md)_
    * [FaceUnityBeautyAPI.kt](/Android/lib_faceunity/src/main/java/io/agora/beautyapi/faceunity/FaceUnityBeautyAPI.kt)
    * [FaceUnityBeautyAPIImpl.kt](/Android/lib_faceunity/src/main/java/io/agora/beautyapi/faceunity/FaceUnityBeautyAPIImpl.kt)
 
-- Add the coroutine dependency required by the copied FaceUnity implementation to your app module:
-
-   ```gradle
-   implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
-   ```
-
 **Note:**
 
 To facilitate future code upgrades, please avoid modifying the names and paths of these files you have added.
@@ -289,7 +283,7 @@ mRtcEngine.joinChannel(
 #### 7. Update Camera Configuration(Optional)
 
 ```kotlin
-val isFront = mSenseTimeApi.isFrontCamera()
+val isFront = mFaceUnityApi.isFrontCamera()
 
 // Check if front camera is being used
 if (isFront) {
@@ -328,16 +322,10 @@ mRtcEngine.leaveChannel()
 
 #### 9. Destroying Resources
 
-- Call release on the Beauty API to destroy the Beauty API.
+- Call release on the Beauty API to destroy the Beauty API. It also releases the FURenderKit passed in the config on the beauty GL thread, so do not call `FURenderKit.getInstance().release()` again.
 
 ```kotlin
 mFaceUnityApi.release()
-```
-
-- Call release on the Beauty SDK to destroy STHandlers.
-
-```kotlin
-FURenderKit.getInstance().release()
 ```
 
 - Call destroy on RtcEngine to destroy RtcEngine.

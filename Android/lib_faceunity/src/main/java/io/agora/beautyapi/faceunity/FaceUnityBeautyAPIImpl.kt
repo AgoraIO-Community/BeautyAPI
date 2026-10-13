@@ -28,6 +28,8 @@ import android.graphics.Matrix
 import android.opengl.GLES11Ext
 import android.opengl.GLES20
 import android.opengl.GLES30
+import android.os.Handler
+import android.os.Looper
 import android.os.SystemClock
 import android.view.SurfaceView
 import android.view.TextureView
@@ -56,12 +58,6 @@ import io.agora.rtc2.Constants
 import io.agora.rtc2.gl.EglBaseProvider
 import io.agora.rtc2.video.IVideoFrameObserver
 import io.agora.rtc2.video.VideoCanvas
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
 import java.nio.ByteBuffer
 import java.util.Collections
 import java.util.concurrent.Callable
@@ -135,8 +131,21 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
     private var asyncTextureProcessHelper: TextureProcessHelper? = null
     private var asyncTextureBufferHelper: TextureBufferHelper? = null
 
-    private val rtcControlScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
-    private var updateLocalRenderModeJob: Job? = null
+    private val mainHandler = Handler(Looper.getMainLooper())
+    private val updateLocalRenderModeRunnable = Runnable {
+        val conf = config ?: return@Runnable
+        if (isReleased) {
+            return@Runnable
+        }
+        conf.rtcEngine.setLocalRenderMode(
+            localVideoRenderMode,
+            if (renderMirror) {
+                Constants.VIDEO_MIRROR_MODE_ENABLED
+            } else {
+                Constants.VIDEO_MIRROR_MODE_DISABLED
+            }
+        )
+    }
 
 
     /**
@@ -387,13 +396,12 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
         }
         if (isReleased) {
-            LogUtils.e(TAG, "setBeautyPreset >> The beauty api has been released!")
+            LogUtils.e(TAG, "release >> The beauty api has been released!")
             return ErrorCode.ERROR_HAS_RELEASED.value
         }
         LogUtils.i(TAG, "release")
         isReleased = true
-        updateLocalRenderModeJob?.cancel()
-        rtcControlScope.cancel()
+        mainHandler.removeCallbacks(updateLocalRenderModeRunnable)
         if (conf.captureMode == CaptureMode.Agora) {
             conf.rtcEngine.registerVideoFrameObserver(null)
         }
@@ -480,21 +488,8 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             captureMirror = cMirror
             if (renderMirror != rMirror) {
                 renderMirror = rMirror
-                updateLocalRenderModeJob?.cancel()
-                updateLocalRenderModeJob = rtcControlScope.launch {
-                    val conf = config ?: return@launch
-                    if (isReleased) {
-                        return@launch
-                    }
-                    conf.rtcEngine.setLocalRenderMode(
-                        localVideoRenderMode,
-                        if (renderMirror) {
-                            Constants.VIDEO_MIRROR_MODE_ENABLED
-                        } else {
-                            Constants.VIDEO_MIRROR_MODE_DISABLED
-                        }
-                    )
-                }
+                mainHandler.removeCallbacks(updateLocalRenderModeRunnable)
+                mainHandler.post(updateLocalRenderModeRunnable)
             }
             asyncTextureBufferHelper?.invoke {
                 asyncTextureProcessHelper?.reset()

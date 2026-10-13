@@ -27,6 +27,8 @@ package io.agora.beautyapi.bytedance
 import android.graphics.Matrix
 import android.opengl.GLES20
 import android.opengl.GLES30
+import android.os.Handler
+import android.os.Looper
 import android.os.SystemClock
 import android.view.SurfaceView
 import android.view.TextureView
@@ -80,7 +82,8 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
     @Volatile
     private var isReleased: Boolean = false
     private var captureMirror = true
-    private var renderMirror = true
+    @Volatile
+    private var renderMirror = false
     private var statsHelper: StatsHelper? = null
     private var skipFrame = 0
     private val workerThreadExecutor = Executors.newSingleThreadExecutor()
@@ -95,6 +98,17 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
     private var frameHeight = 0
     private val apiReporter by lazy {
         APIReporter(APIType.BEAUTY, VERSION, config!!.rtcEngine)
+    }
+    private val mainHandler = Handler(Looper.getMainLooper())
+    private val updateLocalRenderModeRunnable = Runnable {
+        val conf = config ?: return@Runnable
+        if (isReleased) {
+            return@Runnable
+        }
+        conf.rtcEngine.setLocalRenderMode(
+            localVideoRenderMode,
+            if(renderMirror) Constants.VIDEO_MIRROR_MODE_ENABLED else Constants.VIDEO_MIRROR_MODE_DISABLED
+        )
     }
 
     private enum class BeautyProcessType{
@@ -189,6 +203,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
             return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
         }
         LogUtils.i(TAG, "setupLocalVideo >> view=$view, renderMode=$renderMode")
+        localVideoRenderMode = renderMode
         apiReporter.reportFuncEvent(
             "setupLocalVideo",
             mapOf("view" to view, "renderMode" to renderMode),
@@ -196,7 +211,12 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
         )
         if (view is TextureView || view is SurfaceView) {
             val canvas = VideoCanvas(view, renderMode, 0)
-            canvas.mirrorMode = Constants.VIDEO_MIRROR_MODE_DISABLED
+            canvas.mirrorMode =
+                if (renderMirror) {
+                    Constants.VIDEO_MIRROR_MODE_ENABLED
+                } else {
+                    Constants.VIDEO_MIRROR_MODE_DISABLED
+                }
             rtcEngine.setupLocalVideo(canvas)
             return ErrorCode.ERROR_OK.value
         }
@@ -448,16 +468,17 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
             return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
         }
         if (isReleased) {
-            LogUtils.e(TAG, "setBeautyPreset >> The beauty api has been released!")
+            LogUtils.e(TAG, "release >> The beauty api has been released!")
             return ErrorCode.ERROR_HAS_RELEASED.value
         }
+        LogUtils.i(TAG, "release")
+        isReleased = true
+        mainHandler.removeCallbacks(updateLocalRenderModeRunnable)
         if (conf.captureMode == CaptureMode.Agora) {
             conf.rtcEngine.registerVideoFrameObserver(null)
         }
-        LogUtils.i(TAG, "release")
         apiReporter.reportFuncEvent("release", emptyMap(), emptyMap())
         apiReporter.endDurationEvent("initialize-release", emptyMap())
-        isReleased = true
         workerThreadExecutor.shutdown()
         textureBufferHelper?.let {
             textureBufferHelper = null
@@ -530,16 +551,13 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
             captureMirror = cMirror
             if(renderMirror != rMirror){
                 renderMirror = rMirror
-                config?.rtcEngine?.setLocalRenderMode(
-                    localVideoRenderMode,
-                    if(renderMirror) Constants.VIDEO_MIRROR_MODE_ENABLED else Constants.VIDEO_MIRROR_MODE_DISABLED
-                )
+                mainHandler.removeCallbacks(updateLocalRenderModeRunnable)
+                mainHandler.post(updateLocalRenderModeRunnable)
             }
             textureBufferHelper?.invoke {
                 skipFrame = 2
                 imageUtils?.release()
             }
-            apiReporter.startDurationEvent("first_beauty_frame")
             return false
         }
 
@@ -583,6 +601,7 @@ class ByteDanceBeautyAPIImpl : ByteDanceBeautyAPI, IVideoFrameObserver {
                 }
             }
             LogUtils.i(TAG, "processBeauty >> create texture buffer, beautyMode=$beautyMode")
+            apiReporter.startDurationEvent("first_beauty_frame")
         }
 
         val startTime = System.currentTimeMillis()
