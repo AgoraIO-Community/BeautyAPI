@@ -30,6 +30,8 @@ import android.opengl.GLES11Ext
 import android.opengl.GLES20
 import android.opengl.GLES30
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.view.SurfaceView
 import android.view.TextureView
 import android.view.View
@@ -41,6 +43,7 @@ import io.agora.base.VideoFrame.I420Buffer
 import io.agora.base.VideoFrame.SourceType
 import io.agora.base.VideoFrame.TextureBuffer
 import io.agora.base.internal.video.RendererCommon
+import io.agora.base.internal.video.TextureBufferPool
 import io.agora.base.internal.video.YuvConverter
 import io.agora.base.internal.video.YuvHelper
 import io.agora.beautyapi.sensetime.utils.APIReporter
@@ -79,8 +82,10 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
     private var config: Config? = null
     private var enable: Boolean = false
     private var enableChange: Boolean = false
+    @Volatile
     private var isReleased: Boolean = false
     private var captureMirror = true
+    @Volatile
     private var renderMirror = false
     private var statsHelper: StatsHelper? = null
     private var skipFrame = 0
@@ -91,6 +96,17 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
     private var localVideoRenderMode = Constants.RENDER_MODE_HIDDEN
     private val pendingProcessRunList = Collections.synchronizedList(mutableListOf<()->Unit>())
     private val apiReporter by lazy { APIReporter(APIType.BEAUTY, VERSION, config!!.rtcEngine) }
+    private val mainHandler = Handler(Looper.getMainLooper())
+    private val updateLocalRenderModeRunnable = Runnable {
+        val conf = config ?: return@Runnable
+        if (isReleased) {
+            return@Runnable
+        }
+        conf.rtcEngine.setLocalRenderMode(
+            localVideoRenderMode,
+            if(renderMirror) Constants.VIDEO_MIRROR_MODE_ENABLED else Constants.VIDEO_MIRROR_MODE_DISABLED
+        )
+    }
 
     private enum class ProcessSourceType{
         UNKNOWN,
@@ -199,13 +215,18 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
         LogUtils.i(TAG, "setupLocalVideo >> view=$view, renderMode=$renderMode")
         localVideoRenderMode = renderMode
         apiReporter.reportFuncEvent(
-            "setupLocalVide",
+            "setupLocalVideo",
             mapOf("view" to view, "renderMode" to renderMode),
             emptyMap()
         )
         if(view is TextureView || view is SurfaceView){
             val canvas = VideoCanvas(view, renderMode, 0)
-            canvas.mirrorMode = Constants.VIDEO_MIRROR_MODE_DISABLED
+            canvas.mirrorMode =
+                if (renderMirror) {
+                    Constants.VIDEO_MIRROR_MODE_ENABLED
+                } else {
+                    Constants.VIDEO_MIRROR_MODE_DISABLED
+                }
             rtcEngine.setupLocalVideo(canvas)
             return ErrorCode.ERROR_OK.value
         }
@@ -412,10 +433,16 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
             LogUtils.e(TAG, "runOnProcessThread >> The beauty api has been released!")
             return
         }
-        if (textureBufferHelper?.handler?.looper?.thread == Thread.currentThread()) {
+        val helper = textureBufferHelper
+        if (helper?.handler?.looper?.thread == Thread.currentThread()) {
             run.invoke()
-        } else if (textureBufferHelper != null) {
-            textureBufferHelper?.invoke(run)
+        } else if (helper != null) {
+            helper.invoke {
+                if (!isReleased && textureBufferHelper === helper) {
+                    run.invoke()
+                }
+                null
+            }
         } else {
             pendingProcessRunList.add(run)
         }
@@ -483,21 +510,22 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
             return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
         }
         if (isReleased) {
-            LogUtils.e(TAG, "setBeautyPreset >> The beauty api has been released!")
+            LogUtils.e(TAG, "release >> The beauty api has been released!")
             return ErrorCode.ERROR_HAS_RELEASED.value
         }
+        LogUtils.i(TAG, "release")
+        isReleased = true
+        mainHandler.removeCallbacks(updateLocalRenderModeRunnable)
         if (conf.captureMode == CaptureMode.Agora) {
             conf.rtcEngine.registerVideoFrameObserver(null)
         }
         apiReporter.reportFuncEvent("release", emptyMap(), emptyMap())
         apiReporter.endDurationEvent("initialize-release", emptyMap())
 
-        LogUtils.i(TAG, "release")
-        isReleased = true
         workerThreadExecutor.shutdown()
         textureBufferHelper?.let {
             textureBufferHelper = null
-            // it.handler.removeCallbacksAndMessages(null)
+            // 保留同步 invoke、SDK 转换和纹理归还任务，避免调用方无限等待。
             it.invoke {
                 beautyProcessor?.release()
                 null
@@ -563,15 +591,12 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
             captureMirror = cMirror
             if(renderMirror != rMirror){
                 renderMirror = rMirror
-                config?.rtcEngine?.setLocalRenderMode(
-                    localVideoRenderMode,
-                    if(renderMirror) Constants.VIDEO_MIRROR_MODE_ENABLED else Constants.VIDEO_MIRROR_MODE_DISABLED
-                )
+                mainHandler.removeCallbacks(updateLocalRenderModeRunnable)
+                mainHandler.post(updateLocalRenderModeRunnable)
             }
             textureBufferHelper?.invoke {
                 beautyProcessor?.reset()
             }
-            apiReporter.startDurationEvent("first_beauty_frame")
             return false
         }
 
@@ -608,6 +633,7 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
                 }
             }
             LogUtils.i(TAG, "processBeauty >> create texture buffer, beautyMode=$beautyMode")
+            apiReporter.startDurationEvent("first_beauty_frame")
         }
 
         val startTime = System.currentTimeMillis()
@@ -633,7 +659,8 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
             return false
         }
 
-        val newFence = textureBufferHelper?.invoke {
+        val helper = textureBufferHelper ?: return false
+        val newFence = helper.invoke {
             val texBuffer = videoFrame.buffer as? TextureBuffer ?: return@invoke 0L
             val fenceOpen = GLES30.glIsSync(texBuffer.fenceObject)
             if (fenceOpen) {
@@ -647,14 +674,16 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
 
         apiReporter.endDurationEvent("first_beauty_frame", emptyMap())
 
-        val processBuffer: TextureBuffer = textureBufferHelper?.wrapTextureBuffer(
-            videoFrame.rotatedWidth,
-            videoFrame.rotatedHeight,
-            TextureBuffer.Type.RGB,
-            processTexId,
-            newFence,
-            Matrix()
-        ) ?: return false
+        val processBuffer: TextureBuffer = helper.invoke {
+            helper.wrapTextureBuffer(
+                videoFrame.rotatedWidth,
+                videoFrame.rotatedHeight,
+                TextureBuffer.Type.RGB,
+                processTexId,
+                newFence,
+                Matrix()
+            )
+        } ?: return false
         videoFrame.replaceBuffer(processBuffer, 0, videoFrame.timestampNs)
         return true
     }
@@ -817,6 +846,8 @@ class SenseTimeBeautyAPIImpl : SenseTimeBeautyAPI, IVideoFrameObserver {
             RendererCommon.convertMatrixFromAndroidGraphicsMatrix(buffer.transformMatrix)
         return texBufferHelper.invoke(Callable {
             mayCreateBeautyProcess()
+
+            TextureBufferPool.waitFenceSignal2(buffer.fenceObject, "BeautyProcess")
             return@Callable beautyProcessor?.process(
                 InputInfo(
                     width = width,

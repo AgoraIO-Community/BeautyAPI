@@ -65,12 +65,6 @@
             android:launchMode="singleTop"
             android:configChanges="orientation|screenSize|screenLayout"
             android:screenOrientation="behind"/>
-
-        <activity
-            android:name="io.agora.beautyapi.demo.module.cosmos.CosmosActivity"
-            android:launchMode="singleTop"
-            android:configChanges="orientation|screenSize|screenLayout"
-            android:screenOrientation="behind"/>
     </application>
 
 </manifest>

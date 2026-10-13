@@ -125,6 +125,20 @@ class FaceUnityActivity : ComponentActivity() {
             Log.e(TAG, "Rtc error code=$err, msg=${RtcEngine.getErrorDescription(err)}")
         }
 
+        override fun onJoinChannelSuccess(channel: String?, uid: Int, elapsed: Int) {
+            super.onJoinChannelSuccess(channel, uid, elapsed)
+            runOnUiThread {
+                Log.d(TAG, "onJoinChannelSuccess, channel=$channel, uid=$uid")
+            }
+        }
+
+        override fun onLeaveChannel(stats: RtcStats?) {
+            super.onLeaveChannel(stats)
+            runOnUiThread {
+                Log.d(TAG, "onLeaveChannel")
+            }
+        }
+
         override fun onUserJoined(uid: Int, elapsed: Int) {
             super.onUserJoined(uid, elapsed)
             runOnUiThread {
@@ -217,16 +231,20 @@ class FaceUnityActivity : ComponentActivity() {
         intent.getStringExtra(EXTRA_CAPTURE_MODE) == getString(R.string.beauty_capture_custom)
     }
 
-    private val mBeautyDialog by lazy {
-        BottomAlertDialog(this@FaceUnityActivity).apply {
-            val view = FaceUnityControllerView(this@FaceUnityActivity)
-            view.beautyOpenClickListener = View.OnClickListener {
-                beautyEnable = !beautyEnable
-                mFaceUnityApi.enable(beautyEnable)
+    private var mBeautyDialog: BottomAlertDialog? = null
+        get() {
+            if (field == null) {
+                field = BottomAlertDialog(this@FaceUnityActivity).apply {
+                    val view = FaceUnityControllerView(this@FaceUnityActivity)
+                    view.beautyOpenClickListener = View.OnClickListener {
+                        beautyEnable = !beautyEnable
+                        mFaceUnityApi.enable(beautyEnable)
+                    }
+                    setContentView(view)
+                }
             }
-            setContentView(view)
+            return field
         }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -277,6 +295,7 @@ class FaceUnityActivity : ComponentActivity() {
     }
 
     private fun initView() {
+        mBinding.tvChannel.text = "Channel:$mChannelName"
         mBinding.ivCamera.setOnClickListener {
             mRtcEngine.switchCamera()
         }
@@ -284,7 +303,7 @@ class FaceUnityActivity : ComponentActivity() {
             mSettingDialog.show()
         }
         mBinding.ivBeauty.setOnClickListener {
-            mBeautyDialog.show()
+            mBeautyDialog?.show()
         }
         mBinding.ivMirror.setOnClickListener {
             val isFront = mFaceUnityApi.isFrontCamera()
@@ -414,13 +433,13 @@ class FaceUnityActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        mRtcEngine.leaveChannel()
-        mRtcEngine.stopPreview()
         if (isCustomCaptureMode) {
             mRtcEngine.registerVideoFrameObserver(null)
         }
         FaceUnityBeautySDK.setBeautyAPI(null)
         mFaceUnityApi.release()
+        mRtcEngine.leaveChannel()
+        mRtcEngine.stopPreview()
         RtcEngine.destroy()
     }
 

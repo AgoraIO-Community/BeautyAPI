@@ -11,9 +11,9 @@ _English | [中文](README.zh.md)_
 
 ## 1. Prerequisites
 
-- Android 5.0 (SDK API Level 21) Above
-- Android Studio 3.5+, Using Java 11
-- Android 5.0 and above mobile devices
+- Android 6.0 (SDK API Level 23) and above
+- Android Studio Hedgehog (2023.1.1) or newer, using JDK 17
+- Android 6.0 and above mobile devices
 
 ---
 
@@ -283,7 +283,7 @@ mRtcEngine.joinChannel(
 #### 7. Update Camera Configuration(Optional)
 
 ```kotlin
-val isFront = mSenseTimeApi.isFrontCamera()
+val isFront = mFaceUnityApi.isFrontCamera()
 
 // Check if front camera is being used
 if (isFront) {
@@ -322,16 +322,10 @@ mRtcEngine.leaveChannel()
 
 #### 9. Destroying Resources
 
-- Call release on the Beauty API to destroy the Beauty API.
+- Call release on the Beauty API to destroy the Beauty API. It also releases the FURenderKit passed in the config on the beauty GL thread, so do not call `FURenderKit.getInstance().release()` again.
 
 ```kotlin
 mFaceUnityApi.release()
-```
-
-- Call release on the Beauty SDK to destroy STHandlers.
-
-```kotlin
-FURenderKit.getInstance().release()
 ```
 
 - Call destroy on RtcEngine to destroy RtcEngine.

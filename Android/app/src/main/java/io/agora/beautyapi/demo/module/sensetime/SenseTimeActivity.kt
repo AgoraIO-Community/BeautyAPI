@@ -368,6 +368,7 @@ class SenseTimeActivity : ComponentActivity() {
     }
 
     private fun initView() {
+        mBinding.tvChannel.text = "Channel:$mChannelName"
         mBinding.ivCamera.setOnClickListener {
             mRtcEngine.switchCamera()
         }

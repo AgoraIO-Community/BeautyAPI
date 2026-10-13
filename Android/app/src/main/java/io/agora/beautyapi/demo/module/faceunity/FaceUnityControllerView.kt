@@ -238,14 +238,14 @@ class FaceUnityControllerView : BeautyControllerView {
                             beautyConfig.sticker = "sticker/sdlu.bundle"
                         }
                     ),
-                    ItemInfo(
-                        R.string.beauty_item_sticker_zhu,
-                        R.mipmap.ic_sticker_fu_zh_fenshu,
-                        isSelected = beautyConfig.sticker == "sticker/daisypig.bundle",
-                        onValueChanged = { _ ->
-                            beautyConfig.sticker = "sticker/daisypig.bundle"
-                        }
-                    )
+//                    ItemInfo(
+//                        R.string.beauty_item_sticker_zhu,
+//                        R.mipmap.ic_sticker_fu_zh_fenshu,
+//                        isSelected = beautyConfig.sticker == "sticker/daisypig.bundle",
+//                        onValueChanged = { _ ->
+//                            beautyConfig.sticker = "sticker/daisypig.bundle"
+//                        }
+//                    )
                 )
             )
         )

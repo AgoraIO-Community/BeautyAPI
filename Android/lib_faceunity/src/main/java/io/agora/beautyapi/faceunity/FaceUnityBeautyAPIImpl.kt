@@ -28,6 +28,9 @@ import android.graphics.Matrix
 import android.opengl.GLES11Ext
 import android.opengl.GLES20
 import android.opengl.GLES30
+import android.os.Handler
+import android.os.Looper
+import android.os.SystemClock
 import android.view.SurfaceView
 import android.view.TextureView
 import android.view.View
@@ -43,6 +46,7 @@ import io.agora.base.VideoFrame.I420Buffer
 import io.agora.base.VideoFrame.SourceType
 import io.agora.base.VideoFrame.TextureBuffer
 import io.agora.base.internal.video.EglBase
+import io.agora.base.internal.video.TextureBufferPool
 import io.agora.base.internal.video.YuvHelper
 import io.agora.beautyapi.faceunity.utils.APIReporter
 import io.agora.beautyapi.faceunity.utils.APIType
@@ -93,8 +97,10 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
     private var config: Config? = null
     private var enable: Boolean = false
     private var enableChange: Boolean = false
+    @Volatile
     private var isReleased: Boolean = false
     private var captureMirror = false
+    @Volatile
     private var renderMirror = false
     private val identityMatrix = Matrix()
     private var statsHelper: StatsHelper? = null
@@ -114,6 +120,8 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
     private var cameraConfig = CameraConfig()
     private var localVideoRenderMode = Constants.RENDER_MODE_HIDDEN
     private val pendingProcessRunList = Collections.synchronizedList(mutableListOf<() -> Unit>())
+    // 仅标记 BeautyAPI 业务任务，避免取消 SDK 的转换和纹理归还任务。
+    private val processTaskToken = Any()
     private val transformGLFrameBuffer = GLFrameBuffer()
     private val outGLFrameBuffer = GLFrameBuffer()
     private val apiReporter by lazy {
@@ -122,6 +130,23 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
 
     private var asyncTextureProcessHelper: TextureProcessHelper? = null
     private var asyncTextureBufferHelper: TextureBufferHelper? = null
+
+    private val mainHandler = Handler(Looper.getMainLooper())
+    private val updateLocalRenderModeRunnable = Runnable {
+        val conf = config ?: return@Runnable
+        if (isReleased) {
+            return@Runnable
+        }
+        conf.rtcEngine.setLocalRenderMode(
+            localVideoRenderMode,
+            if (renderMirror) {
+                Constants.VIDEO_MIRROR_MODE_ENABLED
+            } else {
+                Constants.VIDEO_MIRROR_MODE_DISABLED
+            }
+        )
+    }
+
 
     /**
      * Initializes the API.
@@ -226,7 +251,12 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
         )
         if (view is TextureView || view is SurfaceView) {
             val canvas = VideoCanvas(view, renderMode, 0)
-            canvas.mirrorMode = Constants.VIDEO_MIRROR_MODE_DISABLED
+            canvas.mirrorMode =
+                if (renderMirror) {
+                    Constants.VIDEO_MIRROR_MODE_ENABLED
+                } else {
+                    Constants.VIDEO_MIRROR_MODE_DISABLED
+                }
             rtcEngine.setupLocalVideo(canvas)
             return ErrorCode.ERROR_OK.value
         }
@@ -299,10 +329,21 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             LogUtils.e(TAG, "runOnProcessThread >> The beauty api has been released!")
             return
         }
-        if (beautyTextureBufferHelper?.handler?.looper?.thread == Thread.currentThread()) {
+        val helper = beautyTextureBufferHelper
+        if (helper?.handler?.looper?.thread == Thread.currentThread()) {
             run.invoke()
-        } else if (beautyTextureBufferHelper != null) {
-            beautyTextureBufferHelper?.handler?.post(run)
+        } else if (helper != null) {
+            helper.handler.postAtTime(
+                {
+                    if (!isReleased &&
+                        beautyTextureBufferHelper === helper
+                    ) {
+                        run.invoke()
+                    }
+                },
+                processTaskToken,
+                SystemClock.uptimeMillis()
+            )
         } else {
             pendingProcessRunList.add(run)
         }
@@ -355,20 +396,21 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             return ErrorCode.ERROR_HAS_NOT_INITIALIZED.value
         }
         if (isReleased) {
-            LogUtils.e(TAG, "setBeautyPreset >> The beauty api has been released!")
+            LogUtils.e(TAG, "release >> The beauty api has been released!")
             return ErrorCode.ERROR_HAS_RELEASED.value
         }
         LogUtils.i(TAG, "release")
+        isReleased = true
+        mainHandler.removeCallbacks(updateLocalRenderModeRunnable)
         if (conf.captureMode == CaptureMode.Agora) {
             conf.rtcEngine.registerVideoFrameObserver(null)
         }
         apiReporter.reportFuncEvent("release", emptyMap(), emptyMap())
         apiReporter.endDurationEvent("initialize-release", emptyMap())
 
-        isReleased = true
         beautyTextureBufferHelper?.let {
             beautyTextureBufferHelper = null
-            it.handler.removeCallbacksAndMessages(null)
+            it.handler.removeCallbacksAndMessages(processTaskToken)
             it.invoke {
                 fuRenderer.release()
                 transformGLFrameBuffer.release()
@@ -446,10 +488,8 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             captureMirror = cMirror
             if (renderMirror != rMirror) {
                 renderMirror = rMirror
-                config?.rtcEngine?.setLocalRenderMode(
-                    localVideoRenderMode,
-                    if (renderMirror) Constants.VIDEO_MIRROR_MODE_ENABLED else Constants.VIDEO_MIRROR_MODE_DISABLED
-                )
+                mainHandler.removeCallbacks(updateLocalRenderModeRunnable)
+                mainHandler.post(updateLocalRenderModeRunnable)
             }
             asyncTextureBufferHelper?.invoke {
                 asyncTextureProcessHelper?.reset()
@@ -527,7 +567,8 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             return false
         }
 
-        val newFence = beautyTextureBufferHelper?.invoke {
+        val textureBufferHelper = beautyTextureBufferHelper ?: return false
+        val newFence = textureBufferHelper.invoke {
             val texBuffer = videoFrame.buffer as? TextureBuffer ?: return@invoke 0L
             val fenceOpen = GLES30.glIsSync(texBuffer.fenceObject)
             if (fenceOpen) {
@@ -549,14 +590,16 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
             )
         )
 
-        val processBuffer: TextureBuffer = beautyTextureBufferHelper?.wrapTextureBuffer(
-            videoFrame.rotatedWidth,
-            videoFrame.rotatedHeight,
-            TextureBuffer.Type.RGB,
-            processTexId,
-            newFence,
-            identityMatrix
-        ) ?: return false
+        val processBuffer: TextureBuffer = textureBufferHelper.invoke {
+            textureBufferHelper.wrapTextureBuffer(
+                videoFrame.rotatedWidth,
+                videoFrame.rotatedHeight,
+                TextureBuffer.Type.RGB,
+                processTexId,
+                newFence,
+                identityMatrix
+            )
+        } ?: return false
         videoFrame.replaceBuffer(processBuffer, 0, videoFrame.timestampNs)
         return true
     }
@@ -731,6 +774,8 @@ class FaceUnityBeautyAPIImpl : FaceUnityBeautyAPI, IVideoFrameObserver {
 
         return texBufferHelper.invoke {
             val fuRenderKit = config?.fuRenderKit ?: return@invoke -1
+
+            TextureBufferPool.waitFenceSignal2(textureBuffer.fenceObject, "BeautyProcess")
 
             transformGLFrameBuffer.setSize(width, height)
             transformGLFrameBuffer.resetTransform()
